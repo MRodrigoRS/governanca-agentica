@@ -1,0 +1,35 @@
+# ==============================================================================
+# Lefthook Configuration — Governança v2
+# Orquestrador determinístico de Git Hooks locais (D15)
+# Instalação: npx lefthook install
+# ==============================================================================
+
+pre-commit:
+  parallel: false
+  commands:
+    gitleaks:
+      tags: security secrets
+      run: gitleaks protect --staged --verbose --redact
+      fail_text: "Gitleaks detectou possíveis segredos ou credenciais no código staged!"
+      # Pula apenas se o binário gitleaks não estiver instalado localmente (o CI no GitHub Actions garantirá)
+      skip:
+        - run: node -e "const { execSync } = require('node:child_process'); try { execSync('gitleaks version', { stdio: 'ignore' }); process.exit(1); } catch { process.exit(0); }"
+
+    openspec-validate:
+      tags: specs sdd
+      run: npx @fission-ai/openspec validate
+      fail_text: "Falha na validação estrutural do OpenSpec em openspec/!"
+      skip:
+        - run: node -e "const fs = require('node:fs'); process.exit(fs.existsSync('openspec') ? 1 : 0);"
+
+    verificar-governanca:
+      tags: governanca audit
+      run: node scripts/verificar-governanca.mjs
+      fail_text: "A verificação determinística da Governança v2 foi violada!"
+
+commit-msg:
+  commands:
+    validar-commit-msg:
+      tags: conventional-commits pt-br
+      run: node scripts/validar-commit-msg.mjs {1}
+      fail_text: "A mensagem de commit não respeita o padrão Conventional Commits em PT-BR!"

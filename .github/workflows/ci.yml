@@ -1,0 +1,40 @@
+name: CI — Repositório da Governança v2
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  sintaxe-e-validacao:
+    name: Verificação de Sintaxe e Scripts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Instalar uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Verificar sintaxe dos scripts Node
+        run: |
+          node --check template/scripts/verificar-governanca.mjs
+          node --check template/scripts/validar-commit-msg.mjs
+
+      - name: Testar geração do template Copier
+        run: |
+          uvx copier copy --defaults . /tmp/teste-governanca
+          ls -la /tmp/teste-governanca
+          test -f /tmp/teste-governanca/AGENTS.md
+          test -f /tmp/teste-governanca/constitution.md
+          test -f /tmp/teste-governanca/lefthook.yml
+          test -f /tmp/teste-governanca/CHANGELOG.md
+          test -d /tmp/teste-governanca/openspec
+          test -d /tmp/teste-governanca/docs/adr
+          test -d /tmp/teste-governanca/.agents/skills

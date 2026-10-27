@@ -1,0 +1,55 @@
+# Índice e Registro de Decisões — Governança v2
+
+> **Ponto de entrada do planejamento.** Leia este arquivo primeiro em qualquer sessão nova.
+> **Última atualização:** 27/10/2026 (após [revisão](REVISAO_2026-10-27.md))
+
+---
+
+## 1. Mapa dos Documentos
+
+| Documento | Papel | Status |
+|---|---|---|
+| [PROPOSTA_KIT_GOVERNANCA_AGENTICA.md](PROPOSTA_KIT_GOVERNANCA_AGENTICA.md) | Visão: o que é a governança v2 e o que ela instala | Vigente |
+| [PIVOT_ARQUITETURAL_GOVERNANCA_V2.md](PIVOT_ARQUITETURAL_GOVERNANCA_V2.md) | Decisão: sem servidor/UI; o agente entrevista e instala a stack | Vigente |
+| [ESTRATEGIA_DE_PRESETS_E_STACKS_ROBUSTAS.md](ESTRATEGIA_DE_PRESETS_E_STACKS_ROBUSTAS.md) | Catálogo de stacks oficiais e cláusula anti-brinquedo | Vigente |
+| [SINTESE_FRAMEWORKS_SDD_E_GOVERNANCA_V2.md](SINTESE_FRAMEWORKS_SDD_E_GOVERNANCA_V2.md) | Método: o que absorver de Spec Kit, OpenSpec, Kiro e BMAD | Vigente |
+| [PROPOSTA_DISTRIBUICAO_E_ATUALIZACAO.md](PROPOSTA_DISTRIBUICAO_E_ATUALIZACAO.md) | Distribuição e atualização via Copier (D12 + D13) | Vigente |
+| [PROPOSTA_CERIMONIA_E_ENFORCEMENT.md](PROPOSTA_CERIMONIA_E_ENFORCEMENT.md) | Níveis de cerimônia e aplicação determinística (D14 + D15) | Vigente |
+| [ARQUITETURA_PROGENITORA_E_SATELITES.md](ARQUITETURA_PROGENITORA_E_SATELITES.md) | Análise da v1: o que ela era e o que herdamos | Histórico |
+| [REVISAO_2026-10-27.md](REVISAO_2026-10-27.md) | Correções factuais, contradições e lacunas | Registro |
+
+---
+
+## 2. Decisões Fechadas
+
+| ID | Decisão | Origem |
+|---|---|---|
+| D1 | A v2 é um **protocolo agêntico**: sem servidor local, sem SQLite, sem painel web, sem gerador por templates. | PIVOT |
+| D2 | A stack é escolhida **pelo agente após uma entrevista de escopo**, instalada pelo **CLI oficial da própria stack** (versão mais recente) e só **depois da aprovação humana**. | PIVOT |
+| D3 | **Cláusula anti-brinquedo:** nenhum app interativo começa com HTML/CSS/JS soltos. Exige tipagem, validação de entradas, design system e testes desde o 1º commit. | PRESETS |
+| D4 | Base em **padrões oficiais da indústria**, não em convenções caseiras. | Conversa |
+| D5 | **Herança da v1 (o ouro):** Dever de Crítica, Honestidade Radical, Zero-Trust no backend, PT-BR no domínio/EN nos termos técnicos, zero segredos, zero testes quebrados, dependências justificadas, gates humanos, divulgação progressiva, zero dependências no bootstrap. | Análise v1 |
+| D6 | **`constitution.md`** (conceito do Spec Kit) guarda as cláusulas pétreas, incluindo **Test-First (vermelho → verde → refatorar)** com evidência do teste falhando. | SÍNTESE |
+| D7 | **Base viva de specs + deltas** (conceito do OpenSpec) para a documentação não envelhecer nem inchar. | SÍNTESE |
+| D8 | ADRs em `docs/adr/` (formato MADR), sem ferramenta. | Revisão |
+| D9 | **`AGENTS.md` é a fonte única** de instruções. `CLAUDE.md`, `GEMINI.md`, `.github/copilot-instructions.md` e `.cursor/rules/` apenas apontam para ele. | Revisão |
+| D10 | Skills no padrão aberto **Agent Skills (`SKILL.md` + `scripts/` + `references/`)**. | Revisão |
+| D11 | **Motor de specs oficial (ex-P1):** **OpenSpec CLI** (`openspec/specs/` + `openspec/changes/`) combinado com `constitution.md` na raiz do repositório. | Aprovado |
+| D12 | **Distribuição em 1 linha (ex-P3):** `uvx copier copy gh:MRodrigoRS/<repo-v2> .` (funciona em projetos novos e existentes). | Aprovado |
+| D13 | **Atualização contínua (ex-P2):** `uvx copier update` com separação estrita de propriedade de arquivos (da governança, mistos com blocos delimitados e exclusivos do projeto). | Aprovado |
+| D14 | **Níveis de cerimônia (ex-P4):** **Nível 1 `/fix`** (até 3 arquivos de lógica, sem mudar requisito, com Test-First e Gate 2) e **Nível 2 Feature** (OpenSpec completo + Gate 1 e Gate 2), com escalonamento automático. | Aprovado |
+| D15 | **Aplicação determinística / Zero-Trust no agente (ex-P7):** O agente executa, mas **quem valida e trava é o algoritmo da governança** via **Lefthook + Gitleaks + `openspec validate` + script `verificar-governanca` + GitHub Actions CI**. | Aprovado |
+| D16 | **Superação das pendências herdadas da v1 (ex-P5, P6, P8, P9):**<br>• **Memória de sessão (`SESSAO.md`):** superada nativamente por `openspec list`, `tasks.md` do delta ativo e `CHANGELOG.md`.<br>• **Brownfield (`VINCULAR.md`):** superado pelo Copier (`D12`) + natureza *brownfield-first* nativa do OpenSpec (`D11`).<br>• **MCPs (ex-P6):** definidos sob demanda junto com a stack no Gate 0 (`D2`), sem pacote estático inchado.<br>• **28 skills da v1 (ex-P5):** superadas pelo Copier, `AGENTS.md`, OpenSpec e Lefthook/Gitleaks/CI. O único conteúdo técnico herdado são as regras práticas de engenharia de `padroes/frontend.md` (reatividade sem `location.reload`, HTML semântico, `Escape`, alvos de 44px, estados assíncronos) e `padroes/backend.md` (Zero-Trust Anti-F12, ACID, cabeçalhos CSP/HSTS, Rate Limiting, OWASP Agentic Top 10), incorporadas de forma enxuta na `constitution.md`. | Aprovado |
+| D17 | **Sem orquestração caseira de multiagentes:** A qualidade e confirmação vêm do próprio fluxo determinístico (OpenSpec + Test-First + Tipagem + Lefthook/Gitleaks/CI). O uso de subagentes/paralelismo fica 100% delegado aos recursos nativos da própria IDE/plataforma (Antigravity, Claude Code, Cursor, GitHub) ou kits externos dedicados, sem criar regras de multiagentes na governança. Da v1 herda-se apenas o **Circuit Breaker de 3 tentativas** na `constitution.md` (falhou 3x seguidas no mesmo teste → para e alinha com o humano). | Aprovado |
+
+---
+
+## 3. Status da Governança v2: Construção Concluída com Sucesso
+
+Todas as decisões arquiteturais, metodológicas e de herança (`D1` a `D17`) foram implementadas e validadas:
+- **Distribuição e Atualização (D12 + D13):** `copier.yml` configurado com `_subdirectory: template`, `.copier-answers.yml.jinja`, questionário inicial e `_skip_if_exists`.
+- **Fonte Única e Ponteiros (D9):** `AGENTS.md` enxuto (~140 linhas) com blocos delimitados, acompanhado por ponteiros finos para Claude, Gemini, Copilot e Cursor.
+- **Constituição e Engenharia (D3, D6, D16, D17):** `constitution.md` com as 10 cláusulas pétreas (Anti-Brinquedo, Test-First, Zero Segredos, Zero Testes Quebrados, Dependências Justificadas, Padrões Frontend/Backend, Circuit Breaker de 3 tentativas, PT-BR no domínio e Keep a Changelog).
+- **Especificações e Decisões (D7, D8, D11):** Estrutura `openspec/` integrada com `project.md`, `specs/` (base viva) e `changes/` (deltas e `archive/`), além de `docs/adr/` no formato MADR.
+- **Enforcement Determinístico (D14 + D15):** Git hooks via Lefthook (`lefthook.yml`), scanner de segredos (Gitleaks), script `scripts/verificar-governanca.mjs` (trava Nível 1 vs Nível 2 e CHANGELOG) e `scripts/validar-commit-msg.mjs` (valida PT-BR e Conventional Commits), validados por testes unitários locais e GitHub Actions CI.
+- **Agent Skills (D10, D16):** `.agents/skills/` contendo `inicializar-stack` (com `catalogo-stacks.md`), `ciclo-especificacao` e `atualizar-governanca`.

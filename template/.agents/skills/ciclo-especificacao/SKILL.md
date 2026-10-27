@@ -1,0 +1,98 @@
+---
+name: ciclo-especificacao
+description: Conduz o desenvolvimento guiado por especificação (SDD) via OpenSpec, níveis de cerimônia (Nível 1 /fix e Nível 2 Feature), Test-First mandatório e Gates 1 e 2.
+---
+
+# Skill: Ciclo de Especificação e Desenvolvimento (SDD)
+
+Esta skill orienta o agente em qualquer alteração de código no projeto, garantindo conformidade com a Constituição, níveis de cerimônia e Test-First com evidências.
+
+---
+
+## 1. Escolha do Nível de Cerimônia
+
+Antes de iniciar, determine o nível adequado:
+
+### Nível 1 — Via Rápida (`/fix`)
+* **Quando usar:** Correção de bug pontual, ajuste de estilo/CSS, refatoração interna de código ou correção de texto.
+* **Regra estrita:** Toca em **no máximo 3 arquivos de produção** (fora testes) e **não altera** requisitos da base viva (`openspec/specs/`), novos pacotes em `package.json` ou schemas de banco.
+* **Fluxo:**
+  1. Identificar o defeito e a causa raiz.
+  2. Escrever o teste automatizado que reproduz a falha.
+  3. Executar o teste no terminal e registrar a saída com erro (**Vermelho**).
+  4. Implementar o código mínimo necessário para corrigir.
+  5. Executar o teste novamente e comprovar o sucesso (**Verde**).
+  6. Atualizar `CHANGELOG.md` na seção `### Corrigido`.
+  7. **Gate 2:** Apresentar ao humano as evidências (saída vermelha, verde e diff).
+  8. Realizar commit: `fix(<escopo>): <descrição em PT-BR>`.
+
+### Nível 2 — Ciclo Completo (Feature / Requisito)
+* **Quando usar:** Qualquer funcionalidade nova, alteração de regras de negócio, nova dependência de biblioteca, alteração de banco de dados ou refatoração ampla.
+* **Fluxo:** Detalhado nas seções seguintes.
+
+---
+
+## 2. Nível 2 — Criação do Delta de Mudança
+
+Execute o comando para criar a pasta da mudança em `openspec/changes/`:
+```bash
+npx @fission-ai/openspec new <nome-da-mudanca>
+```
+
+A pasta criada conterá:
+1. `proposal.md`: O *porquê* da mudança, motivação e escopo.
+2. `specs/`: Deltas de especificação com cenários e requisitos de comportamento.
+3. `design.md`: O *como* técnico, arquitetura, contratos e decisões técnicas.
+4. `tasks.md`: Checklist sequencial e atômico de implementação.
+
+---
+
+## 3. Etapa Clarify e Registro de ADR
+
+1. **Clarify (Esclarecer ambiguidades):** Revise a proposta e faça perguntas ao humano para eliminar premissas ocultas antes de projetar.
+2. **ADR (Decisão de Arquitetura):** Se a mudança introduzir um novo padrão estrutural, biblioteca fundamental ou modelo de persistência, crie um novo ADR em `docs/adr/` baseado em `template.md`.
+
+---
+
+## 4. Gate 1 — Aprovação do Plano
+
+> **PARADA OBRIGATÓRIA:** Apresente ao humano a proposta, o desenho técnico e as tarefas.
+> Pergunte: *"Você aprova este plano e desenho técnico para iniciarmos a implementação?"*
+> **Nenhum código de produção deve ser escrito antes da aprovação do Gate 1.**
+
+---
+
+## 5. Implementação com Test-First Mandatório
+
+Para cada item listado em `tasks.md`:
+1. **Vermelho:** Escreva o teste correspondente. Execute e capture o log da falha legítima.
+2. **Verde:** Implemente o código estritamente necessário para fazer o teste passar.
+3. **Refatorar:** Ajuste nomes, tipos e garanta a limpeza do código.
+4. **Circuit Breaker:** Se falhar 3 vezes seguidas no mesmo teste ou problema técnico, pare imediatamente e consulte o humano com os detalhes.
+
+---
+
+## 6. Gate 2 — Entrega com Evidências
+
+Antes de finalizar a tarefa ou commit:
+1. Valide a integridade do OpenSpec:
+   ```bash
+   npx @fission-ai/openspec validate
+   ```
+2. Execute o auditor determinístico local:
+   ```bash
+   node scripts/verificar-governanca.mjs
+   ```
+3. Atualize o arquivo `CHANGELOG.md` na seção correspondente (`### Adicionado` ou `### Modificado`).
+4. Apresente ao humano no chat:
+   - Evidência do teste falhando (saída vermelha) e passando (saída verde).
+   - Resumo das tarefas concluídas de `tasks.md`.
+   - Diff limpo dos arquivos staged.
+5. Após o aceite humano, arquive a mudança no OpenSpec para mesclá-la na base viva:
+   ```bash
+   npx @fission-ai/openspec archive <nome-da-mudanca>
+   ```
+6. Realize o commit respeitando o padrão em PT-BR:
+   ```bash
+   git commit -m "feat(<escopo>): <descrição clara em português>"
+   ```

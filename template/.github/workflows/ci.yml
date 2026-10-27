@@ -1,0 +1,85 @@
+name: CI — Governança v2
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  seguranca:
+    name: Scanner de Segredos (Gitleaks)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout com histórico completo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Gitleaks Action
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  governanca-e-specs:
+    name: Validação de Governança e Specs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout com diff anterior
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Validar OpenSpec
+        run: |
+          if [ -d "openspec" ]; then
+            npx @fission-ai/openspec validate
+          fi
+
+      - name: Auditar Governança v2 (Modo CI)
+        run: node scripts/verificar-governanca.mjs --ci
+
+  qualidade-e-testes:
+    name: Qualidade, Tipos e Testes
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Executar Checagens Node/TS (se package.json existir)
+        run: |
+          if [ -f "package.json" ]; then
+            npm install --ignore-scripts || true
+            if npm run | grep -q "type-check"; then npm run type-check; fi
+            if npm run | grep -q "lint"; then npm run lint; fi
+            if npm run | grep -q "test"; then npm test; fi
+            if npm run | grep -q "build"; then npm run build; fi
+          fi
+
+      - name: Executar Checagens Python (se pyproject.toml existir)
+        run: |
+          if [ -f "pyproject.toml" ]; then
+            pip install uv
+            uv sync || true
+            if uv run ruff --version >/dev/null 2>&1; then uv run ruff check .; fi
+            if uv run pytest --version >/dev/null 2>&1; then uv run pytest; fi
+          fi
+
+      - name: Executar Checagens Rust / Tauri (se Cargo.toml existir)
+        run: |
+          if [ -f "Cargo.toml" ]; then
+            cargo test
+          fi
+          if [ -f "src-tauri/Cargo.toml" ]; then
+            cargo test --manifest-path src-tauri/Cargo.toml
+          fi

@@ -1,0 +1,39 @@
+# ==============================================================================
+# Governança v2 — Template Oficial Copier
+# Distribuição: uvx copier copy gh:MRodrigoRS/governanca-v2 .
+# Atualização:  uvx copier update
+# ==============================================================================
+
+_subdirectory: template
+_templates_suffix: .jinja
+
+_skip_if_exists:
+  - CHANGELOG.md
+  - README.md
+  - package.json
+  - "openspec/specs/**"
+  - "openspec/changes/**"
+  - "docs/adr/**"
+
+# ------------------------------------------------------------------------------
+# Questionário de Inicialização
+# ------------------------------------------------------------------------------
+nome_do_projeto:
+  type: str
+  help: "Nome do projeto (kebab-case recomendado)"
+  default: "meu-projeto"
+
+descricao_do_projeto:
+  type: str
+  help: "Descrição concisa do objetivo do projeto"
+  default: "Projeto desenvolvido sob o protocolo da Governança v2."
+
+autor_nome:
+  type: str
+  help: "Nome do autor ou equipe responsável"
+  default: "Equipe de Desenvolvimento"
+
+autor_email:
+  type: str
+  help: "E-mail de contato do autor ou equipe"
+  default: "dev@exemplo.com"

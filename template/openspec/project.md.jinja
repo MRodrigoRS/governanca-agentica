@@ -1,0 +1,53 @@
+# Contexto do Projeto: {{ nome_do_projeto }}
+
+> **Descrição:** {{ descricao_do_projeto }}
+> **Responsável:** {{ autor_nome }} <{{ autor_email }}>
+> **Governança:** Governança v2 (Protocolo Agêntico)
+
+---
+
+## 1. Visão do Produto e Domínio
+
+- **Objetivo Principal:** Resolver os desafios descritos acima com base em código testado e especificado.
+- **Usuários-Alvo:** Definidos durante a entrevista de escopo (Gate 0).
+- **Canais de Acesso:** Web / Mobile / API / CLI (definido na stack).
+
+---
+
+## 2. Stack Tecnológica e Ferramentas (Gate 0)
+
+*(Preenchido automaticamente pelo agente após a aprovação da entrevista de escopo no Gate 0).*
+
+- **Framework Principal:** [Pendente / Em definição]
+- **Linguagem:** TypeScript (strict) / Python (type hints)
+- **Estilização / UI:** Tailwind CSS / shadcn/ui
+- **Validação de Schema:** Zod / Pydantic
+- **Banco de Dados & ORM:** [Pendente / Em definição]
+- **Executor de Testes:** Vitest / Jest / Pytest
+- **Linter & Formatador:** Biome / ESLint / Ruff
+
+---
+
+## 3. Diretórios e Convenções de Arquitetura
+
+- `openspec/specs/`: Especificações vivas do sistema organizadas por domínio ou capacidade.
+- `openspec/changes/`: Deltas de mudança ativos em andamento e histórico de alterações em `archive/`.
+- `docs/adr/`: Decisões Arquiteturais Relevantes no formato MADR.
+- `scripts/`: Scripts determinísticos de fiscalização da governança.
+- `CHANGELOG.md`: Registro contínuo de versões e entregas (Keep a Changelog).
+
+---
+
+## 4. Comandos Essenciais
+
+```bash
+# Validação determinística de governança
+node scripts/verificar-governanca.mjs
+
+# OpenSpec (Gestão de especificações)
+npx @fission-ai/openspec list
+npx @fission-ai/openspec validate
+
+# Testes automatizados
+npm test # ou pytest
+```
