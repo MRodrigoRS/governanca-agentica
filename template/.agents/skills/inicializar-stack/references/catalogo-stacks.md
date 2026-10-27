@@ -134,3 +134,24 @@
   ```
 * **Composição padrão:** Rust, Clap (parser declarativo tipado), Serde e `cargo test`.
 
+---
+
+## 8. Infraestrutura VPS, Tempo Real, Filas e Operação Assistida (MCP / CLI)
+
+Quando o sistema exigir processos contínuos em segundo plano (ex.: CRMs com WhatsApp/Evolution API, filas de mensagens programadas, orquestração de múltiplos agentes de IA, WebSockets em tempo real e bancos de dados dedicados):
+
+### A. Mensageria, Filas Agendadas e Tempo Real
+* **Filas e Agendamentos Resilientes:** **Redis + BullMQ** (Node/TS) ou **Celery / ARQ** (Python). Garante que tarefas programadas ("enviar mensagem daqui a 2h", "follow-up automático após 24h") sobrevivam a reinicializações do servidor com retentativas automáticas.
+* **Tempo Real na Interface:** **Server-Sent Events (SSE)** ou **WebSockets (Socket.io / ws / Supabase Realtime)** para atualizar chats, selos de atendimento e colunas de Kanban instantaneamente sem `location.reload`.
+
+### B. Empacotamento e Hospedagem em VPS (Padrão Produção)
+* **Containerização Padrão:** `Dockerfile` multi-stage enxuto + `docker-compose.yml` orquestrando Aplicação + PostgreSQL + Redis + Serviços Auxiliares.
+* **Painel PaaS Auto-Hospedado na VPS:** **Dokploy** ou **Coolify** instalados na VPS (Hetzner, Hostinger, Contabo, DigitalOcean). Fornecem deploy automático via Git push, SSL/HTTPS automático (Let's Encrypt) e backups de banco.
+
+### C. Operação Assistida pelo Agente (Zero Sofrimento em Painel para o Humano)
+Sempre priorize configurar a infraestrutura usando ferramentas que o próprio agente opera diretamente:
+1. **Supabase MCP (`supabase`):** Criação de projeto, execução de migrações SQL, configuração de Auth, Realtime e Edge Functions diretamente pelo agente sem o humano precisar operar o painel web.
+2. **CLIs Oficiais (`railway`, `flyctl`, `vercel`, `gh`):** O humano apenas autentica uma vez (`login`) e o agente provisiona banco, variáveis de ambiente e deploy pelo terminal.
+3. **Acesso SSH / MCP de VPS (Dokploy / Coolify API):** O agente conecta via SSH ou Token de API para instalar o orquestrador Docker e subir toda a stack automaticamente.
+
+

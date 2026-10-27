@@ -14,7 +14,7 @@
  */
 
 import { execSync } from 'node:child_process';
-import { existsSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 
 const VERMELHO = '\x1b[31m';
@@ -167,8 +167,111 @@ function obterMudancasAtivasOpenSpec() {
   }
 }
 
-// 4. Execução das Verificações Determinísticas
+// 4. Auditoria Determinística Anti-Preguiça para Fatias em openspec/roadmap/fatia-*.md (D18)
+function auditarFatiasDetalhadas() {
+  const pastaRoadmap = join(process.cwd(), 'openspec', 'roadmap');
+  if (!existsSync(pastaRoadmap)) return;
+
+  const secoesObrigatorias = [
+    '## 1.',
+    '## 2.',
+    '## 3.',
+    '## 4.',
+    '## 5.',
+    '## 6.',
+    '## 7.',
+  ];
+
+  const marcadoresPreguica = [
+    '<NUMERO>',
+    '<TITULO_DA_FATIA>',
+    '<SLUG>',
+    '{{ NUMERO }}',
+    '{{ TITULO_DA_FATIA }}',
+    '[Descreva claramente',
+    '[preencher]',
+    'TODO:',
+    'TBD:',
+  ];
+
+  const arquivos = readdirSync(pastaRoadmap).filter(
+    (nome) => nome.startsWith('fatia-') && nome.endsWith('.md')
+  );
+
+  for (const nomeArquivo of arquivos) {
+    const caminhoCompleto = join(pastaRoadmap, nomeArquivo);
+    const conteudo = readFileSync(caminhoCompleto, 'utf8');
+    const linhasUteis = conteudo
+      .split('\n')
+      .map((l) => l.trim())
+      .filter((l) => l.length > 0);
+
+    const secoesFaltantes = secoesObrigatorias.filter((secao) => !conteudo.includes(secao));
+    if (secoesFaltantes.length > 0) {
+      registrarErro(
+        `Cláusula Anti-Preguiça nas Fatias Incrementais (D18):\n` +
+        `O arquivo 'openspec/roadmap/${nomeArquivo}' não contém todas as 7 seções obrigatórias de '_template-fatia.md'.\n` +
+        `Seções ausentes: ${secoesFaltantes.join(', ')}\n\n` +
+        `-> Solução: Detalhe completamente a fatia seguindo 'openspec/roadmap/_template-fatia.md' para que qualquer agente consiga implementá-la sem adivinhar regras.`
+      );
+      process.exit(1);
+    }
+
+    if (linhasUteis.length < 35) {
+      registrarErro(
+        `Cláusula Anti-Preguiça nas Fatias Incrementais (D18):\n` +
+        `O arquivo 'openspec/roadmap/${nomeArquivo}' está comprimido ou superficial demais (${linhasUteis.length} linhas úteis; mínimo exigido: 35).\n\n` +
+        `-> Solução: Especifique tabelas, colunas em PT-BR, schemas Zod/Pydantic, estados assíncronos de UI, regras de negócio e roteiro Test-First.`
+      );
+      process.exit(1);
+    }
+
+    const marcadorEncontrado = marcadoresPreguica.find((m) => conteudo.includes(m));
+    if (marcadorEncontrado) {
+      registrarErro(
+        `Cláusula Anti-Preguiça nas Fatias Incrementais (D18):\n` +
+        `O arquivo 'openspec/roadmap/${nomeArquivo}' ainda contém marcadores não preenchidos ('${marcadorEncontrado}').\n\n` +
+        `-> Solução: Substitua todos os placeholders pelo planejamento real e detalhado da fatia.`
+      );
+      process.exit(1);
+    }
+  }
+}
+
+// 5. Auditoria de Integridade do Delta Ativo no Nível 2 (impede burlar Nível 1 com pasta vazia)
+function auditarDeltasAtivosOpenSpec(mudancasAtivas) {
+  const arquivosObrigatoriosDelta = ['proposal.md', 'design.md', 'tasks.md'];
+
+  for (const nomeMudanca of mudancasAtivas) {
+    const pastaMudanca = join(process.cwd(), 'openspec', 'changes', nomeMudanca);
+    for (const nomeArquivo of arquivosObrigatoriosDelta) {
+      const caminhoArquivo = join(pastaMudanca, nomeArquivo);
+      if (!existsSync(caminhoArquivo)) {
+        registrarErro(
+          `Delta de Nível 2 Incompleto (D14 + D18):\n` +
+          `A mudança ativa 'openspec/changes/${nomeMudanca}' não possui o arquivo obrigatório '${nomeArquivo}'.\n\n` +
+          `-> Solução: Preencha 'proposal.md', 'design.md' e 'tasks.md' com o plano da fatia e valide no Gate 1 antes de comitar código de produção.`
+        );
+        process.exit(1);
+      }
+
+      const conteudo = readFileSync(caminhoArquivo, 'utf8').trim();
+      if (conteudo.length < 50) {
+        registrarErro(
+          `Cláusula Anti-Preguiça no Delta Ativo (D18):\n` +
+          `O arquivo 'openspec/changes/${nomeMudanca}/${nomeArquivo}' está vazio ou superficial demais.\n\n` +
+          `-> Solução: Documente adequadamente a proposta, o desenho técnico e as tarefas da fatia.`
+        );
+        process.exit(1);
+      }
+    }
+  }
+}
+
+// 6. Execução das Verificações Determinísticas
 function executarAuditoria() {
+  auditarFatiasDetalhadas();
+
   const modificados = obterArquivosModificados();
 
   if (modificados.length === 0) {
@@ -234,8 +337,9 @@ function executarAuditoria() {
       `Nível 1 (/fix) validado com sucesso: ${arquivosProducao.length} arquivo(s) de produção alterado(s).`
     );
   } else if (arquivosProducao.length > 0 && possuiMudancaAtiva) {
+    auditarDeltasAtivosOpenSpec(mudancasAtivas);
     registrarInfo(
-      `Nível 2 (Feature) validado com sucesso. Delta ativo detectado: '${mudancasAtivas.join(', ')}'.`
+      `Nível 2 (Feature) validado com sucesso. Delta ativo íntegro detectado: '${mudancasAtivas.join(', ')}'.`
     );
   }
 

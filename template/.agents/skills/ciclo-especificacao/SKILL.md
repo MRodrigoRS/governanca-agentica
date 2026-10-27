@@ -32,47 +32,50 @@ Antes de iniciar, determine o nível adequado:
 
 ---
 
-## 2. Nível 2 — Criação do Delta de Mudança
+## 2. Nível 2 — Seleção da Fatia e Criação do Delta de Mudança
 
-Execute o comando para criar a pasta da mudança em `openspec/changes/`:
-```bash
-npx @fission-ai/openspec new <nome-da-mudanca>
-```
-
-A pasta criada conterá:
-1. `proposal.md`: O *porquê* da mudança, motivação e escopo.
-2. `specs/`: Deltas de especificação com cenários e requisitos de comportamento.
-3. `design.md`: O *como* técnico, arquitetura, contratos e decisões técnicas.
-4. `tasks.md`: Checklist sequencial e atômico de implementação.
+1. **Consulte o Mapa de Fatias Incrementais:** Leia a seção 3 de `openspec/project.md` e localize a próxima fatia com status `[ ] Pendente` (ou a fatia solicitada pelo humano).
+2. **Leia o Documento Detalhado da Fatia:** Abra `openspec/roadmap/fatia-XX-<slug>.md` e revise integralmente as 7 seções (Objetivo, Dependências, Contratos de Dados/Banco, Estados de UI, Regras Backend, Roteiro Test-First e Critérios de Aceite).
+   - Se a fatia ainda não possuir seu arquivo detalhado em `openspec/roadmap/`, crie-o imediatamente seguindo `openspec/roadmap/_template-fatia.md` antes de prosseguir.
+3. **Abra o Delta no OpenSpec:**
+   ```bash
+   npx @fission-ai/openspec new fatia-XX-<slug>
+   ```
+4. Preencha os arquivos da pasta criada em `openspec/changes/fatia-XX-<slug>/` sem resumos preguiçosos, desdobrando o conteúdo de `openspec/roadmap/fatia-XX-<slug>.md`:
+   - `proposal.md`: O *porquê* da mudança, motivação, escopo fechado e o que fica de fora.
+   - `specs/`: Deltas de especificação com cenários e requisitos de comportamento.
+   - `design.md`: O *como* técnico, tabelas, schemas Zod/Pydantic, rotas e decisões técnicas.
+   - `tasks.md`: Checklist sequencial e atômico de implementação (cada tarefa vinculada ao seu teste).
+5. Marque o status da fatia como `[~] Em Andamento` em `openspec/project.md` e em `openspec/roadmap/fatia-XX-<slug>.md`.
 
 ---
 
 ## 3. Etapa Clarify e Registro de ADR
 
-1. **Clarify (Esclarecer ambiguidades):** Revise a proposta e faça perguntas ao humano para eliminar premissas ocultas antes de projetar.
+1. **Clarify (Esclarecer ambiguidades):** Revise a proposta e faça perguntas ao humano caso reste qualquer dúvida ou decisão de negócio em aberto antes de codificar.
 2. **ADR (Decisão de Arquitetura):** Se a mudança introduzir um novo padrão estrutural, biblioteca fundamental ou modelo de persistência, crie um novo ADR em `docs/adr/` baseado em `template.md`.
 
 ---
 
-## 4. Gate 1 — Aprovação do Plano
+## 4. Gate 1 — Aprovação do Plano da Fatia
 
-> **PARADA OBRIGATÓRIA:** Apresente ao humano a proposta, o desenho técnico e as tarefas.
-> Pergunte: *"Você aprova este plano e desenho técnico para iniciarmos a implementação?"*
+> **PARADA OBRIGATÓRIA:** Apresente ao humano a proposta, o desenho técnico e as tarefas da fatia atual.
+> Pergunte: *"Você aprova este plano e desenho técnico da Fatia XX para iniciarmos a implementação?"*
 > **Nenhum código de produção deve ser escrito antes da aprovação do Gate 1.**
 
 ---
 
 ## 5. Implementação com Test-First Mandatório
 
-Para cada item listado em `tasks.md`:
+Para cada item listado em `tasks.md` (seguindo a Seção 6 da fatia):
 1. **Vermelho:** Escreva o teste correspondente. Execute e capture o log da falha legítima.
 2. **Verde:** Implemente o código estritamente necessário para fazer o teste passar.
-3. **Refatorar:** Ajuste nomes, tipos e garanta a limpeza do código.
+3. **Refatorar:** Ajuste nomes (em PT-BR conforme Artigo 10), tipos e garanta a limpeza do código.
 4. **Circuit Breaker:** Se falhar 3 vezes seguidas no mesmo teste ou problema técnico, pare imediatamente e consulte o humano com os detalhes.
 
 ---
 
-## 6. Gate 2 — Entrega com Evidências
+## 6. Gate 2 — Entrega com Evidências e Puxada Automática da Próxima Fatia
 
 Antes de finalizar a tarefa ou commit:
 1. Valide a integridade do OpenSpec:
@@ -86,13 +89,17 @@ Antes de finalizar a tarefa ou commit:
 3. Atualize o arquivo `CHANGELOG.md` na seção correspondente (`### Adicionado` ou `### Modificado`).
 4. Apresente ao humano no chat:
    - Evidência do teste falhando (saída vermelha) e passando (saída verde).
-   - Resumo das tarefas concluídas de `tasks.md`.
+   - Resumo das tarefas concluídas de `tasks.md` e do checklist da fatia.
    - Diff limpo dos arquivos staged.
-5. Após o aceite humano, arquive a mudança no OpenSpec para mesclá-la na base viva:
-   ```bash
-   npx @fission-ai/openspec archive <nome-da-mudanca>
-   ```
-6. Realize o commit respeitando o padrão em PT-BR:
-   ```bash
-   git commit -m "feat(<escopo>): <descrição clara em português>"
-   ```
+5. Após o aceite humano:
+   - Arquive a mudança no OpenSpec para mesclá-la na base viva (`openspec/specs/`):
+     ```bash
+     npx @fission-ai/openspec archive fatia-XX-<slug>
+     ```
+   - Atualize o status da fatia para `[x] Concluída` em `openspec/project.md` e em `openspec/roadmap/fatia-XX-<slug>.md`.
+   - Realize o commit respeitando o padrão em PT-BR:
+     ```bash
+     git commit -m "feat(<escopo>): <descrição clara em português>"
+     ```
+6. **Condução Proativa (Uma Ponta Puxa a Outra):** Imediatamente após o commit da fatia atual, consulte o Mapa de Fatias em `openspec/project.md`, identifique a próxima fatia `[ ] Pendente` e convide o humano:
+   > *"Fatia XX concluída e blindada! Pelo nosso Mapa de Fatias, o próximo passo natural é a **Fatia YY (`openspec/roadmap/fatia-YY-...`)**, que aproveita o que acabamos de criar para entregar [resumo]. Posso abrir o Gate 1 dela agora?"*

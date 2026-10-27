@@ -6,48 +6,70 @@
 
 ---
 
-## 1. Visão do Produto e Domínio
+## 1. Visão do Produto, Fluxo de Ponta a Ponta e Escopo Polido
 
-- **Objetivo Principal:** Resolver os desafios descritos acima com base em código testado e especificado.
-- **Usuários-Alvo:** Definidos durante a entrevista de escopo (Gate 0).
-- **Canais de Acesso:** Web / Mobile / API / CLI (definido na stack).
+*(Preenchido após a Entrevista Exaustiva de Produto no Gate 0 — múltiplas rodadas de refinamento entre humano e agente).*
+
+- **Objetivo Principal e Fluxo Completo:** [Descrição detalhada do sistema funcionando de ponta a ponta].
+- **Perfis de Usuário e Permissões:** [Quem usa o sistema e o que cada papel pode ver/fazer].
+- **Escopo Aprovado (O que VAI ser construído):**
+  - [Módulo/Capacidade 1]
+  - [Módulo/Capacidade 2]
+- **Fora de Escopo / Descartado no Polimento (O que NÃO será construído):**
+  - *(Registra ideias cortadas ou adiadas durante a entrevista para impedir que agentes futuros inventem escopo não solicitado).*
+  - [Item descartado 1 — Motivo]
 
 ---
 
-## 2. Stack Tecnológica e Ferramentas (Gate 0)
+## 2. Stack Tecnológica, Infraestrutura e MCPs (Gate 0)
 
-*(Preenchido automaticamente pelo agente após a aprovação da entrevista de escopo no Gate 0).*
+*(Preenchido automaticamente pelo agente após a aprovação da entrevista no Gate 0).*
 
 - **Framework Principal:** [Pendente / Em definição]
-- **Linguagem:** TypeScript (strict) / Python (type hints)
-- **Estilização / UI:** Tailwind CSS / shadcn/ui
-- **Validação de Schema:** Zod / Pydantic
+- **Linguagem:** TypeScript (`strict`) / Python (type hints) / Rust / C#
+- **Estilização / UI:** Tailwind CSS + shadcn/ui (ou equivalente nativo)
+- **Validação de Schema:** Zod / Pydantic / Serde
 - **Banco de Dados & ORM:** [Pendente / Em definição]
-- **Executor de Testes:** Vitest / Jest / Pytest
+- **Filas, Tempo Real e Automações:** [Ex.: Redis + BullMQ / WebSockets / Não aplicável]
+- **Hospedagem, VPS e MCPs/CLIs de Operação:** [Ex.: Supabase MCP / Docker + Dokploy/Coolify via SSH/CLI / Vercel CLI]
+- **Executor de Testes:** Vitest / Playwright / Pytest / Cargo Test
 - **Linter & Formatador:** Biome / ESLint / Ruff
 
 ---
 
-## 3. Diretórios e Convenções de Arquitetura
+## 3. Mapa de Fatias Incrementais (`openspec/roadmap/`)
 
-- `openspec/specs/`: Especificações vivas do sistema organizadas por domínio ou capacidade.
-- `openspec/changes/`: Deltas de mudança ativos em andamento e histórico de alterações em `archive/`.
+> **Regra Anti-Preguiça:** É proibido comprimir o planejamento do sistema apenas nesta tabela. Cada linha abaixo DEVE possuir seu próprio arquivo de especificação profunda em `openspec/roadmap/fatia-XX-<slug>.md` (seguindo `openspec/roadmap/_template-fatia.md`), escrito com nível de detalhe suficiente para que qualquer agente consiga implementar a fatia sem adivinhar regras ou contratos.
+> **Ordem de Engenharia:** As fatias são ordenadas de modo que cada fatia construa a base técnica exata exigida pela fatia seguinte ("uma ponta puxa a outra").
+
+| Ordem | Status | Fatia | Arquivo Detalhado | Depende de | Entrega Principal |
+|---|---|---|---|---|---|
+| 01 | `[ ] Pendente` | `fatia-01-fundacao` | [openspec/roadmap/fatia-01-fundacao.md](roadmap/fatia-01-fundacao.md) | Nenhuma | Base do banco, autenticação e layout estrutural |
+| 02 | `[ ] Pendente` | `fatia-02-...` | [openspec/roadmap/fatia-02-....md](roadmap/fatia-02-....md) | Fatia 01 | [A definir no Gate 0] |
+
+---
+
+## 4. Diretórios e Convenções de Arquitetura
+
+- `openspec/roadmap/`: Arquivos individuais detalhados de cada fatia incremental do sistema (`fatia-01-*.md`, `fatia-02-*.md`, etc.).
+- `openspec/specs/`: Especificações vivas consolidadas do sistema organizadas por domínio.
+- `openspec/changes/`: Deltas de mudança ativos em andamento e histórico de alterações concluídas em `archive/`.
 - `docs/adr/`: Decisões Arquiteturais Relevantes no formato MADR.
 - `scripts/`: Scripts determinísticos de fiscalização da governança.
 - `CHANGELOG.md`: Registro contínuo de versões e entregas (Keep a Changelog).
 
 ---
 
-## 4. Comandos Essenciais
+## 5. Comandos Essenciais
 
 ```bash
-# Validação determinística de governança
+# Validação determinística de governança (código, cerimônia e anti-preguiça nas fatias)
 node scripts/verificar-governanca.mjs
 
-# OpenSpec (Gestão de especificações)
+# OpenSpec (Gestão de especificações e ciclos de feature)
 npx @fission-ai/openspec list
 npx @fission-ai/openspec validate
 
 # Testes automatizados
-npm test # ou pytest
+npm test # ou pytest / cargo test
 ```

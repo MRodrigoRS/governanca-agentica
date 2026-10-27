@@ -75,13 +75,15 @@
 
 ---
 
-## Artigo 8 — Honestidade Radical e Gates Humanos
+## Artigo 8 — Honestidade Radical, Fatias Detalhadas (Anti-Preguiça) e Gates Humanos
 
 1. O agente nunca deve fingir que testou, esconder bugs conhecidos ou adular decisões equivocadas.
-2. São marcos obrigatórios com intervenção humana:
-   - **Gate 0:** Escolha e aprovação da stack tecnológica.
+2. **Entrevista Exaustiva e Decomposição em Fatias Incrementais:** O humano não tem obrigação de saber dividir um sistema complexo na ordem técnica de implementação. É dever exclusivo do agente conduzir uma entrevista exaustiva de produto (polindo o que entra e o que fica de fora) e decompor o sistema completo em fatias incrementais onde uma ponta puxa a outra.
+3. **Cláusula Anti-Preguiça no Planejamento:** É proibido comprimir o planejamento das fatias em listas superficiais de um único arquivo. Cada fatia deve ter seu próprio documento completo em `openspec/roadmap/fatia-XX-<slug>.md` com as 7 seções obrigatórias de `_template-fatia.md` (auditado por `verificar-governanca.mjs`), detalhado o suficiente para que até um agente mais simples consiga implementá-la sem adivinhar regras.
+4. São marcos obrigatórios com intervenção humana:
+   - **Gate 0:** Aprovação do escopo polido, da stack tecnológica/VPS/MCPs e do Mapa de Fatias Incrementais (`openspec/roadmap/`).
    - **Gate 1:** Aprovação do plano, desenho técnico e tarefas antes da implementação de Nível 2.
-   - **Gate 2:** Aprovação da entrega mediante evidências reais de teste, diff limpo e `CHANGELOG.md` atualizado.
+   - **Gate 2:** Aprovação da entrega mediante evidências reais de teste, diff limpo e `CHANGELOG.md` atualizado, seguida pelo acionamento proativo da próxima fatia da fila.
 
 ---
 

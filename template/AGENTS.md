@@ -18,23 +18,23 @@
 
 ---
 
-## 2. Diagnóstico Inicial (Primeira Sessão)
+## 2. Diagnóstico Inicial e Condução Incremental
 
 Ao ser iniciado em um repositório, identifique o estado atual antes de agir:
-- **Repositório Greenfield (sem stack):** Acione imediatamente a skill `.agents/skills/inicializar-stack/SKILL.md`. Conduza a entrevista de escopo, apresente as opções do catálogo oficial e aguarde a aprovação humana no **Gate 0** antes de executar o scaffolding oficial.
-- **Repositório Brownfield (código existente sem specs):** Mapeie a arquitetura atual em `openspec/project.md` e crie as especificações vivas iniciais em `openspec/specs/` antes de sugerir qualquer alteração.
-- **Projeto em Andamento:** Verifique `openspec list`, leia as tarefas abertas em `openspec/changes/` e inspecione `CHANGELOG.md` para retomar o trabalho exatamente de onde parou.
+- **Repositório Greenfield (sem stack):** Acione imediatamente a skill `.agents/skills/inicializar-stack/SKILL.md`. Conduza uma **entrevista exaustiva (multi-rodadas)** para extrair a visão completa do sistema, polir o que entra e o que fica de fora, definir a stack/VPS/MCPs e **decompor o sistema inteiro em fatias incrementais detalhadas** (`openspec/roadmap/fatia-XX-*.md`) antes de executar o scaffolding no **Gate 0**.
+- **Repositório Brownfield (código existente sem specs):** Mapeie a arquitetura atual em `openspec/project.md`, crie as especificações vivas iniciais em `openspec/specs/` e planeje as próximas fatias em `openspec/roadmap/` antes de alterar o código.
+- **Projeto em Andamento:** Verifique `openspec/project.md` (Mapa de Fatias Incrementais), `openspec list`, as tarefas abertas em `openspec/changes/` e `CHANGELOG.md` para retomar exatamente de onde parou e puxar a próxima fatia `[ ] Pendente` automaticamente.
 
 ---
 
 ## 3. Níveis de Cerimônia e Fluxo de Execução
 
-| Critério | Nível 1 — Via Rápida (`/fix`) | Nível 2 — Ciclo Completo (Feature / Requisito) |
+| Critério | Nível 1 — Via Rápida (`/fix`) | Nível 2 — Ciclo Completo (Feature / Fatia Incremental) |
 |---|---|---|
-| **Escopo** | Bug pontual, correção estética, refatoração interna | Nova funcionalidade, alteração de regra de negócio, schema/banco, nova rota/API |
-| **Impacto em Specs** | Não altera `openspec/specs/` | Modifica ou expande `openspec/specs/` |
-| **Limite de Arquivos** | Até **3 arquivos** de produção (fora testes) | Sem limite |
-| **Fluxo** | Diagnóstico → Teste que reproduz a falha → Código mínimo → Gate 2 | `openspec new` → Proposta + Design + Tarefas → **Gate 1** → Test-First → **Gate 2** → `openspec archive` |
+| **Escopo** | Bug pontual, correção estética, refatoração interna | Fatia do roadmap, nova funcionalidade, regra de negócio, schema/banco, nova rota/API |
+| **Impacto em Specs** | Não altera `openspec/specs/` | Consome `openspec/roadmap/fatia-XX-*.md` e expande `openspec/specs/` |
+| **Limite de Arquivos** | Até **3 arquivos** de produção (fora testes) | Sem limite (escopo fechado da fatia) |
+| **Fluxo** | Diagnóstico → Teste que reproduz a falha → Código mínimo → Gate 2 | Ler `fatia-XX-*.md` → `openspec new` → **Gate 1** → Test-First → **Gate 2** → `openspec archive` → Puxar próxima fatia |
 
 > **Trava de Escalonamento Automático:** Se durante um `/fix` o commit tocar em mais de 3 arquivos de produção, incluir novas dependências ou alterar o schema de banco sem um delta ativo em `openspec/changes/`, o algoritmo da governança travará o commit exigindo o Nível 2.
 
@@ -50,15 +50,16 @@ Ao ser iniciado em um repositório, identifique o estado atual antes de agir:
 
 ## 5. Os 3 Gates Humanos
 
-- **Gate 0 (Stack):** Aprovação da stack tecnológica e ferramentas antes da criação do projeto.
-- **Gate 1 (Plano):** Aprovação da especificação, desenho técnico e tarefas antes de codificar.
-- **Gate 2 (Entrega):** Aprovação das evidências de teste (vermelho/verde), diff limpo e `CHANGELOG.md` atualizado antes do commit final.
+- **Gate 0 (Escopo Polido, Stack e Mapa de Fatias):** Aprovação da entrevista exaustiva, da stack tecnológica/VPS/MCPs e das fatias incrementais detalhadas em `openspec/roadmap/fatia-XX-*.md`.
+- **Gate 1 (Plano da Fatia Atual):** Aprovação da especificação, desenho técnico e tarefas da fatia ativa antes de codificar.
+- **Gate 2 (Entrega e Próxima Fatia):** Aprovação das evidências de teste (vermelho/verde), diff limpo e `CHANGELOG.md` atualizado antes do commit final, seguida pela apresentação imediata da próxima fatia do mapa.
 
 ---
 
 ## 6. Recursos e Ferramentas
 
 - **Cláusulas Pétreas:** Leia integralmente [constitution.md](constitution.md).
+- **Mapa de Fatias Incrementais:** Diretório `openspec/roadmap/` (cada fatia em seu próprio arquivo detalhado seguindo `_template-fatia.md`).
 - **Especificações Vivas e Deltas:** Diretório `openspec/` gerenciado pelo OpenSpec CLI (`npx @fission-ai/openspec`).
 - **Registros de Arquitetura (ADRs):** Diretório `docs/adr/` no formato MADR.
 - **Skills Ativas:** Diretório `.agents/skills/` (inicializar-stack, ciclo-especificacao, atualizar-governanca).
