@@ -43,6 +43,9 @@
 ## 4. Interface, Componentes e Estados Assíncronos (Artigo 6)
 
 - **Rotas / Telas criadas ou alteradas:** [Ex.: `/painel/funis`, modal `ModalCriarPreset`].
+- **Responsividade e Portabilidade PWA Inatas (Artigo 6, item 6):**
+  - Layouts mobile-first testados e funcionais desde telas estreitas de smartphones (mínimo 320px) até desktops/widescreen sem overflow horizontal.
+  - Suporte e conformidade com manifesto web (`manifest.json` / `manifest.webmanifest`), meta tags viewport e cores temáticas se houver elementos de UI web.
 - **Componentes Reutilizáveis:** [Lista de componentes visuais e como eles se conectam aos dados sem recarregar a página (`location.reload` proibido)].
 - **Acessibilidade e Teclado:**
   - HTML semântico utilizado (`<main>`, `<nav>`, `<section>`, `<button>`).
@@ -86,6 +89,7 @@
 ## 7. Critérios de Aceite Determinísticos (Checklist Gate 2)
 
 - [ ] Todos os schemas e tabelas descritos na Seção 3 foram criados com nomes em PT-BR.
+- [ ] Responsividade e portabilidade PWA garantidas na interface web (mobile-first 320px+ e sem quebras visuais).
 - [ ] Os 4 estados assíncronos (`loading`, `empty`, `error`, `success`) estão implementados e funcionais.
 - [ ] Todos os testes da Seção 6 falharam antes da implementação (evidência Vermelha) e passaram após o código (evidência Verde).
 - [ ] `npx @fission-ai/openspec validate` e `node scripts/verificar-governanca.mjs` executados com sucesso (`exit 0`).

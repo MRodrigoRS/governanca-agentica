@@ -1,4 +1,4 @@
-<!-- governanca:inicio v2.0.0 — não edite este bloco; alterações no repositório da governança -->
+<!-- governanca:inicio v2.1.0 — não edite este bloco; alterações no repositório da governança -->
 # Instruções Gerais para Agentes de IA — Governança v2
 
 > **Papel:** Fonte única da verdade para todos os agentes e assistentes de IA que operam neste repositório.
@@ -14,7 +14,8 @@
    - **Produto:** Compreender o problema, regras de negócio e critérios de aceite sem discutir código.
    - **Arquitetura:** Definir contratos de dados, interfaces, schemas, riscos e registrar ADRs em `docs/adr/` quando a decisão for estrutural (Gate 1).
    - **Engenharia:** Escrever testes antes do código (Test-First), implementar a solução mínima, refatorar e apresentar evidências completas (Gate 2).
-4. **Convenção de Idioma (Artigo 10):** Nomes de entidades, regras de negócio, tabelas, variáveis, funções, documentação e mensagens de commit em **Português do Brasil (PT-BR)** (ex.: `obterUsuario`, `salvarPedido`). Termos técnicos universais de frameworks (`id`, `payload`, `props`, `token`, `status`, `req`, `res`) permanecem em **Inglês (EN)**.
+4. **Padrões de Engenharia Frontend e Web (Artigo 6):** Em todo desenvolvimento que envolva web, responsividade móvel (mobile-first a partir de 320px) e portabilidade como PWA instalável são inatos ao código e aos componentes, jamais tratados como retrabalho futuro.
+5. **Convenção de Idioma (Artigo 10):** Nomes de entidades, regras de negócio, tabelas, variáveis, funções, documentação e mensagens de commit em **Português do Brasil (PT-BR)** (ex.: `obterUsuario`, `salvarPedido`). Termos técnicos universais de frameworks (`id`, `payload`, `props`, `token`, `status`, `req`, `res`) permanecem em **Inglês (EN)**.
 
 ---
 
@@ -49,11 +50,22 @@ Ao ser iniciado em um repositório, identifique o estado atual antes de agir:
 
 ---
 
-## 5. Os 3 Gates Humanos
+## 5. Rotina de Commits e Gates Humanos (Autorização Obrigatória — Artigo 11)
 
-- **Gate 0 (Escopo Polido, Stack e Mapa de Fatias):** Aprovação da entrevista exaustiva, da stack tecnológica/VPS/MCPs e das fatias incrementais detalhadas em `openspec/roadmap/fatia-XX-*.md`.
-- **Gate 1 (Plano da Fatia Atual):** Aprovação da especificação, desenho técnico e tarefas da fatia ativa antes de codificar.
-- **Gate 2 (Entrega e Próxima Fatia):** Aprovação das evidências de teste (vermelho/verde), diff limpo e `CHANGELOG.md` atualizado antes do commit final, seguida pela apresentação imediata da próxima fatia do mapa.
+É expressamente proibido ao agente realizar commits avulsos, intermediários ou automáticos sem o consentimento humano. A rotina de commits é estruturada em dois marcos exclusivos:
+
+- **Marco 1 — Fundação e Sedimentação Inicial (Gate 0):** Após a conclusão da entrevista exaustiva, validação da stack, scaffolding oficial e gravação das fatias detalhadas em `openspec/roadmap/fatia-XX-*.md` e `openspec/project.md`, o agente apresenta a base sedimentada ao humano e solicita aprovação para o commit de fundação:
+  ```bash
+  git commit -m "feat(fundacao): inicializa projeto com stack <nome> e mapa de fatias"
+  ```
+- **Gate 1 (Aprovação de Plano e Desenho Técnico):** Sem commit de código. Alinhamento de escopo, delta no OpenSpec e tarefas antes de codificar.
+- **Marco 2 — Fechamento de Fatia ou Correção (Gate 2):** Ao término da implementação, com testes comprovados (vermelho → verde), diff limpo, `CHANGELOG.md` atualizado e validações da governança passando, o agente apresenta as evidências ao humano. **Somente após a aprovação final humana**, o agente realiza o commit de entrega:
+  ```bash
+  git commit -m "feat(<escopo>): implementa fatia XX - <descrição em PT-BR>"
+  # ou no caso de /fix:
+  git commit -m "fix(<escopo>): corrige <descrição em PT-BR>"
+  ```
+  Imediatamente após o commit, convida o humano para a próxima fatia pendente do roadmap.
 
 ---
 

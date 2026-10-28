@@ -1,7 +1,8 @@
 # Catálogo de Stacks Oficiais Robustas — Governança v2
 
 > **Papel:** Catálogo técnico consultado pelo agente para sugerir a stack tecnológica durante o Gate 0.
-> **Regra Anti-Brinquedo:** Nenhuma aplicação interativa nasce com arquivos HTML/CSS/JS soltos. Toda base deve ter tipagem estrita, validação de schema e testes.
+> **Regra Anti-Brinquedo (Artigo 1):** Nenhuma aplicação interativa nasce com arquivos HTML/CSS/JS soltos. Toda base deve ter tipagem estrita, validação de schema e testes.
+> **Responsividade e Portabilidade PWA Inatas (Artigo 6, item 6):** Qualquer desenvolvimento que envolva web deve nascer responsivo por padrão (mobile-first 320px+) e preparado para portabilidade como PWA instalável (`manifest.json`, viewport, theme-color e service workers).
 
 ---
 

@@ -1,0 +1,29 @@
+# Changelog — Governança v2
+
+Todas as alterações notáveis neste protocolo de governança são documentadas neste arquivo.
+O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/) e adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
+
+---
+
+## [2.1.0] - 2026-10-28
+
+### Adicionado
+- **Artigo 11 na Constituição:** Rotina de commits cadenciada por autorização humana em dois marcos exclusivos — Marco 1 (Fundação e Sedimentação Inicial, Gate 0) e Marco 2 (Fechamento de Fatia ou Fix, Gate 2).
+- **Artigo 6 (Item 6):** Padrão inato de responsividade móvel (mobile-first 320px+) e portabilidade como PWA instalável (`manifest.json`, viewport, cores de tema, ícones adaptativos e service worker) para todo desenvolvimento web.
+- **Campos de PWA e Responsividade em Fatias:** Seções 4 e 7 do `_template-fatia.md` atualizadas com requisitos e checklist de aceitação determinístico para web responsiva e PWA.
+- **Decisões D20 e D21:** Registradas formalmente no índice de decisões e no README.
+
+### Modificado
+- `verificar-governanca.mjs` atualizado para reconhecer determinísticamente o Marco 1 (Commit de Fundação) e Marco 2 (Fatia recém-arquivada no OpenSpec), eliminando falsos positivos na auditoria de commits.
+- Instruções de `AGENTS.md`, `ciclo-especificacao` e `inicializar-stack` atualizadas com a rotina de autorização humana antes de qualquer commit.
+
+---
+
+## [2.0.0] - 2026-10-27
+
+### Adicionado
+- Lançamento inicial da Governança v2 como protocolo agêntico aberto via Copier.
+- 10 artigos pétreos na Constituição e integração com OpenSpec (`openspec/specs/`, `openspec/changes/`, `openspec/roadmap/`).
+- Hooks determinísticos com Lefthook, Gitleaks, `verificar-governanca.mjs` e `validar-commit-msg.mjs`.
+- Modo estratégico `explorar-produto` e Radar de Oportunidades.
+- Catálogo oficial de stacks robustas, infraestrutura VPS e MCPs assistidos.

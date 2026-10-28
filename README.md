@@ -67,7 +67,7 @@ O Copier utiliza mesclagem de 3 vias via Git. Arquivos mistos como `AGENTS.md` e
 
 ---
 
-## 4. Níveis de Cerimônia e Gates
+## 4. Níveis de Cerimônia, Gates e Rotina de Commits
 
 ### Dois Níveis de Cerimônia (D14)
 
@@ -76,11 +76,17 @@ O Copier utiliza mesclagem de 3 vias via Git. Arquivos mistos como `AGENTS.md` e
 
 *Trava de Escalonamento Automático e Anti-Preguiça:* Se um `/fix` tocar em mais de 3 arquivos ou modificar manifestos de dependência/banco, ou se uma fatia/delta for criada de forma vazia/resumida, o algoritmo `verificar-governanca.mjs` bloqueia o commit (`exit 1`).
 
-### Os 3 Gates Humanos
+### Os 3 Gates Humanos e a Rotina de Commits Cadenciada (D21)
 
-* **Gate 0:** Aprovação do escopo polido, da stack tecnológica/VPS/MCPs e do Mapa de Fatias Incrementais (`openspec/roadmap/`).
-* **Gate 1:** Aprovação da proposta e do design técnico da fatia atual antes de escrever o código.
-* **Gate 2:** Aprovação da entrega com evidência obrigatória (saída do teste falhando e depois passando, diff limpo e `CHANGELOG.md` atualizado), seguida pela puxada automática da próxima fatia.
+O agente é proibido de realizar commits avulsos ou intermediários sem autorização. A rotina de commits é estruturada em dois marcos consolidados:
+
+* **Gate 0 (Marco 1 de Commit — Fundação e Sedimentação Inicial):** Aprovação do escopo polido, da stack tecnológica/VPS/MCPs e do Mapa de Fatias Incrementais detalhadas (`openspec/roadmap/fatia-XX-*.md`). Após a validação da base, o agente solicita aprovação explícita e realiza o primeiro commit fundacional (`feat(fundacao): inicializa projeto com stack e mapa de fatias`).
+* **Gate 1:** Aprovação da proposta e do design técnico da fatia atual antes de escrever qualquer código (sem commit de código).
+* **Gate 2 (Marco 2 de Commit — Fechamento da Fatia ou Fix):** Aprovação da entrega com evidência obrigatória (saída do teste falhando e depois passando, diff limpo e `CHANGELOG.md` atualizado). Somente com o aval humano explícito o commit de entrega é efetuado, seguido pela puxada imediata da próxima fatia.
+
+### Padrões de Engenharia Frontend Inatos (D20)
+
+Todo desenvolvimento voltado à web parte do princípio de que **responsividade móvel** (design mobile-first testado de 320px a ultrawide) e **portabilidade como PWA instalável** (`manifest.json`, viewport, cores de tema, ícones adaptativos e service worker) são características **inatas** da interface, garantidas desde a primeira linha de componente visual.
 
 ---
 

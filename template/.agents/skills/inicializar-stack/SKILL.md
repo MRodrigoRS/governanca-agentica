@@ -28,6 +28,7 @@ Analise criticamente o que o usuário pediu e faça perguntas investigativas par
 ### Rodada 3: Tradução Invisível para Arquitetura, Stack, VPS e MCPs
 O usuário não precisa saber configurar servidores ou escolher bancos de dados. Traduza o produto polido em arquitetura real consultando [references/catalogo-stacks.md](references/catalogo-stacks.md) e apresente em português claro:
 - **Opção Recomendada e Alternativa:** Framework principal, banco de dados, filas (ex.: Redis/BullMQ para agendamentos), tempo real (WebSockets/SSE) e design system (`shadcn/ui`).
+- **Web Responsiva e Portabilidade PWA Inatas (Artigo 6, item 6):** Se o canal principal for Web, garanta que a stack inclua suporte nativo a layouts responsivos (mobile-first 320px+) e manifesto/metadados para PWA instalável.
 - **Estratégia de Hospedagem e Operação Assistida (MCPs / CLIs / SSH):** Explique como o próprio agente configurará o banco e o servidor (ex.: via **Supabase MCP**, **Coolify/Dokploy via SSH/CLI** ou **Railway/Vercel CLI**) sem exigir que o humano saiba operar painéis complexos de VPS.
 - **Justificativa Anti-Brinquedo:** Demonstre conformidade com o Artigo 1 da `constitution.md`.
 
@@ -74,7 +75,16 @@ Imediatamente após a instalação:
 
 ---
 
-## Passo 6 — Registro e Início Automático da Fatia 01
+## Passo 6 — Sedimentação da Documentação e Commit de Fundação (Marco 1)
 
 1. Preencha completamente as seções 1, 2 e 3 do arquivo `openspec/project.md` (Visão Polida, Stack/MCPs e Tabela do Mapa de Fatias Incrementais apontando para `openspec/roadmap/fatia-XX-*.md`).
-2. Informe o humano que a fundação está pronta e **já apresente imediatamente a abertura da Fatia 01** (`npx @fission-ai/openspec new fatia-01-...`) usando o plano detalhado em `openspec/roadmap/fatia-01-*.md`.
+2. Atualize `CHANGELOG.md` na seção `### Adicionado` registrando a inicialização da stack e a sedimentação da documentação e fatiação inicial.
+3. **Marco 1 da Rotina de Commits (Sedimentação e Fundação com Aprovação Humana — Artigo 11):**
+   - Apresente ao humano a base instalada e o conjunto de fatias sedimentadas.
+   - Pergunte: *"A documentação inicial, stack e o Mapa de Fatias em `openspec/roadmap/` estão totalmente sedimentados e testados verdes. Você aprova a realização do nosso commit de fundação inicial?"*
+   - **Somente após a aprovação humana explícita**, realize o commit de fundação:
+     ```bash
+     git add .
+     git commit -m "feat(fundacao): inicializa projeto com stack <nome> e roadmap de fatias"
+     ```
+4. Informe o humano que a fundação está commitada e protegida, e **já apresente imediatamente a abertura da Fatia 01** (`npx @fission-ai/openspec new fatia-01-...`) usando o plano detalhado em `openspec/roadmap/fatia-01-*.md`.

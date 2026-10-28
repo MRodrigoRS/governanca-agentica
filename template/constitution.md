@@ -1,4 +1,4 @@
-<!-- governanca:inicio v2.0.0 — não edite este bloco; alterações no repositório da governança -->
+<!-- governanca:inicio v2.1.0 — não edite este bloco; alterações no repositório da governança -->
 # Constituição do Projeto — Governança v2
 
 > **Papel:** Lei Suprema do repositório. Cláusulas pétreas obrigatórias para agentes de IA e desenvolvedores humanos.
@@ -62,6 +62,9 @@
    - **Vazio (empty):** Mensagem contextual orientando a ação do usuário quando não houver dados.
    - **Erro (error):** Notificação legível com opção de tentar novamente.
    - **Sucesso (success):** Exibição correta do conteúdo recebido.
+6. **Responsividade e Portabilidade PWA Inatas:** Todo desenvolvimento que diga respeito à web deve nascer responsivo por padrão e preparado nativamente para portabilidade como **PWA (Progressive Web App)**:
+   - **Responsividade Inata:** Design fluido e mobile-first, com layouts baseados em Flexbox ou CSS Grid testados e funcionais desde telas estreitas de smartphones (mínimo 320px) até monitores widescreen, sem barras de rolagem horizontais espúrias, elementos sobrepostos ou quebras de alinhamento.
+   - **Portabilidade PWA Inata:** Suporte a manifesto de aplicação web (`manifest.json` ou `manifest.webmanifest`), ícones adaptativos para diferentes densidades de tela, meta tags de viewport (`width=device-width, initial-scale=1`) e cor temática (`theme-color`), além de estrutura amigável para funcionamento offline e cache de assets essenciais via Service Worker quando suportado pelo framework da stack. A adaptabilidade móvel e a capacidade de ser instalado como app não são tarefas posteriores, mas requisitos inatos de arquitetura de interface web.
 
 ---
 
@@ -101,6 +104,16 @@ Se durante a execução de uma tarefa o agente falhar 3 vezes consecutivas no me
 1. **Português Brasileiro no Domínio e no Código:** Nomes de entidades, regras de negócio, tabelas de banco, variáveis, funções, classes, especificações e mensagens de commit devem ser escritos em **Português do Brasil (PT-BR)** (ex.: `obterUsuario`, `salvarPedido`, `calcularDesconto`, `cliente`).
 2. **Termos Técnicos Universais em Inglês:** Termos técnicos universais e convenções de bibliotecas/frameworks (`id`, `payload`, `props`, `handler`, `middleware`, `token`, `status`, `req`, `res`) permanecem em **Inglês (EN)** sem tradução forçada.
 3. Todo commit que alterar lógica de produção (`feat`, `fix`, `perf`, `refactor`) deve conter a atualização correspondente do delta consolidado em `CHANGELOG.md` no padrão *Keep a Changelog*.
+
+---
+
+## Artigo 11 — Rotina de Commits Cadenciada e Autorizada pelo Humano
+
+1. **Proibição de Commits Avulsos ou Prematuros:** É estritamente proibido ao agente realizar commits arbitrários, automáticos ou incompletos no meio do desenvolvimento ("work in progress" soltos, testes quebrados ou sem autorização).
+2. **Os Dois Marcos Mandatórios de Commit:**
+   - **Marco 1 — Fundação e Sedimentação Inicial (Gate 0):** Ocorre após a conclusão da entrevista de produto, aprovação da stack, scaffolding oficial, prova de saúde da base e gravação do Mapa de Fatias Incrementais detalhadas (`openspec/project.md` e `openspec/roadmap/fatia-XX-*.md`). O agente solicita e aguarda a **aprovação humana explícita** para realizar o commit fundacional (ex.: `feat(fundacao): inicializa projeto com stack e mapa de fatias`).
+   - **Marco 2 — Fechamento de Fatia ou Correção (Gate 2):** Ocorre ao término da implementação da fatia ou `/fix`, após a comprovação de testes (Vermelho → Verde), diff limpo, `CHANGELOG.md` atualizado e validações determinísticas passando (`verificar-governanca.mjs`, `openspec validate`). O agente só realiza o commit após a **aprovação final humana explícita** no Gate 2 (ex.: `feat(escopo): implementa fatia XX - descricao`).
+3. **Padrão Obrigatório de Mensagem:** Todo commit deve respeitar rigorosamente o Conventional Commits em Português do Brasil (auditado por `validar-commit-msg.mjs`), vinculando o escopo à fatia ou componente trabalhado.
 <!-- governanca:fim -->
 
 ## Cláusulas Adicionais Deste Projeto

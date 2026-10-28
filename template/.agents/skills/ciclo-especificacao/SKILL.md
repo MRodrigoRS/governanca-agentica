@@ -24,7 +24,7 @@ Antes de iniciar, determine o nível adequado:
   5. Executar o teste novamente e comprovar o sucesso (**Verde**).
   6. Atualizar `CHANGELOG.md` na seção `### Corrigido`.
   7. **Gate 2:** Apresentar ao humano as evidências (saída vermelha, verde e diff).
-  8. Realizar commit: `fix(<escopo>): <descrição em PT-BR>`.
+  8. **Marco 2 da Rotina de Commits (Artigo 11):** Somente após a aprovação humana explícita no Gate 2, realizar o commit: `fix(<escopo>): <descrição em PT-BR>`.
 
 ### Nível 2 — Ciclo Completo (Feature / Requisito)
 * **Quando usar:** Qualquer funcionalidade nova, alteração de regras de negócio, nova dependência de biblioteca, alteração de banco de dados ou refatoração ampla.
@@ -91,15 +91,17 @@ Antes de finalizar a tarefa ou commit:
    - Evidência do teste falhando (saída vermelha) e passando (saída verde).
    - Resumo das tarefas concluídas de `tasks.md` e do checklist da fatia.
    - Diff limpo dos arquivos staged.
-5. Após o aceite humano:
-   - Arquive a mudança no OpenSpec para mesclá-la na base viva (`openspec/specs/`):
-     ```bash
-     npx @fission-ai/openspec archive fatia-XX-<slug>
-     ```
-   - Atualize o status da fatia para `[x] Concluída` em `openspec/project.md` e em `openspec/roadmap/fatia-XX-<slug>.md`.
-   - Realize o commit respeitando o padrão em PT-BR:
-     ```bash
-     git commit -m "feat(<escopo>): <descrição clara em português>"
-     ```
+5. **Aprovação Final Humana (Marco 2 da Rotina de Commits — Artigo 11):**
+   - Pergunte: *"A fatia XX está testada (vermelho/verde), validada pelos scripts determinísticos e com CHANGELOG atualizado. Você aprova a entrega final para realizarmos o commit?"*
+   - **Somente após a aprovação humana explícita**:
+     - Arquive a mudança no OpenSpec para mesclá-la na base viva (`openspec/specs/`):
+       ```bash
+       npx @fission-ai/openspec archive fatia-XX-<slug>
+       ```
+     - Atualize o status da fatia para `[x] Concluída` em `openspec/project.md` e em `openspec/roadmap/fatia-XX-<slug>.md`.
+     - Realize o commit da entrega respeitando o padrão em PT-BR:
+       ```bash
+       git commit -m "feat(<escopo>): <descrição clara em português>"
+       ```
 6. **Condução Proativa (Uma Ponta Puxa a Outra):** Imediatamente após o commit da fatia atual, consulte o Mapa de Fatias em `openspec/project.md`, identifique a próxima fatia `[ ] Pendente` e convide o humano:
    > *"Fatia XX concluída e blindada! Pelo nosso Mapa de Fatias, o próximo passo natural é a **Fatia YY (`openspec/roadmap/fatia-YY-...`)**, que aproveita o que acabamos de criar para entregar [resumo]. Posso abrir o Gate 1 dela agora?"*

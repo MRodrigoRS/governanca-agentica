@@ -121,6 +121,7 @@ function ehArquivoDeDocumentacaoOuGovernanca(arquivo) {
     minusculo.startsWith('openspec/') ||
     minusculo.startsWith('.agents/') ||
     minusculo.startsWith('scripts/') ||
+    minusculo.startsWith('template/') ||
     minusculo === 'lefthook.yml' ||
     minusculo === 'copier.yml' ||
     minusculo === '.gitignore' ||
@@ -150,7 +151,7 @@ function ehArquivoDeProducao(arquivo) {
   return extensoesCodigo.some((ext) => arquivo.toLowerCase().endsWith(ext));
 }
 
-// 3. Checagem de Deltas Ativos em openspec/changes/
+// 3. Checagem de Deltas Ativos em openspec/changes/ e Marcos de Commit (D21)
 function obterMudancasAtivasOpenSpec() {
   const pastaMudancas = join(process.cwd(), 'openspec', 'changes');
   if (!existsSync(pastaMudancas)) return [];
@@ -165,6 +166,22 @@ function obterMudancasAtivasOpenSpec() {
   } catch {
     return [];
   }
+}
+
+function ehCommitDeFundacao(listaArquivos) {
+  const incluiFundacao = listaArquivos.some((f) => {
+    const min = f.toLowerCase();
+    return min === 'openspec/project.md' || min.startsWith('openspec/roadmap/');
+  });
+
+  if (!incluiFundacao) return false;
+
+  const pastaArchive = join(process.cwd(), 'openspec', 'changes', 'archive');
+  const possuiArchive =
+    existsSync(pastaArchive) &&
+    readdirSync(pastaArchive).filter((f) => !f.startsWith('.')).length > 0;
+
+  return !possuiArchive;
 }
 
 // 4. Auditoria Determinística Anti-Preguiça para Fatias em openspec/roadmap/fatia-*.md (D18)
@@ -297,8 +314,17 @@ function executarAuditoria() {
     process.exit(1);
   }
 
-  // REGRA 2: Verificação de Nível de Cerimônia (D14)
-  if (arquivosProducao.length > 0 && !possuiMudancaAtiva) {
+  // REGRA 2: Verificação de Nível de Cerimônia (D14) e Marcos de Commit (D21)
+  const possuiMudancaArquivadaStaged = listaArquivos.some((f) =>
+    f.startsWith('openspec/changes/archive/')
+  );
+  const ehFundacao = ehCommitDeFundacao(listaArquivos);
+
+  if (ehFundacao) {
+    registrarInfo(
+      'Marco 1 — Fundação e Sedimentação Inicial (Gate 0 / D21) detectado e aprovado com sucesso.'
+    );
+  } else if (arquivosProducao.length > 0 && !possuiMudancaAtiva && !possuiMudancaArquivadaStaged) {
     // Nível 1 — Via Rápida (/fix)
     if (arquivosProducao.length > 3) {
       registrarErro(
@@ -336,10 +362,16 @@ function executarAuditoria() {
     registrarInfo(
       `Nível 1 (/fix) validado com sucesso: ${arquivosProducao.length} arquivo(s) de produção alterado(s).`
     );
-  } else if (arquivosProducao.length > 0 && possuiMudancaAtiva) {
-    auditarDeltasAtivosOpenSpec(mudancasAtivas);
+  } else if (arquivosProducao.length > 0 && (possuiMudancaAtiva || possuiMudancaArquivadaStaged)) {
+    if (possuiMudancaAtiva) {
+      auditarDeltasAtivosOpenSpec(mudancasAtivas);
+    }
     registrarInfo(
-      `Nível 2 (Feature) validado com sucesso. Delta ativo íntegro detectado: '${mudancasAtivas.join(', ')}'.`
+      `Nível 2 (Feature) validado com sucesso. ${
+        possuiMudancaAtiva
+          ? `Delta ativo íntegro detectado: '${mudancasAtivas.join(', ')}'.`
+          : 'Fatia recém-arquivada no OpenSpec detectada para entrega.'
+      }`
     );
   }
 
