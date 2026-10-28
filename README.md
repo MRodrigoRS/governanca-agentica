@@ -97,6 +97,7 @@ seu-projeto/
 ├── constitution.md                   # Cláusulas pétreas e padrões de engenharia
 ├── openspec/                         # Motor de specs oficial (OpenSpec)
 │   ├── project.md                    # Visão polida, stack/MCPs e Mapa de Fatias Incrementais
+│   ├── radar-oportunidades.md        # Inteligência de mercado, concorrência, sinergias e ideias futuras
 │   ├── roadmap/                      # Fatias detalhadas individuais (fatia-01-*.md + _template-fatia.md)
 │   ├── specs/                        # Base viva de especificações por domínio
 │   └── changes/                      # Deltas ativos e archive/
@@ -110,6 +111,7 @@ seu-projeto/
 ├── .agents/skills/                   # Skills no padrão Agent Skills
 │   ├── inicializar-stack/            # Entrevista exaustiva, fatiamento e catálogo oficial
 │   ├── ciclo-especificacao/          # Guia prático de OpenSpec, Test-First e fila de fatias
+│   ├── explorar-produto/             # Modo estratégico: mercado, concorrência e sinergias (sem código)
 │   └── atualizar-governanca/         # Guia de atualização via Copier
 └── CHANGELOG.md                      # Histórico Keep a Changelog
 ```
@@ -120,7 +122,7 @@ seu-projeto/
 
 Todas as decisões de design da Governança v2 foram debatidas, fundamentadas e registradas formalmente:
 
-* [00_INDICE_E_DECISOES.md](00_INDICE_E_DECISOES.md) — Índice geral e as 18 Decisões Fechadas (`D1` a `D18`).
+* [00_INDICE_E_DECISOES.md](00_INDICE_E_DECISOES.md) — Índice geral e as 19 Decisões Fechadas (`D1` a `D19`).
 * [PIVOT_ARQUITETURAL_GOVERNANCA_V2.md](PIVOT_ARQUITETURAL_GOVERNANCA_V2.md) — O abandono do servidor/UI e a adoção do protocolo agêntico.
 * [ESTRATEGIA_DE_PRESETS_E_STACKS_ROBUSTAS.md](ESTRATEGIA_DE_PRESETS_E_STACKS_ROBUSTAS.md) — Catálogo de stacks e Cláusula Anti-Brinquedo.
 * [SINTESE_FRAMEWORKS_SDD_E_GOVERNANCA_V2.md](SINTESE_FRAMEWORKS_SDD_E_GOVERNANCA_V2.md) — Síntese metodológica (Spec Kit, OpenSpec, Kiro, BMAD).

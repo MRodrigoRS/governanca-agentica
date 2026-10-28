@@ -12,6 +12,7 @@ _skip_if_exists:
   - README.md
   - package.json
   - "openspec/project.md"
+  - "openspec/radar-oportunidades.md"
   - "openspec/roadmap/fatia-*.md"
   - "openspec/specs/**"
   - "openspec/changes/**"
