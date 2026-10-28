@@ -23,7 +23,7 @@ Antes de iniciar, determine o nível adequado:
   4. Implementar o código mínimo necessário para corrigir.
   5. Executar o teste novamente e comprovar o sucesso (**Verde**).
   6. Atualizar `CHANGELOG.md` na seção `### Corrigido`.
-  7. **Gate 2:** Apresentar ao humano as evidências (saída vermelha, verde e diff).
+  7. **Gate 2 (Apresentação Estruturada):** Apresentar ao humano o resumo do defeito corrigido, o **🧪 Roteiro de Teste Prático** (onde ver a correção, dados para testar e comportamento esperado), as evidências dos testes (vermelho/verde) e o diff limpo.
   8. **Marco 2 da Rotina de Commits (Artigo 11):** Somente após a aprovação humana explícita no Gate 2, realizar o commit: `fix(<escopo>): <descrição em PT-BR>`.
 
 ### Nível 2 — Ciclo Completo (Feature / Requisito)
@@ -87,12 +87,19 @@ Antes de finalizar a tarefa ou commit:
    node scripts/verificar-governanca.mjs
    ```
 3. Atualize o arquivo `CHANGELOG.md` na seção correspondente (`### Adicionado` ou `### Modificado`).
-4. Apresente ao humano no chat:
-   - Evidência do teste falhando (saída vermelha) e passando (saída verde).
-   - Resumo das tarefas concluídas de `tasks.md` e do checklist da fatia.
-   - Diff limpo dos arquivos staged.
+4. **Apresentação Obrigatória da Entrega no Chat (Gate 2):**
+   É expressamente proibido apenas despejar logs ou perguntar aprovação sem roteiro prático. A mensagem DEVE conter:
+   - **O que foi entregue:** Resumo claro do valor funcional construído nesta fatia.
+   - **🧪 Roteiro de Teste Prático (Validação Humana):**
+     * **Onde acessar:** URL exata (ex.: `http://localhost:3000/painel/contatos`), comando CLI ou tela/modal onde o recurso se encontra.
+     * **Passo a passo mastigado:** Ações numeradas para reproduzir o fluxo.
+     * **Dados prontos de exemplo:** Valores para preenchimento de campos ou payloads (prontos para copiar e colar).
+     * **Comportamento visual esperado:** O que o humano deve observar acontecer (transição de estado, toast, listagem atualizada sem recarregar a tela).
+     * **Teste de borda prático:** Como testar uma entrada inválida para confirmar a mensagem de validação amigável.
+   - **Comprovação dos Testes Automatizados:** Saída do terminal com a falha legítima (vermelho) e o sucesso (verde).
+   - **Resumo das Tarefas e Diff:** Tarefas de `tasks.md` concluídas e diff limpo dos arquivos alterados.
 5. **Aprovação Final Humana (Marco 2 da Rotina de Commits — Artigo 11):**
-   - Pergunte: *"A fatia XX está testada (vermelho/verde), validada pelos scripts determinísticos e com CHANGELOG atualizado. Você aprova a entrega final para realizarmos o commit?"*
+   - Pergunte: *"A fatia XX está testada no terminal e validada pelo roteiro prático acima. Você aprova a entrega final para realizarmos o commit?"*
    - **Somente após a aprovação humana explícita**:
      - Arquive a mudança no OpenSpec para mesclá-la na base viva (`openspec/specs/`):
        ```bash

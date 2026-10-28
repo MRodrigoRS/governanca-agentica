@@ -5,6 +5,14 @@ O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.
 
 ---
 
+## [2.2.0] - 2026-10-28
+
+### Adicionado
+- **Roteiro Mandatório de Teste Prático e Apresentação no Gate 2 (D22):** Inclusão formal nos Artigos 2 e 8 da Constituição, em `AGENTS.md` e em `ciclo-especificacao`. É proibido ao agente encerrar o Gate 2 apenas despejando logs de terminal. A apresentação da entrega passa a exigir obrigatoriamente: (1) o que foi entregue, (2) rota ou tela de acesso, (3) passo a passo de teste com dados de exemplo prontos para copiar e colar, (4) comportamento visual esperado na interface e (5) teste de borda prático simulando erro.
+- **Roteiro de Validação Humana no Roadmap:** Subseção 7.2 adicionada a `_template-fatia.md`, estruturando previamente o roteiro que o agente deve apresentar ao final de cada fatia.
+
+---
+
 ## [2.1.0] - 2026-10-28
 
 ### Adicionado

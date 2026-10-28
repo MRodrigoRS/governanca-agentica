@@ -82,7 +82,7 @@ O agente é proibido de realizar commits avulsos ou intermediários sem autoriza
 
 * **Gate 0 (Marco 1 de Commit — Fundação e Sedimentação Inicial):** Aprovação do escopo polido, da stack tecnológica/VPS/MCPs e do Mapa de Fatias Incrementais detalhadas (`openspec/roadmap/fatia-XX-*.md`). Após a validação da base, o agente solicita aprovação explícita e realiza o primeiro commit fundacional (`feat(fundacao): inicializa projeto com stack e mapa de fatias`).
 * **Gate 1:** Aprovação da proposta e do design técnico da fatia atual antes de escrever qualquer código (sem commit de código).
-* **Gate 2 (Marco 2 de Commit — Fechamento da Fatia ou Fix):** Aprovação da entrega com evidência obrigatória (saída do teste falhando e depois passando, diff limpo e `CHANGELOG.md` atualizado). Somente com o aval humano explícito o commit de entrega é efetuado, seguido pela puxada imediata da próxima fatia.
+* **Gate 2 (Marco 2 de Commit — Fechamento da Fatia ou Fix):** Aprovação da entrega com estrutura obrigatória: resumo do que foi entregue, **🧪 Roteiro de Teste Prático Passo a Passo** (onde acessar, dados prontos de exemplo e o que esperar visualmente na tela), evidências reais dos testes automatizados (vermelho/verde), diff limpo e `CHANGELOG.md` atualizado. Somente com o aval humano explícito o commit de entrega é efetuado, seguido pela puxada imediata da próxima fatia.
 
 ### Padrões de Engenharia Frontend Inatos (D20)
 

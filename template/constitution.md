@@ -1,4 +1,4 @@
-<!-- governanca:inicio v2.1.0 — não edite este bloco; alterações no repositório da governança -->
+<!-- governanca:inicio v2.2.0 — não edite este bloco; alterações no repositório da governança -->
 # Constituição do Projeto — Governança v2
 
 > **Papel:** Lei Suprema do repositório. Cláusulas pétreas obrigatórias para agentes de IA e desenvolvedores humanos.
@@ -25,7 +25,14 @@
    - **Vermelho:** Escrever o teste automatizado unitário ou de integração e executá-lo no terminal, comprovando que ele falha pelo motivo esperado.
    - **Verde:** Escrever o código mínimo de produção necessário para fazer o teste passar.
    - **Refatorar:** Limpar o código, eliminar duplicações, aplicar tipagem e garantir que todos os testes continuem verdes.
-3. **Comprovação no Gate 2:** A apresentação da entrega deve conter obrigatoriamente as duas saídas de terminal: a execução com falha (vermelho) e a execução com sucesso (verde). Sem essa comprovação, a entrega é inválida.
+3. **Comprovação Automatizada no Gate 2:** A apresentação da entrega deve conter obrigatoriamente as duas saídas de terminal: a execução com falha (vermelho) e a execução com sucesso (verde). Sem essa comprovação, a entrega é inválida.
+4. **Comprovação Prática e Visual no Gate 2 (Roteiro de Validação Humana):** Testes automatizados provam a integridade lógica para o algoritmo, mas não dispensam a validação humana. É obrigatório que toda apresentação no Gate 2 (seja em `/fix` ou Nível 2) contenha um **Roteiro de Teste Prático Passo a Passo**, detalhando:
+   - **O que foi entregue:** Resumo claro do valor funcional construído ou corrigido.
+   - **Onde encontrar:** Rota exata (`http://localhost:3000/...`), comando CLI ou tela/modal onde o recurso se encontra.
+   - **Passo a passo com dados prontos:** Instruções numeradas com valores e dados fictícios prontos para copiar e colar.
+   - **Comportamento visual esperado:** O que o usuário deve ver acontecer (transições de estado, toasts, listas atualizadas reativamente).
+   - **Teste de borda prático:** Como simular uma entrada inválida e verificar a mensagem de erro amigável.
+   *Sem esse roteiro prático e mastigado, a entrega no Gate 2 é considerada nula e o commit não pode ser solicitado ao humano.*
 
 ---
 
@@ -86,7 +93,7 @@
 4. São marcos obrigatórios com intervenção humana:
    - **Gate 0:** Aprovação do escopo polido, da stack tecnológica/VPS/MCPs e do Mapa de Fatias Incrementais (`openspec/roadmap/`).
    - **Gate 1:** Aprovação do plano, desenho técnico e tarefas antes da implementação de Nível 2.
-   - **Gate 2:** Aprovação da entrega mediante evidências reais de teste, diff limpo e `CHANGELOG.md` atualizado, seguida pelo acionamento proativo da próxima fatia da fila.
+   - **Gate 2:** Aprovação da entrega mediante resumo do que foi entregue, Roteiro de Teste Prático Passo a Passo (onde está, como testar com dados de exemplo e comportamento visual esperado), evidências reais de testes automatizados (vermelho/verde), diff limpo e `CHANGELOG.md` atualizado, seguida pelo acionamento proativo da próxima fatia da fila.
 
 ---
 

@@ -1,4 +1,4 @@
-<!-- governanca:inicio v2.1.0 — não edite este bloco; alterações no repositório da governança -->
+<!-- governanca:inicio v2.2.0 — não edite este bloco; alterações no repositório da governança -->
 # Instruções Gerais para Agentes de IA — Governança v2
 
 > **Papel:** Fonte única da verdade para todos os agentes e assistentes de IA que operam neste repositório.
@@ -42,11 +42,12 @@ Ao ser iniciado em um repositório, identifique o estado atual antes de agir:
 
 ---
 
-## 4. Test-First Obrigatório e Circuit Breaker
+## 4. Test-First Obrigatório, Circuit Breaker e Roteiro de Validação Prática
 
 1. **Ciclo Vermelho → Verde → Refatorar:** É estritamente proibido escrever código de produção sem antes escrever o teste automatizado correspondente.
 2. **Evidência Obrigatória no Gate 2:** Toda entrega deve exibir a saída do terminal com o teste falhando pelo motivo correto e, em seguida, a saída com o teste passando verde.
-3. **Circuit Breaker (3 Falhas):** Se uma tarefa falhar 3 vezes consecutivas no mesmo teste ou problema técnico, pare imediatamente. Não tente uma 4ª vez às cegas; descreva a hipótese, a causa raiz provável e solicite orientação do humano.
+3. **Roteiro Mandatório de Validação Prática (Proibido Despejar Apenas Logs):** É proibido encerrar uma tarefa apenas mostrando saídas de testes automatizados. O agente deve fornecer obrigatoriamente um roteiro claro: **o que foi entregue**, **onde está** (rota/tela/comando), **passo a passo com dados prontos de exemplo** e **o que o humano deve observar visualmente** na tela ou na resposta do sistema.
+4. **Circuit Breaker (3 Falhas):** Se uma tarefa falhar 3 vezes consecutivas no mesmo teste ou problema técnico, pare imediatamente. Não tente uma 4ª vez às cegas; descreva a hipótese, a causa raiz provável e solicite orientação do humano.
 
 ---
 
@@ -59,7 +60,12 @@ Ao ser iniciado em um repositório, identifique o estado atual antes de agir:
   git commit -m "feat(fundacao): inicializa projeto com stack <nome> e mapa de fatias"
   ```
 - **Gate 1 (Aprovação de Plano e Desenho Técnico):** Sem commit de código. Alinhamento de escopo, delta no OpenSpec e tarefas antes de codificar.
-- **Marco 2 — Fechamento de Fatia ou Correção (Gate 2):** Ao término da implementação, com testes comprovados (vermelho → verde), diff limpo, `CHANGELOG.md` atualizado e validações da governança passando, o agente apresenta as evidências ao humano. **Somente após a aprovação final humana**, o agente realiza o commit de entrega:
+- **Marco 2 — Fechamento de Fatia ou Correção (Gate 2):** Ao término da implementação, o agente apresenta a entrega no chat com a estrutura obrigatória:
+  1. *O que foi entregue e valor funcional gerado.*
+  2. *🧪 Roteiro de Teste Prático (onde acessar, passo a passo com dados de teste e comportamento visual esperado).*
+  3. *Evidências de testes automatizados (saída vermelha e verde).*
+  4. *Diff limpo e CHANGELOG atualizado.*
+  **Somente após a aprovação final humana**, o agente realiza o commit de entrega:
   ```bash
   git commit -m "feat(<escopo>): implementa fatia XX - <descrição em PT-BR>"
   # ou no caso de /fix:

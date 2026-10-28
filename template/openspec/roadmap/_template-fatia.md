@@ -86,11 +86,22 @@
 
 ---
 
-## 7. Critérios de Aceite Determinísticos (Checklist Gate 2)
+## 7. Critérios de Aceite e Roteiro de Teste Prático (Gate 2)
 
+### 7.1. Critérios Determinísticos
 - [ ] Todos os schemas e tabelas descritos na Seção 3 foram criados com nomes em PT-BR.
 - [ ] Responsividade e portabilidade PWA garantidas na interface web (mobile-first 320px+ e sem quebras visuais).
 - [ ] Os 4 estados assíncronos (`loading`, `empty`, `error`, `success`) estão implementados e funcionais.
 - [ ] Todos os testes da Seção 6 falharam antes da implementação (evidência Vermelha) e passaram após o código (evidência Verde).
 - [ ] `npx @fission-ai/openspec validate` e `node scripts/verificar-governanca.mjs` executados com sucesso (`exit 0`).
 - [ ] `CHANGELOG.md` atualizado com as entregas desta fatia.
+
+### 7.2. Roteiro de Validação Prática do Usuário (Obrigatório no Gate 2)
+*(Roteiro mastigado que o agente apresentará ao humano para validação manual com os próprios olhos)*
+
+- **Onde testar:** [Rota, tela, modal ou comando exato onde a funcionalidade se encontra].
+- **Passo a passo com dados prontos:**
+  1. [Ação 1 com valores de exemplo prontos para copiar e colar].
+  2. [Ação 2].
+- **Comportamento visual esperado:** [O que o humano deve observar na interface ou na saída do sistema].
+- **Teste de borda prático:** [Como simular um erro ou entrada inválida e o alerta amigável que deve aparecer].
