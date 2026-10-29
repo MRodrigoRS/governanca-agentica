@@ -68,8 +68,10 @@
 node scripts/verificar-governanca.mjs
 
 # OpenSpec (Gestão de especificações e ciclos de feature)
-npx @fission-ai/openspec list
-npx @fission-ai/openspec validate
+npx --yes @fission-ai/openspec list
+npx --yes @fission-ai/openspec new change <nome-da-mudanca>
+npx --yes @fission-ai/openspec validate --all --no-interactive
+npx --yes @fission-ai/openspec archive <nome-da-mudanca> -y
 
 # Testes automatizados
 npm test # ou pytest / cargo test

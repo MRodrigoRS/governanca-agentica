@@ -5,6 +5,32 @@ O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.
 
 ---
 
+## [3.0.0] - 2026-10-29
+
+### Adicionado
+- **Suíte de Testes Automatizados da Governança (`tests/`):** 16 testes unitários e de integração cobrindo `validar-commit-msg.mjs`, `hook-agente.mjs` e `verificar-governanca.mjs` (com repositório git temporário e cenários de borda). Integrado ao `npm test`, Lefthook e GitHub Actions CI da governança.
+- **Lifecycle Hooks Nativos de Agentes (`PreToolUse`, `SessionStart`):** Configurações prontas para Antigravity (`template/.agents/hooks.json`) e Claude Code (`template/.claude/settings.json`), bloqueando execuções de bypass (`--no-verify`, `-n`, git add blanket perigoso) e forçando confirmação explícita (`ask_question`/prompt) antes de commits no Gate 2.
+- **Subagentes Oficiais de Auditoria Factual (`inspetor-forense`):** Arquivos declarativos prontos para Claude Code (`template/.claude/agents/inspetor-forense.md`) e GitHub Copilot (`template/.github/agents/inspetor-forense.agent.md`), com ferramentas estritamente read-only (`git diff`, `git status`, busca de arquivos) sem permissão de mutação ou acesso antecipado ao roadmap.
+- **Integração Real com Ecossistema de MCPs Oficiais:** Configuração nativa de Context7 MCP em `template/.mcp.json`, `template/.cursor/mcp.json` e `template/.vscode/mcp.json` para consulta oficial de documentações atualizadas (Next.js, Tailwind, Shadcn, Supabase, Playwright).
+- **Skill `inicializar-stack` com Ferramental Oficial:** Integração com `openspec init --tools`, comando padrão da indústria `npx skills add` e MCPs oficiais.
+- **Configuração Raiz do OpenSpec (`openspec/config.yaml.jinja`):** Adicionada com `schema: spec-driven` e regras por artefato, garantindo que `openspec doctor` retorne `OpenSpec root: ok`.
+
+### Alterado
+- **Transição de Subfatias Decimais para Alfanuméricas (D28):** Substituição do padrão `fatia-02.1` por `fatia-02a-<slug>`, compatibilizando o refinamento de escopo pendente com as regras estritas de nomenclatura do OpenSpec CLI (`lowercase letters, numbers, and hyphens`), Git branches e Conventional Commits.
+- **Injeção Ativa de Contexto por Diretivas de Importação:** Adoção de `@[constitution.md](constitution.md)` para Antigravity e `@constitution.md` para Claude Code em `AGENTS.md`, `CLAUDE.md` e `GEMINI.md`, eliminando a perda de diretrizes por link estático markdown.
+- **`lefthook.yml` e CI com Validação Inteligente:** Comandos do OpenSpec atualizados para `openspec validate --all --no-interactive` com verificação prévia de existência de specs, prevenindo quebras em fases iniciais (Gate 0) ou sem TTY.
+- **Regras Cursor MDC Limpas:** Removidos campos legados `version` e `scope` de `template/.cursor/rules/governanca.mdc`, mantendo `alwaysApply: true`.
+
+### Corrigido
+- **Correção de Comandos Alucinados do OpenSpec CLI:** Substituído o comando inexistente `openspec new <nome>` pelo comando oficial `openspec new change <nome>` em todas as skills, templates e documentações.
+- **Correção da Remoção de Changes Concluídas:** Substituído `rm -rf openspec/changes/<fatia>` por `openspec archive <fatia> -y`, preservando histórico em `openspec/archive/`.
+- **Validação de Mensagens de Commit (`validar-commit-msg.mjs`):** Correção do regex para permitir subfatias alfanuméricas, escopos com pontos e hífens, além de ignorar commits nativos do Git (`Merge`, `Revert`).
+- **Detecção Rigorosa de `location.reload()` em `verificar-governanca.mjs`:** Verificação estrita que bloqueia o uso de recarregamento forçado de página no frontend em favor de reatividade pura (signals, stores, router, optimistic UI).
+- **Detecção de Dependências e Bancos Desconectados:** `verificar-governanca.mjs` agora audita se alterações em manifestos (`package.json`, etc.) ou scripts de banco ocorrem isoladamente sem especificação associada.
+- **URL do Repositório Template no Copier:** Atualizada para `gh:MRodrigoRS/governan-a-de-agentes-v2` em `copier.yml` e `README.md`.
+
+---
+
 ## [2.6.0] - 2026-10-29
 
 ### Adicionado

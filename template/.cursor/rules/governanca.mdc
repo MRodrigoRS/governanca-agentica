@@ -1,11 +1,10 @@
 ---
-description: Governança v2 - Diretrizes Obrigatórias para Agentes
-globs: *
+description: Governança do Projeto - Diretrizes Obrigatórias para Agentes
 alwaysApply: true
 ---
 
-<!-- governanca:inicio v2.0.0 — não edite este bloco -->
-# Regras do Cursor — Governança v2
+<!-- governanca:inicio v3.0.0 — não edite este bloco -->
+# Regras do Cursor — Governança
 
 Consulte a fonte única da verdade para desenvolvimento em [AGENTS.md](../../AGENTS.md).
 Siga rigorosamente todas as cláusulas pétreas em [constitution.md](../../constitution.md).

@@ -41,12 +41,12 @@ Antes de iniciar, determine o nível adequado:
    - Se a fatia ainda não possuir seu arquivo detalhado em `openspec/roadmap/`, crie-o imediatamente seguindo `openspec/roadmap/_template-fatia.md` antes de prosseguir.
 3. **Abra o Delta no OpenSpec:**
    ```bash
-   npx @fission-ai/openspec new fatia-XX-<slug>
+   npx --yes @fission-ai/openspec new change fatia-XX-<slug>
    ```
-4. Preencha os arquivos da pasta criada em `openspec/changes/fatia-XX-<slug>/` sem resumos preguiçosos, desdobrando fielmente o conteúdo lido de `openspec/roadmap/fatia-XX-<slug>.md`:
+4. Preencha os arquivos da pasta criada em `openspec/changes/fatia-XX-<slug>/` sem resumos preguiçosos, consultando as instruções e regras oficiais (`npx --yes @fission-ai/openspec instructions <artefato> --change fatia-XX-<slug> --json`):
    - `proposal.md`: O *porquê* da mudança, motivação, escopo fechado e o que fica de fora.
-   - `specs/`: Deltas de especificação com cenários e requisitos de comportamento.
-   - `design.md`: O *como* técnico, tabelas, schemas Zod/Pydantic, rotas e decisões técnicas.
+   - `specs/`: Deltas de especificação com cabeçalhos oficiais (`## ADDED Requirements`) e cenários `#### Scenario:` (Given/When/Then).
+   - `design.md`: O *como* técnico, tabelas, schemas Zod/Pydantic, rotas, Toasts, Modais e decisões técnicas.
    - `tasks.md`: Checklist sequencial e atômico de implementação (cada tarefa vinculada ao seu teste).
 5. Marque o status da fatia como `[~] Em Andamento` em `openspec/project.md` e em `openspec/roadmap/fatia-XX-<slug>.md`.
 
@@ -84,7 +84,7 @@ Para cada item listado em `tasks.md` (seguindo a Seção 6 da fatia):
 Antes de finalizar a tarefa ou commit:
 1. Valide a integridade do OpenSpec:
    ```bash
-   npx @fission-ai/openspec validate
+   npx --yes @fission-ai/openspec validate --all --no-interactive
    ```
 2. Execute o auditor determinístico local:
    ```bash
@@ -92,14 +92,14 @@ Antes de finalizar a tarefa ou commit:
    ```
 3. Atualize o arquivo `CHANGELOG.md` na seção correspondente (`### Adicionado` ou `### Modificado`).
 4. **Auditoria Factual Cega e Duelo de Conformidade (Artigo 12 / D26):**
-   - **Etapa A (Subagente Inspetor Forense):** Invoque o subagente (`.agents/skills/revisar-fatia/SKILL.md`) com instrução cega (sem o arquivo da fatia), para que ele inspecione o `git diff` e descreva literalmente em linguagem factual o que o código faz.
-   - **Etapa B (Duelo de Conformidade pelo Principal):** O Agente Principal recebe o relatório factual e cruza ponto a ponto com o arquivo físico `openspec/roadmap/fatia-XX-<slug>.md`.
+   - **Etapa A (Subagente Inspetor Forense):** Invoque o subagente (`inspetor-forense`, definido em `.claude/agents/inspetor-forense.md` ou subagente read-only no Antigravity/Copilot) com instrução cega (sem o arquivo da fatia), para que ele inspecione o `git diff` e descreva literalmente em linguagem factual o que o código faz.
+   - **Etapa B (Duelo de Conformidade pelo Principal):** O Agente Principal recebe o relatório factual e cruza ponto a ponto com o arquivo físico da fatia.
    - **Havendo omissões ou divergências:** O executor DEVE implementar o que faltou e revalidar os testes antes de apresentar ao humano.
    - **Aprovado com 100% de conformidade:** O parecer e o resumo factual são anexados à mensagem do Gate 2.
 5. **Apresentação Obrigatória da Entrega no Chat (Gate 2):**
    É expressamente proibido apenas despejar logs ou perguntar aprovação sem roteiro prático. A mensagem DEVE conter:
    - **O que foi entregue:** Resumo claro do valor funcional construído nesta fatia.
-   - **📋 Relatório Factual de Conformidade:** Prova detalhada de que o código implementado corresponde 100% às exigências de `openspec/roadmap/fatia-XX-<slug>.md`.
+   - **📋 Relatório Factual de Conformidade:** Prova detalhada de que o código implementado corresponde 100% às exigências da fatia.
    - **🧪 Roteiro de Teste Prático (Validação Humana):**
      * **Onde acessar:** URL exata (ex.: `http://localhost:3000/painel/contatos`), comando CLI ou tela/modal onde o recurso se encontra.
      * **Passo a passo mastigado:** Ações numeradas para reproduzir o fluxo.
@@ -113,7 +113,7 @@ Antes de finalizar a tarefa ou commit:
    - **Somente após a aprovação humana explícita**:
      - Arquive a mudança no OpenSpec para mesclá-la na base viva (`openspec/specs/`):
        ```bash
-       npx @fission-ai/openspec archive fatia-XX-<slug>
+       npx --yes @fission-ai/openspec archive fatia-XX-<slug> -y
        ```
      - Atualize o status da fatia para `[x] Concluída` em `openspec/project.md` e em `openspec/roadmap/fatia-XX-<slug>.md`.
      - Realize o commit da entrega respeitando o padrão em PT-BR:

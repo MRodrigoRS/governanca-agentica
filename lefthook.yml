@@ -1,8 +1,10 @@
-# Lefthook Configuration — Repositório da Governança v2
+# Lefthook Configuration — Repositório da Governança
 pre-commit:
   commands:
     syntax-check:
-      run: node --check template/scripts/verificar-governanca.mjs && node --check template/scripts/validar-commit-msg.mjs
+      run: node --check template/scripts/verificar-governanca.mjs && node --check template/scripts/validar-commit-msg.mjs && node --check template/scripts/hook-agente.mjs
+    unit-tests:
+      run: npm test
 
 commit-msg:
   commands:

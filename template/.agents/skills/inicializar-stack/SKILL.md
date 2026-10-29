@@ -65,13 +65,23 @@ Após a aprovação no Gate 0:
 
 ---
 
-## Passo 5 — Prova de Saúde da Base e Ativação dos Hooks
+## Passo 5 — Prova de Saúde da Base, OpenSpec e Ativação dos Hooks
 
 Imediatamente após a instalação:
 1. Instale as dependências com o gerenciador de pacotes da stack.
-2. Ative os Git hooks determinísticos da governança executando `npx lefthook install`.
-3. Execute a suíte de testes padrão da stack para comprovar que a base nasceu 100% verde.
-4. Execute `node scripts/verificar-governanca.mjs` e o comando de build para assegurar que não há falhas estruturais nem fatias incompletas.
+2. Inicialize as integrações nativas de ferramentas do OpenSpec para gerar as skills e comandos `/opsx-*`:
+   ```bash
+   npx --yes @fission-ai/openspec init --tools antigravity,claude,cursor,gemini,github-copilot,agents --no-animation --no-copilot-cloud
+   ```
+3. Instale as Agent Skills oficiais da stack escolhida via padrão aberto da indústria:
+   ```bash
+   # Exemplo para React/Next.js/Node:
+   npx --yes skills add vercel-labs/agent-skills
+   # Ou para stacks com skills dedicadas (Supabase, Playwright, etc.)
+   ```
+4. Ative os Git hooks determinísticos da governança executando `npx lefthook install`.
+5. Execute a suíte de testes padrão da stack para comprovar que a base nasceu 100% verde.
+6. Execute `node scripts/verificar-governanca.mjs` e o comando de build para assegurar que não há falhas estruturais nem violações.
 
 ---
 
@@ -87,4 +97,4 @@ Imediatamente após a instalação:
      git add .
      git commit -m "feat(fundacao): inicializa projeto com stack <nome> e roadmap de fatias"
      ```
-4. Informe o humano que a fundação está commitada e protegida, e **já apresente imediatamente a abertura da Fatia 01** (`npx @fission-ai/openspec new fatia-01-...`) usando o plano detalhado em `openspec/roadmap/fatia-01-*.md`.
+4. Informe o humano que a fundação está commitada e protegida, e **já apresente imediatamente a abertura da Fatia 01** (`npx --yes @fission-ai/openspec new change fatia-01-...`) usando o plano detalhado em `openspec/roadmap/fatia-01-*.md`.

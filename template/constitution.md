@@ -1,14 +1,14 @@
-<!-- governanca:inicio v2.6.0 — não edite este bloco; alterações no repositório da governança -->
-# Constituição do Projeto — Governança v2
+<!-- governanca:inicio v3.0.0 — não edite este bloco; alterações no repositório da governança -->
+# Constituição do Projeto — Governança
 
 > **Papel:** Lei Suprema do repositório. Cláusulas pétreas obrigatórias para agentes de IA e desenvolvedores humanos.
-> **Enforcement:** Estas cláusulas não são sugestões textuais. São auditadas determinísticamente por Git hooks (`Lefthook + Gitleaks + verificar-governanca.mjs`) e pelo GitHub Actions CI. Qualquer violação bloqueia commits e builds (`exit 1`).
+> **Enforcement:** Estas cláusulas não são sugestões textuais. São auditadas determinísticamente por Lifecycle Hooks dos Agentes (`.agents/hooks.json` e `.claude/settings.json`), Git hooks locais (`Lefthook + Gitleaks + verificar-governanca.mjs`) e pelo GitHub Actions CI. Qualquer violação bloqueia commits e builds (`exit 1` / `deny`).
 
 ---
 
 ## Artigo 1 — Cláusula Anti-Brinquedo (Bases Robustas)
 
-1. É expressamente proibido iniciar qualquer aplicação interativa (Web, Programa de Computador Desktop ou Mobile) com arquivos avulsos (como HTML/CSS/JS soltos na web ou scripts Tkinter/PyQt amadores num único arquivo no desktop), sem tipagem estrita, sem empacotamento profissional e sem componentes reutilizáveis.
+1. É expressamente proibido iniciar qualquer aplicação interativa (Web, Programa de Computador Desktop ou Mobile) com arquivos avulsos (como HTML/CSS/JS soltos na web ou scripts amadores num único arquivo no desktop), sem tipagem estrita, sem empacotamento profissional e sem componentes reutilizáveis.
 2. Toda aplicação interativa parte obrigatoriamente de uma stack do catálogo oficial (ou aprovada no Gate 0) e deve garantir desde o primeiro commit:
    - **Tipagem Estrita:** TypeScript com `"strict": true` em `tsconfig.json`, Rust, C#/.NET ou Python com type hints completos validados por `mypy` ou `pyright`.
    - **Validação de Entradas na Fronteira:** Esquemas declarativos (ex.: Zod no ecossistema JS/TS, Pydantic em Python, Serde em Rust) validando dados externos em rotas de API, pontes IPC (Desktop), formulários, parâmetros de URL, cookies e webhooks.
@@ -32,7 +32,7 @@
    - **Passo a passo com dados prontos:** Instruções numeradas com valores e dados fictícios prontos para copiar e colar.
    - **Comportamento visual esperado:** O que o usuário deve ver acontecer (transições de estado, toasts, listas atualizadas reativamente).
    - **Teste de borda prático:** Como simular uma entrada inválida e verificar a mensagem de erro amigável.
-   *Sem esse roteiro prático e mastigado, a entrega no Gate 2 é considerada nula e o commit não pode ser solicitado ao humano.*
+   *Sem esse roteiro prático, a entrega no Gate 2 é considerada nula e o commit não pode ser solicitado ao humano.*
 
 ---
 
@@ -60,7 +60,7 @@
 
 ## Artigo 6 — Padrões Práticos de Engenharia Frontend
 
-1. **Reatividade Limpa:** É proibido forçar atualização de estado com recarregamento completo da página (`location.reload`, `window.location.href`). O estado deve ser reativo e gerenciado pela biblioteca de UI.
+1. **Reatividade Limpa:** É expressamente proibido forçar atualização de estado com recarregamento completo da página (`location.reload`, `window.location.reload`, `window.location.href`). O estado deve ser puramente reativo e gerenciado pela biblioteca de UI. A violação desta regra bloqueia commits determinísticamente.
 2. **Semântica e Acessibilidade:** Uso obrigatório de elementos HTML semânticos (`<main>`, `<nav>`, `<button>`, `<header>`, `<article>`), atributos `aria-*` onde necessário e labels associados a todos os campos de formulário.
 3. **Alvos de Toque e Clique:** Botões e elementos interativos devem possuir área clicável mínima de 44x44 pixels para garantir usabilidade em dispositivos móveis.
 4. **Comportamento do Teclado:** A tecla `Escape` (`Esc`) deve obrigatoriamente fechar modais, gavetas laterais (drawers), menus suspensos e diálogos abertos.
@@ -71,9 +71,9 @@
    - **Sucesso (success):** Exibição correta do conteúdo recebido.
 6. **Responsividade e Portabilidade PWA Inatas:** Todo desenvolvimento que diga respeito à web deve nascer responsivo por padrão e preparado nativamente para portabilidade como **PWA (Progressive Web App)**:
    - **Responsividade Inata:** Design fluido e mobile-first, com layouts baseados em Flexbox ou CSS Grid testados e funcionais desde telas estreitas de smartphones (mínimo 320px) até monitores widescreen, sem barras de rolagem horizontais espúrias, elementos sobrepostos ou quebras de alinhamento.
-   - **Portabilidade PWA Inata:** Suporte a manifesto de aplicação web (`manifest.json` ou `manifest.webmanifest`), ícones adaptativos para diferentes densidades de tela, meta tags de viewport (`width=device-width, initial-scale=1`) e cor temática (`theme-color`), além de estrutura amigável para funcionamento offline e cache de assets essenciais via Service Worker quando suportado pelo framework da stack. A adaptabilidade móvel e a capacidade de ser instalado como app não são tarefas posteriores, mas requisitos inatos de arquitetura de interface web.
+   - **Portabilidade PWA Inata:** Suporte a manifesto de aplicação web (`manifest.json` ou `manifest.webmanifest`), ícones adaptativos para diferentes densidades de tela, meta tags de viewport (`width=device-width, initial-scale=1`) e cor temática (`theme-color`), além de estrutura amigável para funcionamento offline e cache de assets essenciais via Service Worker quando suportado pelo framework da stack. A adaptabilidade móvel e a capacidade de ser instalado como app são requisitos inatos de arquitetura de interface web.
 7. **Feedback Reativo (Toasts) e Confirmação de Segurança (Modais de Ação):**
-   - **Toasts de Persistência:** Toda operação que realize mutação física de estado no banco ou na persistência (criação, edição, exclusão, envio de formulário, ativação/desativação) deve obrigatoriamente disparar uma notificação Toast temporária e reativa informando o resultado concreto ao usuário (toast de sucesso verde com mensagem amigável ou toast de erro vermelho legível), garantindo certeza visual de que a alteração foi processada.
+   - **Toasts de Persistência:** Toda operação que realize mutação física de estado no banco ou na persistência (criação, edição, exclusão, envio de formulário, ativação/desativação) deve obrigatoriamente disparar uma notificação Toast temporária e reativa informando o resultado concreto ao usuário (toast de sucesso verde com mensagem amigável ou toast de erro vermelho legível).
    - **Modais de Confirmação para Ações Destrutivas/Críticas:** É terminantemente proibido executar deleções, arquivamentos, desativações ou mudanças de estado críticas e irreversíveis com clique direto sem confirmação prévia. Tais operações devem obrigatoriamente exibir um Modal/Dialog de confirmação detalhando o impacto da ação, com foco inicial seguro, botão de cancelamento claro e suporte a fechamento pela tecla `Escape` ou clique fora.
 
 ---
@@ -92,8 +92,8 @@
 
 1. O agente nunca deve fingir que testou, esconder bugs conhecidos ou adular decisões equivocadas.
 2. **Entrevista Exaustiva e Decomposição em Fatias Incrementais:** O humano não tem obrigação de saber dividir um sistema complexo na ordem técnica de implementação. É dever exclusivo do agente conduzir uma entrevista exaustiva de produto (polindo o que entra e o que fica de fora) e decompor o sistema completo em fatias incrementais onde uma ponta puxa a outra.
-3. **Cláusula Anti-Preguiça no Planejamento e Subfatias Decimais (D18 + D25):** É proibido comprimir o planejamento das fatias em listas superficiais de um único arquivo. Cada fatia deve ter seu próprio documento completo em `openspec/roadmap/fatia-XX-<slug>.md` (ou `fatia-XX.Y-<slug>.md` no caso de subfatias decimais de encaixe) com as 7 seções obrigatórias de `_template-fatia.md` (auditado por `verificar-governanca.mjs`), detalhado o suficiente para que até um agente mais simples consiga implementá-la sem adivinhar regras.
-4. **Refinamento de Meio de Caminho e Subfatias Decimais (D25):** Quando novas ideias ou mudanças surgirem durante o projeto, o agente é obrigado a intervir via skill `refinar-ideia` (raio-X de complexidade oculta e poda construtiva). Se a novidade for um complemento natural de uma fatia pendente, ela deve ser encaixada imediatamente após a fatia-mãe como subfatia decimal (ex.: `fatia-02.1`), aproveitando o contexto de código fresco sem reordenar as fatias subsequentes.
+3. **Cláusula Anti-Preguiça no Planejamento e Subfatias Alfanuméricas:** É proibido comprimir o planejamento das fatias em listas superficiais. Cada fatia deve ter seu próprio documento completo em `openspec/roadmap/fatia-XX-<slug>.md` (ou `fatia-XXa-<slug>.md` no caso de subfatias alfanuméricas de encaixe) com as 7 seções obrigatórias de `_template-fatia.md` (auditado por `verificar-governanca.mjs`), detalhado o suficiente para que até um agente mais simples consiga implementá-la sem adivinhar regras.
+4. **Refinamento de Meio de Caminho e Subfatias Alfanuméricas:** Quando novas ideias ou mudanças surgirem durante o projeto, o agente é obrigado a intervir via skill `refinar-ideia` (raio-X de complexidade oculta e poda construtiva). Se a novidade for um complemento natural de uma fatia pendente, ela deve ser encaixada imediatamente após a fatia-mãe como subfatia alfanumérica (ex.: `fatia-02a-<slug>`), aproveitando o contexto de código fresco sem reordenar as fatias subsequentes e mantendo 100% de compatibilidade com o OpenSpec.
 5. São marcos obrigatórios com intervenção humana:
    - **Gate 0:** Aprovação do escopo polido, da stack tecnológica/VPS/MCPs e do Mapa de Fatias Incrementais (`openspec/roadmap/`).
    - **Gate 1:** Aprovação do plano, desenho técnico e tarefas antes da implementação de Nível 2.
@@ -120,7 +120,7 @@ Se durante a execução de uma tarefa o agente falhar 3 vezes consecutivas no me
 
 ## Artigo 11 — Rotina de Commits Cadenciada e Autorizada pelo Humano
 
-1. **Proibição de Commits Avulsos ou Prematuros:** É estritamente proibido ao agente realizar commits arbitrários, automáticos ou incompletos no meio do desenvolvimento ("work in progress" soltos, testes quebrados ou sem autorização).
+1. **Proibição de Commits Avulsos ou Prematuros:** É estritamente proibido ao agente realizar commits arbitrários, automáticos ou incompletos no meio do desenvolvimento ("work in progress" soltos, testes quebrados ou sem autorização). O motor da IDE intercepta comandos de commit via Lifecycle Hooks (`.agents/hooks.json` e `.claude/settings.json`) forçando confirmação humana (`force_ask`).
 2. **Os Dois Marcos Mandatórios de Commit:**
    - **Marco 1 — Fundação e Sedimentação Inicial (Gate 0):** Ocorre após a conclusão da entrevista de produto, aprovação da stack, scaffolding oficial, prova de saúde da base e gravação do Mapa de Fatias Incrementais detalhadas (`openspec/project.md` e `openspec/roadmap/fatia-XX-*.md`). O agente solicita e aguarda a **aprovação humana explícita** para realizar o commit fundacional (ex.: `feat(fundacao): inicializa projeto com stack e mapa de fatias`).
    - **Marco 2 — Fechamento de Fatia ou Correção (Gate 2):** Ocorre ao término da implementação da fatia ou `/fix`, após a comprovação de testes (Vermelho → Verde), diff limpo, `CHANGELOG.md` atualizado e validações determinísticas passando (`verificar-governanca.mjs`, `openspec validate`). O agente só realiza o commit após a **aprovação final humana explícita** no Gate 2 (ex.: `feat(escopo): implementa fatia XX - descricao`).
@@ -131,13 +131,13 @@ Se durante a execução de uma tarefa o agente falhar 3 vezes consecutivas no me
 ## Artigo 12 — Cláusula Pétrea "Proibido Deduzir de Cabeça" (Leitura Física Mandatória e Prevenção de Context Rot)
 
 1. **Proibição Estrita de Dedução Mental:** É expressamente proibido ao agente deduzir de cabeça, presumir de memória ou alucinar requisitos, contratos de dados, regras de negócio ou estados de tela de qualquer fatia com base em lembranças de mensagens anteriores da sessão de chat.
-2. **Os 4 Marcos de Leitura Física Obrigatória:** O agente deve obrigatoriamente executar a ferramenta de leitura direta no disco do arquivo `openspec/roadmap/fatia-XX-*.md` antes de:
+2. **Os 4 Marcos de Leitura Física Obrigatória:** O agente deve obrigatoriamente executar a ferramenta de leitura direta no disco do arquivo da fatia antes de:
    - Resumir ou apresentar a próxima fatia ao usuário.
-   - Abrir o delta de especificação no OpenSpec (`npx @fission-ai/openspec new`).
+   - Abrir o delta de especificação no OpenSpec (`npx @fission-ai/openspec new change <nome>`).
    - Submeter o plano e desenho técnico para aprovação no Gate 1.
    - **Escrever a primeira linha de teste automatizado ou código de produção.**
 3. **Evidência Explícita de Alinhamento:** Ao abrir o Gate 1 ou convidar o humano para a próxima fatia, o agente deve citar textualmente os objetivos e contratos definidos no arquivo de roadmap físico, provando que não inventou o escopo. Qualquer divergência entre a proposta do agente e o roadmap físico anula o Gate 1.
-4. **Auditoria Factual Cega Pré-Gate 2 (D26):** Concluída a implementação de qualquer fatia, é mandatório acionar o **Subagente Inspetor Forense** (`revisar-fatia`) para inspecionar cegamente o código modificado (`git diff`) sem ler o roadmap, traduzindo em linguagem literal e factual tudo o que o código implementou, validou ou omitiu. Em seguida, o **Agente Principal** cruza o relatório factual ponto a ponto contra o arquivo físico `openspec/roadmap/fatia-XX-*.md` (Duelo de Conformidade). Havendo omissões ou divergências, o executor deve corrigir o código antes de qualquer apresentação ao humano; o commit só pode ser solicitado após a conformidade comprovada.
+4. **Auditoria Factual Cega Pré-Gate 2:** Concluída a implementação de qualquer fatia, é mandatório acionar o **Subagente Inspetor Forense** (`inspetor-forense`) para inspecionar cegamente o código modificado (`git diff`) sem ler o roadmap, traduzindo em linguagem literal e factual tudo o que o código implementou, validou ou omitiu. Em seguida, o **Agente Principal** cruza o relatório factual ponto a ponto contra o arquivo físico da fatia (Duelo de Conformidade). Havendo omissões ou divergências, o executor deve corrigir o código antes de qualquer apresentação ao humano; o commit só pode ser solicitado após a conformidade comprovada.
 5. **Higiene de Contexto Preventiva:** Para prevenir a degradação de contexto (*Context Rot*), ao concluir o Gate 2 de uma entrega, o agente deve orientar formalmente o humano a renovar a sessão (`/compact` ou abertura de nova conversa limpa) antes de puxar a próxima fatia da fila.
 <!-- governanca:fim -->
 

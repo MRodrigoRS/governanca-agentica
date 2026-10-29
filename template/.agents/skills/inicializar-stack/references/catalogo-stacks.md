@@ -155,4 +155,21 @@ Sempre priorize configurar a infraestrutura usando ferramentas que o próprio ag
 2. **CLIs Oficiais (`railway`, `flyctl`, `vercel`, `gh`):** O humano apenas autentica uma vez (`login`) e o agente provisiona banco, variáveis de ambiente e deploy pelo terminal.
 3. **Acesso SSH / MCP de VPS (Dokploy / Coolify API):** O agente conecta via SSH ou Token de API para instalar o orquestrador Docker e subir toda a stack automaticamente.
 
+---
+
+## 9. Agent Skills Oficiais da Comunidade e MCPs Padrão
+
+Para que o agente não trabalhe isolado nem invente convenções, toda base inicializada deve conectar-se aos ecossistemas oficiais:
+
+### A. MCPs Padrão Injetados na Governança
+- **Context7 MCP (`@upstash/context7-mcp`):** Configurado em `.mcp.json`, `.cursor/mcp.json` e `.vscode/mcp.json`. Fornece documentação oficial atualizada e assinaturas de métodos diretamente ao LLM sob demanda, eliminando alucinações de versões antigas.
+- **Playwright MCP (`@playwright/mcp`):** Permite ao agente navegar no browser real nos viewports de 320px e desktop, comprovando visualmente estados assíncronos, toasts e modais de confirmação antes do Gate 2.
+
+### B. Agent Skills Oficiais (`npx skills add <repositorio>`)
+Durante o Gate 0, o agente instala as skills oficiais mantidas pelos criadores das tecnologias adotadas:
+- **Ecossistema React / Next.js / TypeScript:** `npx --yes skills add vercel-labs/agent-skills`
+- **Ecossistema Backend / Supabase:** `npx --yes skills add supabase/agent-skills`
+- **Ecossistema de Testes E2E:** `npx --yes skills add microsoft/playwright`
+
+
 

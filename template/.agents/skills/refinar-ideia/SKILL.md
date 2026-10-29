@@ -54,16 +54,16 @@ Após o alinhamento da poda com o humano:
 
 ---
 
-### Passo 4 — Decisão de Encaixe e Subfatia Decimal Hierárquica
+### Passo 4 — Decisão de Encaixe e Subfatia Alfanumérica Hierárquica
 
 Com base na análise de afinidade, o agente propõe uma das 3 destinações formais:
 
-#### Caso A: Extensão Natural de uma Fatia Pendente (Subfatia Decimal `XX.1`)
+#### Caso A: Extensão Natural de uma Fatia Pendente (Subfatia Alfanumérica `XXa`, `XXb`)
 Se a novidade complementar o trabalho de uma fatia existente (ex.: a ideia envolve produtos e a `fatia-02-produtos-e-catalogo.md` ainda está pendente):
 * **Não mande para o fim do roadmap!**
-* Crie uma **subfatia decimal hierárquica**: `openspec/roadmap/fatia-02.1-<slug>.md` baseada em `_template-fatia.md`.
-* **Vantagem:** A subfatia `02.1` será executada imediatamente após a `02`, aproveitando o contexto fresco de código sem exigir renomear as fatias posteriores (03, 04, etc.).
-* Atualize a tabela em `openspec/project.md` inserindo a linha `fatia-02.1` logo após a `02`.
+* Crie uma **subfatia alfanumérica hierárquica**: `openspec/roadmap/fatia-02a-<slug>.md` baseada em `_template-fatia.md`.
+* **Vantagem:** A subfatia `02a` será executada imediatamente após a `02`, aproveitando o contexto fresco de código sem exigir renomear as fatias posteriores (03, 04, etc.) e mantendo 100% de compatibilidade com o OpenSpec CLI e Conventional Commits.
+* Atualize a tabela em `openspec/project.md` inserindo a linha `fatia-02a` logo após a `02`.
 
 #### Caso B: Domínio Independente (Nova Fatia Inteira ao Fim da Fila)
 Se a novidade for um módulo novo e autônomo (ex.: um novo painel financeiro desconectado das fatias atuais):
@@ -86,8 +86,8 @@ Ao concluir o protocolo, apresente a recomendação pronta:
 
 - **Escopo Podado:** [Resumo em 2 frases do que entra].
 - **Fatia-Mãe Identificada:** `openspec/roadmap/fatia-02-produtos.md` (Pendente).
-- **Encaixe Recomendado:** Subfatia Decimal `fatia-02.1-variacoes-e-fotos.md`.
+- **Encaixe Recomendado:** Subfatia Alfanumérica `fatia-02a-variacoes-e-fotos.md`.
 - **Por que agora?** Aproveita as tabelas e rotas de produtos que acabaram de ser especificadas na Fatia 02, sem mexer na numeração da Fatia 03.
 
-Posso criar o arquivo `openspec/roadmap/fatia-02.1-variacoes-e-fotos.md` com as 7 seções completas e registrar no roadmap?
+Posso criar o arquivo `openspec/roadmap/fatia-02a-variacoes-e-fotos.md` com as 7 seções completas e registrar no roadmap?
 ```

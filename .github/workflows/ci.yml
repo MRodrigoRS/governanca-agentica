@@ -1,4 +1,4 @@
-name: CI — Repositório da Governança v2
+name: CI — Repositório da Governança
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   sintaxe-e-validacao:
-    name: Verificação de Sintaxe e Scripts
+    name: Verificação, Testes Unitários e Validação Copier
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -26,6 +26,11 @@ jobs:
         run: |
           node --check template/scripts/verificar-governanca.mjs
           node --check template/scripts/validar-commit-msg.mjs
+          node --check template/scripts/hook-agente.mjs
+
+      - name: Executar bateria de testes unitários da Governança
+        run: |
+          npm test
 
       - name: Testar geração do template Copier
         run: |
@@ -35,6 +40,11 @@ jobs:
           test -f /tmp/teste-governanca/constitution.md
           test -f /tmp/teste-governanca/lefthook.yml
           test -f /tmp/teste-governanca/CHANGELOG.md
+          test -f /tmp/teste-governanca/openspec/config.yaml
+          test -f /tmp/teste-governanca/.agents/hooks.json
+          test -f /tmp/teste-governanca/.claude/settings.json
+          test -f /tmp/teste-governanca/.claude/agents/inspetor-forense.md
+          test -f /tmp/teste-governanca/.mcp.json
           test -d /tmp/teste-governanca/openspec
           test -d /tmp/teste-governanca/docs/adr
           test -d /tmp/teste-governanca/.agents/skills

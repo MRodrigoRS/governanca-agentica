@@ -1,7 +1,7 @@
 # Fatia <NUMERO>: <TITULO_DA_FATIA>
 
 > **Status:** `[ ] Pendente` | `[~] Em Andamento` | `[x] Concluída`
-> **Identificador OpenSpec:** `fatia-<NUMERO>-<SLUG>` (Ex.: `fatia-02-produtos` ou `fatia-02.1-variacoes`)
+> **Identificador OpenSpec:** `fatia-<NUMERO>-<SLUG>` (Ex.: `fatia-02-produtos` ou `fatia-02a-variacoes`)
 > **Regra de Ouro (Teste do Agente Executor):** Este documento nunca deve ser escrito de forma resumida, comprimida ou genérica. Ele deve conter especificações tão claras e completas que qualquer agente de IA — mesmo em uma sessão limpa ou usando um modelo mais leve — consiga implementar esta fatia do início ao fim sem precisar adivinhar regras de negócio, nomes de tabelas ou estados de tela.
 
 ---

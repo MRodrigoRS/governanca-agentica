@@ -26,7 +26,7 @@ A **Governança v2** substitui plataformas pesadas e templates interpolados por 
 Em qualquer terminal com `uv` e `git` instalados, execute:
 
 ```bash
-uvx copier copy gh:MRodrigoRS/governanca-v2 .
+uvx copier copy gh:MRodrigoRS/governan-a-de-agentes-v2 .
 ```
 
 O instalador perguntará o nome do projeto e detalhes básicos, injetando a governança imediatamente.
@@ -97,9 +97,9 @@ Todo desenvolvimento voltado à web parte do princípio de que:
 * **Responsividade Móvel e PWA:** Design mobile-first (320px a ultrawide) e portabilidade como PWA instalável (`manifest.json`, viewport, tema, ícones e service worker) são **inatos** da interface.
 * **Toasts e Modais de Confirmação:** Mutações físicas no banco disparam obrigatoriamente notificações Toast reativas de feedback, e ações destrutivas/críticas (deleções, desativações) exigem Modal/Dialog de confirmação com suporte a `Escape`.
 
-### Refinamento de Ideias e Subfatias Decimais (D25)
+### Refinamento de Ideias e Subfatias Alfanuméricas (D25 / D28)
 
-Quando surgem ideias ou pedidos de mudança no meio do projeto, a skill `.agents/skills/refinar-ideia/SKILL.md` expõe a complexidade oculta e poda o escopo ("o que entra" vs. "o que sai"). Se a novidade for um complemento natural de uma fatia pendente, ela é encaixada como **subfatia decimal hierárquica (ex.: `fatia-02.1-<slug>.md`)**, aproveitando o código fresco sem precisar reordenar o restante do roadmap.
+Quando surgem ideias ou pedidos de mudança no meio do projeto, a skill `.agents/skills/refinar-ideia/SKILL.md` expõe a complexidade oculta e poda o escopo ("o que entra" vs. "o que sai"). Se a novidade for um complemento natural de uma fatia pendente, ela é encaixada como **subfatia alfanumérica hierárquica (ex.: `fatia-02a-<slug>.md`)**, aproveitando o código fresco sem precisar reordenar o restante do roadmap e mantendo 100% de compatibilidade com o OpenSpec CLI e Conventional Commits.
 
 ---
 
@@ -108,16 +108,25 @@ Quando surgem ideias ou pedidos de mudança no meio do projeto, a skill `.agents
 ```text
 seu-projeto/
 ├── AGENTS.md                         # Fonte única da verdade para agentes de IA
-├── CLAUDE.md / GEMINI.md             # Ponteiros finos universais
+├── CLAUDE.md / GEMINI.md             # Inclusões nativas diretas de contexto (@)
+├── .claude/
+│   ├── settings.json                 # Lifecycle Hooks nativos para Claude Code
+│   └── agents/inspetor-forense.md    # Subagente auditor factual isolado (read-only)
 ├── .github/
-│   ├── copilot-instructions.md       # Ponteiro fino para Copilot
+│   ├── copilot-instructions.md       # Instruções para Copilot
+│   ├── agents/                       # Subagente auditor para Copilot
 │   └── workflows/ci.yml              # CI determinístico no GitHub Actions
-├── .cursor/rules/governanca.mdc      # Ponteiro fino para o Cursor
+├── .cursor/
+│   ├── rules/governanca.mdc          # Regras sempre ativas para o Cursor
+│   └── mcp.json                      # Configuração de MCP para o Cursor
+├── .vscode/mcp.json                  # Configuração de MCP para o VS Code
+├── .mcp.json                         # Configuração de MCP universal / Claude Code
 ├── constitution.md                   # Cláusulas pétreas e padrões de engenharia
 ├── openspec/                         # Motor de specs oficial (OpenSpec)
-│   ├── project.md                    # Visão polida, stack/MCPs e Mapa de Fatias Incrementais
-│   ├── radar-oportunidades.md        # Inteligência de mercado, concorrência, sinergias e ideias futuras
-│   ├── roadmap/                      # Fatias detalhadas individuais (fatia-01-*.md + _template-fatia.md)
+│   ├── config.yaml                   # Schema, contexto global e regras por artefato
+│   ├── project.md                    # Visão polida, stack/MCPs e Mapa de Fatias
+│   ├── radar-oportunidades.md        # Inteligência de mercado, concorrência e sinergias
+│   ├── roadmap/                      # Fatias detalhadas individuais (_template-fatia.md)
 │   ├── specs/                        # Base viva de especificações por domínio
 │   └── changes/                      # Deltas ativos e archive/
 ├── docs/adr/                         # Registros de Decisão de Arquitetura (MADR)
@@ -125,13 +134,18 @@ seu-projeto/
 │   └── template.md
 ├── lefthook.yml                      # Orquestrador de Git Hooks (pre-commit e commit-msg)
 ├── scripts/
+│   ├── hook-agente.mjs               # Bridge determinística para Lifecycle Hooks
 │   ├── verificar-governanca.mjs      # Fiscal determinístico (Cerimônia, Changelog e Anti-Preguiça)
 │   └── validar-commit-msg.mjs        # Validação de mensagens de commit (PT-BR)
-├── .agents/skills/                   # Skills no padrão Agent Skills
-│   ├── inicializar-stack/            # Entrevista exaustiva, fatiamento e catálogo oficial
-│   ├── ciclo-especificacao/          # Guia prático de OpenSpec, Test-First e fila de fatias
-│   ├── explorar-produto/             # Modo estratégico: mercado, concorrência e sinergias (sem código)
-│   └── atualizar-governanca/         # Guia de atualização via Copier
+├── .agents/
+│   ├── hooks.json                    # Lifecycle Hooks para Antigravity
+│   └── skills/                       # Skills no padrão Agent Skills
+│       ├── inicializar-stack/        # Entrevista, catálogo e instalação de skills oficiais
+│       ├── ciclo-especificacao/      # Guia prático de OpenSpec, Test-First e gates
+│       ├── refinar-ideia/            # Poda de escopo e subfatias alfanuméricas
+│       ├── explorar-produto/         # Modo estratégico: mercado e sinergias (sem código)
+│       ├── revisar-fatia/            # Auditoria cega e duelo de conformidade
+│       └── atualizar-governanca/     # Guia de atualização via Copier
 └── CHANGELOG.md                      # Histórico Keep a Changelog
 ```
 
@@ -139,9 +153,9 @@ seu-projeto/
 
 ## 6. Registro de Decisões do Projeto
 
-Todas as decisões de design da Governança v2 foram debatidas, fundamentadas e registradas formalmente:
+Todas as decisões de design da Governança foram debatidas, fundamentadas e registradas formalmente:
 
-* [00_INDICE_E_DECISOES.md](00_INDICE_E_DECISOES.md) — Índice geral e as 19 Decisões Fechadas (`D1` a `D19`).
+* [00_INDICE_E_DECISOES.md](00_INDICE_E_DECISOES.md) — Índice geral e as 28 Decisões Fechadas (`D1` a `D28`).
 * [PIVOT_ARQUITETURAL_GOVERNANCA_V2.md](PIVOT_ARQUITETURAL_GOVERNANCA_V2.md) — O abandono do servidor/UI e a adoção do protocolo agêntico.
 * [ESTRATEGIA_DE_PRESETS_E_STACKS_ROBUSTAS.md](ESTRATEGIA_DE_PRESETS_E_STACKS_ROBUSTAS.md) — Catálogo de stacks e Cláusula Anti-Brinquedo.
 * [SINTESE_FRAMEWORKS_SDD_E_GOVERNANCA_V2.md](SINTESE_FRAMEWORKS_SDD_E_GOVERNANCA_V2.md) — Síntese metodológica (Spec Kit, OpenSpec, Kiro, BMAD).

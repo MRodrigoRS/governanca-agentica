@@ -23,7 +23,9 @@ flowchart TD
 
 ## 1. Papel 1: O Subagente Inspetor Forense (Auditoria Cega)
 
-O Subagente Inspetor é convocado com uma instrução deliberadamente cega: **ele NÃO deve ler o arquivo de roadmap (`openspec/roadmap/fatia-XX-*.md`)**. Ele não sabe o que *deveria* ter sido feito, evitando qualquer simpatia contextual ou suposição de intenção.
+O Subagente Inspetor é convocado utilizando a definição oficial de subagente isolado (`.claude/agents/inspetor-forense.md` no Claude Code, `.github/agents/inspetor-forense.agent.md` no Copilot, ou `invoke_subagent` com perfil isolado no Antigravity).
+
+A convocação é feita com instrução deliberadamente cega: **ele NÃO deve ler o arquivo de roadmap (`openspec/roadmap/fatia-XX-*.md`) nem deltas de planejamento**. Ele não sabe o que *deveria* ter sido feito, garantindo auditoria 100% imparcial.
 
 ### Missão do Inspetor:
 Inspecionar o código modificado (`git diff` dos arquivos staged) e traduzir em **linguagem literal e factual** exatamente o que o código está fazendo na prática.

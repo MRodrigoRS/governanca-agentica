@@ -1,6 +1,6 @@
-<!-- governanca:inicio v2.0.0 — não edite este bloco -->
+<!-- governanca:inicio v3.0.0 — não edite este bloco -->
 # Claude Instructions
 
-Consulte a fonte única da verdade para desenvolvimento em [AGENTS.md](AGENTS.md).
-Siga rigorosamente todas as cláusulas pétreas em [constitution.md](constitution.md).
+@AGENTS.md
+@constitution.md
 <!-- governanca:fim -->

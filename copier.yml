@@ -1,6 +1,6 @@
 # ==============================================================================
-# Governança v2 — Template Oficial Copier
-# Distribuição: uvx copier copy gh:MRodrigoRS/governanca-v2 .
+# Governança — Template Oficial Copier
+# Distribuição: uvx copier copy gh:MRodrigoRS/governan-a-de-agentes-v2 .
 # Atualização:  uvx copier update
 # ==============================================================================
 
@@ -11,12 +11,14 @@ _skip_if_exists:
   - CHANGELOG.md
   - README.md
   - package.json
+  - "openspec/config.yaml"
   - "openspec/project.md"
   - "openspec/radar-oportunidades.md"
   - "openspec/roadmap/fatia-*.md"
   - "openspec/specs/**"
   - "openspec/changes/**"
   - "docs/adr/**"
+  - ".claude/settings.local.json"
 
 # ------------------------------------------------------------------------------
 # Questionário de Inicialização
@@ -29,7 +31,7 @@ nome_do_projeto:
 descricao_do_projeto:
   type: str
   help: "Descrição concisa do objetivo do projeto"
-  default: "Projeto desenvolvido sob o protocolo da Governança v2."
+  default: "Projeto desenvolvido sob o protocolo da Governança Agêntica."
 
 autor_nome:
   type: str

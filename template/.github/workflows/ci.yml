@@ -1,4 +1,4 @@
-name: CI — Governança v2
+name: CI — Governança
 
 on:
   push:
@@ -38,10 +38,10 @@ jobs:
       - name: Validar OpenSpec
         run: |
           if [ -d "openspec" ]; then
-            npx @fission-ai/openspec validate
+            node -e "const fs=require('node:fs'); const temItens = (fs.existsSync('openspec/changes') && fs.readdirSync('openspec/changes').some(f => f !== 'archive' && !f.startsWith('.'))) || (fs.existsSync('openspec/specs') && fs.readdirSync('openspec/specs').some(f => !f.startsWith('.'))); if (temItens) { require('node:child_process').execSync('npx --yes @fission-ai/openspec validate --all --no-interactive', { stdio: 'inherit' }); }"
           fi
 
-      - name: Auditar Governança v2 (Modo CI)
+      - name: Auditar Governança (Modo CI)
         run: node scripts/verificar-governanca.mjs --ci
 
   qualidade-e-testes:
@@ -59,8 +59,8 @@ jobs:
       - name: Executar Checagens Node/TS (se package.json existir)
         run: |
           if [ -f "package.json" ]; then
-            npm install --ignore-scripts || true
-            if npm run | grep -q "type-check"; then npm run type-check; fi
+            npm ci || npm install
+            if npm run | grep -E -q "typecheck|type-check"; then npm run typecheck || npm run type-check; fi
             if npm run | grep -q "lint"; then npm run lint; fi
             if npm run | grep -q "test"; then npm test; fi
             if npm run | grep -q "build"; then npm run build; fi
