@@ -1,4 +1,4 @@
-<!-- governanca:inicio v2.2.0 — não edite este bloco; alterações no repositório da governança -->
+<!-- governanca:inicio v2.3.0 — não edite este bloco; alterações no repositório da governança -->
 # Instruções Gerais para Agentes de IA — Governança v2
 
 > **Papel:** Fonte única da verdade para todos os agentes e assistentes de IA que operam neste repositório.
@@ -25,6 +25,7 @@ Ao ser iniciado em um repositório, identifique o estado atual antes de agir:
 - **Repositório Greenfield (sem stack):** Acione imediatamente a skill `.agents/skills/inicializar-stack/SKILL.md`. Conduza uma **entrevista exaustiva (multi-rodadas)** para extrair a visão completa do sistema, polir o que entra e o que fica de fora, definir a stack/VPS/MCPs e **decompor o sistema inteiro em fatias incrementais detalhadas** (`openspec/roadmap/fatia-XX-*.md`) antes de executar o scaffolding no **Gate 0**.
 - **Repositório Brownfield (código existente sem specs):** Mapeie a arquitetura atual em `openspec/project.md`, crie as especificações vivas iniciais em `openspec/specs/` e planeje as próximas fatias em `openspec/roadmap/` antes de alterar o código.
 - **Projeto em Andamento (Modo Execução):** Verifique `openspec/project.md` (Mapa de Fatias Incrementais), `openspec list`, as tarefas abertas em `openspec/changes/` e `CHANGELOG.md` para retomar exatamente de onde parou e puxar a próxima fatia `[ ] Pendente` automaticamente.
+  * *Cláusula Pétrea — Proibido Deduzir de Cabeça (Artigo 12):* Nunca confie na memória do chat. Ao planejar, resumir, abrir delta ou iniciar a codificação, leia fisicamente `openspec/roadmap/fatia-XX-*.md` e cite trechos literais antes de propor mudanças ou codificar.
 - **Modo de Ampliação e Estratégia de Produto (Reunião de Negócios sem Código):** Quando o humano quiser analisar o repositório, explorar novos rumos, pesquisar concorrentes/mercado ou descobrir funcionalidades sinergéticas, acione `.agents/skills/explorar-produto/SKILL.md`. Congele qualquer edição de código e encaminhe as decisões ao final nas 3 gavetas (`openspec/roadmap/`, `openspec/radar-oportunidades.md` ou Fora de Escopo).
 
 ---
@@ -47,11 +48,12 @@ Ao ser iniciado em um repositório, identifique o estado atual antes de agir:
 1. **Ciclo Vermelho → Verde → Refatorar:** É estritamente proibido escrever código de produção sem antes escrever o teste automatizado correspondente.
 2. **Evidência Obrigatória no Gate 2:** Toda entrega deve exibir a saída do terminal com o teste falhando pelo motivo correto e, em seguida, a saída com o teste passando verde.
 3. **Roteiro Mandatório de Validação Prática (Proibido Despejar Apenas Logs):** É proibido encerrar uma tarefa apenas mostrando saídas de testes automatizados. O agente deve fornecer obrigatoriamente um roteiro claro: **o que foi entregue**, **onde está** (rota/tela/comando), **passo a passo com dados prontos de exemplo** e **o que o humano deve observar visualmente** na tela ou na resposta do sistema.
-4. **Circuit Breaker (3 Falhas):** Se uma tarefa falhar 3 vezes consecutivas no mesmo teste ou problema técnico, pare imediatamente. Não tente uma 4ª vez às cegas; descreva a hipótese, a causa raiz provável e solicite orientação do humano.
+4. **Releitura Pré-Código Mandatória (Artigo 12):** Imediatamente antes de escrever o primeiro teste ou código de produção de uma fatia, o executor deve reler o arquivo físico `openspec/roadmap/fatia-XX-*.md` para assegurar que nenhum detalhe de contrato ou regra se perdeu por saturação de contexto.
+5. **Circuit Breaker (3 Falhas):** Se uma tarefa falhar 3 vezes consecutivas no mesmo teste ou problema técnico, pare imediatamente. Não tente uma 4ª vez às cegas; descreva a hipótese, a causa raiz provável e solicite orientação do humano.
 
 ---
 
-## 5. Rotina de Commits e Gates Humanos (Autorização Obrigatória — Artigo 11)
+## 5. Rotina de Commits e Gates Humanos (Autorização Obrigatória — Artigo 11 e 12)
 
 É expressamente proibido ao agente realizar commits avulsos, intermediários ou automáticos sem o consentimento humano. A rotina de commits é estruturada em dois marcos exclusivos:
 
@@ -59,19 +61,22 @@ Ao ser iniciado em um repositório, identifique o estado atual antes de agir:
   ```bash
   git commit -m "feat(fundacao): inicializa projeto com stack <nome> e mapa de fatias"
   ```
-- **Gate 1 (Aprovação de Plano e Desenho Técnico):** Sem commit de código. Alinhamento de escopo, delta no OpenSpec e tarefas antes de codificar.
-- **Marco 2 — Fechamento de Fatia ou Correção (Gate 2):** Ao término da implementação, o agente apresenta a entrega no chat com a estrutura obrigatória:
-  1. *O que foi entregue e valor funcional gerado.*
-  2. *🧪 Roteiro de Teste Prático (onde acessar, passo a passo com dados de teste e comportamento visual esperado).*
-  3. *Evidências de testes automatizados (saída vermelha e verde).*
-  4. *Diff limpo e CHANGELOG atualizado.*
-  **Somente após a aprovação final humana**, o agente realiza o commit de entrega:
-  ```bash
-  git commit -m "feat(<escopo>): implementa fatia XX - <descrição em PT-BR>"
-  # ou no caso de /fix:
-  git commit -m "fix(<escopo>): corrige <descrição em PT-BR>"
-  ```
-  Imediatamente após o commit, convida o humano para a próxima fatia pendente do roadmap.
+- **Gate 1 (Aprovação de Plano e Desenho Técnico):** Sem commit de código. Leitura física comprovada do roadmap, alinhamento de escopo, delta no OpenSpec e tarefas antes de codificar.
+- **Marco 2 — Fechamento de Fatia ou Correção (Gate 2):** Ao término da implementação, o fluxo segue 2 níveis obrigatórios:
+  1. **Auditoria pelo Agente Revisor Independente:** Antes de chamar o humano, o executor aciona o Revisor Independente (`.agents/skills/revisar-fatia/SKILL.md`) para auditar código vs. roadmap físico. Havendo ressalvas, o executor deve corrigir antes de incomodar o humano.
+  2. **Apresentação ao Humano no Chat:** Com o parecer favorável do Revisor, o agente apresenta a entrega estruturada:
+     * *O que foi entregue e valor funcional gerado.*
+     * *📋 Parecer do Agente Revisor Independente (Aprovado sem ressalvas).*
+     * *🧪 Roteiro de Teste Prático (onde acessar, passo a passo com dados de teste e comportamento visual esperado).*
+     * *Evidências de testes automatizados (saída vermelha e verde).*
+     * *Diff limpo e CHANGELOG atualizado.*
+  3. **Autorização Humana e Commit:** **Somente após a aprovação final humana**, o agente realiza o commit de entrega:
+     ```bash
+     git commit -m "feat(<escopo>): implementa fatia XX - <descrição em PT-BR>"
+     # ou no caso de /fix:
+     git commit -m "fix(<escopo>): corrige <descrição em PT-BR>"
+     ```
+  4. **Prevenção de Context Rot:** Imediatamente após o commit, o agente convida para a próxima fatia e recomenda a renovação da sessão (`/compact` ou nova conversa limpa).
 
 ---
 

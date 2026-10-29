@@ -1,4 +1,4 @@
-<!-- governanca:inicio v2.2.0 — não edite este bloco; alterações no repositório da governança -->
+<!-- governanca:inicio v2.3.0 — não edite este bloco; alterações no repositório da governança -->
 # Constituição do Projeto — Governança v2
 
 > **Papel:** Lei Suprema do repositório. Cláusulas pétreas obrigatórias para agentes de IA e desenvolvedores humanos.
@@ -93,7 +93,7 @@
 4. São marcos obrigatórios com intervenção humana:
    - **Gate 0:** Aprovação do escopo polido, da stack tecnológica/VPS/MCPs e do Mapa de Fatias Incrementais (`openspec/roadmap/`).
    - **Gate 1:** Aprovação do plano, desenho técnico e tarefas antes da implementação de Nível 2.
-   - **Gate 2:** Aprovação da entrega mediante resumo do que foi entregue, Roteiro de Teste Prático Passo a Passo (onde está, como testar com dados de exemplo e comportamento visual esperado), evidências reais de testes automatizados (vermelho/verde), diff limpo e `CHANGELOG.md` atualizado, seguida pelo acionamento proativo da próxima fatia da fila.
+   - **Gate 2:** Aprovação da entrega mediante: (1) parecer favorável prévio do **Agente Revisor Independente** auditando código vs. roadmap, (2) resumo do que foi entregue, (3) Roteiro de Teste Prático Passo a Passo (onde está, como testar com dados de exemplo e comportamento visual esperado), (4) evidências reais de testes automatizados (vermelho/verde), (5) diff limpo e `CHANGELOG.md` atualizado, seguida pelo acionamento proativo da próxima fatia da fila.
 
 ---
 
@@ -121,6 +121,20 @@ Se durante a execução de uma tarefa o agente falhar 3 vezes consecutivas no me
    - **Marco 1 — Fundação e Sedimentação Inicial (Gate 0):** Ocorre após a conclusão da entrevista de produto, aprovação da stack, scaffolding oficial, prova de saúde da base e gravação do Mapa de Fatias Incrementais detalhadas (`openspec/project.md` e `openspec/roadmap/fatia-XX-*.md`). O agente solicita e aguarda a **aprovação humana explícita** para realizar o commit fundacional (ex.: `feat(fundacao): inicializa projeto com stack e mapa de fatias`).
    - **Marco 2 — Fechamento de Fatia ou Correção (Gate 2):** Ocorre ao término da implementação da fatia ou `/fix`, após a comprovação de testes (Vermelho → Verde), diff limpo, `CHANGELOG.md` atualizado e validações determinísticas passando (`verificar-governanca.mjs`, `openspec validate`). O agente só realiza o commit após a **aprovação final humana explícita** no Gate 2 (ex.: `feat(escopo): implementa fatia XX - descricao`).
 3. **Padrão Obrigatório de Mensagem:** Todo commit deve respeitar rigorosamente o Conventional Commits em Português do Brasil (auditado por `validar-commit-msg.mjs`), vinculando o escopo à fatia ou componente trabalhado.
+
+---
+
+## Artigo 12 — Cláusula Pétrea "Proibido Deduzir de Cabeça" (Leitura Física Mandatória e Prevenção de Context Rot)
+
+1. **Proibição Estrita de Dedução Mental:** É expressamente proibido ao agente deduzir de cabeça, presumir de memória ou alucinar requisitos, contratos de dados, regras de negócio ou estados de tela de qualquer fatia com base em lembranças de mensagens anteriores da sessão de chat.
+2. **Os 4 Marcos de Leitura Física Obrigatória:** O agente deve obrigatoriamente executar a ferramenta de leitura direta no disco do arquivo `openspec/roadmap/fatia-XX-*.md` antes de:
+   - Resumir ou apresentar a próxima fatia ao usuário.
+   - Abrir o delta de especificação no OpenSpec (`npx @fission-ai/openspec new`).
+   - Submeter o plano e desenho técnico para aprovação no Gate 1.
+   - **Escrever a primeira linha de teste automatizado ou código de produção.**
+3. **Evidência Explícita de Alinhamento:** Ao abrir o Gate 1 ou convidar o humano para a próxima fatia, o agente deve citar textualmente os objetivos e contratos definidos no arquivo de roadmap físico, provando que não inventou o escopo. Qualquer divergência entre a proposta do agente e o roadmap físico anula o Gate 1.
+4. **Revisão Independente Pré-Gate 2:** Concluída a implementação de qualquer fatia, é mandatório acionar um **Agente Revisor Independente** (com contexto limpo) para comparar o código e os testes implementados diretamente contra o arquivo `openspec/roadmap/fatia-XX-*.md`. O commit só pode ser solicitado ao humano após o parecer favorável do revisor.
+5. **Higiene de Contexto Preventiva:** Para prevenir a degradação de contexto (*Context Rot*), ao concluir o Gate 2 de uma entrega, o agente deve orientar formalmente o humano a renovar a sessão (`/compact` ou abertura de nova conversa limpa) antes de puxar a próxima fatia da fila.
 <!-- governanca:fim -->
 
 ## Cláusulas Adicionais Deste Projeto

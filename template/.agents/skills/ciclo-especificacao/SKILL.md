@@ -35,13 +35,15 @@ Antes de iniciar, determine o nível adequado:
 ## 2. Nível 2 — Seleção da Fatia e Criação do Delta de Mudança
 
 1. **Consulte o Mapa de Fatias Incrementais:** Leia a seção 3 de `openspec/project.md` e localize a próxima fatia com status `[ ] Pendente` (ou a fatia solicitada pelo humano).
-2. **Leia o Documento Detalhado da Fatia:** Abra `openspec/roadmap/fatia-XX-<slug>.md` e revise integralmente as 7 seções (Objetivo, Dependências, Contratos de Dados/Banco, Estados de UI, Regras Backend, Roteiro Test-First e Critérios de Aceite).
+2. **Leitura Física Obrigatória do Documento da Fatia (Artigo 12 — Proibido Deduzir de Cabeça):**
+   - É expressamente proibido resumir ou abrir delta com base apenas na memória da sessão. Execute a ferramenta de leitura física no arquivo `openspec/roadmap/fatia-XX-<slug>.md`.
+   - Revise integralmente as 7 seções (Objetivo, Dependências, Contratos de Dados/Banco, Estados de UI, Regras Backend, Roteiro Test-First e Critérios de Aceite).
    - Se a fatia ainda não possuir seu arquivo detalhado em `openspec/roadmap/`, crie-o imediatamente seguindo `openspec/roadmap/_template-fatia.md` antes de prosseguir.
 3. **Abra o Delta no OpenSpec:**
    ```bash
    npx @fission-ai/openspec new fatia-XX-<slug>
    ```
-4. Preencha os arquivos da pasta criada em `openspec/changes/fatia-XX-<slug>/` sem resumos preguiçosos, desdobrando o conteúdo de `openspec/roadmap/fatia-XX-<slug>.md`:
+4. Preencha os arquivos da pasta criada em `openspec/changes/fatia-XX-<slug>/` sem resumos preguiçosos, desdobrando fielmente o conteúdo lido de `openspec/roadmap/fatia-XX-<slug>.md`:
    - `proposal.md`: O *porquê* da mudança, motivação, escopo fechado e o que fica de fora.
    - `specs/`: Deltas de especificação com cenários e requisitos de comportamento.
    - `design.md`: O *como* técnico, tabelas, schemas Zod/Pydantic, rotas e decisões técnicas.
@@ -67,6 +69,8 @@ Antes de iniciar, determine o nível adequado:
 
 ## 5. Implementação com Test-First Mandatório
 
+> **RELEITURA PRÉ-CÓDIGO (Artigo 12):** Imediatamente antes de escrever o primeiro teste ou linha de código, o executor deve reler o arquivo físico `openspec/roadmap/fatia-XX-<slug>.md` para garantir fidelidade total aos contratos de dados, schemas e regras sem desvios de contexto.
+
 Para cada item listado em `tasks.md` (seguindo a Seção 6 da fatia):
 1. **Vermelho:** Escreva o teste correspondente. Execute e capture o log da falha legítima.
 2. **Verde:** Implemente o código estritamente necessário para fazer o teste passar.
@@ -75,7 +79,7 @@ Para cada item listado em `tasks.md` (seguindo a Seção 6 da fatia):
 
 ---
 
-## 6. Gate 2 — Entrega com Evidências e Puxada Automática da Próxima Fatia
+## 6. Gate 2 — Entrega com Evidências, Revisão Independente e Puxada da Próxima Fatia
 
 Antes de finalizar a tarefa ou commit:
 1. Valide a integridade do OpenSpec:
@@ -87,9 +91,15 @@ Antes de finalizar a tarefa ou commit:
    node scripts/verificar-governanca.mjs
    ```
 3. Atualize o arquivo `CHANGELOG.md` na seção correspondente (`### Adicionado` ou `### Modificado`).
-4. **Apresentação Obrigatória da Entrega no Chat (Gate 2):**
+4. **Auditoria Prévia pelo Agente Revisor Independente (Artigo 12):**
+   - Invoque o Revisor Independente utilizando a skill `.agents/skills/revisar-fatia/SKILL.md`.
+   - O revisor audita o código implementado contra `openspec/roadmap/fatia-XX-<slug>.md`, checando fidelidade ao roadmap, testes substanciais, conformidade constitucional, ausência de trabalho invisível e clareza do roteiro prático.
+   - **Havendo ressalvas:** O executor DEVE corrigir os apontamentos e revalidar os testes antes de apresentar ao humano.
+   - **Aprovado sem ressalvas:** O parecer formal é anexado à mensagem do Gate 2.
+5. **Apresentação Obrigatória da Entrega no Chat (Gate 2):**
    É expressamente proibido apenas despejar logs ou perguntar aprovação sem roteiro prático. A mensagem DEVE conter:
    - **O que foi entregue:** Resumo claro do valor funcional construído nesta fatia.
+   - **📋 Parecer do Agente Revisor Independente:** Aprovado sem ressalvas (código validado contra o roadmap físico).
    - **🧪 Roteiro de Teste Prático (Validação Humana):**
      * **Onde acessar:** URL exata (ex.: `http://localhost:3000/painel/contatos`), comando CLI ou tela/modal onde o recurso se encontra.
      * **Passo a passo mastigado:** Ações numeradas para reproduzir o fluxo.
@@ -98,8 +108,8 @@ Antes de finalizar a tarefa ou commit:
      * **Teste de borda prático:** Como testar uma entrada inválida para confirmar a mensagem de validação amigável.
    - **Comprovação dos Testes Automatizados:** Saída do terminal com a falha legítima (vermelho) e o sucesso (verde).
    - **Resumo das Tarefas e Diff:** Tarefas de `tasks.md` concluídas e diff limpo dos arquivos alterados.
-5. **Aprovação Final Humana (Marco 2 da Rotina de Commits — Artigo 11):**
-   - Pergunte: *"A fatia XX está testada no terminal e validada pelo roteiro prático acima. Você aprova a entrega final para realizarmos o commit?"*
+6. **Aprovação Final Humana (Marco 2 da Rotina de Commits — Artigo 11):**
+   - Pergunte: *"A fatia XX está testada no terminal, aprovada pelo Revisor Independente e validada pelo roteiro prático acima. Você aprova a entrega final para realizarmos o commit?"*
    - **Somente após a aprovação humana explícita**:
      - Arquive a mudança no OpenSpec para mesclá-la na base viva (`openspec/specs/`):
        ```bash
@@ -110,5 +120,7 @@ Antes de finalizar a tarefa ou commit:
        ```bash
        git commit -m "feat(<escopo>): <descrição clara em português>"
        ```
-6. **Condução Proativa (Uma Ponta Puxa a Outra):** Imediatamente após o commit da fatia atual, consulte o Mapa de Fatias em `openspec/project.md`, identifique a próxima fatia `[ ] Pendente` e convide o humano:
-   > *"Fatia XX concluída e blindada! Pelo nosso Mapa de Fatias, o próximo passo natural é a **Fatia YY (`openspec/roadmap/fatia-YY-...`)**, que aproveita o que acabamos de criar para entregar [resumo]. Posso abrir o Gate 1 dela agora?"*
+7. **Condução Proativa e Prevenção de Context Rot (Artigo 12):** Imediatamente após o commit da fatia atual, consulte o Mapa de Fatias em `openspec/project.md`, identifique a próxima fatia `[ ] Pendente` e convide o humano:
+   > *"Fatia XX concluída e blindada! Pelo nosso Mapa de Fatias, o próximo passo natural é a **Fatia YY (`openspec/roadmap/fatia-YY-...`)**, que aproveita o que acabamos de criar para entregar [resumo lido do arquivo].*
+   >
+   > *🧹 **Prevenção de Context Rot:** Para garantir atenção máxima e evitar alucinações na próxima fatia, recomendo abrir uma nova sessão (ou rodar `/compact`) e dizer: 'Continuar a partir da Fatia YY'. Se preferir continuar nesta mesma sessão, posso ler a fatia no disco e abrir o Gate 1 agora."*

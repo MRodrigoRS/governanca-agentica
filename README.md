@@ -82,7 +82,14 @@ O agente é proibido de realizar commits avulsos ou intermediários sem autoriza
 
 * **Gate 0 (Marco 1 de Commit — Fundação e Sedimentação Inicial):** Aprovação do escopo polido, da stack tecnológica/VPS/MCPs e do Mapa de Fatias Incrementais detalhadas (`openspec/roadmap/fatia-XX-*.md`). Após a validação da base, o agente solicita aprovação explícita e realiza o primeiro commit fundacional (`feat(fundacao): inicializa projeto com stack e mapa de fatias`).
 * **Gate 1:** Aprovação da proposta e do design técnico da fatia atual antes de escrever qualquer código (sem commit de código).
-* **Gate 2 (Marco 2 de Commit — Fechamento da Fatia ou Fix):** Aprovação da entrega com estrutura obrigatória: resumo do que foi entregue, **🧪 Roteiro de Teste Prático Passo a Passo** (onde acessar, dados prontos de exemplo e o que esperar visualmente na tela), evidências reais dos testes automatizados (vermelho/verde), diff limpo e `CHANGELOG.md` atualizado. Somente com o aval humano explícito o commit de entrega é efetuado, seguido pela puxada imediata da próxima fatia.
+* **Gate 2 (Marco 2 de Commit — Fechamento da Fatia ou Fix):** Aprovação da entrega com estrutura obrigatória em 2 níveis:
+  1. **Auditoria Prévia pelo Agente Revisor Independente (D24):** Subagente imparcial audita o código vs. o arquivo físico de roadmap em 5 pilares antes de qualquer contato com o humano.
+  2. **Apresentação Humana no Chat:** Resumo do que foi entregue, parecer favorável do Revisor, **🧪 Roteiro de Teste Prático Passo a Passo** (onde acessar, dados prontos de exemplo e o que esperar visualmente na tela), evidências reais dos testes automatizados (vermelho/verde), diff limpo e `CHANGELOG.md` atualizado.
+  3. **Commit Autorizado e Prevenção de Context Rot (D23):** Somente com o aval humano explícito o commit de entrega é efetuado, seguido pelo convite da próxima fatia com recomendação de renovação de sessão (`/compact` ou nova conversa).
+
+### Cláusula Pétrea "Proibido Deduzir de Cabeça" (Artigo 12 / D23)
+
+É terminantemente proibido ao agente deduzir ou presumir de memória o escopo de qualquer fatia. A leitura direta do arquivo em disco (`openspec/roadmap/fatia-XX-*.md`) é obrigatória nos 4 marcos: ao resumir para o humano, ao abrir o delta (`openspec new`), ao submeter o plano no Gate 1 e **imediatamente antes de escrever a primeira linha de código ou teste**.
 
 ### Padrões de Engenharia Frontend Inatos (D20)
 

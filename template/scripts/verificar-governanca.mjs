@@ -255,11 +255,29 @@ function auditarFatiasDetalhadas() {
   }
 }
 
-// 5. Auditoria de Integridade do Delta Ativo no Nível 2 (impede burlar Nível 1 com pasta vazia)
+// 5. Auditoria de Integridade do Delta Ativo no Nível 2 (impede burlar Nível 1 com pasta vazia e dedução de cabeça — D23)
 function auditarDeltasAtivosOpenSpec(mudancasAtivas) {
   const arquivosObrigatoriosDelta = ['proposal.md', 'design.md', 'tasks.md'];
 
   for (const nomeMudanca of mudancasAtivas) {
+    // Validação da Cláusula Proibido Deduzir de Cabeça (D23): fatia deve ter origem no roadmap
+    if (nomeMudanca.startsWith('fatia-')) {
+      const pastaRoadmap = join(process.cwd(), 'openspec', 'roadmap');
+      if (existsSync(pastaRoadmap)) {
+        const fatiasRoadmap = readdirSync(pastaRoadmap);
+        const prefixoFatia = nomeMudanca.split('-').slice(0, 2).join('-');
+        const fatiaExiste = fatiasRoadmap.some((f) => f.startsWith(prefixoFatia) && f.endsWith('.md'));
+        if (!fatiaExiste) {
+          registrarErro(
+            `Cláusula Pétrea "Proibido Deduzir de Cabeça" (Artigo 12 / D23):\n` +
+            `A mudança ativa 'openspec/changes/${nomeMudanca}' não possui um arquivo correspondente no roadmap em 'openspec/roadmap/'.\n\n` +
+            `-> Solução: Toda fatia deve estar formalizada em 'openspec/roadmap/${prefixoFatia}-<slug>.md' antes de abrir o delta.`
+          );
+          process.exit(1);
+        }
+      }
+    }
+
     const pastaMudanca = join(process.cwd(), 'openspec', 'changes', nomeMudanca);
     for (const nomeArquivo of arquivosObrigatoriosDelta) {
       const caminhoArquivo = join(pastaMudanca, nomeArquivo);

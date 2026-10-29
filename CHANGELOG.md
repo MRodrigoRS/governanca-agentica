@@ -5,6 +5,16 @@ O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.
 
 ---
 
+## [2.3.0] - 2026-10-29
+
+### Adicionado
+- **Artigo 12 na Constituição — Cláusula Pétrea "Proibido Deduzir de Cabeça" (D23):** É expressamente proibido presumir ou deduzir de memória o escopo de fatias. Leitura física em `openspec/roadmap/fatia-XX-*.md` mandatória nos 4 marcos: (1) resumir ao humano, (2) abrir delta, (3) plano no Gate 1 e (4) antes de escrever qualquer linha de teste ou código.
+- **Agente Revisor Independente Pré-Gate 2 (D24):** Nova skill `.agents/skills/revisar-fatia/SKILL.md` instituindo auditoria independente e imparcial em 5 pilares (fidelidade ao roadmap, testes substanciais, conformidade constitucional, escopo fechado e roteiro prático) antes de solicitar aprovação de commit ao humano.
+- **Prevenção Ativa de Context Rot:** Orientação formal no Gate 2 para renovação de sessão (`/compact` ou nova conversa limpa) antes de puxar a próxima fatia do roadmap.
+- **Auditoria Determinística de Vínculo de Roadmap:** `verificar-governanca.mjs` atualizado para checar se todo delta `fatia-XX-*` possui correspondência física no diretório `openspec/roadmap/`.
+
+---
+
 ## [2.2.0] - 2026-10-28
 
 ### Adicionado
