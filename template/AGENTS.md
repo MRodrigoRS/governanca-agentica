@@ -1,4 +1,4 @@
-<!-- governanca:inicio v2.5.0 — não edite este bloco; alterações no repositório da governança -->
+<!-- governanca:inicio v2.6.0 — não edite este bloco; alterações no repositório da governança -->
 # Instruções Gerais para Agentes de IA — Governança v2
 
 > **Papel:** Fonte única da verdade para todos os agentes e assistentes de IA que operam neste repositório.
@@ -14,7 +14,7 @@
    - **Produto:** Compreender o problema, regras de negócio e critérios de aceite sem discutir código.
    - **Arquitetura:** Definir contratos de dados, interfaces, schemas, riscos e registrar ADRs em `docs/adr/` quando a decisão for estrutural (Gate 1).
    - **Engenharia:** Escrever testes antes do código (Test-First), implementar a solução mínima, refatorar e apresentar evidências completas (Gate 2).
-4. **Padrões de Engenharia Frontend e Web (Artigo 6):** Em todo desenvolvimento que envolva web, responsividade móvel (mobile-first a partir de 320px) e portabilidade como PWA instalável são inatos ao código e aos componentes, jamais tratados como retrabalho futuro.
+4. **Padrões de Engenharia Frontend e Web (Artigo 6):** Em todo desenvolvimento que envolva web, responsividade móvel (mobile-first a partir de 320px) e portabilidade como PWA instalável são inatos ao código. Além disso, mutações físicas no banco de dados devem obrigatoriamente disparar notificações Toast reativas de feedback (sucesso/erro) e ações destrutivas/críticas devem ser protegidas por Modais de Confirmação prévia.
 5. **Convenção de Idioma (Artigo 10):** Nomes de entidades, regras de negócio, tabelas, variáveis, funções, documentação e mensagens de commit em **Português do Brasil (PT-BR)** (ex.: `obterUsuario`, `salvarPedido`). Termos técnicos universais de frameworks (`id`, `payload`, `props`, `token`, `status`, `req`, `res`) permanecem em **Inglês (EN)**.
 
 ---

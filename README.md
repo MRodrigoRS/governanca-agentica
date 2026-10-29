@@ -91,9 +91,11 @@ O agente é proibido de realizar commits avulsos ou intermediários sem autoriza
 
 É terminantemente proibido ao agente deduzir ou presumir de memória o escopo de qualquer fatia. A leitura direta do arquivo em disco (`openspec/roadmap/fatia-XX-*.md`) é obrigatória nos 4 marcos: ao resumir para o humano, ao abrir o delta (`openspec new`), ao submeter o plano no Gate 1 e **imediatamente antes de escrever a primeira linha de código ou teste**.
 
-### Padrões de Engenharia Frontend Inatos (D20)
+### Padrões de Engenharia Frontend Inatos (D20 e D27)
 
-Todo desenvolvimento voltado à web parte do princípio de que **responsividade móvel** (design mobile-first testado de 320px a ultrawide) e **portabilidade como PWA instalável** (`manifest.json`, viewport, cores de tema, ícones adaptativos e service worker) são características **inatas** da interface, garantidas desde a primeira linha de componente visual.
+Todo desenvolvimento voltado à web parte do princípio de que:
+* **Responsividade Móvel e PWA:** Design mobile-first (320px a ultrawide) e portabilidade como PWA instalável (`manifest.json`, viewport, tema, ícones e service worker) são **inatos** da interface.
+* **Toasts e Modais de Confirmação:** Mutações físicas no banco disparam obrigatoriamente notificações Toast reativas de feedback, e ações destrutivas/críticas (deleções, desativações) exigem Modal/Dialog de confirmação com suporte a `Escape`.
 
 ### Refinamento de Ideias e Subfatias Decimais (D25)
 

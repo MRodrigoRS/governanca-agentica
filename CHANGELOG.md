@@ -5,6 +5,15 @@ O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.
 
 ---
 
+## [2.6.0] - 2026-10-29
+
+### Adicionado
+- **Feedback Reativo (Toasts) e Modais de Confirmação no Frontend (D27):** Inclusão formal no Artigo 6 (Item 7) da Constituição. Toda mutação física de dados no banco (criação, edição, exclusão) deve disparar uma notificação Toast temporária e reativa (sucesso verde ou erro vermelho amigável). Ações destrutivas ou críticas (deleções, arquivamentos, desativações) exigem obrigatoriamente um Modal/Dialog de confirmação detalhando o impacto antes da execução.
+- **Campos de Toasts e Modais no Template de Fatia:** Seções 4 e 7.1 de `_template-fatia.md` atualizadas para documentar e auditar os Toasts e Modais de cada entrega.
+- **Inspeção Forense:** Skill `revisar-fatia` atualizada para verificar a presença de Toasts de mutação e Modais de segurança.
+
+---
+
 ## [2.5.0] - 2026-10-29
 
 ### Adicionado

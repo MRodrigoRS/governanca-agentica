@@ -1,4 +1,4 @@
-<!-- governanca:inicio v2.5.0 — não edite este bloco; alterações no repositório da governança -->
+<!-- governanca:inicio v2.6.0 — não edite este bloco; alterações no repositório da governança -->
 # Constituição do Projeto — Governança v2
 
 > **Papel:** Lei Suprema do repositório. Cláusulas pétreas obrigatórias para agentes de IA e desenvolvedores humanos.
@@ -72,6 +72,9 @@
 6. **Responsividade e Portabilidade PWA Inatas:** Todo desenvolvimento que diga respeito à web deve nascer responsivo por padrão e preparado nativamente para portabilidade como **PWA (Progressive Web App)**:
    - **Responsividade Inata:** Design fluido e mobile-first, com layouts baseados em Flexbox ou CSS Grid testados e funcionais desde telas estreitas de smartphones (mínimo 320px) até monitores widescreen, sem barras de rolagem horizontais espúrias, elementos sobrepostos ou quebras de alinhamento.
    - **Portabilidade PWA Inata:** Suporte a manifesto de aplicação web (`manifest.json` ou `manifest.webmanifest`), ícones adaptativos para diferentes densidades de tela, meta tags de viewport (`width=device-width, initial-scale=1`) e cor temática (`theme-color`), além de estrutura amigável para funcionamento offline e cache de assets essenciais via Service Worker quando suportado pelo framework da stack. A adaptabilidade móvel e a capacidade de ser instalado como app não são tarefas posteriores, mas requisitos inatos de arquitetura de interface web.
+7. **Feedback Reativo (Toasts) e Confirmação de Segurança (Modais de Ação):**
+   - **Toasts de Persistência:** Toda operação que realize mutação física de estado no banco ou na persistência (criação, edição, exclusão, envio de formulário, ativação/desativação) deve obrigatoriamente disparar uma notificação Toast temporária e reativa informando o resultado concreto ao usuário (toast de sucesso verde com mensagem amigável ou toast de erro vermelho legível), garantindo certeza visual de que a alteração foi processada.
+   - **Modais de Confirmação para Ações Destrutivas/Críticas:** É terminantemente proibido executar deleções, arquivamentos, desativações ou mudanças de estado críticas e irreversíveis com clique direto sem confirmação prévia. Tais operações devem obrigatoriamente exibir um Modal/Dialog de confirmação detalhando o impacto da ação, com foco inicial seguro, botão de cancelamento claro e suporte a fechamento pela tecla `Escape` ou clique fora.
 
 ---
 

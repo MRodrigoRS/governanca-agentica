@@ -51,6 +51,9 @@
   - HTML semântico utilizado (`<main>`, `<nav>`, `<section>`, `<button>`).
   - Áreas clicáveis mínimas de 44x44px.
   - Comportamento da tecla `Escape` (fechar modais/drawers/menus).
+- **Feedback Reativo (Toasts) e Confirmação de Segurança (Modais — Artigo 6, item 7):**
+  - **Toasts de Mutação:** [Descreva o toast de sucesso e de erro disparados ao salvar, editar ou excluir dados].
+  - **Modais de Confirmação:** [Se houver ação destrutiva ou alteração irreversível, descreva o modal/dialog que impede clique acidental].
 - **Os 4 Estados Assíncronos Obrigatórios:**
   1. **Carregando (`loading`):** [Qual skeleton ou indicador visual será exibido].
   2. **Vazio (`empty`):** [Qual mensagem e botão de ação aparecerão quando não houver registros].
@@ -91,6 +94,7 @@
 ### 7.1. Critérios Determinísticos
 - [ ] Todos os schemas e tabelas descritos na Seção 3 foram criados com nomes em PT-BR.
 - [ ] Responsividade e portabilidade PWA garantidas na interface web (mobile-first 320px+ e sem quebras visuais).
+- [ ] Toasts reativos implementados para mutações físicas no banco e modais de confirmação para ações destrutivas (Artigo 6, item 7).
 - [ ] Os 4 estados assíncronos (`loading`, `empty`, `error`, `success`) estão implementados e funcionais.
 - [ ] Todos os testes da Seção 6 falharam antes da implementação (evidência Vermelha) e passaram após o código (evidência Verde).
 - [ ] `npx @fission-ai/openspec validate` e `node scripts/verificar-governanca.mjs` executados com sucesso (`exit 0`).

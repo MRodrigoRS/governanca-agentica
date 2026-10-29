@@ -46,6 +46,8 @@ Inspecionar o código modificado (`git diff` dos arquivos staged) e traduzir em 
 5. **Interface e Estados Visuais (se aplicável):**
    - Quais rotas e componentes visuais foram adicionados?
    - Os 4 estados assíncronos (`loading`, `empty`, `error`, `success`) existem explicitamente no código?
+   - As mutações de dados disparam notificações Toast temporárias de feedback (sucesso/erro)?
+   - Há Modais de Confirmação protegendo ações destrutivas (exclusões, cancelamentos, desativações)?
    - Há indícios de `location.reload` ou atualizações forçadas de tela?
    - O layout é mobile-first e há manifesto PWA se for app web?
 6. **Lacunas, Mocks e Pendências Factualmente Observadas:**
