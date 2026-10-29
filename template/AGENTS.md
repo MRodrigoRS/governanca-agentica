@@ -1,4 +1,4 @@
-<!-- governanca:inicio v2.3.0 — não edite este bloco; alterações no repositório da governança -->
+<!-- governanca:inicio v2.4.0 — não edite este bloco; alterações no repositório da governança -->
 # Instruções Gerais para Agentes de IA — Governança v2
 
 > **Papel:** Fonte única da verdade para todos os agentes e assistentes de IA que operam neste repositório.
@@ -26,6 +26,7 @@ Ao ser iniciado em um repositório, identifique o estado atual antes de agir:
 - **Repositório Brownfield (código existente sem specs):** Mapeie a arquitetura atual em `openspec/project.md`, crie as especificações vivas iniciais em `openspec/specs/` e planeje as próximas fatias em `openspec/roadmap/` antes de alterar o código.
 - **Projeto em Andamento (Modo Execução):** Verifique `openspec/project.md` (Mapa de Fatias Incrementais), `openspec list`, as tarefas abertas em `openspec/changes/` e `CHANGELOG.md` para retomar exatamente de onde parou e puxar a próxima fatia `[ ] Pendente` automaticamente.
   * *Cláusula Pétrea — Proibido Deduzir de Cabeça (Artigo 12):* Nunca confie na memória do chat. Ao planejar, resumir, abrir delta ou iniciar a codificação, leia fisicamente `openspec/roadmap/fatia-XX-*.md` e cite trechos literais antes de propor mudanças ou codificar.
+- **Novas Ideias ou Mudanças no Meio do Caminho (Refinamento e Poda — D25):** Se o usuário trouxer uma ideia ou solicitação de mudança durante o desenvolvimento, congele o código imediatamente e acione `.agents/skills/refinar-ideia/SKILL.md`. Conduza o raio-X de complexidade oculta, separe o que entra do que sai e, se houver afinidade com uma fatia pendente, encaixe-a como **subfatia decimal hierárquica (ex.: `fatia-02.1-<slug>.md`)**, preservando o grafo de dependências sem reordenar as fatias posteriores.
 - **Modo de Ampliação e Estratégia de Produto (Reunião de Negócios sem Código):** Quando o humano quiser analisar o repositório, explorar novos rumos, pesquisar concorrentes/mercado ou descobrir funcionalidades sinergéticas, acione `.agents/skills/explorar-produto/SKILL.md`. Congele qualquer edição de código e encaminhe as decisões ao final nas 3 gavetas (`openspec/roadmap/`, `openspec/radar-oportunidades.md` ou Fora de Escopo).
 
 ---
@@ -87,7 +88,7 @@ Ao ser iniciado em um repositório, identifique o estado atual antes de agir:
 - **Mapa de Fatias Incrementais:** Diretório `openspec/roadmap/` (cada fatia em seu próprio arquivo detalhado seguindo `_template-fatia.md`).
 - **Especificações Vivas e Deltas:** Diretório `openspec/` gerenciado pelo OpenSpec CLI (`npx @fission-ai/openspec`).
 - **Registros de Arquitetura (ADRs):** Diretório `docs/adr/` no formato MADR.
-- **Skills Ativas:** Diretório `.agents/skills/` (`inicializar-stack`, `ciclo-especificacao`, `explorar-produto`, `atualizar-governanca`).
+- **Skills Ativas:** Diretório `.agents/skills/` (`inicializar-stack`, `ciclo-especificacao`, `refinar-ideia`, `explorar-produto`, `revisar-fatia`, `atualizar-governanca`).
 <!-- governanca:fim -->
 
 ## Regras Específicas Deste Projeto

@@ -260,18 +260,20 @@ function auditarDeltasAtivosOpenSpec(mudancasAtivas) {
   const arquivosObrigatoriosDelta = ['proposal.md', 'design.md', 'tasks.md'];
 
   for (const nomeMudanca of mudancasAtivas) {
-    // Validação da Cláusula Proibido Deduzir de Cabeça (D23): fatia deve ter origem no roadmap
+    // Validação da Cláusula Proibido Deduzir de Cabeça (D23 e D25): fatia (inteira ou decimal) deve ter origem no roadmap
     if (nomeMudanca.startsWith('fatia-')) {
       const pastaRoadmap = join(process.cwd(), 'openspec', 'roadmap');
       if (existsSync(pastaRoadmap)) {
         const fatiasRoadmap = readdirSync(pastaRoadmap);
-        const prefixoFatia = nomeMudanca.split('-').slice(0, 2).join('-');
-        const fatiaExiste = fatiasRoadmap.some((f) => f.startsWith(prefixoFatia) && f.endsWith('.md'));
+        // Suporta tanto fatia-02-auth quanto fatia-02.1-fotos
+        const partes = nomeMudanca.split('-');
+        const prefixoFatia = `${partes[0]}-${partes[1]}`;
+        const fatiaExiste = fatiasRoadmap.some((f) => f.startsWith(`${prefixoFatia}-`) && f.endsWith('.md'));
         if (!fatiaExiste) {
           registrarErro(
-            `Cláusula Pétrea "Proibido Deduzir de Cabeça" (Artigo 12 / D23):\n` +
+            `Cláusula Pétrea "Proibido Deduzir de Cabeça" (Artigo 12 / D23 + D25):\n` +
             `A mudança ativa 'openspec/changes/${nomeMudanca}' não possui um arquivo correspondente no roadmap em 'openspec/roadmap/'.\n\n` +
-            `-> Solução: Toda fatia deve estar formalizada em 'openspec/roadmap/${prefixoFatia}-<slug>.md' antes de abrir o delta.`
+            `-> Solução: Toda fatia (inclusive subfatias decimais como 'fatia-02.1') deve estar formalizada em 'openspec/roadmap/${prefixoFatia}-<slug>.md' antes de abrir o delta.`
           );
           process.exit(1);
         }

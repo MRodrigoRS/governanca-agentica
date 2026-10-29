@@ -5,6 +5,15 @@ O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.
 
 ---
 
+## [2.4.0] - 2026-10-29
+
+### Adicionado
+- **Nova Skill `refinar-ideia` (D25):** Intervenção ativa quando surgem ideias no meio do desenvolvimento. Realiza raio-X de complexidade oculta, poda construtiva ("entra vs. sai"), análise de afinidade no roadmap e decisão de encaixe.
+- **Subfatias Decimais Hierárquicas (ex.: `fatia-02.1`):** Suporte nativo para desdobramentos de fatias pendentes, aproveitando o contexto de código fresco sem reordenar as fatias posteriores.
+- **Auditoria de Fatias Decimais:** `verificar-governanca.mjs` atualizado para validar a correspondência e as 7 seções completas de fatias decimais.
+
+---
+
 ## [2.3.0] - 2026-10-29
 
 ### Adicionado

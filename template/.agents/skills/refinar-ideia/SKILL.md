@@ -1,0 +1,93 @@
+---
+name: refinar-ideia
+description: Intervém quando surge uma nova ideia ou solicitação de mudança no meio do projeto. Executa raio-X de complexidade oculta, poda excessos (entra vs. sai), analisa afinidade no roadmap e encaixa a entrega como subfatia decimal (ex.: fatia-02.1) ou nova fatia inteira.
+---
+
+# Skill: Refinar Ideia e Podar Escopo (`refinar-ideia`)
+
+Esta skill orienta o agente na intervenção preventiva quando o usuário propõe uma ideia nova, alteração de regras ou adição de funcionalidade durante o desenvolvimento do projeto.
+
+> **Postura do Agente:** Gerente de Produto Sênior e Engenheiro Cético. É proibido aceitar ideias cruas ou sair codando imediatamente. O agente deve expor a complexidade oculta ("efeito iceberg"), propor a poda radical e encaixar a solução de forma cirúrgica no roadmap existente.
+
+---
+
+## 1. Quando Acionar Esta Skill
+
+Esta skill deve ser acionada sempre que:
+- O usuário disser *"tive uma ideia"*, *"vamos adicionar X"*, *"precisamos mudar Y"*, *"e se a gente fizesse Z?"*.
+- O usuário enviar os comandos `/refinar` ou `/podar`.
+- O agente perceber que o usuário está solicitando uma funcionalidade não contemplada no planejamento original da fatia ativa.
+
+> **REGRA DE OURO:** Enquanto esta skill estiver ativa, **nenhum arquivo de código de produção é criado ou alterado**. O objetivo é 100% de refinamento arquitetural e gestão de escopo.
+
+---
+
+## 2. Protocolo de Execução em 4 Passos
+
+### Passo 1 — Raio-X de Complexidade Oculta (O Efeito Iceberg)
+Ideias novas costumam parecer triviais na imaginação, mas carregam impactos profundos de engenharia. O agente deve mapear e apresentar em português claro os pontos cegos da ideia:
+1. **Permissões e Segurança:** Quem pode executar? Há papéis de usuário diferentes?
+2. **Impacto no Banco de Dados:** Cria novas tabelas ou adiciona colunas/relacionamentos complexos?
+3. **Casos de Borda e Falhas:** O que acontece se a conexão cair, o payload for inválido, a chave for duplicada ou o serviço externo falhar?
+4. **Estados Assíncronos e UI:** Como a tela lida com loading lento, lista vazia e erros?
+
+---
+
+### Passo 2 — Poda Construtiva ("O que ENTRA" vs. "O que FICA DE FORA")
+O agente aplica o princípio de Pareto (80% do valor com 20% do esforço), dividindo a proposta em uma tabela objetiva:
+
+| O Que ENTRA Agora (MVP Cirúrgico) | O Que FICA DE FORA (Podado / Adiado) | Justificativa do Corte |
+|---|---|---|
+| *Fluxo principal feliz e essencial* | *Automação avançada, filtros secundários, conciliações raras* | *Traz 80% da complexidade com pouco valor imediato* |
+
+O agente pergunta ao humano:
+> *"Você concorda em podar esses itens para entregarmos o valor essencial com velocidade e sem risco?"*
+
+---
+
+### Passo 3 — Leitura Física e Análise de Afinidade no Roadmap
+Após o alinhamento da poda com o humano:
+1. O agente executa a leitura física (`read_file`) em `openspec/project.md` e em todas as fatias com status `[ ] Pendente` no diretório `openspec/roadmap/`.
+2. O agente analisa a **afinidade de domínio**:
+   - Essa novidade mexe nas mesmas tabelas, telas ou componentes de alguma fatia que ainda está na fila para ser construída?
+   - Ou é um assunto totalmente novo e desconectado das fatias pendentes?
+
+---
+
+### Passo 4 — Decisão de Encaixe e Subfatia Decimal Hierárquica
+
+Com base na análise de afinidade, o agente propõe uma das 3 destinações formais:
+
+#### Caso A: Extensão Natural de uma Fatia Pendente (Subfatia Decimal `XX.1`)
+Se a novidade complementar o trabalho de uma fatia existente (ex.: a ideia envolve produtos e a `fatia-02-produtos-e-catalogo.md` ainda está pendente):
+* **Não mande para o fim do roadmap!**
+* Crie uma **subfatia decimal hierárquica**: `openspec/roadmap/fatia-02.1-<slug>.md` baseada em `_template-fatia.md`.
+* **Vantagem:** A subfatia `02.1` será executada imediatamente após a `02`, aproveitando o contexto fresco de código sem exigir renomear as fatias posteriores (03, 04, etc.).
+* Atualize a tabela em `openspec/project.md` inserindo a linha `fatia-02.1` logo após a `02`.
+
+#### Caso B: Domínio Independente (Nova Fatia Inteira ao Fim da Fila)
+Se a novidade for um módulo novo e autônomo (ex.: um novo painel financeiro desconectado das fatias atuais):
+* Crie o arquivo como a próxima fatia inteira no fim da fila: `openspec/roadmap/fatia-YY-<slug>.md`.
+* Adicione-a ao final da tabela do Mapa de Fatias em `openspec/project.md`.
+
+#### Caso C: Ideia Descartada ou Estacionada
+Se no polimento o humano concordar que a ideia não deve entrar no roadmap agora:
+* Registre a inteligência da discussão no arquivo `openspec/radar-oportunidades.md` na seção apropriada.
+* Nenhum arquivo de fatia é criado.
+
+---
+
+## 3. Formato da Proposta ao Humano
+
+Ao concluir o protocolo, apresente a recomendação pronta:
+
+```markdown
+### 🎯 Refinamento da Ideia Concluído
+
+- **Escopo Podado:** [Resumo em 2 frases do que entra].
+- **Fatia-Mãe Identificada:** `openspec/roadmap/fatia-02-produtos.md` (Pendente).
+- **Encaixe Recomendado:** Subfatia Decimal `fatia-02.1-variacoes-e-fotos.md`.
+- **Por que agora?** Aproveita as tabelas e rotas de produtos que acabaram de ser especificadas na Fatia 02, sem mexer na numeração da Fatia 03.
+
+Posso criar o arquivo `openspec/roadmap/fatia-02.1-variacoes-e-fotos.md` com as 7 seções completas e registrar no roadmap?
+```

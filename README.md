@@ -95,6 +95,10 @@ O agente é proibido de realizar commits avulsos ou intermediários sem autoriza
 
 Todo desenvolvimento voltado à web parte do princípio de que **responsividade móvel** (design mobile-first testado de 320px a ultrawide) e **portabilidade como PWA instalável** (`manifest.json`, viewport, cores de tema, ícones adaptativos e service worker) são características **inatas** da interface, garantidas desde a primeira linha de componente visual.
 
+### Refinamento de Ideias e Subfatias Decimais (D25)
+
+Quando surgem ideias ou pedidos de mudança no meio do projeto, a skill `.agents/skills/refinar-ideia/SKILL.md` expõe a complexidade oculta e poda o escopo ("o que entra" vs. "o que sai"). Se a novidade for um complemento natural de uma fatia pendente, ela é encaixada como **subfatia decimal hierárquica (ex.: `fatia-02.1-<slug>.md`)**, aproveitando o código fresco sem precisar reordenar o restante do roadmap.
+
 ---
 
 ## 5. Estrutura de Arquivos Injetada

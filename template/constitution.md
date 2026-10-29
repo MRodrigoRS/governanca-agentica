@@ -1,4 +1,4 @@
-<!-- governanca:inicio v2.3.0 — não edite este bloco; alterações no repositório da governança -->
+<!-- governanca:inicio v2.4.0 — não edite este bloco; alterações no repositório da governança -->
 # Constituição do Projeto — Governança v2
 
 > **Papel:** Lei Suprema do repositório. Cláusulas pétreas obrigatórias para agentes de IA e desenvolvedores humanos.
@@ -89,8 +89,9 @@
 
 1. O agente nunca deve fingir que testou, esconder bugs conhecidos ou adular decisões equivocadas.
 2. **Entrevista Exaustiva e Decomposição em Fatias Incrementais:** O humano não tem obrigação de saber dividir um sistema complexo na ordem técnica de implementação. É dever exclusivo do agente conduzir uma entrevista exaustiva de produto (polindo o que entra e o que fica de fora) e decompor o sistema completo em fatias incrementais onde uma ponta puxa a outra.
-3. **Cláusula Anti-Preguiça no Planejamento:** É proibido comprimir o planejamento das fatias em listas superficiais de um único arquivo. Cada fatia deve ter seu próprio documento completo em `openspec/roadmap/fatia-XX-<slug>.md` com as 7 seções obrigatórias de `_template-fatia.md` (auditado por `verificar-governanca.mjs`), detalhado o suficiente para que até um agente mais simples consiga implementá-la sem adivinhar regras.
-4. São marcos obrigatórios com intervenção humana:
+3. **Cláusula Anti-Preguiça no Planejamento e Subfatias Decimais (D18 + D25):** É proibido comprimir o planejamento das fatias em listas superficiais de um único arquivo. Cada fatia deve ter seu próprio documento completo em `openspec/roadmap/fatia-XX-<slug>.md` (ou `fatia-XX.Y-<slug>.md` no caso de subfatias decimais de encaixe) com as 7 seções obrigatórias de `_template-fatia.md` (auditado por `verificar-governanca.mjs`), detalhado o suficiente para que até um agente mais simples consiga implementá-la sem adivinhar regras.
+4. **Refinamento de Meio de Caminho e Subfatias Decimais (D25):** Quando novas ideias ou mudanças surgirem durante o projeto, o agente é obrigado a intervir via skill `refinar-ideia` (raio-X de complexidade oculta e poda construtiva). Se a novidade for um complemento natural de uma fatia pendente, ela deve ser encaixada imediatamente após a fatia-mãe como subfatia decimal (ex.: `fatia-02.1`), aproveitando o contexto de código fresco sem reordenar as fatias subsequentes.
+5. São marcos obrigatórios com intervenção humana:
    - **Gate 0:** Aprovação do escopo polido, da stack tecnológica/VPS/MCPs e do Mapa de Fatias Incrementais (`openspec/roadmap/`).
    - **Gate 1:** Aprovação do plano, desenho técnico e tarefas antes da implementação de Nível 2.
    - **Gate 2:** Aprovação da entrega mediante: (1) parecer favorável prévio do **Agente Revisor Independente** auditando código vs. roadmap, (2) resumo do que foi entregue, (3) Roteiro de Teste Prático Passo a Passo (onde está, como testar com dados de exemplo e comportamento visual esperado), (4) evidências reais de testes automatizados (vermelho/verde), (5) diff limpo e `CHANGELOG.md` atualizado, seguida pelo acionamento proativo da próxima fatia da fila.
