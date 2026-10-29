@@ -91,15 +91,15 @@ Antes de finalizar a tarefa ou commit:
    node scripts/verificar-governanca.mjs
    ```
 3. Atualize o arquivo `CHANGELOG.md` na seção correspondente (`### Adicionado` ou `### Modificado`).
-4. **Auditoria Prévia pelo Agente Revisor Independente (Artigo 12):**
-   - Invoque o Revisor Independente utilizando a skill `.agents/skills/revisar-fatia/SKILL.md`.
-   - O revisor audita o código implementado contra `openspec/roadmap/fatia-XX-<slug>.md`, checando fidelidade ao roadmap, testes substanciais, conformidade constitucional, ausência de trabalho invisível e clareza do roteiro prático.
-   - **Havendo ressalvas:** O executor DEVE corrigir os apontamentos e revalidar os testes antes de apresentar ao humano.
-   - **Aprovado sem ressalvas:** O parecer formal é anexado à mensagem do Gate 2.
+4. **Auditoria Factual Cega e Duelo de Conformidade (Artigo 12 / D26):**
+   - **Etapa A (Subagente Inspetor Forense):** Invoque o subagente (`.agents/skills/revisar-fatia/SKILL.md`) com instrução cega (sem o arquivo da fatia), para que ele inspecione o `git diff` e descreva literalmente em linguagem factual o que o código faz.
+   - **Etapa B (Duelo de Conformidade pelo Principal):** O Agente Principal recebe o relatório factual e cruza ponto a ponto com o arquivo físico `openspec/roadmap/fatia-XX-<slug>.md`.
+   - **Havendo omissões ou divergências:** O executor DEVE implementar o que faltou e revalidar os testes antes de apresentar ao humano.
+   - **Aprovado com 100% de conformidade:** O parecer e o resumo factual são anexados à mensagem do Gate 2.
 5. **Apresentação Obrigatória da Entrega no Chat (Gate 2):**
    É expressamente proibido apenas despejar logs ou perguntar aprovação sem roteiro prático. A mensagem DEVE conter:
    - **O que foi entregue:** Resumo claro do valor funcional construído nesta fatia.
-   - **📋 Parecer do Agente Revisor Independente:** Aprovado sem ressalvas (código validado contra o roadmap físico).
+   - **📋 Relatório Factual de Conformidade:** Prova detalhada de que o código implementado corresponde 100% às exigências de `openspec/roadmap/fatia-XX-<slug>.md`.
    - **🧪 Roteiro de Teste Prático (Validação Humana):**
      * **Onde acessar:** URL exata (ex.: `http://localhost:3000/painel/contatos`), comando CLI ou tela/modal onde o recurso se encontra.
      * **Passo a passo mastigado:** Ações numeradas para reproduzir o fluxo.

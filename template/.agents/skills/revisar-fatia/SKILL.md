@@ -1,86 +1,81 @@
 ---
 name: revisar-fatia
-description: Atua como Agente Revisor Independente Pré-Gate 2, auditando código, testes e documentação diretamente contra o arquivo openspec/roadmap/fatia-XX-*.md e as cláusulas pétreas da Constituição antes da aprovação de commit pelo humano.
+description: Executa a auditoria factual cega (Inspeção Forense) do código staged/não-commitado pelo Subagente e o Duelo de Conformidade contra o roadmap físico pelo Agente Principal antes do Gate 2.
 ---
 
-# Skill: Revisar Fatia (Agente Revisor Independente Pré-Gate 2)
+# Skill: Revisar Fatia (Auditoria Factual Cega e Duelo de Conformidade)
 
-Esta skill orienta o **Agente Revisor Independente** na auditoria imparcial e rigorosa de uma fatia recém-implementada, antes que ela seja submetida à aprovação do humano no Gate 2.
+Esta skill define o protocolo de auditoria de qualidade pré-Gate 2. Para eliminar o viés de confirmação e a preguiça de LLM ("carimbador de aprovações"), a auditoria é dividida em dois papéis estritamente separados:
 
-> **Princípio Fundamental:** Zero-Trust no Agente Executor. O revisor não assume que o código está certo porque o executor disse que está; ele audita diretamente os arquivos do repositório comparando-os com as especificações físicas.
-
----
-
-## 1. Como Iniciar a Revisão
-
-O Revisor Independente deve ser acionado assim que o executor concluir o ciclo de testes e implementação da fatia.
-1. Identifique a fatia em auditoria (ex.: `fatia-02-autenticacao`).
-2. Abra e leia integralmente o arquivo de especificação original:
-   - `openspec/roadmap/fatia-XX-<slug>.md`
-   - Delta em `openspec/changes/fatia-XX-<slug>/` (se ainda não arquivado) ou `openspec/changes/archive/fatia-XX-<slug>/`
-3. Inspecione o `git diff` dos arquivos implementados em relação ao branch base (`main`).
-
----
-
-## 2. Checklist de 5 Pontos de Auditoria
-
-O Revisor deve inspecionar rigorosamente estes 5 pilares:
-
-### Pilar 1: Fidelidade ao Roadmap Físico (Cláusula Pétrea — Artigo 12)
-- [ ] O código implementado atende fielmente ao **Objetivo** e **Contratos de Dados** (Seção 3 da fatia)?
-- [ ] Todas as tabelas, colunas e schemas Zod/Pydantic foram criados com nomes em **PT-BR** (Artigo 10)?
-- [ ] Alguma regra de negócio detalhada na Seção 5 da fatia foi esquecida ou alterada arbitrariamente?
-- [ ] As fronteiras de isolamento (Seção 2: o que NÃO fazer nesta fatia) foram respeitadas?
-
-### Pilar 2: Qualidade Real dos Testes Automatizados (Artigo 2)
-- [ ] Os testes automatizados cobrem cenários reais de negócio e casos de borda (Seção 6 da fatia)?
-- [ ] Os testes são substanciais e não apenas "testes de fumaça" vazios ou asserções triviais (`expect(true).toBe(true)`)?
-- [ ] O executor apresentou as evidências legítimas de falha prévia (**Vermelho**) e sucesso posterior (**Verde**)?
-
-### Pilar 3: Conformidade com Cláusulas Constitucionais
-- [ ] **Anti-Brinquedo (Artigo 1):** Tipagem estrita completa, sem uso de `any` ou type-casting inseguro.
-- [ ] **Zero Segredos (Artigo 3):** Nenhuma chave de API, token ou credencial exposta no código.
-- [ ] **Engenharia Frontend (Artigo 6):** 
-  - Ausência de `location.reload` ou atualizações forçadas de página.
-  - Implementação explícita dos 4 estados assíncronos (`loading`, `empty`, `error`, `success`).
-  - **Responsividade e PWA Inatas (Artigo 6, item 6):** Layout mobile-first testado sem overflow horizontal (320px+) e manifesto web configurado se houver interface.
-- [ ] **Engenharia Backend (Artigo 7):** Validação estrita na borda (Zero-Trust Anti-F12) e transações atômicas onde aplicável.
-
-### Pilar 4: Fronteira Estrita de Escopo (Anti-Trabalho Invisível)
-- [ ] O executor tocou apenas nos arquivos necessários para a entrega desta fatia?
-- [ ] Não houve refatorações não-autorizadas em arquivos legados ou módulos fora do escopo?
-
-### Pilar 5: Exatidão do Roteiro de Teste Prático do Usuário (Artigo 2 e 8)
-- [ ] O roteiro de teste passo a passo para o humano está completo?
-- [ ] A rota / comando de acesso está correta?
-- [ ] Os dados de exemplo fornecidos para teste manual são válidos e fáceis de copiar e colar?
-- [ ] O comportamento visual esperado descrito corresponde ao que o código realmente renderiza?
-
----
-
-## 3. Emissão do Parecer Formal
-
-Ao concluir a auditoria, o Revisor Independente emite um relatório padronizado:
-
-### Cenário A: Aprovação Sem Ressalvas
-```markdown
-### 📋 Parecer do Agente Revisor Independente: APROVADO SEM RESSALVAS
-- **Fatia Auditada:** `openspec/roadmap/fatia-XX-<slug>.md`
-- **Fidelidade ao Roadmap:** 100% aderente aos contratos e regras especificadas.
-- **Testes Automatizados:** Testes substanciais e comprovados (Vermelho → Verde).
-- **Conformidade Constitucional:** Aprovada (tipagem estrita, PT-BR, responsividade PWA e 4 estados de UI).
-- **Roteiro de Validação Prática:** Claro e pronto para execução pelo usuário humano.
-
--> Veredito: A fatia está pronta para apresentação no Gate 2 e solicitação de commit ao humano.
+```mermaid
+flowchart TD
+    A["Código Staged Não-Commitado (git diff)"] --> B["1. Subagente Inspetor Forense (Auditoria Cega)"]
+    B -->|Traduz código em linguagem literal fria| C["Relatório Factual do Código"]
+    C --> D["2. Agente Principal (Duelo de Conformidade)"]
+    E["openspec/roadmap/fatia-XX-*.md"] --> D
+    D -->|Cruza Fato Real vs. Requisito Escrito| F{"100% das regras e contratos atendidos?"}
+    F -->|Não: Omissão / Divergência| G["Executor Corrige Código e Testes"]
+    G --> A
+    F -->|Sim: Conformidade Comprovada| H["Gate 2 com Evidência Factual Inegável"]
 ```
 
-### Cenário B: Ajustes Necessários (Bloqueio do Gate 2)
-```markdown
-### ⚠️ Parecer do Agente Revisor Independente: AJUSTES NECESSÁRIOS
-O Gate 2 está suspenso até que o Agente Executor corrija as seguintes pendências:
-1. **[Divergência de Roadmap]:** A coluna `status_pedido` foi criada como string livre em vez do enum especificado na Seção 3.
-2. **[Padrão Frontend]:** O componente `ListaFunis` não implementou o estado `empty` (mensagem quando não houver registros).
-3. **[Teste Incompleto]:** Falta o teste automatizado do caso de borda para payload sem e-mail.
+---
 
--> Ação exigida do Executor: Corrija os itens acima, revalide a suíte de testes e submeta novamente para revisão antes de chamar o humano.
+## 1. Papel 1: O Subagente Inspetor Forense (Auditoria Cega)
+
+O Subagente Inspetor é convocado com uma instrução deliberadamente cega: **ele NÃO deve ler o arquivo de roadmap (`openspec/roadmap/fatia-XX-*.md`)**. Ele não sabe o que *deveria* ter sido feito, evitando qualquer simpatia contextual ou suposição de intenção.
+
+### Missão do Inspetor:
+Inspecionar o código modificado (`git diff` dos arquivos staged) e traduzir em **linguagem literal e factual** exatamente o que o código está fazendo na prática.
+
+### Estrutura do Relatório Factual do Inspetor:
+```markdown
+### 🕵️ Relatório Factual do Código (Inspeção Forense Cega)
+
+1. **Arquivos Tocados:**
+   - Lista exata dos arquivos criados e modificados.
+2. **Entidades, Banco e Schemas:**
+   - Quais tabelas, colunas e enums foram criados? (Nomes literais exatos).
+   - Quais schemas de validação de entrada/saída existem e quais campos exigem?
+3. **Regras de Negócio e Validações Implementadas:**
+   - O que o código realmente valida na prática? (Ex.: checa se e-mail tem `@`, se valor é maior que zero, etc.).
+   - Quais checagens de autorização/permissão são feitas antes de persistir dados?
+4. **Tratamento de Erros e Exceções:**
+   - Quais exceções são tratadas e quais códigos HTTP/mensagens são retornados?
+   - Existem blocos `catch` vazios ou erros engolidos silenciosamente?
+5. **Interface e Estados Visuais (se aplicável):**
+   - Quais rotas e componentes visuais foram adicionados?
+   - Os 4 estados assíncronos (`loading`, `empty`, `error`, `success`) existem explicitamente no código?
+   - Há indícios de `location.reload` ou atualizações forçadas de tela?
+   - O layout é mobile-first e há manifesto PWA se for app web?
+6. **Lacunas, Mocks e Pendências Factualmente Observadas:**
+   - Há dados fictícios fixos no código (hardcoded mocks)?
+   - Há funções vazias, retornos simulados ou comentários `TODO`/`FIXME` deixados?
 ```
+
+---
+
+## 2. Papel 2: O Agente Principal (Duelo de Conformidade)
+
+O Agente Principal recebe o **Relatório Factual do Inspetor**, abre o arquivo físico [`openspec/roadmap/fatia-XX-<slug>.md`](../../openspec/roadmap/_template-fatia.md) e realiza o **Duelo Fato vs. Requisito**:
+
+### Tabela do Duelo de Conformidade:
+| Seção do Roadmap Físico | O que a Fatia Exigia | O que o Relatório Factual Provou | Status |
+|---|---|---|---|
+| **Seção 3 (Contratos/Banco)** | *Tabela `contatos` com colunas em PT-BR* | *Tabela `contatos` criada com `nome`, `email`, `telefone`* | ✅ Atendido |
+| **Seção 4 (Estados de UI)** | *4 estados (`loading`, `empty`, `error`, `success`)* | *Componente possui skeletons, mensagem de lista vazia e toast de erro* | ✅ Atendido |
+| **Seção 5 (Regras Backend)** | *Impedir e-mail duplicado por tenant* | *Validação no banco e na rota rejeitando duplicata com status 409* | ✅ Atendido |
+| **Seção 6 (Test-First)** | *Testes automatizados cobrindo caso de borda* | *Testes unitários e de integração cobrindo erro e sucesso* | ✅ Atendido |
+
+---
+
+## 3. Decisão do Agente Principal
+
+### Se Houver Divergência ou Omissão:
+O Agente Principal **NÃO apresenta o Gate 2 ao humano**. Ele:
+1. Implementa a regra ou estado que o relatório factual comprovou estar faltando.
+2. Executa os testes automatizados garantindo que continuem passando verde.
+3. Repete a inspeção factual se a alteração tiver sido substancial.
+
+### Se 100% Conforme:
+O Agente Principal anexa o resumo factual da auditoria e a comprovação de conformidade diretamente no chat do **Gate 2**, dando ao humano certeza matemática de que o código entrega exatamente o que a especificação pedia.

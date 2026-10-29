@@ -1,4 +1,4 @@
-<!-- governanca:inicio v2.4.0 — não edite este bloco; alterações no repositório da governança -->
+<!-- governanca:inicio v2.5.0 — não edite este bloco; alterações no repositório da governança -->
 # Instruções Gerais para Agentes de IA — Governança v2
 
 > **Papel:** Fonte única da verdade para todos os agentes e assistentes de IA que operam neste repositório.
@@ -64,10 +64,10 @@ Ao ser iniciado em um repositório, identifique o estado atual antes de agir:
   ```
 - **Gate 1 (Aprovação de Plano e Desenho Técnico):** Sem commit de código. Leitura física comprovada do roadmap, alinhamento de escopo, delta no OpenSpec e tarefas antes de codificar.
 - **Marco 2 — Fechamento de Fatia ou Correção (Gate 2):** Ao término da implementação, o fluxo segue 2 níveis obrigatórios:
-  1. **Auditoria pelo Agente Revisor Independente:** Antes de chamar o humano, o executor aciona o Revisor Independente (`.agents/skills/revisar-fatia/SKILL.md`) para auditar código vs. roadmap físico. Havendo ressalvas, o executor deve corrigir antes de incomodar o humano.
-  2. **Apresentação ao Humano no Chat:** Com o parecer favorável do Revisor, o agente apresenta a entrega estruturada:
+  1. **Auditoria Factual Cega e Duelo de Conformidade (Artigo 12 / D26):** Antes de chamar o humano, o executor aciona o **Subagente Inspetor Forense** (`.agents/skills/revisar-fatia/SKILL.md`) para inspecionar o `git diff` de forma cega (sem ler o roadmap), traduzindo literalmente o que o código faz. Em seguida, o **Agente Principal** cruza esse relatório factual contra o arquivo físico `openspec/roadmap/fatia-XX-*.md`. Se faltar qualquer regra ou estado, o executor corrige antes de incomodar o humano.
+  2. **Apresentação ao Humano no Chat:** Comprovada a conformidade factual, o agente apresenta a entrega estruturada:
      * *O que foi entregue e valor funcional gerado.*
-     * *📋 Parecer do Agente Revisor Independente (Aprovado sem ressalvas).*
+     * *📋 Parecer Factual de Conformidade (Código validado contra o roadmap físico).*
      * *🧪 Roteiro de Teste Prático (onde acessar, passo a passo com dados de teste e comportamento visual esperado).*
      * *Evidências de testes automatizados (saída vermelha e verde).*
      * *Diff limpo e CHANGELOG atualizado.*

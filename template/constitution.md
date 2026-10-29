@@ -1,4 +1,4 @@
-<!-- governanca:inicio v2.4.0 — não edite este bloco; alterações no repositório da governança -->
+<!-- governanca:inicio v2.5.0 — não edite este bloco; alterações no repositório da governança -->
 # Constituição do Projeto — Governança v2
 
 > **Papel:** Lei Suprema do repositório. Cláusulas pétreas obrigatórias para agentes de IA e desenvolvedores humanos.
@@ -94,7 +94,7 @@
 5. São marcos obrigatórios com intervenção humana:
    - **Gate 0:** Aprovação do escopo polido, da stack tecnológica/VPS/MCPs e do Mapa de Fatias Incrementais (`openspec/roadmap/`).
    - **Gate 1:** Aprovação do plano, desenho técnico e tarefas antes da implementação de Nível 2.
-   - **Gate 2:** Aprovação da entrega mediante: (1) parecer favorável prévio do **Agente Revisor Independente** auditando código vs. roadmap, (2) resumo do que foi entregue, (3) Roteiro de Teste Prático Passo a Passo (onde está, como testar com dados de exemplo e comportamento visual esperado), (4) evidências reais de testes automatizados (vermelho/verde), (5) diff limpo e `CHANGELOG.md` atualizado, seguida pelo acionamento proativo da próxima fatia da fila.
+   - **Gate 2:** Aprovação da entrega mediante: (1) auditoria factual prévia (Subagente Inspetor Forense em inspeção cega + Duelo de Conformidade pelo Agente Principal contra o roadmap físico), (2) resumo do que foi entregue, (3) Roteiro de Teste Prático Passo a Passo (onde está, como testar com dados de exemplo e comportamento visual esperado), (4) evidências reais de testes automatizados (vermelho/verde), (5) diff limpo e `CHANGELOG.md` atualizado, seguida pelo acionamento proativo da próxima fatia da fila.
 
 ---
 
@@ -134,7 +134,7 @@ Se durante a execução de uma tarefa o agente falhar 3 vezes consecutivas no me
    - Submeter o plano e desenho técnico para aprovação no Gate 1.
    - **Escrever a primeira linha de teste automatizado ou código de produção.**
 3. **Evidência Explícita de Alinhamento:** Ao abrir o Gate 1 ou convidar o humano para a próxima fatia, o agente deve citar textualmente os objetivos e contratos definidos no arquivo de roadmap físico, provando que não inventou o escopo. Qualquer divergência entre a proposta do agente e o roadmap físico anula o Gate 1.
-4. **Revisão Independente Pré-Gate 2:** Concluída a implementação de qualquer fatia, é mandatório acionar um **Agente Revisor Independente** (com contexto limpo) para comparar o código e os testes implementados diretamente contra o arquivo `openspec/roadmap/fatia-XX-*.md`. O commit só pode ser solicitado ao humano após o parecer favorável do revisor.
+4. **Auditoria Factual Cega Pré-Gate 2 (D26):** Concluída a implementação de qualquer fatia, é mandatório acionar o **Subagente Inspetor Forense** (`revisar-fatia`) para inspecionar cegamente o código modificado (`git diff`) sem ler o roadmap, traduzindo em linguagem literal e factual tudo o que o código implementou, validou ou omitiu. Em seguida, o **Agente Principal** cruza o relatório factual ponto a ponto contra o arquivo físico `openspec/roadmap/fatia-XX-*.md` (Duelo de Conformidade). Havendo omissões ou divergências, o executor deve corrigir o código antes de qualquer apresentação ao humano; o commit só pode ser solicitado após a conformidade comprovada.
 5. **Higiene de Contexto Preventiva:** Para prevenir a degradação de contexto (*Context Rot*), ao concluir o Gate 2 de uma entrega, o agente deve orientar formalmente o humano a renovar a sessão (`/compact` ou abertura de nova conversa limpa) antes de puxar a próxima fatia da fila.
 <!-- governanca:fim -->
 

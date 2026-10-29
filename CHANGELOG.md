@@ -5,6 +5,14 @@ O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.
 
 ---
 
+## [2.5.0] - 2026-10-29
+
+### Adicionado
+- **Auditoria Factual Cega Pré-Gate 2 (D26):** Reformulação da skill `.agents/skills/revisar-fatia/SKILL.md` dividindo a revisão em dois papéis complementares: (1) o Subagente Inspetor Forense analisa cegamente o `git diff` (sem ler o roadmap) gerando um relatório descritivo factual ("o que o código realmente faz e omite"), e (2) o Agente Principal confronta esse relatório ponto a ponto contra o arquivo físico `openspec/roadmap/fatia-XX-*.md` (Duelo de Conformidade), corrigindo divergências antes de apresentar o Gate 2 ao humano.
+- **Constituição e Instruções:** Artigo 8, Artigo 12, `AGENTS.md` e `ciclo-especificacao` atualizados com o protocolo de auditoria factual cega.
+
+---
+
 ## [2.4.0] - 2026-10-29
 
 ### Adicionado
