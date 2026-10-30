@@ -5,6 +5,20 @@ O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.
 
 ---
 
+## [3.2.0] - 2026-10-30
+
+### Adicionado
+- **Inbox Móvel de Ideias (Mobile-to-Agent):**
+  - Skill `refinar-ideia` enriquecida com o **Passo 0 (Captura do Inbox Linear)**: o agente consulta notas e tarefas anotadas pelo usuário no celular pelo app do Linear (`Backlog`, `Triage`, `Todo`), apresenta um menu de seleção e carrega o escopo bruto para o raio-X e poda construtiva.
+  - Suporte a gatilhos em linguagem natural: *"veja o que tem no Linear"*, *"puxe as ideias do celular"*, *"quais tarefas novas tem no Linear?"*, `/linear-inbox`.
+- **Suporte Híbrido a Identificador e URL do Linear:**
+  - `copier.yml` e `project.md.jinja` atualizados para aceitar tanto o Identificador único copiado via *"Copiar documento de identidade"* no Linear (ex: `P-RR-2`) quanto a URL completa do projeto.
+- **Auto-Governança Deste Repositório (Dogfooding Limpo):**
+  - O próprio repositório da governança passa a ser gerido sob seu protocolo, ancorado no projeto `P-RR-2` (`GOV-AGENTS-V2`) do Linear.
+  - Blindagem total via `_subdirectory: template`: os arquivos de governança interna da raiz (`openspec/`, `.mcp.json`) não vazam para projetos criados ou atualizados via Copier.
+
+---
+
 ## [3.1.0] - 2026-10-30
 
 ### Adicionado

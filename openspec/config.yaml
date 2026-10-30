@@ -1,0 +1,34 @@
+schema: spec-driven
+githubCopilot:
+  cloudAgent: false
+
+# Contexto global do projeto injetado automaticamente nos prompts de planejamento
+context: |
+  Projeto: governanca-de-agentes-v2
+  Descrição: Protocolo agêntico aberto para desenvolvimento de software com agentes de inteligência artificial.
+  Diretrizes Centrais: Obedeça integralmente a constitution.md e AGENTS.md.
+  Idioma: Nomes de domínio, contratos, tabelas e mensagens de commit em Português do Brasil (PT-BR). Termos técnicos em Inglês.
+  Padrões Obrigatórios:
+  - Test-First mandatório (teste falhando no terminal antes do código de produção).
+  - Tipagem estrita e validação de schema declarativa na fronteira (Zod / Pydantic / Serde).
+  - Interface web responsiva mobile-first (320px+) e portabilidade PWA inata.
+  - Reatividade limpa: proibido location.reload() ou recarregamentos forçados de tela.
+  - Feedback visual garantido: Toasts reativos para mutações de dados e Modais de confirmação para ações destrutivas.
+
+# Regras determinísticas aplicadas a cada artefato do OpenSpec
+rules:
+  proposal:
+    - O porquê da mudança deve estar claro e justificado
+    - O escopo deve ser fechado (definir explicitamente o que entra e o que fica de fora)
+    - Vincular a fatia ou subfatia correspondente do roadmap
+  specs:
+    - Estruturar em deltas usando cabeçalhos oficiais (## ADDED Requirements, ## MODIFIED Requirements, etc.)
+    - Cada requisito deve conter ao menos um cenário de teste '#### Scenario:' com Given / When / Then
+    - Especificar contratos de dados e tabelas com nomes em Português do Brasil
+  design:
+    - Especificar contratos de interface e schemas de validação
+    - Detalhar os 4 estados assíncronos fundamentais (loading, empty, error, success)
+    - Documentar Toasts de mutação e Modais de confirmação necessários
+  tasks:
+    - Cada tarefa deve seguir o ciclo Test-First (teste automatizado unitário ou de integração antes do código)
+    - As tarefas devem ser atômicas e sequenciais

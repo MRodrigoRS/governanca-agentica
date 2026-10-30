@@ -64,11 +64,11 @@
 ## 5. Integração com Linear (Diário de Bordo & Gestão)
 
 - **Servidor MCP:** Linear Hosted Remote Server (`mcp-remote https://mcp.linear.app/mcp`)
-{% if linear_project_url %}
-- **Projeto Linear (Âncora Oficial):** [Abrir Projeto no Linear]({{ linear_project_url }})
-- **URL da Âncora:** `{{ linear_project_url }}`
+{% if linear_project %}
+- **Projeto Linear (Âncora Oficial):** {% if linear_project.startswith('http') %}[Abrir Projeto no Linear]({{ linear_project }}){% else %}`{{ linear_project }}`{% endif %}
+- **Identificador / URL da Âncora:** `{{ linear_project }}`
 {% else %}
-- **Projeto Linear (Âncora Oficial):** [A definir na primeira conexão ou via URL do projeto]
+- **Projeto Linear (Âncora Oficial):** [A definir na primeira conexão ou via Identificador/URL do projeto]
 {% endif %}
 - **Regras Operacionais para Agentes:**
   1. **Isolamento de Escopo:** O agente opera estritamente dentro deste projeto e de suas equipes associadas no Linear. É proibido tocar em issues de outras equipes.

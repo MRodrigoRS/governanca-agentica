@@ -1,11 +1,11 @@
 ---
 name: refinar-ideia
-description: Intervém quando surge uma nova ideia ou solicitação de mudança no meio do projeto. Executa raio-X de complexidade oculta, poda excessos (entra vs. sai), analisa afinidade no roadmap e encaixa a entrega como subfatia decimal (ex.: fatia-02.1) ou nova fatia inteira.
+description: Intervém quando surge uma nova ideia (no chat ou capturada no Linear pelo celular). Executa raio-X de complexidade oculta, poda excessos (entra vs. sai), analisa afinidade no roadmap e encaixa a entrega como subfatia alfanumérica (ex.: fatia-02a) ou nova fatia inteira.
 ---
 
 # Skill: Refinar Ideia e Podar Escopo (`refinar-ideia`)
 
-Esta skill orienta o agente na intervenção preventiva quando o usuário propõe uma ideia nova, alteração de regras ou adição de funcionalidade durante o desenvolvimento do projeto.
+Esta skill orienta o agente na intervenção preventiva quando o usuário propõe uma ideia nova, alteração de regras ou adição de funcionalidade durante o desenvolvimento do projeto — seja falada diretamente no chat ou capturada pelo celular no aplicativo móvel do Linear.
 
 > **Postura do Agente:** Gerente de Produto Sênior e Engenheiro Cético. É proibido aceitar ideias cruas ou sair codando imediatamente. O agente deve expor a complexidade oculta ("efeito iceberg"), propor a poda radical e encaixar a solução de forma cirúrgica no roadmap existente.
 
@@ -15,6 +15,7 @@ Esta skill orienta o agente na intervenção preventiva quando o usuário propõ
 
 Esta skill deve ser acionada sempre que:
 - O usuário disser *"tive uma ideia"*, *"vamos adicionar X"*, *"precisamos mudar Y"*, *"e se a gente fizesse Z?"*.
+- O usuário pedir para sincronizar ou verificar ideias anotadas no celular via Linear: *"veja o que tem no Linear"*, *"puxe as ideias do celular"*, *"quais tarefas novas tem no Linear?"*, `/linear-inbox`.
 - O usuário enviar os comandos `/refinar` ou `/podar`.
 - O agente perceber que o usuário está solicitando uma funcionalidade não contemplada no planejamento original da fatia ativa.
 
@@ -22,7 +23,19 @@ Esta skill deve ser acionada sempre que:
 
 ---
 
-## 2. Protocolo de Execução em 4 Passos
+## 2. Protocolo de Execução
+
+### Passo 0 — Captura do Inbox Móvel do Linear (Mobile-to-Agent)
+Se o acionamento for motivado por notas/ideias registradas no Linear (via celular ou web):
+1. O agente consulta o servidor Linear MCP dentro do projeto ancorado em `openspec/project.md` (buscando issues em status `Backlog`, `Triage` ou `Todo`).
+2. O agente apresenta as ideias encontradas em uma lista numerada para escolha do usuário:
+   > *"📱 **Notas encontradas no Linear:**\n" +
+   > "1. `[LIN-101]` Notificações por WhatsApp no agendamento\n" +
+   > "2. `[LIN-102]` Exportar relatório em PDF com resumo mensal\n" +
+   > "Qual delas gostaria de refinar e transformar em fatia agora?"*
+3. O usuário seleciona a ideia desejada (ou o agente recomenda prioridade técnica). O título e a descrição da issue são carregados automaticamente como matéria-prima para o **Passo 1**.
+
+---
 
 ### Passo 1 — Raio-X de Complexidade Oculta (O Efeito Iceberg)
 Ideias novas costumam parecer triviais na imaginação, mas carregam impactos profundos de engenharia. O agente deve mapear e apresentar em português claro os pontos cegos da ideia:

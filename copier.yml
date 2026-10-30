@@ -48,9 +48,9 @@ integrar_linear:
   help: "Pré-configurar integração oficial com Linear MCP (gestão de tarefas e diário da equipe)?"
   default: false
 
-linear_project_url:
+linear_project:
   type: str
-  help: "URL do Projeto no Linear (copiada no Linear via 'Copiar URL' ou barra do navegador)"
+  help: "Identificador ou URL do Projeto no Linear (ex: P-RR-2 copiado via 'Copiar documento de identidade' ou URL)"
   default: ""
   when: "{{ integrar_linear }}"
 
