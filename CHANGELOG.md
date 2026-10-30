@@ -9,12 +9,13 @@ O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.
 
 ### Adicionado
 - **Integração Oficial com Linear MCP & Diário de Bordo da Equipe (D29):**
-  - Pergunta opcional no `copier.yml` (`integrar_linear: bool`, default `false`) permitindo pré-configurar o Linear sob demanda sem ruído para quem não o utiliza.
+  - Pergunta opcional no `copier.yml` (`integrar_linear: bool`, default `false`) e captura de âncora de projeto (`linear_project_url: str`).
+  - **Isolamento Estrito de Projetos e Equipes:** Registro da URL do projeto em `openspec/project.md`, garantindo que o agente opere exclusivamente dentro do escopo do projeto selecionado, prevenindo poluição cruzada em organizações com múltiplas equipes.
   - Templates Jinja para MCP (`template/.mcp.json.jinja`, `template/.cursor/mcp.json.jinja`, `template/.vscode/mcp.json.jinja`) conectando diretamente ao Hosted Remote MCP Server oficial da Linear (`https://mcp.linear.app/mcp`) via conector `mcp-remote`.
   - Diretrizes operacionais em `AGENTS.md` e na skill `ciclo-especificacao`:
     * **Gate 1:** Vínculo automático da fatia à issue correspondente no Linear (`[LIN-XXX] fatia-XXa-...`) e transição para *In Progress*.
-    * **Gate 2 (Diário de Bordo):** Publicação de comentário de fechamento ou *Project Update* com resumo funcional e roteiro prático, movendo a issue para *Done*.
-    * **Skill `refinar-ideia`:** Ideias podadas ou despriorizadas são enviadas para o Backlog/Triage do Linear para acompanhamento futuro da equipe.
+    * **Gate 2 (Diário de Bordo):** Publicação oficial de *Project Update* no mural do projeto com resumo funcional e roteiro prático, movendo a issue para *Done*.
+    * **Skill `refinar-ideia`:** Ideias podadas ou despriorizadas são enviadas para o Backlog do mesmo projeto no Linear para acompanhamento futuro da equipe.
   - Documentação do Linear MCP adicionada ao catálogo de ferramentas de infraestrutura e stacks em `catalogo-stacks.md`.
 
 ---

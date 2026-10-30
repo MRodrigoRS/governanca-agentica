@@ -58,10 +58,27 @@
 - `docs/adr/`: Decisões Arquiteturais Relevantes no formato MADR.
 - `scripts/`: Scripts determinísticos de fiscalização da governança.
 - `CHANGELOG.md`: Registro contínuo de versões e entregas (Keep a Changelog).
-
+{% if integrar_linear %}
 ---
 
-## 5. Comandos Essenciais
+## 5. Integração com Linear (Diário de Bordo & Gestão)
+
+- **Servidor MCP:** Linear Hosted Remote Server (`mcp-remote https://mcp.linear.app/mcp`)
+{% if linear_project_url %}
+- **Projeto Linear (Âncora Oficial):** [Abrir Projeto no Linear]({{ linear_project_url }})
+- **URL da Âncora:** `{{ linear_project_url }}`
+{% else %}
+- **Projeto Linear (Âncora Oficial):** [A definir na primeira conexão ou via URL do projeto]
+{% endif %}
+- **Regras Operacionais para Agentes:**
+  1. **Isolamento de Escopo:** O agente opera estritamente dentro deste projeto e de suas equipes associadas no Linear. É proibido tocar em issues de outras equipes.
+  2. **Gate 1:** Localiza ou cria a issue associada à fatia (`[LIN-XXX] fatia-XXa-...`) dentro deste projeto e move para *In Progress*.
+  3. **Gate 2 (Diário de Bordo):** Publica a atualização oficial do projeto (*Project Update*) com o resumo de valor funcional entregue e o roteiro de teste, marcando a issue como *Done*.
+  4. **Poda de Ideias (`refinar-ideia`):** Registra ideias despriorizadas ou podadas diretamente no Backlog deste projeto.
+{% endif %}
+---
+
+## 6. Comandos Essenciais
 
 ```bash
 # Validação determinística de governança (código, cerimônia e anti-preguiça nas fatias)

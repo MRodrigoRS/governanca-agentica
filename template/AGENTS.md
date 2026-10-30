@@ -97,9 +97,10 @@ Ao ser iniciado em um repositório, identifique o estado atual antes de agir:
 - **Servidores MCP Oficiais (.mcp.json):**
   - `context7`: Consulta a documentações técnicas oficiais e atualizadas.
   - `linear` (opcional/configurado): Coordenação de backlog, issues e **Diário de Bordo** da equipe.
-    * *Gate 1:* Localiza ou vincula a issue correspondente (`[LIN-XXX] fatia-XXa-...`) e move para *In Progress*.
-    * *Gate 2:* Publica atualização de fechamento / *Project Update* com resumo funcional e roteiro prático, movendo para *Done*.
-    * *Refinamento de Ideias:* Encaminha ideias despriorizadas para o Backlog/Triage do Linear.
+    * *Âncora Obrigatória de Projeto:* Toda operação do agente é restrita ao projeto definido pela URL/ID em `openspec/project.md`. É proibido tocar em issues de outras equipes ou outros projetos da organização.
+    * *Gate 1:* Localiza ou cria a issue correspondente dentro deste projeto (`[LIN-XXX] fatia-XXa-...`) e move para *In Progress*.
+    * *Gate 2:* Publica a atualização oficial do projeto (*Project Update*) com resumo funcional e roteiro prático, movendo a issue para *Done*.
+    * *Refinamento de Ideias:* Encaminha ideias despriorizadas para o Backlog deste mesmo projeto no Linear.
 - **Skills Ativas:** Diretório `.agents/skills/` (`inicializar-stack`, `ciclo-especificacao`, `refinar-ideia`, `explorar-produto`, `revisar-fatia`, `atualizar-governanca`).
 <!-- governanca:fim -->
 
