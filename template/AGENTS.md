@@ -84,7 +84,7 @@ Ao ser iniciado em um repositório, identifique o estado atual antes de agir:
 
 ---
 
-## 6. Recursos e Ferramentas
+## 6. Recursos, Ferramentas e MCPs
 
 - **Cláusulas Pétreas:** Leia integralmente @[constitution.md](constitution.md).
 - **Configuração OpenSpec:** Arquivo `openspec/config.yaml` com regras e contexto global.
@@ -94,6 +94,12 @@ Ao ser iniciado em um repositório, identifique o estado atual antes de agir:
 - **Registros de Arquitetura (ADRs):** Diretório `docs/adr/` no formato MADR.
 - **Hooks Nativos de Agente:** Arquivo `.agents/hooks.json` e `.claude/settings.json`.
 - **Subagente Inspetor Forense:** `.claude/agents/inspetor-forense.md` e `.github/agents/inspetor-forense.agent.md`.
+- **Servidores MCP Oficiais (.mcp.json):**
+  - `context7`: Consulta a documentações técnicas oficiais e atualizadas.
+  - `linear` (opcional/configurado): Coordenação de backlog, issues e **Diário de Bordo** da equipe.
+    * *Gate 1:* Localiza ou vincula a issue correspondente (`[LIN-XXX] fatia-XXa-...`) e move para *In Progress*.
+    * *Gate 2:* Publica atualização de fechamento / *Project Update* com resumo funcional e roteiro prático, movendo para *Done*.
+    * *Refinamento de Ideias:* Encaminha ideias despriorizadas para o Backlog/Triage do Linear.
 - **Skills Ativas:** Diretório `.agents/skills/` (`inicializar-stack`, `ciclo-especificacao`, `refinar-ideia`, `explorar-produto`, `revisar-fatia`, `atualizar-governanca`).
 <!-- governanca:fim -->
 

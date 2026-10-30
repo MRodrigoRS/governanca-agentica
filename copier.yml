@@ -42,3 +42,9 @@ autor_email:
   type: str
   help: "E-mail de contato do autor ou equipe"
   default: "dev@exemplo.com"
+
+integrar_linear:
+  type: bool
+  help: "Pré-configurar integração oficial com Linear MCP (gestão de tarefas e diário da equipe)?"
+  default: false
+

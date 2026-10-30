@@ -64,6 +64,8 @@ Antes de iniciar, determine o nível adequado:
 > **PARADA OBRIGATÓRIA:** Apresente ao humano a proposta, o desenho técnico e as tarefas da fatia atual.
 > Pergunte: *"Você aprova este plano e desenho técnico da Fatia XX para iniciarmos a implementação?"*
 > **Nenhum código de produção deve ser escrito antes da aprovação do Gate 1.**
+> 
+> *(Sincronização Linear MCP):* Caso o MCP `linear` esteja configurado, localize ou associe a issue correspondente no Linear (`[LIN-XXX] fatia-XXa-...`) e atualize seu estado para *In Progress*.
 
 ---
 
@@ -120,6 +122,7 @@ Antes de finalizar a tarefa ou commit:
        ```bash
        git commit -m "feat(<escopo>): <descrição clara em português>"
        ```
+     - *(Diário de Bordo no Linear MCP):* Caso o MCP `linear` esteja configurado, publique um comentário na issue ou um *Project Update* com o resumo do que foi entregue e o roteiro de validação, marcando a issue como *Done*.
 7. **Condução Proativa e Prevenção de Context Rot (Artigo 12):** Imediatamente após o commit da fatia atual, consulte o Mapa de Fatias em `openspec/project.md`, identifique a próxima fatia `[ ] Pendente` e convide o humano:
    > *"Fatia XX concluída e blindada! Pelo nosso Mapa de Fatias, o próximo passo natural é a **Fatia YY (`openspec/roadmap/fatia-YY-...`)**, que aproveita o que acabamos de criar para entregar [resumo lido do arquivo].*
    >

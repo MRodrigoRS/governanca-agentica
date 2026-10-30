@@ -164,6 +164,11 @@ Para que o agente não trabalhe isolado nem invente convenções, toda base inic
 ### A. MCPs Padrão Injetados na Governança
 - **Context7 MCP (`@upstash/context7-mcp`):** Configurado em `.mcp.json`, `.cursor/mcp.json` e `.vscode/mcp.json`. Fornece documentação oficial atualizada e assinaturas de métodos diretamente ao LLM sob demanda, eliminando alucinações de versões antigas.
 - **Playwright MCP (`@playwright/mcp`):** Permite ao agente navegar no browser real nos viewports de 320px e desktop, comprovando visualmente estados assíncronos, toasts e modais de confirmação antes do Gate 2.
+- **Linear MCP (Oficial via Remote Server `https://mcp.linear.app/mcp`):** Conecta o agente ao fluxo de gestão e diário de bordo do time:
+  * Associa a fatia à issue correspondente no Gate 1 (`[LIN-XXX]`).
+  * Publica **Project Updates** e resumos de entrega com roteiro prático no Gate 2.
+  * Encaminha ideias despriorizadas pelo `refinar-ideia` para o Backlog/Triage do Linear.
+  * *Ativação:* Selecione `integrar_linear: true` na inicialização do Copier ou conecte via `npx -y mcp-remote https://mcp.linear.app/mcp`.
 
 ### B. Agent Skills Oficiais (`npx skills add <repositorio>`)
 Durante o Gate 0, o agente instala as skills oficiais mantidas pelos criadores das tecnologias adotadas:

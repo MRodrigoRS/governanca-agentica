@@ -73,6 +73,7 @@ Se a novidade for um módulo novo e autônomo (ex.: um novo painel financeiro de
 #### Caso C: Ideia Descartada ou Estacionada
 Se no polimento o humano concordar que a ideia não deve entrar no roadmap agora:
 * Registre a inteligência da discussão no arquivo `openspec/radar-oportunidades.md` na seção apropriada.
+* *(Linear MCP):* Caso o MCP `linear` esteja configurado, crie a issue no Backlog/Triage do Linear para acompanhamento futuro da equipe.
 * Nenhum arquivo de fatia é criado.
 
 ---
