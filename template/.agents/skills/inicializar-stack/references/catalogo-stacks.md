@@ -176,5 +176,12 @@ Durante o Gate 0, o agente instala as skills oficiais mantidas pelos criadores d
 - **Ecossistema Backend / Supabase:** `npx --yes skills add supabase/agent-skills`
 - **Ecossistema de Testes E2E:** `npx --yes skills add microsoft/playwright`
 
+### C. Controle Leve de Complexidade via Linter Oficial (Zero Custo de Tokens)
+Em vez de criar scripts caseiros ou rodar mutadores físicos pesados (que consomem horas e dezenas de dólares em tokens lendo logs gigantescos), o controle de complexidade e duplicação é delegado exclusivamente a regras nativas do linter oficial da stack:
+- **Biome (JS/TS):** Ativar a regra de complexidade cognitiva (`complexity: { noExcessiveCognitiveComplexity: "warn" }`).
+- **ESLint (JS/TS):** Ativar o limite cyclomatic padrão (`"complexity": ["warn", 10]`).
+- **Ruff (Python):** Ativar a métrica de complexidade McCabe (`C901` com `max-complexity = 10`).
+- **Proibição de Mutadores Pesados no Fluxo Padrão:** É terminantemente proibido instalar ou rodar frameworks pesados de mutação física de código (como Stryker ou Mutmut) ou geradores de relatórios em massa (`matrix/`) no fluxo padrão de pre-commit e CI, preservando velocidade instantânea (< 50ms) e economia estrita de tokens.
+
 
 

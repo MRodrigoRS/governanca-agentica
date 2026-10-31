@@ -74,9 +74,13 @@ Antes de iniciar, determine o nível adequado:
 > **RELEITURA PRÉ-CÓDIGO (Artigo 12):** Imediatamente antes de escrever o primeiro teste ou linha de código, o executor deve reler o arquivo físico `openspec/roadmap/fatia-XX-<slug>.md` para garantir fidelidade total aos contratos de dados, schemas e regras sem desvios de contexto.
 
 Para cada item listado em `tasks.md` (seguindo a Seção 6 da fatia):
-1. **Vermelho:** Escreva o teste correspondente. Execute e capture o log da falha legítima.
-2. **Verde:** Implemente o código estritamente necessário para fazer o teste passar.
-3. **Refatorar:** Ajuste nomes (em PT-BR conforme Artigo 10), tipos e garanta a limpeza do código.
+1. **Vermelho (Especificar):** Escreva o teste correspondente com asserções reais (sem `.only` ou testes ocos). Execute e capture o log da falha legítima.
+2. **Verde (Faça Funcionar):** Implemente o código mínimo e direto de produção necessário para fazer o teste passar.
+3. **Refatorar (Faça Direito):** Eleve a qualidade antes de ir para a próxima tarefa:
+   - Reduza aninhamentos de `if/else` usando *early returns*;
+   - Elimine trechos de código duplicados estruturalmente (DRY);
+   - Garanta nomes de domínio em PT-BR (Artigo 10);
+   - Teste mentalmente se a inversão de operadores quebraria o teste (prova de mutação).
 4. **Circuit Breaker:** Se falhar 3 vezes seguidas no mesmo teste ou problema técnico, pare imediatamente e consulte o humano com os detalhes.
 
 ---

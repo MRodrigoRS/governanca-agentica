@@ -5,6 +5,22 @@ O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.
 
 ---
 
+## [3.3.0] - 2026-10-30
+
+### Adicionado
+- **Rigor TDD (Faça Funcionar → Faça Direito / D31):**
+  - Artigo 2 da Constituição e Seção 5 de `ciclo-especificacao` atualizados com o ciclo em 3 etapas explícitas: (1) Vermelho com asserções reais, (2) Verde com o código mais direto possível e (3) Refatoração obrigatória antes do Gate 2 aplicando *early returns* para podar aninhamentos e eliminando duplicações estruturais (DRY).
+- **Prova de Mutação Mental e Auditoria de Testes no Inspetor Forense:**
+  - O Subagente Inspetor Forense (`revisar-fatia/SKILL.md`, `.claude/agents/` e `.github/agents/`) agora audita ativamente a substância dos testes de staged, eliminando o "teatro de testes": verifica se mutações óbvias de cálculo quebram a suíte e aponta funções com excesso de caminhos ramificados sem testes proporcionais.
+- **Trava Determinística Local Anti-Teatro de Testes (`verificar-governanca.mjs`):**
+  - Bloqueio automático de commits com arquivos de teste contendo foco exclusivo esquecido (`.only(`), que ignorariam silenciosamente o restante da suíte.
+  - Bloqueio automático de arquivos de teste ocos sem marcadores de asserção real (`expect`, `assert`, etc.).
+- **Zero Overengineering e Zero Custo Extra de Tokens:**
+  - Proibição formal em `catalogo-stacks.md` contra o uso de frameworks pesados de mutação física ou relatórios massivos (`matrix/`) no fluxo padrão, delegando o controle de complexidade exclusivamente a regras nativas dos linters da stack (Biome, ESLint, Ruff) em < 50ms.
+- **Suíte de Testes Expandida:** 3 novos testes unitários adicionados a `tests/verificar-governanca.test.mjs`, elevando a suíte para 25 testes verdes.
+
+---
+
 ## [3.2.0] - 2026-10-30
 
 ### Adicionado

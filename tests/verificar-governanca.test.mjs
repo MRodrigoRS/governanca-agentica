@@ -122,3 +122,51 @@ test('verificar-governanca: aceita subfatia alfanumérica no roadmap com 7 seç�
     repo.limpar();
   }
 });
+
+test('verificar-governanca: detecta e bloqueia .only esquecido em arquivos de teste', () => {
+  const repo = criarRepoTemporario();
+  try {
+    writeFileSync(join(repo.dir, 'CHANGELOG.md'), '# Changelog\n## [Não publicado]\n### Test\n- Teste\n', 'utf8');
+    writeFileSync(join(repo.dir, 'calculo.ts'), 'export function soma(a: number, b: number) { return a + b; }', 'utf8');
+    writeFileSync(join(repo.dir, 'calculo.test.ts'), 'import { test } from "vitest";\ntest.' + 'only("soma basica", () => { expect(soma(1, 2)).toBe(3); });', 'utf8');
+    execSync('git add CHANGELOG.md calculo.ts calculo.test.ts', { cwd: repo.dir, stdio: 'ignore' });
+
+    const res = repo.executar();
+    assert.equal(res.exitCode, 1);
+    assert.match(res.stderr, /Foco Exclusivo Esquecido/);
+    assert.match(res.stderr, /\.only/);
+  } finally {
+    repo.limpar();
+  }
+});
+
+test('verificar-governanca: detecta e bloqueia arquivo de teste oco sem assercoes', () => {
+  const repo = criarRepoTemporario();
+  try {
+    writeFileSync(join(repo.dir, 'CHANGELOG.md'), '# Changelog\n## [Não publicado]\n### Test\n- Teste\n', 'utf8');
+    writeFileSync(join(repo.dir, 'operacao.ts'), 'export function rodar() { console.log("ok"); }', 'utf8');
+    writeFileSync(join(repo.dir, 'operacao.test.ts'), 'import { test } from "vitest";\ntest("apenas executa sem assercoes", () => { rodar(); });', 'utf8');
+    execSync('git add CHANGELOG.md operacao.ts operacao.test.ts', { cwd: repo.dir, stdio: 'ignore' });
+
+    const res = repo.executar();
+    assert.equal(res.exitCode, 1);
+    assert.match(res.stderr, /Teste Oco Detectado/);
+  } finally {
+    repo.limpar();
+  }
+});
+
+test('verificar-governanca: aprova arquivo de teste valido com assercoes reais', () => {
+  const repo = criarRepoTemporario();
+  try {
+    writeFileSync(join(repo.dir, 'CHANGELOG.md'), '# Changelog\n## [Não publicado]\n### Test\n- Teste\n', 'utf8');
+    writeFileSync(join(repo.dir, 'operacao.ts'), 'export function dobrar(n: number) { return n * 2; }', 'utf8');
+    writeFileSync(join(repo.dir, 'operacao.test.ts'), 'import { test, expect } from "vitest";\ntest("dobra valor", () => { expect(dobrar(2)).toBe(4); });', 'utf8');
+    execSync('git add CHANGELOG.md operacao.ts operacao.test.ts', { cwd: repo.dir, stdio: 'ignore' });
+
+    const res = repo.executar();
+    assert.equal(res.exitCode, 0);
+  } finally {
+    repo.limpar();
+  }
+});

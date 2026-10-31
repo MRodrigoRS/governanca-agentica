@@ -334,7 +334,54 @@ function verificarLocationReloadEmStaged(listaArquivos) {
   }
 }
 
-// 7. Execução das Verificações Determinísticas
+// 7. Auditoria de Integridade de Testes (Artigo 2 — Anti-Teatro de Testes)
+function verificarIntegridadeDeTestesEmStaged(listaArquivos) {
+  const arquivosTeste = listaArquivos.filter(ehArquivoDeTeste);
+  if (arquivosTeste.length === 0) return;
+
+  const marcadoresAssercoes = [
+    'expect(', 'assert', 'should', 'throws', 'rejects', 'resolves',
+    'pytest.raises', 't.Error', 't.Fatal', 't.Run'
+  ];
+
+  for (const arq of arquivosTeste) {
+    const caminhoCompleto = join(process.cwd(), arq);
+    if (!existsSync(caminhoCompleto)) continue;
+
+    try {
+      const conteudo = readFileSync(caminhoCompleto, 'utf8');
+
+      // 1. Bloqueia foco exclusivo esquecido (.only)
+      if (
+        conteudo.includes('.only(') ||
+        conteudo.includes('.only`') ||
+        conteudo.includes('@unittest.skip')
+      ) {
+        registrarErro(
+          `Foco Exclusivo Esquecido em Arquivo de Teste (Artigo 2 — Test-First):\n` +
+          `O arquivo de teste '${arq}' contém marcador de foco exclusivo ('.only(').\n` +
+          `Isso faz o executor ignorar silenciosamente os demais testes da suíte, gerando falso positivo verde.\n\n` +
+          `-> Solução: Remova '.only' antes de submeter o commit.`
+        );
+        process.exit(1);
+      }
+
+      // 2. Bloqueia arquivo de teste oco (zero asserções)
+      const possuiAssercao = marcadoresAssercoes.some((m) => conteudo.includes(m));
+      if (!possuiAssercao) {
+        registrarErro(
+          `Teste Oco Detectado (Artigo 2 — Anti-Teatro de Testes):\n` +
+          `O arquivo de teste '${arq}' não contém nenhuma asserção real ('expect', 'assert', etc.).\n` +
+          `Testes sem asserções apenas executam código sem validar regras de negócio, gerando falsa segurança.\n\n` +
+          `-> Solução: Adicione asserções reais com 'expect(...)' ou 'assert(...)' testando o comportamento esperado.`
+        );
+        process.exit(1);
+      }
+    } catch {}
+  }
+}
+
+// 8. Execução das Verificações Determinísticas
 function executarAuditoria() {
   auditarFatiasDetalhadas();
 
@@ -356,7 +403,10 @@ function executarAuditoria() {
   // REGRA 1: Reatividade Limpa (Artigo 6)
   verificarLocationReloadEmStaged(listaArquivos);
 
-  // REGRA 2: Se há alteração de código de produção, CHANGELOG.md DEVE estar no commit (Artigo 10)
+  // REGRA 2: Integridade de Testes (Artigo 2 — Anti-Teatro de Testes)
+  verificarIntegridadeDeTestesEmStaged(listaArquivos);
+
+  // REGRA 3: Se há alteração de código de produção, CHANGELOG.md DEVE estar no commit (Artigo 10)
   if (arquivosProducao.length > 0 && !changelogIncluido) {
     registrarErro(
       `O arquivo CHANGELOG.md NÃO foi incluído neste commit.\n` +

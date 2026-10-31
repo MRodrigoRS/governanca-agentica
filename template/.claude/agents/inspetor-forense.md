@@ -34,6 +34,10 @@ Sua missão é inspecionar o código alterado (`git diff --cached` ou `git diff 
    - Modais/Dialogs de confirmação antes de ações destrutivas/críticas.
    - Ausência de `location.reload` ou atualizações forçadas de tela.
    - Responsividade móvel (320px+) e manifesto PWA.
-5. **Lacunas e Mocks Observados:**
+5. **Qualidade dos Testes e Prova de Mutação Mental:**
+   - Os testes contêm asserções reais com validação de valor ou são testes superficiais/ocos?
+   - Prova de mutação mental: se um operador (`>=`, `&&`, `!==`) for invertido ou um if for removido no código de produção, algum teste quebra? Identifique mutantes sobreviventes.
+   - Identifique funções no diff com excesso de caminhos ramificados sem testes correspondentes.
+6. **Lacunas e Mocks Observados:**
    - Há dados fictícios hardcoded no código de produção?
    - Há comentários `TODO`, `FIXME` ou funções vazias simuladas?

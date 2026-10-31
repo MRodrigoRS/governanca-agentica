@@ -22,9 +22,9 @@
 
 1. Nenhum código de produção deve ser implementado sem que antes exista um teste automatizado falhando que especifique o comportamento desejado.
 2. O ciclo obrigatório de desenvolvimento é:
-   - **Vermelho:** Escrever o teste automatizado unitário ou de integração e executá-lo no terminal, comprovando que ele falha pelo motivo esperado.
-   - **Verde:** Escrever o código mínimo de produção necessário para fazer o teste passar.
-   - **Refatorar:** Limpar o código, eliminar duplicações, aplicar tipagem e garantir que todos os testes continuem verdes.
+   - **Vermelho (Especificar):** Escrever o teste automatizado unitário ou de integração com asserções reais e executá-lo no terminal, comprovando que ele falha pelo motivo esperado. É proibido criar testes ocos (sem asserções) ou com marcadores de foco exclusivo (`.only(`).
+   - **Verde (Faça Funcionar):** Escrever o código mínimo e mais direto de produção necessário para fazer o teste passar, sem abstrações prematuras.
+   - **Refatorar (Faça Direito):** Com os testes verdes, elevar obrigatoriamente a saúde estrutural antes de avançar para a próxima tarefa ou Gate 2: aplicar *early returns* para reduzir complexidade condicional aninhada, eliminar duplicações estruturais (DRY), garantir nomes de domínio em PT-BR (Artigo 10) e assegurar que mutações óbvias de regras quebrem a suíte.
 3. **Comprovação Automatizada no Gate 2:** A apresentação da entrega deve conter obrigatoriamente as duas saídas de terminal: a execução com falha (vermelho) e a execução com sucesso (verde). Sem essa comprovação, a entrega é inválida.
 4. **Comprovação Prática e Visual no Gate 2 (Roteiro de Validação Humana):** Testes automatizados provam a integridade lógica para o algoritmo, mas não dispensam a validação humana. É obrigatório que toda apresentação no Gate 2 (seja em `/fix` ou Nível 2) contenha um **Roteiro de Teste Prático Passo a Passo**, detalhando:
    - **O que foi entregue:** Resumo claro do valor funcional construído ou corrigido.

@@ -52,7 +52,11 @@ Inspecionar o código modificado (`git diff` dos arquivos staged) e traduzir em 
    - Há Modais de Confirmação protegendo ações destrutivas (exclusões, cancelamentos, desativações)?
    - Há indícios de `location.reload` ou atualizações forçadas de tela?
    - O layout é mobile-first e há manifesto PWA se for app web?
-6. **Lacunas, Mocks e Pendências Factualmente Observadas:**
+6. **Qualidade dos Testes, Mutação Mental e Saúde Estrutural:**
+   - **Asserções Reais vs. Teatro de Testes:** Os testes validam resultados concretos de negócio e persistência, ou limitam-se a asserções fracas (`toBeDefined()`, mocks testando o próprio mock)?
+   - **Prova de Mutação Mental:** Se um operador condicional crítico (`>=`, `&&`, `!==`) for invertido ou uma validação de guarda for comentada no código de produção, qual teste exato do diff falharia imediatamente? *(Se nenhum teste quebrar, aponte como fragilidade crítica).*
+   - **Saúde Estrutural (CRAP & DRY):** Existem funções no diff com excesso de ramificações aninhadas (> 5 `if/else/switch`) sem testes proporcionais para cada ramo, ou blocos de lógica duplicados?
+7. **Lacunas, Mocks e Pendências Factualmente Observadas:**
    - Há dados fictícios fixos no código (hardcoded mocks)?
    - Há funções vazias, retornos simulados ou comentários `TODO`/`FIXME` deixados?
 ```
@@ -69,7 +73,7 @@ O Agente Principal recebe o **Relatório Factual do Inspetor**, abre o arquivo f
 | **Seção 3 (Contratos/Banco)** | *Tabela `contatos` com colunas em PT-BR* | *Tabela `contatos` criada com `nome`, `email`, `telefone`* | ✅ Atendido |
 | **Seção 4 (Estados de UI)** | *4 estados (`loading`, `empty`, `error`, `success`)* | *Componente possui skeletons, mensagem de lista vazia e toast de erro* | ✅ Atendido |
 | **Seção 5 (Regras Backend)** | *Impedir e-mail duplicado por tenant* | *Validação no banco e na rota rejeitando duplicata com status 409* | ✅ Atendido |
-| **Seção 6 (Test-First)** | *Testes automatizados cobrindo caso de borda* | *Testes unitários e de integração cobrindo erro e sucesso* | ✅ Atendido |
+| **Seção 6 (Test-First & Mutação)** | *Testes automatizados cobrindo caso de borda* | *Testes cobrem mutação mental de cálculo e erro sem asserções ocas* | ✅ Atendido |
 
 ---
 
