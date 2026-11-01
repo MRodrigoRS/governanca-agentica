@@ -1,6 +1,6 @@
 # Fatia 04: Engenharia de Harness Determinística, Guardrails Pós-Edição e Higiene de Contexto (Absorção Cirúrgica da Issue RR-6)
 
-> **Status:** `[~] Em Andamento`
+> **Status:** `[x] Concluída`
 > **Identificador OpenSpec:** `fatia-04-engenharia-de-harness-e-higiene-de-contexto`
 > **Origem Linear:** Issue [`RR-6`](https://linear.app/rr-diario-agents/issue/RR-6/texto-profissional-da-mais-avancada-programacao-com-agentes) no projeto `P-RR-2` (`GOV-AGENTS-V2`)
 

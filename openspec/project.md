@@ -56,7 +56,7 @@
 | 01 | `[x] Concluída` | `fatia-01-fundacao-v3` | [openspec/roadmap/fatia-01-fundacao-v3.md](roadmap/fatia-01-fundacao-v3.md) | Nenhuma | OpenSpec nativo, Lifecycle Hooks e suíte de testes unitários |
 | 02 | `[x] Concluída` | `fatia-02-linear-mcp-e-inbox` | [openspec/roadmap/fatia-02-linear-mcp-e-inbox.md](roadmap/fatia-02-linear-mcp-e-inbox.md) | Fatia 01 | Integração oficial com Linear MCP, Diário de Bordo e Inbox Móvel |
 | 03 | `[x] Concluída` | `fatia-03-rigor-tdd-e-mutacao-mental` | [openspec/roadmap/fatia-03-rigor-tdd-e-mutacao-mental.md](roadmap/fatia-03-rigor-tdd-e-mutacao-mental.md) | Fatia 02 | Rigor TDD (Faça Funcionar → Faça Direito), prova de mutação mental no Inspetor e trava determinística anti-teatro de testes (Issue RR-5) |
-| 04 | `[~] Em Andamento` | `fatia-04-engenharia-de-harness-e-higiene-de-contexto` | [openspec/roadmap/fatia-04-engenharia-de-harness-e-higiene-de-contexto.md](roadmap/fatia-04-engenharia-de-harness-e-higiene-de-contexto.md) | Fatia 03 | Sensores instantâneos pós-edição (< 30ms), fechamento de brechas PreToolUse + paridade Claude Code, vínculo físico Roadmap ↔ OpenSpec e higiene de contexto MCP/llms.txt (Issue RR-6) |
+| 04 | `[x] Concluída` | `fatia-04-engenharia-de-harness-e-higiene-de-contexto` | [openspec/roadmap/fatia-04-engenharia-de-harness-e-higiene-de-contexto.md](roadmap/fatia-04-engenharia-de-harness-e-higiene-de-contexto.md) | Fatia 03 | Sensores instantâneos pós-edição (< 30ms), fechamento de brechas PreToolUse + paridade Claude Code, vínculo físico Roadmap ↔ OpenSpec e higiene de contexto MCP/llms.txt (Issue RR-6) |
 
 ---
 
