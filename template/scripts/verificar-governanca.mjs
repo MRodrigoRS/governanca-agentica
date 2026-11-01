@@ -76,6 +76,7 @@ const PADROES_MANIFESTO = [
   'pom.xml',
   'build.gradle',
   'requirements.txt',
+  'project.godot',
 ];
 
 const PADROES_SCHEMA_BANCO = [

@@ -237,3 +237,78 @@ test('verificar-governanca: bloqueia delta fatia-XX em openspec/changes sem arqu
     repo.limpar();
   }
 });
+
+test('verificar-governanca: bloqueia alteração de manifesto de jogo (project.godot) isolada sem spec', () => {
+  const repo = criarRepoTemporario();
+  try {
+    writeFileSync(join(repo.dir, 'project.godot'), 'config_version=5\n[application]\nconfig/name="Meu Jogo"\n', 'utf8');
+    execSync('git add project.godot', { cwd: repo.dir, stdio: 'ignore' });
+
+    const res = repo.executar();
+    assert.equal(res.exitCode, 1);
+    assert.match(res.stderr, /Escalonamento Automático Obrigatório/);
+    assert.match(res.stderr, /project\.godot/);
+  } finally {
+    repo.limpar();
+  }
+});
+
+test('verificar-governanca: aprova alteração de project.godot quando há spec ativa e delta íntegro', () => {
+  const repo = criarRepoTemporario();
+  try {
+    writeFileSync(join(repo.dir, 'CHANGELOG.md'), '# Changelog\n## [Não publicado]\n### Test\n- Teste\n', 'utf8');
+    writeFileSync(join(repo.dir, 'project.godot'), 'config_version=5\n[application]\nconfig/name="Meu Jogo"\n', 'utf8');
+
+    // Cria delta completo no OpenSpec para fatia-01-godot
+    const pastaDelta = join(repo.dir, 'openspec', 'changes', 'fatia-01-godot');
+    mkdirSync(pastaDelta, { recursive: true });
+    writeFileSync(join(pastaDelta, 'proposal.md'), '# Proposta do Jogo Godot\nCriação de jogo 2D com Godot Engine 4.', 'utf8');
+    writeFileSync(join(pastaDelta, 'design.md'), '# Design do Jogo Godot\nArquitetura com GUT e nós desacoplados.', 'utf8');
+    writeFileSync(join(pastaDelta, 'tasks.md'), '# Tasks do Jogo Godot\n- [ ] Tarefa 1 com testes de regras.', 'utf8');
+
+    // Cria arquivo correspondente no roadmap
+    mkdirSync(join(repo.dir, 'openspec', 'roadmap'), { recursive: true });
+    const linhasRoadmap = [
+      '# Fatia 01: Jogo Godot',
+      '',
+      '## 1. Objetivo e Valor Entregue ao Usuário',
+      'Entrega jogo completo com Godot Engine.',
+      'Valor concreto para o jogador.',
+      '',
+      '## 2. Grafo de Dependências Incrementais',
+      'Fatia inicial de jogo.',
+      'Desbloqueia próximas fases.',
+      '',
+      '## 3. Contratos de Dados, Banco e Schemas (PT-BR — Artigo 10)',
+      'Contratos de savegame em JSON.',
+      'Schema Zod estrito validando savegame.',
+      'Tipos seguros em GDScript e C#.',
+      '',
+      '## 4. Interface, Componentes e Estados Assíncronos (Artigo 6)',
+      'Viewport responsivo 320px com aspect ratio adaptativo.',
+      'Telas de menu, gameplay e pause sem reload.',
+      'HUD reativo de pontuação e vida.',
+      'loading, empty, error, success.',
+      '',
+      '## 5. Regras de Negócio, Segurança e Backend (Artigo 7)',
+      'Regras puras de colisão AABB e pontuação.',
+      'Lógica desacoplada de renderização.',
+      '',
+      '## 6. Roteiro Test-First para o Agente Executor (Artigo 2)',
+      'Testes automatizados com asserções reais.',
+      'Evidência vermelha comprovada antes do código.',
+      '',
+      '## 7. Critérios de Aceite e Roteiro de Teste Prático (Gate 2)',
+      'Critérios de aceite determinísticos.',
+      'Roteiro de teste prático passo a passo.'
+    ];
+    writeFileSync(join(repo.dir, 'openspec', 'roadmap', 'fatia-01-godot.md'), linhasRoadmap.join('\n'), 'utf8');
+
+    execSync('git add CHANGELOG.md project.godot openspec/changes/fatia-01-godot openspec/roadmap/fatia-01-godot.md', { cwd: repo.dir, stdio: 'ignore' });
+
+    const res = repo.executar();
+    assert.equal(res.exitCode, 0);
+  } finally {
+    repo.limpar();
+  }
+});

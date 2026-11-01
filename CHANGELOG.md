@@ -5,6 +5,22 @@ O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.
 
 ---
 
+## [3.5.0] - 2026-11-01
+
+### Adicionado
+- **Catálogo Oficial de Jogos, Simulações e Gráficos Interativos (`catalogo-stacks.md`):**
+  - Inclusão da Seção 10 cobrindo quatro vertentes canônicas de Game Dev:
+    * **Web 2D:** Phaser 3 + TypeScript (`strict`) + Vite + Vitest.
+    * **Web 3D / WebGL:** Three.js / React Three Fiber + TypeScript + Vite.
+    * **Desktop Nativo Indie:** Godot Engine 4 (C# ou GDScript) com testes headless via GUT (*Godot Unit Testing*).
+    * **Desktop Nativo Baixo Nível / Ultra-Performance:** Rust + Bevy (ECS) ou Raylib com `cargo test`.
+  - Regra de Ouro de Desacoplamento Arquitetural: a lógica matemática, estados, colisões, inventário e regras do jogo são isoladas da renderização gráfica, viabilizando execução de testes no pre-commit e CI em < 50ms.
+- **Auditoria Determinística de Manifestos de Jogos (`verificar-governanca.mjs`):**
+  - Monitoramento de `project.godot` e arquivos de configuração de engines como manifestos de dependência protegidos, exigindo formalização de Nível 2 antes de qualquer alteração de dependências.
+- **Suíte de Testes Expandida:** Novo teste automatizado adicionado em `tests/verificar-governanca.test.mjs`, elevando a suíte para 37 testes verdes.
+
+---
+
 ## [3.4.0] - 2026-11-01
 
 ### Adicionado

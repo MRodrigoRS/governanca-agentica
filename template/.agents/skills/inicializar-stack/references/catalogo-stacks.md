@@ -188,5 +188,41 @@ Em vez de criar scripts caseiros ou rodar mutadores físicos pesados (que consom
 - **Credenciais Read-Only em Bancos Compartilhados:** Ao conectar servidores MCP a bancos relacionais (PostgreSQL, SQLite, Supabase), configure credenciais estritamente de leitura (*read-only*). Mutações e migrações devem ser realizadas exclusivamente via código de migração versionado e testado.
 - **Padrão `/llms.txt` para Integrações e SDKs:** Ao adotar bibliotecas de terceiros sem MCP oficial, utilize endpoints padronizados `/llms.txt` (ex.: `curl -s https://docs.exemplo.com/llms.txt`) para injetar documentação curada em Markdown, evitando scraping de páginas HTML inchadas.
 
+---
 
+## 10. Jogos, Gráficos Interativos e Simulações (Browser e Desktop Nativo)
 
+Quando o projeto envolver entretenimento digital, gamificação corporativa, simuladores ou experiências visuais imersivas:
+
+### Opção A: Jogo de Navegador 2D (Phaser 3 + TypeScript `strict` + Vite) — *Padrão Ouro Web 2D*
+* **Quando usar:** Jogos 2D para web, minigames promocionais, arcades, plataformas e RPGs 2D.
+* **Comando oficial de criação:**
+  ```bash
+  npm create @phaserjs/template-vite-ts@latest <nome-do-projeto>
+  ```
+* **Composição padrão:** Phaser 3, TypeScript (`strict`), Vite, Vitest.
+* **Regra de Ouro de Desacoplamento:** A lógica de jogo (máquinas de estado, regras de pontuação, inventário, cálculos de dano e colisões matemáticas AABB puras) deve residir em classes e módulos puros desacoplados da renderização. Os testes automatizados (Vitest) validam 100% das regras em < 50ms sem precisar instanciar canvas WebGL no terminal.
+
+### Opção B: Jogo de Navegador 3D / WebGL (Three.js / React Three Fiber + TypeScript + Vite)
+* **Quando usar:** Experiências 3D imersivas no navegador, visualizadores de produto, simulações espaciais e minigames 3D.
+* **Comando oficial de criação:**
+  ```bash
+  npm create vite@latest <nome-do-projeto> -- --template react-ts
+  npm install three @types/three @react-three/fiber @react-three/drei
+  ```
+* **Composição padrão:** Three.js, React Three Fiber, TypeScript, Vite, Vitest.
+* **Viewport e Portabilidade:** Canvas responsivo com aspect ratio adaptativo (mínimo 320px) e suporte a modo tela cheia (`fullscreen`) PWA instalável.
+
+### Opção C: Jogo Nativo Instalado no Computador (Godot Engine 4 — C# ou GDScript) — *Padrão Ouro Desktop*
+* **Quando usar:** Jogos completos para computador (Windows, Linux, macOS) e mobile, 2D e 3D.
+* **Estrutura padrão:** Manifesto `project.godot`, pastas `scenes/`, `scripts/`, `assets/`, `tests/`.
+* **Framework de Testes:** GUT (*Godot Unit Testing*) executado em modo headless via CLI (`godot --headless -s addons/gut/gut_cmdln.gd`) para pre-commit e CI instantâneos.
+
+### Opção D: Jogo Nativo Baixo Nível / Ultra-Performance (Rust + Bevy ECS ou Raylib)
+* **Quando usar:** Jogos de altíssima performance, simulações com dezenas de milhares de entidades simultâneas ou engines personalizadas.
+* **Comando oficial de criação:**
+  ```bash
+  cargo init <nome-do-projeto>
+  cargo add bevy
+  ```
+* **Composição padrão:** Rust, Bevy (arquitetura ECS - Entity Component System) e `cargo test` para testar sistemas e componentes puros sem abrir janela gráfica.
