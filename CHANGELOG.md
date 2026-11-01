@@ -5,6 +5,27 @@ O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.
 
 ---
 
+## [3.4.0] - 2026-11-01
+
+### Adicionado
+- **Blindagem de Hooks de Agente e Paridade Multi-IDE (`hook-agente.mjs`):**
+  - Bloqueio determinístico do bypass curto `git commit -n` e flags combinadas (ex.: `-am "..." -n`), com desconsideração de literais entre aspas para evitar falsos positivos em mensagens de commit.
+  - Interceptação de comandos destrutivos (`git clean -fd`, `git restore .`, `prisma migrate reset`) exigindo confirmação humana prévia (`force_ask` no Antigravity e `permissionDecision: "ask"` no Claude Code).
+  - Paridade completa para Claude Code: suporte aos hooks `pre-tool-claude`, `session-start-claude` e `post-tool-claude` com injeção automática de contexto de mudanças ativas do OpenSpec e bloqueio sintático imediato.
+  - Interceptação prévia de ferramentas de escrita/edição (`write_file`/`edit_file` no Antigravity e `PostToolUse` no Claude Code) bloqueando instantaneamente violações de `location.reload`, `.only(`, testes ocos e placeholders preguiçosos no roadmap.
+  - Correção do caminho relativo de execução em `template/.agents/hooks.json` (`node ../scripts/hook-agente.mjs`) respeitando o CWD da IDE Antigravity.
+- **Vínculo Físico Obrigatório Roadmap ↔ OpenSpec (`verificar-governanca.mjs`):**
+  - Validador determinístico rejeita deltas ativos ou arquivados (`fatia-*`) em `openspec/changes/` que não possuam arquivo correspondente com as 7 seções completas em `openspec/roadmap/fatia-*.md`.
+  - Extração e auditoria cirúrgica de pastas arquivadas em staged (`openspec/changes/archive/`).
+- **Engenharia de Contexto, Subagentes e Teto de MCPs:**
+  - Diretrizes em `template/AGENTS.md` e `catalogo-stacks.md` para delegação de varreduras exploratórias amplas a subagentes efêmeros *read-only*, prevenindo *context rot* na sessão principal.
+  - Priorização do padrão `/llms.txt` para consulta enxuta de documentações externas e preferência pela CLI oficial `gh` sobre MCPs pesados.
+  - Teto de higiene de MCPs limitando a 3–5 servidores ativos simultâneos por projeto e imposição de credenciais *read-only* em servidores MCP de banco relacional.
+  - Diretriz de antifragilidade na skill `ciclo-especificacao`: conversão de erros recorrentes em regras determinísticas no linter/validador durante o `/fix` com suporte a regras escopadas por padrão *glob*.
+- **Suíte de Testes Expandida:** 11 novos testes automatizados adicionados (`tests/hook-agente.test.mjs` e `tests/verificar-governanca.test.mjs`), totalizando 36 testes verdes cobrindo 100% dos novos comportamentos.
+
+---
+
 ## [3.3.0] - 2026-10-30
 
 ### Adicionado

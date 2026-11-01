@@ -280,7 +280,29 @@ function auditarFatiasDetalhadas() {
 }
 
 // 5. Auditoria de Integridade de Pasta de Mudança OpenSpec (ativa ou arquivada)
+function extrairNomeFatiaCanonica(nomeMudanca) {
+  const semData = nomeMudanca.replace(/^\d{4}-\d{2}-\d{2}-/, '');
+  if (semData.startsWith('fatia-')) {
+    return semData;
+  }
+  return null;
+}
+
 function auditarPastaMudancaOpenSpec(caminhoPasta, nomeMudanca) {
+  const fatiaCanonica = extrairNomeFatiaCanonica(nomeMudanca);
+  if (fatiaCanonica) {
+    const caminhoRoadmap = join(process.cwd(), 'openspec', 'roadmap', `${fatiaCanonica}.md`);
+    if (!existsSync(caminhoRoadmap)) {
+      registrarErro(
+        `Vínculo Obrigatório Roadmap ↔ OpenSpec (D18 + D21):\n` +
+        `A mudança '${nomeMudanca}' refere-se à fatia incremental '${fatiaCanonica}', mas o arquivo correspondente no roadmap não existe:\n` +
+        `Ausente: 'openspec/roadmap/${fatiaCanonica}.md'\n\n` +
+        `-> Solução: Crie o arquivo 'openspec/roadmap/${fatiaCanonica}.md' com as 7 seções obrigatórias antes de abrir ou comitar a fatia.`
+      );
+      process.exit(1);
+    }
+  }
+
   const arquivosObrigatoriosDelta = ['proposal.md', 'design.md', 'tasks.md'];
 
   for (const nomeArquivo of arquivosObrigatoriosDelta) {
@@ -464,13 +486,26 @@ function executarAuditoria() {
           auditarPastaMudancaOpenSpec(join(process.cwd(), 'openspec', 'changes', mudanca), mudanca);
         }
       } else if (possuiMudancaArquivadaStaged) {
-        // Localiza pasta arquivada correspondente e audita integridade
+        // Localiza pastas arquivadas correspondentes e audita integridade
         const pastaBase = join(process.cwd(), 'openspec', 'changes', 'archive');
         if (existsSync(pastaBase)) {
-          const entradas = readdirSync(pastaBase).filter((e) => !e.startsWith('.'));
-          if (entradas.length > 0) {
-            const maisRecente = entradas[entradas.length - 1];
-            auditarPastaMudancaOpenSpec(join(pastaBase, maisRecente), maisRecente);
+          const subpastasStaged = new Set();
+          for (const arq of arquivosArchiveStaged) {
+            const partes = arq.split('/');
+            if (partes.length >= 4) {
+              subpastasStaged.add(partes[3]);
+            }
+          }
+          if (subpastasStaged.size > 0) {
+            for (const sub of subpastasStaged) {
+              auditarPastaMudancaOpenSpec(join(pastaBase, sub), sub);
+            }
+          } else {
+            const entradas = readdirSync(pastaBase).filter((e) => !e.startsWith('.'));
+            if (entradas.length > 0) {
+              const maisRecente = entradas[entradas.length - 1];
+              auditarPastaMudancaOpenSpec(join(pastaBase, maisRecente), maisRecente);
+            }
           }
         }
       }

@@ -183,5 +183,10 @@ Em vez de criar scripts caseiros ou rodar mutadores físicos pesados (que consom
 - **Ruff (Python):** Ativar a métrica de complexidade McCabe (`C901` com `max-complexity = 10`).
 - **Proibição de Mutadores Pesados no Fluxo Padrão:** É terminantemente proibido instalar ou rodar frameworks pesados de mutação física de código (como Stryker ou Mutmut) ou geradores de relatórios em massa (`matrix/`) no fluxo padrão de pre-commit e CI, preservando velocidade instantânea (< 50ms) e economia estrita de tokens.
 
+### D. Teto de Higiene MCP e Padrão /llms.txt (Orçamento Enxuto de Contexto)
+- **Teto Estrito de MCPs (3 a 5 Servidores Ativos):** Manter dezenas de servidores MCP ativos degrada gravemente a precisão do LLM, satura a janela de contexto com tool schemas a cada turno e induz alucinações. O teto recomendado para operação eficiente é de 3 a 5 servidores ativos (ex.: `context7`, `linear`, `playwright`).
+- **Credenciais Read-Only em Bancos Compartilhados:** Ao conectar servidores MCP a bancos relacionais (PostgreSQL, SQLite, Supabase), configure credenciais estritamente de leitura (*read-only*). Mutações e migrações devem ser realizadas exclusivamente via código de migração versionado e testado.
+- **Padrão `/llms.txt` para Integrações e SDKs:** Ao adotar bibliotecas de terceiros sem MCP oficial, utilize endpoints padronizados `/llms.txt` (ex.: `curl -s https://docs.exemplo.com/llms.txt`) para injetar documentação curada em Markdown, evitando scraping de páginas HTML inchadas.
+
 
 

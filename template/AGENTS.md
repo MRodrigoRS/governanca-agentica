@@ -103,6 +103,11 @@ Ao ser iniciado em um repositório, identifique o estado atual antes de agir:
     * *Gate 2:* Publica a atualização oficial do projeto (*Project Update*) com resumo funcional e roteiro prático, movendo a issue para *Done*.
     * *Refinamento de Ideias:* Encaminha ideias despriorizadas para o Backlog deste mesmo projeto no Linear.
 - **Skills Ativas:** Diretório `.agents/skills/` (`inicializar-stack`, `ciclo-especificacao`, `refinar-ideia`, `explorar-produto`, `revisar-fatia`, `atualizar-governanca`).
+- **Higiene de Contexto, Subagentes e Orçamento de MCPs:**
+  - *Varredura Ampla e Prevenção de Context Rot:* Mapeamentos exploratórios de código ou buscas em dezenas de arquivos não devem poluir o contexto da sessão principal. Delegue varreduras amplas a subagentes efêmeros *read-only* (ex.: subagente `research` no Antigravity ou subagente de consulta no Claude Code), retornando ao agente principal apenas o resumo conciso e as linhas exatas.
+  - *Padrão `/llms.txt` e CLIs Nativas:* Ao consultar documentações externas de bibliotecas, priorize endpoints `/llms.txt` (conteúdo limpo em Markdown) antes de baixar páginas HTML pesadas. Para automações do GitHub (issues, PRs, runs), priorize a CLI oficial `gh` em vez de acoplar servidores MCP redundantes.
+  - *Teto Estrito de MCPs (3 a 5 Servidores Ativos):* Evite manter dezenas de servidores MCP ativos simultaneamente. Cada ferramenta anunciada consome tokens na janela de contexto a cada turno e degrada a capacidade de raciocínio do modelo. Mantenha de 3 a 5 servidores essenciais por projeto (ex.: `context7`, `linear`, `playwright`).
+  - *Credenciais Read-Only em Bancos de Dados:* Servidores MCP conectados a bancos relacionais (Postgres, SQLite, Supabase) devem utilizar credenciais estritamente de leitura (*read-only*), garantindo que mutações e migrações passem obrigatoriamente pelos testes e código versionado da aplicação.
 <!-- governanca:fim -->
 
 ## Regras Específicas Deste Projeto

@@ -170,3 +170,70 @@ test('verificar-governanca: aprova arquivo de teste valido com assercoes reais',
     repo.limpar();
   }
 });
+
+test('verificar-governanca: bloqueia delta fatia-XX em openspec/changes sem arquivo correspondente em openspec/roadmap', () => {
+  const repo = criarRepoTemporario();
+  try {
+    writeFileSync(join(repo.dir, 'CHANGELOG.md'), '# Changelog\n## [Não publicado]\n### Test\n- Teste\n', 'utf8');
+    writeFileSync(join(repo.dir, 'operacao.ts'), 'export function calcular() { return 10; }', 'utf8');
+
+    // Cria delta completo no OpenSpec para fatia-09-fantasma
+    const pastaDelta = join(repo.dir, 'openspec', 'changes', 'fatia-09-fantasma');
+    mkdirSync(pastaDelta, { recursive: true });
+    writeFileSync(join(pastaDelta, 'proposal.md'), '# Proposta da Fatia 09 Fantasma\nJustificativa e escopo fechado.', 'utf8');
+    writeFileSync(join(pastaDelta, 'design.md'), '# Design da Fatia 09 Fantasma\nDetalhes de arquitetura e contratos.', 'utf8');
+    writeFileSync(join(pastaDelta, 'tasks.md'), '# Tasks da Fatia 09 Fantasma\n- [ ] Tarefa 1 com teste.', 'utf8');
+
+    execSync('git add CHANGELOG.md operacao.ts openspec/changes/fatia-09-fantasma', { cwd: repo.dir, stdio: 'ignore' });
+
+    // Sem openspec/roadmap/fatia-09-fantasma.md, deve falhar
+    const resFalha = repo.executar();
+    assert.equal(resFalha.exitCode, 1);
+    assert.match(resFalha.stderr, /Roadmap.*fatia-09-fantasma|Vínculo Obrigatório/i);
+
+    // Agora adiciona o arquivo no roadmap com as 7 seções completas
+    mkdirSync(join(repo.dir, 'openspec', 'roadmap'), { recursive: true });
+    const linhasRoadmap = [
+      '# Fatia 09: Fantasma',
+      '',
+      '## 1. Objetivo e Valor Entregue ao Usuário',
+      'Entrega funcionalidade de teste.',
+      'Valor concreto para o usuário e governança.',
+      '',
+      '## 2. Grafo de Dependências Incrementais',
+      'Depende da anterior.',
+      'Desbloqueia a próxima.',
+      '',
+      '## 3. Contratos de Dados, Banco e Schemas (PT-BR — Artigo 10)',
+      'Tabelas em PT-BR.',
+      'Schema Zod estrito validando entradas de criação.',
+      'Tipos seguros em TypeScript strict.',
+      '',
+      '## 4. Interface, Componentes e Estados Assíncronos (Artigo 6)',
+      'Layout responsivo sem reload.',
+      'Toasts reativos para criação e edição.',
+      'Modais de confirmação para exclusão.',
+      'loading, empty, error, success.',
+      '',
+      '## 5. Regras de Negócio, Segurança e Backend (Artigo 7)',
+      'Regras ACID e Zero-Trust.',
+      'Transações atômicas ao salvar variações.',
+      '',
+      '## 6. Roteiro Test-First para o Agente Executor (Artigo 2)',
+      'Testes automatizados com asserções reais.',
+      'Evidência vermelha comprovada antes do código.',
+      '',
+      '## 7. Critérios de Aceite e Roteiro de Teste Prático (Gate 2)',
+      'Critérios de aceite determinísticos.',
+      'Roteiro de teste prático passo a passo.'
+    ];
+    writeFileSync(join(repo.dir, 'openspec', 'roadmap', 'fatia-09-fantasma.md'), linhasRoadmap.join('\n'), 'utf8');
+    execSync('git add openspec/roadmap/fatia-09-fantasma.md', { cwd: repo.dir, stdio: 'ignore' });
+
+    // Com o arquivo físico no roadmap, deve passar
+    const resSucesso = repo.executar();
+    assert.equal(resSucesso.exitCode, 0);
+  } finally {
+    repo.limpar();
+  }
+});

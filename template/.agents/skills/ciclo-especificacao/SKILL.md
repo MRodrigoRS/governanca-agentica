@@ -22,9 +22,10 @@ Antes de iniciar, determine o nível adequado:
   3. Executar o teste no terminal e registrar a saída com erro (**Vermelho**).
   4. Implementar o código mínimo necessário para corrigir.
   5. Executar o teste novamente e comprovar o sucesso (**Verde**).
-  6. Atualizar `CHANGELOG.md` na seção `### Corrigido`.
-  7. **Gate 2 (Apresentação Estruturada):** Apresentar ao humano o resumo do defeito corrigido, o **🧪 Roteiro de Teste Prático** (onde ver a correção, dados para testar e comportamento esperado), as evidências dos testes (vermelho/verde) e o diff limpo.
-  8. **Marco 2 da Rotina de Commits (Artigo 11):** Somente após a aprovação humana explícita no Gate 2, realizar o commit: `fix(<escopo>): <descrição em PT-BR>`.
+  6. **Diretriz de Antifragilidade:** Se a correção revelar uma falha ou classe recorrente de erro de agentes (ex.: esquecer tratamento de exceção em promises, uso de APIs depreciadas, mutações diretas de estado, testes ocos ou violação de convenções), converta o aprendizado em regra determinística no linter/validador (`verificar-governanca.mjs`, ESLint/Biome, Ruff ou hooks de ciclo de vida). Quando a regra aplicar-se apenas a um domínio específico, utilize regras escopadas por padrão *glob* (ex.: regras no formato `globs` em Cursor/Claude ou matchers de arquivo nos hooks).
+  7. Atualizar `CHANGELOG.md` na seção `### Corrigido`.
+  8. **Gate 2 (Apresentação Estruturada):** Apresentar ao humano o resumo do defeito corrigido, o **🧪 Roteiro de Teste Prático** (onde ver a correção, dados para testar e comportamento esperado), as evidências dos testes (vermelho/verde) e o diff limpo.
+  9. **Marco 2 da Rotina de Commits (Artigo 11):** Somente após a aprovação humana explícita no Gate 2, realizar o commit: `fix(<escopo>): <descrição em PT-BR>`.
 
 ### Nível 2 — Ciclo Completo (Feature / Requisito)
 * **Quando usar:** Qualquer funcionalidade nova, alteração de regras de negócio, nova dependência de biblioteca, alteração de banco de dados ou refatoração ampla.

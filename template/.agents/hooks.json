@@ -3,11 +3,11 @@
     "enabled": true,
     "PreToolUse": [
       {
-        "matcher": "run_command",
+        "matcher": "run_command|write_file|edit_file",
         "hooks": [
           {
             "type": "command",
-            "command": "node scripts/hook-agente.mjs pre-tool",
+            "command": "node ../scripts/hook-agente.mjs pre-tool",
             "timeout": 15
           }
         ]
@@ -16,7 +16,7 @@
     "SessionStart": [
       {
         "type": "command",
-        "command": "node scripts/hook-agente.mjs session-start",
+        "command": "node ../scripts/hook-agente.mjs session-start",
         "timeout": 15
       }
     ]
