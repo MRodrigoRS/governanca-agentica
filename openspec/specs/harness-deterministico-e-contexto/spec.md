@@ -1,7 +1,7 @@
 # harness-deterministico-e-contexto Specification
 
 ## Purpose
-TBD - created by archiving change fatia-04-engenharia-de-harness-e-higiene-de-contexto. Update Purpose after archive.
+Estabelece o harness determinístico de ciclo de vida de agentes, validação prévia e pós-edição de arquivos (< 30ms), bloqueio de bypasses, confirmação de comandos destrutivos e vínculo físico obrigatório entre deltas OpenSpec e arquivos do roadmap.
 
 ## Requirements
 
