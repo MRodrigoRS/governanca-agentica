@@ -1,6 +1,6 @@
 # Fatia 05: Catálogo Oficial de Jogos, Simulações e Gráficos Interativos (Browser e Desktop Nativo)
 
-> **Status:** `[~] Em Andamento`  
+> **Status:** `[x] Concluída`  
 > **Identificador OpenSpec:** `fatia-05-catalogo-jogos-e-simulacoes`  
 > **Depende diretamente de:** `fatia-04-engenharia-de-harness-e-higiene-de-contexto.md` (harness determinístico e governança v3.4.0)
 
