@@ -64,17 +64,19 @@
 ## 5. Integração com Linear (Diário de Bordo & Gestão)
 
 - **Servidor MCP:** Linear Hosted Remote Server (`mcp-remote https://mcp.linear.app/mcp`)
-{% if linear_project %}
-- **Projeto Linear (Âncora Oficial):** {% if linear_project.startswith('http') %}[Abrir Projeto no Linear]({{ linear_project }}){% else %}`{{ linear_project }}`{% endif %}
-- **Identificador / URL da Âncora:** `{{ linear_project }}`
-{% else %}
-- **Projeto Linear (Âncora Oficial):** [A definir na primeira conexão ou via Identificador/URL do projeto]
-{% endif %}
-- **Regras Operacionais para Agentes:**
-  1. **Isolamento de Escopo:** O agente opera estritamente dentro deste projeto e de suas equipes associadas no Linear. É proibido tocar em issues de outras equipes.
-  2. **Gate 1:** Localiza ou cria a issue associada à fatia (`[LIN-XXX] fatia-XXa-...`) dentro deste projeto e move para *In Progress*.
-  3. **Gate 2 (Diário de Bordo):** Publica a atualização oficial do projeto (*Project Update*) com o resumo de valor funcional entregue e o roteiro de teste, marcando a issue como *Done*.
-  4. **Poda de Ideias (`refinar-ideia`):** Registra ideias despriorizadas ou podadas diretamente no Backlog deste projeto.
+
+### Tríade de Âncora Linear (Anti-Vazamento de Squads)
+- **Workspace:** `{{ linear_workspace_slug if linear_workspace_slug else '[A definir no Gate 0]' }}`
+- **Equipe:** `{{ linear_team_key if linear_team_key else '[A definir no Gate 0]' }}`
+- **Projeto:** `{{ linear_project if linear_project else '[A definir no Gate 0]' }}`
+
+- **Protocolo de Handshake Pré-Operação (Obrigatório):**
+  1. **Handshake com `whoami`:** Antes de qualquer leitura ou escrita no Linear, o agente deve executar a ferramenta `whoami` para verificar a organização/workspace ativa.
+  2. **Bloqueio Determinístico por Divergência:** Compara o workspace ativo retornado com a âncora registrada acima. Se houver divergência, o agente interrompe a execução imediatamente e emite alerta de contenção ao humano.
+  3. **Isolamento de Escopo e Proibição de Fallback Silencioso:** O agente opera estritamente dentro deste workspace, equipe e projeto no Linear. É terminantemente proibido o fallback silencioso (criar tarefas órfãs ou tocar em issues de outras equipes caso o projeto não seja localizado).
+  4. **Gate 1:** Localiza ou cria a issue associada à fatia (`[KEY-XXX] fatia-XXa-...`) dentro deste projeto e move para *In Progress*.
+  5. **Gate 2 (Diário de Bordo):** Publica a atualização oficial do projeto (*Project Update*) com o resumo de valor funcional entregue e o roteiro de teste, marcando a issue como *Done*.
+  6. **Poda de Ideias (`refinar-ideia`):** Registra ideias despriorizadas ou podadas diretamente no Backlog deste projeto.
 {% endif %}
 ---
 

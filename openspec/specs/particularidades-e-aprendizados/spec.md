@@ -1,7 +1,7 @@
 # particularidades-e-aprendizados Specification
 
 ## Purpose
-TBD - created by archiving change fatia-06-documentos-de-particularidades-e-aprendizados. Update Purpose after archive.
+Padronizar a persistência de memórias de projeto, isolando restrições de infraestrutura e cicatrizes empíricas em documentos canônicos protegidos contra sobrescrita durante atualizações do Copier.
 
 ## Requirements
 

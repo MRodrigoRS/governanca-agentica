@@ -50,6 +50,18 @@ integrar_linear:
   help: "Pré-configurar integração oficial com Linear MCP (gestão de tarefas e diário da equipe)?"
   default: false
 
+linear_workspace_slug:
+  type: str
+  help: "Slug ou domínio da organização no Linear (ex: rr-diario-agents ou https://linear.app/rr-diario-agents)"
+  default: ""
+  when: "{{ integrar_linear }}"
+
+linear_team_key:
+  type: str
+  help: "Chave ou nome da equipe proprietária no Linear (ex: RR ou RR_DIARIO_AGENTS)"
+  default: ""
+  when: "{{ integrar_linear }}"
+
 linear_project:
   type: str
   help: "Identificador ou URL do Projeto no Linear (ex: P-RR-2 copiado via 'Copiar documento de identidade' ou URL)"

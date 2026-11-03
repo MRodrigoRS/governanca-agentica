@@ -99,9 +99,11 @@ Ao ser iniciado em um repositório, identifique o estado atual antes de agir:
 - **Servidores MCP Oficiais (.mcp.json):**
   - `context7`: Consulta a documentações técnicas oficiais e atualizadas.
   - `linear` (opcional/configurado): Coordenação de backlog, issues e **Diário de Bordo** da equipe.
-    * *Âncora Obrigatória de Projeto:* Toda operação do agente é restrita ao projeto definido pela URL/ID em `openspec/project.md`. É proibido tocar em issues de outras equipes ou outros projetos da organização.
+    * *Tríade de Âncora Obrigatória (Artigo 13):* Toda operação do agente é restrita à Tríade de Âncora registrada em `openspec/project.md` (Workspace, Equipe e Projeto). É terminantemente proibido tocar em issues de outras equipes ou outros projetos da organização.
+    * *Handshake Pré-Operação (`whoami`):* Antes de qualquer consulta ou mutação no Linear, o agente executa `whoami`. Em caso de divergência com o workspace âncora, a execução é interrompida imediatamente com alerta de contenção ao humano.
+    * *Proibição de Fallback Silencioso:* Se o projeto ou equipe âncora não for localizado, é expressamente proibido operar em fallback silencioso (criar tarefas órfãs ou atuar em issues de outros times).
     * *Inbox Móvel (Celular):* Quando solicitado (*"veja o que tem no Linear"*, *"puxe as ideias do celular"* ou `/linear-inbox`), o agente consulta as notas recentes no Linear e aciona a skill `refinar-ideia` para podar e transformar em fatias.
-    * *Gate 1:* Localiza ou cria a issue correspondente dentro deste projeto (`[LIN-XXX] fatia-XXa-...`) e move para *In Progress*.
+    * *Gate 1:* Localiza ou cria a issue correspondente dentro deste projeto (`[KEY-XXX] fatia-XXa-...`) e move para *In Progress*.
     * *Gate 2:* Publica a atualização oficial do projeto (*Project Update*) com resumo funcional e roteiro prático, movendo a issue para *Done*.
     * *Refinamento de Ideias:* Encaminha ideias despriorizadas para o Backlog deste mesmo projeto no Linear.
 - **Skills Ativas:** Diretório `.agents/skills/` (`inicializar-stack`, `ciclo-especificacao`, `refinar-ideia`, `explorar-produto`, `revisar-fatia`, `atualizar-governanca`).

@@ -5,6 +5,20 @@ O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.
 
 ---
 
+## [3.7.0] - 2026-11-03
+
+### Adicionado
+- **Protocolo de Handshake Pré-Operação e Tríade de Âncora Linear (`Artigo 13` / Issue `RR-9`):**
+  - **Constituição (`template/constitution.md`):** Criação do Artigo 13 estabelecendo a Tríade de Âncora obrigatória (`Workspace`, `Equipe`, `Projeto`), a obrigatoriedade de handshake prévio com `whoami` antes de qualquer leitura ou escrita no Linear MCP, bloqueio imediato com alerta se o workspace divergir, e a proibição absoluta de fallback silencioso.
+  - **Instruções de Agente (`template/AGENTS.md`):** Especificação operacional do handshake com `whoami` e Tríade de Âncora na Seção 6 de ferramentas e MCPs.
+  - **Template Jinja (`template/openspec/project.md.jinja`):** Renderização canônica da Tríade de Âncora e das regras de isolamento quando `integrar_linear: true`.
+  - **Questionário Copier (`copier.yml`):** Adição das perguntas condicionais `linear_workspace_slug` e `linear_team_key` ativadas quando `integrar_linear: true`.
+  - **Âncora do Repositório Atual (`openspec/project.md`):** Atualização da Seção 3 com os dados imutáveis do projeto (`rr-diario-agents`, `RR_DIARIO_AGENTS`, `GOV-AGENTS-V2 / P-RR-2`).
+- **Suíte de Testes Automatizados:**
+  - Criação de `tests/template-linear.test.mjs` com 6 novos testes unitários automatizados cobrindo Copier, Jinja, Constituição e AGENTS.md, elevando a suíte para 48 testes verdes.
+
+---
+
 ## [3.6.0] - 2026-11-03
 
 ### Adicionado

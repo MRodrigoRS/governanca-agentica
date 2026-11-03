@@ -139,6 +139,18 @@ Se durante a execução de uma tarefa o agente falhar 3 vezes consecutivas no me
 3. **Evidência Explícita de Alinhamento:** Ao abrir o Gate 1 ou convidar o humano para a próxima fatia, o agente deve citar textualmente os objetivos e contratos definidos no arquivo de roadmap físico, provando que não inventou o escopo. Qualquer divergência entre a proposta do agente e o roadmap físico anula o Gate 1.
 4. **Auditoria Factual Cega Pré-Gate 2:** Concluída a implementação de qualquer fatia, é mandatório acionar o **Subagente Inspetor Forense** (`inspetor-forense`) para inspecionar cegamente o código modificado (`git diff`) sem ler o roadmap, traduzindo em linguagem literal e factual tudo o que o código implementou, validou ou omitiu. Em seguida, o **Agente Principal** cruza o relatório factual ponto a ponto contra o arquivo físico da fatia (Duelo de Conformidade). Havendo omissões ou divergências, o executor deve corrigir o código antes de qualquer apresentação ao humano; o commit só pode ser solicitado após a conformidade comprovada.
 5. **Higiene de Contexto Preventiva:** Para prevenir a degradação de contexto (*Context Rot*), ao concluir o Gate 2 de uma entrega, o agente deve orientar formalmente o humano a renovar a sessão (`/compact` ou abertura de nova conversa limpa) antes de puxar a próxima fatia da fila.
+
+---
+
+## Artigo 13 — Isolamento Multi-Squad, Tríade de Âncora e Handshake de Integrações
+
+1. **Tríade de Âncora Obrigatória:** Todo projeto integrado a ferramentas compartilhadas de gestão de tarefas (ex.: Linear via MCP) deve possuir sua âncora imutável registrada em `openspec/project.md`, composta obrigatoriamente por:
+   - **Workspace:** slug e URL da organização/conta.
+   - **Equipe:** chave (`KEY`), nome e UUID da equipe proprietária.
+   - **Projeto:** nome, identificador (`P-XXX`) e UUID do projeto.
+2. **Handshake Pré-Operação com `whoami`:** É expressamente proibido ao agente emitir qualquer instrução de leitura ou escrita no Linear sem antes disparar a ferramenta `whoami` para verificar a identidade e o workspace ativo na sessão.
+3. **Bloqueio Determinístico por Divergência de Workspace:** Se o workspace ativo retornado pelo `whoami` divergir do registrado na Tríade de Âncora, o agente deve interromper imediatamente a operação, emitir um alerta de contenção ao humano e recusar-se a prosseguir.
+4. **Proibição Absoluta de Fallback Silencioso:** Se o projeto ou equipe âncora não for localizado durante uma busca, é terminantemente proibido ao agente operar em issues de outras equipes ou criar tarefas órfãs sem atribuição de projeto. Qualquer falha de ancoragem exige alinhamento explícito com o humano.
 <!-- governanca:fim -->
 
 ## Cláusulas Adicionais Deste Projeto

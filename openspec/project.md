@@ -38,14 +38,20 @@
 ## 3. Integração com Linear (Diário de Bordo & Inbox Móvel)
 
 - **Servidor MCP:** Linear Hosted Remote Server (`mcp-remote https://mcp.linear.app/mcp`)
-- **Projeto Linear (Âncora Oficial):** `P-RR-2` (GOV-AGENTS-V2)
-- **Identificador da Âncora:** `P-RR-2`
-- **Regras Operacionais para Agentes:**
-  1. **Isolamento de Escopo:** O agente opera estritamente dentro do projeto `P-RR-2` no Linear. É terminantemente proibido tocar em issues de outras equipes ou projetos.
-  2. **Inbox Móvel (Celular):** Quando o usuário solicitar (*"veja o que tem no Linear"*, *"puxe as ideias do celular"* ou `/linear-inbox`), o agente consulta as notas e tarefas recentes neste projeto e aciona a skill `refinar-ideia` para podar e transformar em fatias.
-  3. **Gate 1:** Localiza ou cria a issue associada à fatia (`[LIN-XXX] fatia-XXa-...`) dentro do projeto `P-RR-2` e move para *In Progress*.
-  4. **Gate 2 (Diário de Bordo):** Publica a atualização oficial do projeto (*Project Update*) com o resumo de valor funcional entregue e o roteiro de teste, marcando a issue como *Done*.
-  5. **Poda de Ideias (`refinar-ideia`):** Registra ideias despriorizadas ou podadas diretamente no Backlog deste projeto no Linear.
+
+### Tríade de Âncora Linear (Anti-Vazamento de Squads)
+- **Workspace:** `rr-diario-agents` (URL: `https://linear.app/rr-diario-agents`)
+- **Equipe:** `RR_DIARIO_AGENTS` (Chave: `RR` / UUID: `0eea2743-4241-41cb-832a-96cc625a085a`)
+- **Projeto:** `GOV-AGENTS-V2` (Identificador: `P-RR-2` / UUID: `ef07f846-1cd0-400a-a6bb-94fd723621ed`)
+
+- **Protocolo de Handshake Pré-Operação (Obrigatório — Artigo 13):**
+  1. **Handshake com `whoami`:** Antes de qualquer leitura ou escrita no Linear, o agente executa `whoami` para verificar a organização/workspace ativa.
+  2. **Bloqueio Determinístico por Divergência:** Compara o workspace retornado com a âncora acima (`rr-diario-agents`). Em caso de divergência, interrompe a execução com alerta de contenção ao humano.
+  3. **Isolamento de Escopo e Proibição de Fallback Silencioso:** O agente opera estritamente dentro deste workspace, equipe e projeto no Linear. É terminantemente proibido o fallback silencioso (criar tarefas órfãs ou tocar em issues de outras equipes caso o projeto não seja localizado).
+  4. **Inbox Móvel (Celular):** Quando o usuário solicitar (*"veja o que tem no Linear"*, *"puxe as ideias do celular"* ou `/linear-inbox`), o agente consulta as notas e tarefas recentes neste projeto e aciona a skill `refinar-ideia` para podar e transformar em fatias.
+  5. **Gate 1:** Localiza ou cria a issue associada à fatia (`[RR-XXX] fatia-XXa-...`) dentro do projeto `P-RR-2` e move para *In Progress*.
+  6. **Gate 2 (Diário de Bordo):** Publica a atualização oficial do projeto (*Project Update*) com o resumo de valor funcional entregue e o roteiro de teste, marcando a issue como *Done*.
+  7. **Poda de Ideias (`refinar-ideia`):** Registra ideias despriorizadas ou podadas diretamente no Backlog deste projeto no Linear.
 
 ---
 
@@ -59,6 +65,7 @@
 | 04 | `[x] Concluída` | `fatia-04-engenharia-de-harness-e-higiene-de-contexto` | [openspec/roadmap/fatia-04-engenharia-de-harness-e-higiene-de-contexto.md](roadmap/fatia-04-engenharia-de-harness-e-higiene-de-contexto.md) | Fatia 03 | Sensores instantâneos pós-edição (< 30ms), fechamento de brechas PreToolUse + paridade Claude Code, vínculo físico Roadmap ↔ OpenSpec e higiene de contexto MCP/llms.txt (Issue RR-6) |
 | 05 | `[x] Concluída` | `fatia-05-catalogo-jogos-e-simulacoes` | [openspec/roadmap/fatia-05-catalogo-jogos-e-simulacoes.md](roadmap/fatia-05-catalogo-jogos-e-simulacoes.md) | Fatia 04 | Catálogo oficial de Jogos (Phaser 3, Three.js, Godot 4, Bevy), regras de desacoplamento e validação de manifestos |
 | 06 | `[x] Concluída` | `fatia-06-documentos-de-particularidades-e-aprendizados` | [openspec/roadmap/fatia-06-documentos-de-particularidades-e-aprendizados.md](roadmap/fatia-06-documentos-de-particularidades-e-aprendizados.md) | Fatia 05 | Cria `docs/particularidades.md` e `docs/aprendizados.md` blindados no `_skip_if_exists` do Copier e amarrados no `AGENTS.md` (Issue RR-8) |
+| 07 | `[ ] Em Andamento` | `fatia-07-protocolo-handshake-e-triade-linear` | [openspec/roadmap/fatia-07-protocolo-handshake-e-triade-linear.md](roadmap/fatia-07-protocolo-handshake-e-triade-linear.md) | Fatia 06 | Protocolo de handshake pré-operação (whoami), Tríade de Âncora Linear e isolamento anti-vazamento de squads (Issue RR-9) |
 
 ---
 
