@@ -1,6 +1,6 @@
 # Fatia 06: Documentos de Particularidades e Aprendizados Protegidos no Copier
 
-> **Status:** `[ ] Pendente`  
+> **Status:** `[x] Concluída`  
 > **Identificador OpenSpec:** `fatia-06-documentos-de-particularidades-e-aprendizados`  
 > **Depende diretamente de:** `fatia-05-catalogo-jogos-e-simulacoes.md` (Governança v3.5.0)  
 > **Vínculo com Issue Linear:** `RR-8` (Projeto P-RR-2 / GOV-AGENTS-V2)
