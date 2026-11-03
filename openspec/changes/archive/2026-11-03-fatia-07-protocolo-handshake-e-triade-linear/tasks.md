@@ -1,0 +1,22 @@
+# Tarefas de Implementação — `fatia-07-protocolo-handshake-e-triade-linear`
+
+- [x] **1. Test-First Mandatório (`tests/template-linear.test.mjs` — Ciclo Vermelho → Verde):**
+  - [x] 1.1. Escrever teste falhando (Vermelho) verificando as perguntas da Tríade de Âncora no `copier.yml`.
+  - [x] 1.2. Escrever teste falhando (Vermelho) verificando a renderização da Tríade de Âncora em `template/openspec/project.md.jinja` com `integrar_linear: true`.
+  - [x] 1.3. Escrever teste falhando (Vermelho) verificando a omissão da Tríade de Âncora em `template/openspec/project.md.jinja` com `integrar_linear: false`.
+  - [x] 1.4. Escrever teste falhando (Vermelho) verificando o Artigo 13 em `template/constitution.md`.
+  - [x] 1.5. Escrever teste falhando (Vermelho) verificando as instruções de handshake e anti-vazamento em `template/AGENTS.md`.
+  - [x] 1.6. Escrever teste falhando (Vermelho) verificando a Tríade de Âncora real preenchida em `openspec/project.md`.
+- [x] **2. Implementação das Modificações nos Templates e Constituição:**
+  - [x] 2.1. Adicionar `linear_workspace_slug` e `linear_team_key` no questionário de `copier.yml`.
+  - [x] 2.2. Atualizar Seção 5 de `template/openspec/project.md.jinja` com a Tríade de Âncora e protocolo de handshake.
+  - [x] 2.3. Adicionar o Artigo 13 em `template/constitution.md`.
+  - [x] 2.4. Adicionar as regras de handshake e Tríade de Âncora na Seção 6 de `template/AGENTS.md`.
+  - [x] 2.5. Atualizar a Seção 3 de `openspec/project.md` com a Tríade de Âncora oficial do repositório.
+- [x] **3. Execução dos Testes e Refatoração (Verde):**
+  - [x] 3.1. Executar `node --test tests/template-linear.test.mjs` e comprovar aprovação verde.
+  - [x] 3.2. Executar suíte completa `npm test` garantindo 100% de aprovação.
+- [x] **4. Versionamento, Validação e Gate 2:**
+  - [x] 4.1. Atualizar versão para `3.7.0` em `package.json` e documentar alterações em `CHANGELOG.md`.
+  - [x] 4.2. Executar `npx --yes @fission-ai/openspec validate --all --no-interactive`, `npm test` e `node template/scripts/verificar-governanca.mjs`.
+  - [ ] 4.3. Acionar o Subagente Inspetor Forense para auditoria factual cega do diff, realizar o Duelo de Conformidade e submeter ao Gate 2.
