@@ -19,6 +19,8 @@ _skip_if_exists:
   - "openspec/changes/**"
   - "docs/adr/**"
   - ".claude/settings.local.json"
+  - "docs/particularidades.md"
+  - "docs/aprendizados.md"
 
 # ------------------------------------------------------------------------------
 # Questionário de Inicialização

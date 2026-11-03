@@ -92,6 +92,8 @@ Ao ser iniciado em um repositório, identifique o estado atual antes de agir:
 - **Mapa de Fatias Incrementais:** Diretório `openspec/roadmap/` e `openspec/project.md`.
 - **Especificações Vivas e Deltas:** Diretório `openspec/` gerenciado pelo OpenSpec CLI (`npx @fission-ai/openspec`).
 - **Registros de Arquitetura (ADRs):** Diretório `docs/adr/` no formato MADR.
+- **Particularidades Operacionais e de Ambiente:** Arquivo `docs/particularidades.md` (leitura sob demanda antes de alterar infraestrutura, portas, variáveis de ambiente ou integrações externas).
+- **Diário de Aprendizados e Cicatrizes:** Arquivo `docs/aprendizados.md` (leitura mandatória no Gate 1 para prevenir reincidência de armadilhas empíricas catalogadas).
 - **Hooks Nativos de Agente:** Arquivo `.agents/hooks.json` e `.claude/settings.json`.
 - **Subagente Inspetor Forense:** `.claude/agents/inspetor-forense.md` e `.github/agents/inspetor-forense.agent.md`.
 - **Servidores MCP Oficiais (.mcp.json):**

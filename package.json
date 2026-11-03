@@ -1,6 +1,6 @@
 {
   "name": "governanca-de-agentes-v2",
-  "version": "3.5.0",
+  "version": "3.6.0",
   "description": "Protocolo agêntico aberto para desenvolvimento de software com agentes de inteligência artificial.",
   "type": "module",
   "scripts": {

@@ -5,6 +5,21 @@ O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.
 
 ---
 
+## [3.6.0] - 2026-11-03
+
+### Adicionado
+- **Documentos Canônicos de Memória de Projeto (`template/docs/`):**
+  - `particularidades.md`: repositório estruturado para restrições de infraestrutura, portas, banco de dados (RLS, pooler), webhooks e regras não-óbvias de domínio, com diretriz estrita de Zero Segredos.
+  - `aprendizados.md`: diário empírico com modelo padronizado para registro de cicatrizes de produção, causas raízes, armadilhas mentais e regras inegociáveis decorrentes.
+- **Blindagem Determinística no Copier (`copier.yml`):**
+  - Inclusão de `"docs/particularidades.md"` e `"docs/aprendizados.md"` em `_skip_if_exists`, garantindo proteção contra sobrescrita durante atualizações com `uvx copier update`.
+- **Higiene de Contexto e Amarração no `template/AGENTS.md`:**
+  - Inclusão de ponteiros explícitos de leitura sob demanda na Seção 6 de ferramentas e recursos.
+- **Suíte de Testes Expandida:**
+  - Criação de `tests/template-docs.test.mjs` com 4 novos testes unitários automatizados, elevando a suíte para 42 testes verdes.
+
+---
+
 ## [3.5.0] - 2026-11-01
 
 ### Adicionado
