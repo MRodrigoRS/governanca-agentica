@@ -55,17 +55,23 @@
 
 ---
 
-## 4. Mapa de Fatias Incrementais (`openspec/roadmap/`)
+## 4. Mapa de Fatias Incrementais (`openspec/roadmap.md`)
 
-| Ordem | Status | Fatia | Arquivo Detalhado | Depende de | Entrega Principal |
+> **Modelo Rolling Wave (Governança v4.0.0):** O planejamento macro das fatias vive em [openspec/roadmap.md](roadmap.md). A especificação técnica profunda nasce Just-in-Time diretamente em `openspec/changes/fatia-XX-<slug>/` na hora de implementar cada fatia (arquivos históricos da era v3 permanecem preservados em `openspec/roadmap/`).
+
+| Ordem | Status | Fatia | Fonte de Planejamento | Depende de | Entrega Principal |
 |---|---|---|---|---|---|
-| 01 | `[x] Concluída` | `fatia-01-fundacao-v3` | [openspec/roadmap/fatia-01-fundacao-v3.md](roadmap/fatia-01-fundacao-v3.md) | Nenhuma | OpenSpec nativo, Lifecycle Hooks e suíte de testes unitários |
-| 02 | `[x] Concluída` | `fatia-02-linear-mcp-e-inbox` | [openspec/roadmap/fatia-02-linear-mcp-e-inbox.md](roadmap/fatia-02-linear-mcp-e-inbox.md) | Fatia 01 | Integração oficial com Linear MCP, Diário de Bordo e Inbox Móvel |
-| 03 | `[x] Concluída` | `fatia-03-rigor-tdd-e-mutacao-mental` | [openspec/roadmap/fatia-03-rigor-tdd-e-mutacao-mental.md](roadmap/fatia-03-rigor-tdd-e-mutacao-mental.md) | Fatia 02 | Rigor TDD (Faça Funcionar → Faça Direito), prova de mutação mental no Inspetor e trava determinística anti-teatro de testes (Issue RR-5) |
-| 04 | `[x] Concluída` | `fatia-04-engenharia-de-harness-e-higiene-de-contexto` | [openspec/roadmap/fatia-04-engenharia-de-harness-e-higiene-de-contexto.md](roadmap/fatia-04-engenharia-de-harness-e-higiene-de-contexto.md) | Fatia 03 | Sensores instantâneos pós-edição (< 30ms), fechamento de brechas PreToolUse + paridade Claude Code, vínculo físico Roadmap ↔ OpenSpec e higiene de contexto MCP/llms.txt (Issue RR-6) |
-| 05 | `[x] Concluída` | `fatia-05-catalogo-jogos-e-simulacoes` | [openspec/roadmap/fatia-05-catalogo-jogos-e-simulacoes.md](roadmap/fatia-05-catalogo-jogos-e-simulacoes.md) | Fatia 04 | Catálogo oficial de Jogos (Phaser 3, Three.js, Godot 4, Bevy), regras de desacoplamento e validação de manifestos |
-| 06 | `[x] Concluída` | `fatia-06-documentos-de-particularidades-e-aprendizados` | [openspec/roadmap/fatia-06-documentos-de-particularidades-e-aprendizados.md](roadmap/fatia-06-documentos-de-particularidades-e-aprendizados.md) | Fatia 05 | Cria `docs/particularidades.md` e `docs/aprendizados.md` blindados no `_skip_if_exists` do Copier e amarrados no `AGENTS.md` (Issue RR-8) |
-| 07 | `[x] Concluída` | `fatia-07-protocolo-handshake-e-triade-linear` | [openspec/roadmap/fatia-07-protocolo-handshake-e-triade-linear.md](roadmap/fatia-07-protocolo-handshake-e-triade-linear.md) | Fatia 06 | Protocolo de handshake pré-operação (whoami), Tríade de Âncora Linear e isolamento anti-vazamento de squads (Issue RR-9) |
+| 01 | `[x] Concluída` | `fatia-01-fundacao-v3` | [openspec/roadmap.md](roadmap.md) | Nenhuma | OpenSpec nativo, Lifecycle Hooks e suíte de testes unitários |
+| 02 | `[x] Concluída` | `fatia-02-linear-mcp-e-inbox` | [openspec/roadmap.md](roadmap.md) | Fatia 01 | Integração oficial com Linear MCP, Diário de Bordo e Inbox Móvel |
+| 03 | `[x] Concluída` | `fatia-03-rigor-tdd-e-mutacao-mental` | [fatia-03](roadmap/fatia-03-rigor-tdd-e-mutacao-mental.md) | Fatia 02 | Rigor TDD (Faça Funcionar → Faça Direito), prova de mutação mental no Inspetor e trava determinística anti-teatro de testes (Issue RR-5) |
+| 04 | `[x] Concluída` | `fatia-04-engenharia-de-harness-e-higiene-de-contexto` | [fatia-04](roadmap/fatia-04-engenharia-de-harness-e-higiene-de-contexto.md) | Fatia 03 | Sensores instantâneos pós-edição (< 30ms), fechamento de brechas PreToolUse + paridade Claude Code, vínculo físico Roadmap ↔ OpenSpec e higiene de contexto MCP/llms.txt (Issue RR-6) |
+| 05 | `[x] Concluída` | `fatia-05-catalogo-jogos-e-simulacoes` | [fatia-05](roadmap/fatia-05-catalogo-jogos-e-simulacoes.md) | Fatia 04 | Catálogo oficial de Jogos (Phaser 3, Three.js, Godot 4, Bevy), regras de desacoplamento e validação de manifestos |
+| 06 | `[x] Concluída` | `fatia-06-documentos-de-particularidades-e-aprendizados` | [fatia-06](roadmap/fatia-06-documentos-de-particularidades-e-aprendizados.md) | Fatia 05 | Cria `docs/particularidades.md` e `docs/aprendizados.md` blindados no `_skip_if_exists` do Copier e amarrados no `AGENTS.md` (Issue RR-8) |
+| 07 | `[x] Concluída` | `fatia-07-protocolo-handshake-e-triade-linear` | [fatia-07](roadmap/fatia-07-protocolo-handshake-e-triade-linear.md) | Fatia 06 | Protocolo de handshake pré-operação (whoami), Tríade de Âncora Linear e isolamento anti-vazamento de squads (Issue RR-9) |
+| 08 | `[ ] Pendente` | `fatia-08-desburocratizacao-sdd-rolling-wave-e-cerimonia` | [fatia-08](roadmap/fatia-08-desburocratizacao-sdd-rolling-wave-e-cerimonia.md) | Fatia 07 | Rolling Wave sem perda de rigor (7 pilares auditados no OpenSpec + Entidades Core no Gate 0), Via de Manutenção blindada, `/fix` estético restrito e desduplicação sem amputar regras/exemplos |
+| 09 | `[ ] Pendente` | `fatia-09-regras-modulares-por-glob-e-docs-mercado` | [fatia-09](roadmap/fatia-09-regras-modulares-por-glob-e-docs-mercado.md) | Fatia 08 | Regras modulares `.agents/rules/` + globs nativos IDE + matriz universal em `AGENTS.md`, `docs/arquitetura.md` (C4 + ER Core), trava `.env.example`, SemVer `v4.0.0` e faxina em `docs/historico/` |
+| 10 | `[ ] Pendente` | `fatia-10-reuso-tokens-movimento-e-component-as-asset` | [fatia-10](roadmap/fatia-10-reuso-tokens-movimento-e-component-as-asset.md) | Fatia 09 | Skill `reuso-e-modularizacao`, `docs/catalogo-reuso.md` (ponteiros 1 linha), Tokens de Movimento na Fatia 01, *Component-as-Asset*, `.gd` e trava anti-monólito (> 350 linhas úteis) |
+| 11 | `[ ] Pendente` | `fatia-11-piramide-testes-anti-mock-e-ci-poliglota` | [fatia-11](roadmap/fatia-11-piramide-testes-anti-mock-e-ci-poliglota.md) | Fatia 10 | Testing Trophy (anti-mock de banco próprio), Lefthook com suíte no `pre-push`, CI poliglota (Godot GUT + .NET + auditoria CVE + lockfile estrito) e Smoke E2E + Axe |
 
 ---
 
