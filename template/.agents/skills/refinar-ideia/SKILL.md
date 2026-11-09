@@ -1,13 +1,13 @@
 ---
 name: refinar-ideia
-description: Intervém quando surge uma nova ideia (no chat ou capturada no Linear pelo celular). Executa raio-X de complexidade oculta, poda excessos (entra vs. sai), analisa afinidade no roadmap e encaixa a entrega como subfatia alfanumérica (ex.: fatia-02a) ou nova fatia inteira.
+description: Intervém quando surge uma nova ideia (no chat ou capturada no Linear pelo celular). Conduz interrogatório rigoroso via protocolo grill-me (árvore de decisão com respostas recomendadas), poda excessos (entra vs. sai), analisa afinidade no roadmap e encaixa a entrega como subfatia alfanumérica (ex.: fatia-02a) ou nova fatia inteira.
 ---
 
 # Skill: Refinar Ideia e Podar Escopo (`refinar-ideia`)
 
 Esta skill orienta o agente na intervenção preventiva quando o usuário propõe uma ideia nova, alteração de regras ou adição de funcionalidade durante o desenvolvimento do projeto — seja falada diretamente no chat ou capturada pelo celular no aplicativo móvel do Linear.
 
-> **Postura do Agente:** Gerente de Produto Sênior e Engenheiro Cético. É proibido aceitar ideias cruas ou sair codando imediatamente. O agente deve expor a complexidade oculta ("efeito iceberg"), propor a poda radical e encaixar a solução de forma cirúrgica no roadmap existente.
+> **Postura do Agente:** Gerente de Produto Sênior e Arquiteto Crítico. É expressamente proibido aceitar ideias cruas ou presumir unilateralmente o que deve ser feito sem perguntar. O agente deve conduzir o interrogatório estruturado através do protocolo upstream **`grill-me`** (árvore de decisões em rodadas com respostas recomendadas), confrontar trade-offs e só então formalizar a poda e o encaixe no roadmap.
 
 ---
 
@@ -16,7 +16,7 @@ Esta skill orienta o agente na intervenção preventiva quando o usuário propõ
 Esta skill deve ser acionada sempre que:
 - O usuário disser *"tive uma ideia"*, *"vamos adicionar X"*, *"precisamos mudar Y"*, *"e se a gente fizesse Z?"*.
 - O usuário pedir para sincronizar ou verificar ideias anotadas no celular via Linear: *"veja o que tem no Linear"*, *"puxe as ideias do celular"*, *"quais tarefas novas tem no Linear?"*, `/linear-inbox`.
-- O usuário enviar os comandos `/refinar` ou `/podar`.
+- O usuário enviar os comandos `/refinar`, `/podar` ou `/grill-me`.
 - O agente perceber que o usuário está solicitando uma funcionalidade não contemplada no planejamento original da fatia ativa.
 
 > **REGRA DE OURO:** Enquanto esta skill estiver ativa, **nenhum arquivo de código de produção é criado ou alterado**. O objetivo é 100% de refinamento arquitetural e gestão de escopo.
@@ -37,24 +37,43 @@ Se o acionamento for motivado por notas/ideias registradas no Linear (via celula
 
 ---
 
-### Passo 1 — Raio-X de Complexidade Oculta (O Efeito Iceberg)
-Ideias novas costumam parecer triviais na imaginação, mas carregam impactos profundos de engenharia. O agente deve mapear e apresentar em português claro os pontos cegos da ideia:
-1. **Permissões e Segurança:** Quem pode executar? Há papéis de usuário diferentes?
-2. **Impacto no Banco de Dados:** Cria novas tabelas ou adiciona colunas/relacionamentos complexos?
-3. **Casos de Borda e Falhas:** O que acontece se a conexão cair, o payload for inválido, a chave for duplicada ou o serviço externo falhar?
-4. **Estados Assíncronos e UI:** Como a tela lida com loading lento, lista vazia e erros?
+### Passo 1 — Interrogatório de Domínio e Decisão via Protocolo `grill-me`
+
+> **PROIBIÇÃO DE SUPOSIÇÃO UNILATERAL:** Ideias novas carregam nós ocultos de engenharia. Em vez de despejar monólogos ou tabelas prematuras, execute o protocolo **`grill-me` / `grilling`**:
+> 1. Formule perguntas agrupadas em **rodadas** cobrindo a fronteira atual de decisões.
+> 2. Cada pergunta deve trazer a **resposta recomendada pelo agente (`➡️`) com justificativa técnica**, formulada para que um "sim" ou "concordo" baste para aprovar.
+> 3. Busque fatos do repositório por conta própria (lendo arquivos e schemas); **não pergunte ao humano o que o código já responde**.
+
+*Estrutura mandatória do interrogatório:*
+- **Rodada 1 (Ator, Gatilho e Efeito Colateral):**
+  - Quem dispara essa ação e em qual tela/evento?
+  - Isso invalida, altera ou depende de regras já entregues em fatias anteriores?
+- **Rodada 2 (Casos de Borda e Falhas Críticas):**
+  - O que acontece quando a conexão falha, a chave externa expira, o payload é inválido ou há concorrência simultânea?
+  - Quais estados de UI (`loading`, `empty`, `error`, `success`), Toasts de mutação ou Modais destrutivos são exigidos (Artigo 6)?
+
+*Exemplo prático de rodada:*
+```markdown
+❓ **Q1 — Momento do Disparo e Automação:** O envio da notificação no WhatsApp deve ocorrer imediatamente após a confirmação do agendamento ou em lote 1 hora antes?
+➡️ Recomendo disparar imediatamente após a transação no banco através de uma fila em segundo plano (BullMQ/Redis), para não travar a resposta da requisição web caso a API do WhatsApp demore.
 
 ---
 
-### Passo 2 — Poda Construtiva ("O que ENTRA" vs. "O que FICA DE FORA")
-O agente aplica o princípio de Pareto (80% do valor com 20% do esforço), dividindo a proposta em uma tabela objetiva:
+❓ **Q2 — Comportamento em Falha de Entrega:** Se o número do cliente for inválido ou a API externa falhar, como o sistema deve reagir?
+➡️ Recomendo marcar o status do envio como `FALHA_ENTREGA` com log do erro e exibir um aviso discreto no painel do atendente, sem cancelar o agendamento em si.
+```
+
+---
+
+### Passo 2 — Poda Construtiva e Desafio de Escopo ("O que ENTRA" vs. "O que FICA DE FORA")
+Somente após assentar as respostas da árvore de decisões do `grill-me`, o agente aplica o princípio de Pareto (80% do valor essencial com 20% do esforço), dividindo a entrega:
 
 | O Que ENTRA Agora (MVP Cirúrgico) | O Que FICA DE FORA (Podado / Adiado) | Justificativa do Corte |
 |---|---|---|
-| *Fluxo principal feliz e essencial* | *Automação avançada, filtros secundários, conciliações raras* | *Traz 80% da complexidade com pouco valor imediato* |
+| *Fluxo feliz direto e persistência do evento* | *Templates customizáveis, retentativas infinitas, relatórios analíticos* | *Traz 80% da complexidade com pouco valor imediato* |
 
 O agente pergunta ao humano:
-> *"Você concorda em podar esses itens para entregarmos o valor essencial com velocidade e sem risco?"*
+> *"Com base nas decisões alinhadas acima, você concorda com esta divisão de escopo para mantermos o projeto rápido e protegido?"*
 
 ---
 

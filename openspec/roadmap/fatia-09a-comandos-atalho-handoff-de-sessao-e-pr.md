@@ -19,7 +19,8 @@
        | `/proxima-fatia` | `ciclo-especificacao` §2 | Ler `roadmap.md`, abrir delta e preparar Gate 1 |
        | `/retomar` | Handoff de sessão (item 2) | Primeira mensagem após `/compact` ou sessão nova |
        | `/revisar` | `revisar-fatia` | Inspetor Forense cego + Duelo de Conformidade antes do Gate 2 |
-       | `/refinar` | `refinar-ideia` | Ideia nova no meio do caminho |
+       | `/grill-me` | `grill-me` / `grilling` (upstream) | Interrogatório exaustivo de plano/design/ideia |
+       | `/refinar` | `refinar-ideia` (orquestra `grill-me`) | Ideia nova no meio do caminho com poda e subfatia |
        | `/explorar` | `explorar-produto` | Reunião de produto sem código |
        | `/aprendizado` | Registro em `docs/aprendizados.md` | Após Circuit Breaker, bug recorrente ou armadilha de ambiente |
        | `/atualizar-governanca` | `atualizar-governanca` | `copier update` seguro |

@@ -1,36 +1,50 @@
 ---
 name: inicializar-stack
-description: Conduz entrevista exaustiva de produto (multi-rodadas), refina o que entra e o que sai do escopo, recomenda stacks/VPS/MCPs do catálogo oficial, instala a base no Gate 0 e decompõe o sistema inteiro em fatias incrementais detalhadas em openspec/roadmap/.
+description: Conduz entrevista estruturada de produto via protocolo oficial grill-me (árvore de decisão em rodadas com recomendação técnica), refina o que entra e sai do escopo, recomenda stacks/VPS/MCPs do catálogo oficial, instala a base no Gate 0 com skills oficiais upstream e decompõe o sistema inteiro em fatias incrementais detalhadas em openspec/roadmap/.
 ---
 
 # Skill: Inicializar Stack e Decompor Sistema em Fatias (Gate 0)
 
-Esta skill orienta o agente na configuração inicial de um repositório novo (greenfield). O papel do agente aqui é atuar como **Arquiteto de Produto e Engenheiro Principal**: extrair toda a visão da cabeça do usuário (mesmo que ele seja leigo tecnicamente), polir o escopo até eliminar pontos cegos, escolher a stack + infraestrutura e **fatiar o sistema inteiro em entregas incrementais altamente detalhadas**.
+Esta skill orienta o agente na configuração inicial de um repositório novo (greenfield). O papel do agente aqui é atuar como **Arquiteto de Produto e Engenheiro Principal**: interrogar ativamente a visão do usuário através do protocolo upstream **`grill-me`** (árvore de decisão em rodadas sucessivas), polir o escopo eliminando ambiguidades e pontos cegos, escolher a stack + infraestrutura e **fatiar o sistema inteiro em entregas incrementais altamente detalhadas**.
 
 ---
 
-## Passo 1 — Entrevista Exaustiva de Descoberta e Polimento (Multi-Rodadas)
+## Passo 1 — Entrevista Investigativa de Produto e Arquitetura via Protocolo `grill-me`
 
-> **PROIBIÇÃO DE ENTREVISTA RASA:** Nunca se limite a um formulário superficial de 1 mensagem quando o usuário descrever um sistema amplo. Conduza quantas rodadas de conversa forem necessárias até que todas as pontas do sistema estejam claras e polidas.
+> **PROIBIÇÃO DE ENTREVISTA PASSIVA OU SUPERFICIAL:** Nunca se limite a um questionário de 1 mensagem nem a um monólogo que presume regras sem perguntar. A entrevista opera sob o protocolo rigoroso do **`grill-me` / `grilling`**:
+> 1. Mapeie o sistema como uma **árvore de decisões** (*design tree*).
+> 2. Conduza o interrogatório em **rodadas**. A **fronteira** (*frontier*) reúne apenas as decisões cujos pré-requisitos já foram respondidos.
+> 3. Em cada rodada, numere as perguntas da fronteira e forneça **sempre** sua **resposta recomendada pré-mastigada com justificativa técnica** (`➡️`), formulada para que um "concordo" ou "sim" aceite a recomendação.
+> 4. Aguarde as respostas do humano antes de abrir o próximo ramo.
 
-### Rodada 1: Visão Completa e Fluxo de Ponta a Ponta
-Peça ao usuário para contar livremente tudo o que ele imagina funcionando no sistema final, sem se preocupar com termos técnicos:
-1. **Problema, Usuários e Telas Imaginadas:** O que o usuário vê quando entra no sistema? Quais áreas existem (ex.: chat estilo WhatsApp, Kanban de funil, painel de gráficos, cadastro de agentes/presets)?
-2. **Canal Principal:** SaaS Web Fullstack, Programa de Computador Desktop, Painel Interno/Dashboard, API, Mobile iOS/Android ou CLI.
-3. **Automações e Comportamentos Inteligentes:** O que deve acontecer sozinho por trás dos panos (ex.: IA respondendo, selos identificando quem respondeu, mensagens agendadas, cards mudando de coluna sozinhos)?
+### Rodada 1: Visão Central, Ator e Fronteiras de Domínio
+O agente escuta a intenção inicial do usuário e abre as primeiras perguntas da fronteira:
+- **Q1 — Problema & Ator Central:** Quem opera a aplicação e qual a dor primária resolvida de ponta a ponta?
+- **Q2 — Canal & Portabilidade:** SaaS Web Fullstack, Programa Desktop, App Mobile, API pura ou CLI? (Se Web, exigir mobile-first 320px+ e PWA inato — Artigo 6).
+- **Q3 — Automações e Comportamentos Assíncronos:** O que deve rodar sozinho por trás dos panos (IA, filas, cron jobs, webhooks, eventos)?
 
-### Rodada 2: Desafio Construtivo, Casos de Borda e Poda de Escopo ("O que entra vs. O que sai")
-Analise criticamente o que o usuário pediu e faça perguntas investigativas para polir o produto:
-1. **Pontos Cegos e Conflitos:** Aponte situações que o usuário ainda não pensou (ex.: *"Se um atendente humano assumir a conversa no meio, a IA deve pausar automaticamente?"*, *"O que acontece se a conexão cair no meio de um envio agendado?"*).
-2. **Sugestões de Alto Valor:** Sugira melhorias práticas que combinam naturalmente com a ideia dele.
-3. **Corte e Poda de Exageros:** Ajude o usuário a descartar ou adiar ideias que trariam complexidade desproporcional sem valor imediato. Tudo o que for descartado deve ser anotado para ir à seção **"Fora de Escopo / Descartado no Polimento"** do `openspec/project.md`.
+*Formato mandatório da rodada:*
+```markdown
+❓ **Q1 — Canal e Experiência Principal:** Vamos estruturar a aplicação como Web SaaS responsivo com suporte a PWA ou como aplicação Desktop nativa?
+➡️ Recomendo Web SaaS (Next.js / Vite + Tailwind + shadcn/ui) com design mobile-first desde 320px e PWA inato para máxima acessibilidade e velocidade de distribuição.
+
+---
+
+❓ **Q2 — Modelo de Autenticação e Multi-Tenancy:** O sistema será multi-tenant (com contas/empresas isoladas por `organizacao_id`) ou mono-usuário?
+➡️ Recomendo já instituir a chave `organizacao_id` nas entidades centrais desde o Gate 0 para evitar migrações destrutivas no futuro.
+```
+
+### Rodada 2: Desafio Crítico, Casos de Borda e Poda de Exageros
+Com as respostas da Rodada 1 assentadas, o agente avança a fronteira para os pontos cegos que o humano normalmente não antecipa:
+- **Falhas de Conexão e Serviços Externos:** O que acontece se o gateway falhar, a IA alucinar ou o webhook chegar duplicado?
+- **Permissões e Colisões:** Papéis de acesso e comportamentos quando dois usuários alteram o mesmo dado simultaneamente.
+- **Poda Construtiva (MVP Cirúrgico):** O agente recomenda o corte imediato de features acessórias (relatórios avançados, conciliações raras, customizações excessivas) que adicionariam 80% de esforço para < 20% de valor inicial. Registra os cortes na seção *"Fora de Escopo / Descartado no Polimento"* de `openspec/project.md`.
 
 ### Rodada 3: Tradução Invisível para Arquitetura, Stack, VPS e MCPs
-O usuário não precisa saber configurar servidores ou escolher bancos de dados. Traduza o produto polido em arquitetura real consultando [references/catalogo-stacks.md](references/catalogo-stacks.md) e apresente em português claro:
-- **Opção Recomendada e Alternativa:** Framework principal, banco de dados, filas (ex.: Redis/BullMQ para agendamentos), tempo real (WebSockets/SSE) e design system (`shadcn/ui`).
-- **Web Responsiva e Portabilidade PWA Inatas (Artigo 6, item 6):** Se o canal principal for Web, garanta que a stack inclua suporte nativo a layouts responsivos (mobile-first 320px+) e manifesto/metadados para PWA instalável.
-- **Estratégia de Hospedagem e Operação Assistida (MCPs / CLIs / SSH):** Explique como o próprio agente configurará o banco e o servidor (ex.: via **Supabase MCP**, **Coolify/Dokploy via SSH/CLI** ou **Railway/Vercel CLI**) sem exigir que o humano saiba operar painéis complexos de VPS.
-- **Justificativa Anti-Brinquedo:** Demonstre conformidade com o Artigo 1 da `constitution.md`.
+Com as decisões de produto fechadas, o agente traduz o consenso para a arquitetura técnica consultando [references/catalogo-stacks.md](references/catalogo-stacks.md):
+- **Stack Recomendada e Alternativa:** Framework, banco de dados relacional (Postgres/SQLite), filas/tempo real e design system.
+- **Operação Assistida e MCPs:** Hospedagem (Docker + Coolify/Dokploy via SSH ou Supabase/Railway) e ferramentas determinísticas de operação.
+- **Justificativa Anti-Brinquedo:** Demonstra conformidade estrita com o Artigo 1 da `constitution.md`.
 
 ---
 
@@ -73,11 +87,11 @@ Imediatamente após a instalação:
    ```bash
    npx --yes @fission-ai/openspec init --tools antigravity,claude,cursor,gemini,github-copilot,agents --no-animation --no-copilot-cloud
    ```
-3. Instale as Agent Skills oficiais da stack escolhida via padrão aberto da indústria:
+3. Instale as Agent Skills oficiais via padrão aberto da indústria (`skills.sh`), incluindo o interrogador canônico `grill-me`:
    ```bash
-   # Exemplo para React/Next.js/Node:
-   npx --yes skills add vercel-labs/agent-skills
-   # Ou para stacks com skills dedicadas (Supabase, Playwright, etc.)
+   # Instalação canônica do interrogador e de skills de ecossistema
+   npx --yes skills add mattpocock/skills --skill grill-me grilling -y
+   npx --yes skills add vercel-labs/agent-skills -y
    ```
 4. Ative os Git hooks determinísticos da governança executando `npx lefthook install`.
 5. Execute a suíte de testes padrão da stack para comprovar que a base nasceu 100% verde.
