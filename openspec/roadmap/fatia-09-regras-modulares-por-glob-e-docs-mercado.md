@@ -4,77 +4,98 @@
 > **Identificador OpenSpec:** `fatia-09-regras-modulares-por-glob-e-docs-mercado`  
 > **Depende diretamente de:** `fatia-08-desburocratizacao-sdd-rolling-wave-e-cerimonia.md`  
 > **Princípio Pétreo de Transição:** Zero ponto cego entre IDEs/CLIs. Ao modularizar regras por domínio, nenhuma ferramenta (mesmo sem suporte nativo a globs) pode ficar sem ler a regra aplicável antes de editar código.
+> **Revisão 2026-11-05:** Adicionados (a) pergunta Copier `perfis_projeto` como fonte determinística do perfil (a versão anterior pedia `config.yaml` "inteligente" sem dizer de onde vinha o perfil), (b) frontmatter nativo do Antigravity em `.agents/rules/`, (c) `linear-mcp.md` sem glob e condicional a `integrar_linear`, (d) `docs/arquitetura.md` como dono único do modelo de entidades + Glossário de Domínio + gatilho de atualização, (e) seção `Comandos do Projeto` em `AGENTS.md`, (f) `.gitignore` do template (inexistente hoje) e bloqueio de leitura de `.env` por agentes, (g) SemVer com tags reais — as tags pararam em `v3.3.0` enquanto o pacote está em `3.7.0`, então consumidores via `copier update` não recebem as fatias 04–07 — e pré-releases `v4.0.0-alpha.N` até a Fatia 11.
 
 ---
 
 ## 1. Objetivo e Valor Entregue ao Usuário
 
 - **O que esta fatia entrega de concreto:**
-  1. **Regras Modulares em Fonte Única (`template/.agents/rules/`) + Globs Nativos + Matriz Universal Anti-Ponto-Cego:**
-     - Organiza as regras detalhadas de engenharia por domínio em `template/.agents/rules/` (mantendo os princípios supremos intactos na Constituição):
+  1. **Regras Modulares em Fonte Única (`template/.agents/rules/`) + Perfil Determinístico + Matriz Universal Anti-Ponto-Cego:**
+     - Nova pergunta `perfis_projeto` (multiseleção) no `copier.yml`: `web-ui`, `api-backend`, `desktop`, `mobile`, `jogo`, `cli-biblioteca`. Ela decide **quais módulos são renderizados** e quais regras entram em `openspec/config.yaml` — projeto CLI não carrega PWA/Toasts; jogo não carrega CSP/HSTS.
+     - Módulos (com frontmatter nativo do Antigravity `trigger: glob` + `globs:`, que lê `.agents/rules/` diretamente):
        - `web-ui-pwa.md` (responsividade 320px+, PWA, semântica, `Escape`, 44x44px, proibição de `location.reload`, 4 estados assíncronos, Toasts e Modais).
-       - `backend-seguranca-dados.md` (Zero-Trust Anti-F12, ACID, CSP/HSTS/CORS, Rate Limiting, Zod/Pydantic/Serde e OWASP Agentic Top 10).
-       - `jogos-engines.md` (desacoplamento lógica matemática pura vs. renderização WebGL/Canvas/Nodes, viewport adaptativo e testes headless).
-       - `linear-mcp.md` (handshake `whoami`, Tríade de Âncora anti-vazamento de squads e sincronia nos Gates).
-     - Gera wrappers finos (~5 linhas com `@` sem duplicar texto) com `paths`/`globs`/`applyTo` nativos em `template/.claude/rules/`, `template/.cursor/rules/` e `template/.github/instructions/`.
-     - **Blindagem Universal Anti-Ponto-Cego:** Inclui em `template/AGENTS.md` uma **Matriz Obrigatória de Leitura Pré-Edição por Domínio** (para agentes CLI ou IDEs que não acionem globs automaticamente) e em `hook-agente.mjs` (`SessionStart` / lembrete contextual) a sinalização dos módulos ativos, além de tornar `template/openspec/config.yaml.jinja` inteligente por perfil para não cobrar PWA/Toasts em CLIs, APIs puras e Jogos.
-  2. **Kit de Documentação Viva no Padrão de Mercado (Diátaxis + C4 + Entidades Core + 12-Factor App):**
-     - `template/docs/arquitetura.md` (protegido em `_skip_if_exists` no `copier.yml`): modelo contendo **C4 Nível 1 (Contexto)**, **C4 Nível 2 (Containers)** e **Diagrama `erDiagram` das Entidades Core e Isolamento de Dados** em Mermaid (garantindo visão arquitetural sistêmica desde o Gate 0).
-     - `template/README.md.jinja` + `template/.env.example`: guia de setup rápido (Pré-requisitos, Instalação em 3 passos, Testes/Build e índice Diátaxis), protegidos em `_skip_if_exists`.
-     - **Sensor Determinístico de `.env.example` em `verificar-governanca.mjs`:** bloqueia (`exit 1`) commits em que código de produção leia variáveis de ambiente (`process.env.X`, `import.meta.env.X`, `os.getenv("X")`, `os.environ["X"]`, `std::env::var("X")`, `os.Getenv("X")`, `Environment.GetEnvironmentVariable("X")`) ausentes de `.env.example` (isentando variáveis padrão de SO/runtime).
-  3. **Unificação SemVer `v4.0.0`, Ritual de Release e Faxina Histórica na Raiz:**
-     - Unifica a versão em **`v4.0.0`** nos cabeçalhos `governanca:inicio`, `package.json`, `README.md` e `00_INDICE_E_DECISOES.md`, instituindo o ritual de fechamento SemVer no `CHANGELOG.md`.
-     - Arquiva os 8 documentos históricos da transição v1→v2 da raiz em `docs/historico/` preservando 100% do conteúdo e atualizando todos os links em `00_INDICE_E_DECISOES.md`.
+       - `backend-seguranca-dados.md` (Zero-Trust Anti-F12, ACID, CSP/HSTS/CORS, Rate Limiting, Zod/Pydantic/Serde, OWASP Agentic Top 10).
+       - `jogos-engines.md` (lógica pura desacoplada da renderização, viewport adaptativo, testes headless).
+       - `linear-mcp.md` — **renderizado só quando `integrar_linear` for verdadeiro** e ativado por descrição (`trigger: model_decision`), não por glob: chamadas MCP não editam arquivos, então um glob como `openspec/**` nunca dispararia no momento certo.
+     - Wrappers finos (< 15 linhas, sem texto duplicado) em `template/.claude/rules/` (`paths:` + import `@`), `template/.cursor/rules/*.mdc` (`globs:` + referência `@`) e `template/.github/instructions/*.instructions.md` (`applyTo:` + link + ordem explícita de leitura).
+     - **Matriz Obrigatória de Leitura Pré-Edição** em `AGENTS.md` e lembrete no `SessionStart` de `hook-agente.mjs` listando os módulos ativos do perfil.
+  2. **Kit de Documentação Viva no Padrão de Mercado:**
+     - `template/docs/arquitetura.md` (protegido): C4 Nível 1 e 2 em Mermaid + `erDiagram` **como construído** + **Glossário de Domínio** (termo de negócio ↔ identificador PT-BR no código ↔ tabela), absorvendo a parte de entidades do `roadmap.md` (que mantém só os Invariantes planejados e um link). Uma fonte para o modelo de dados, não duas.
+     - **Gatilho de atualização:** commit Nível 2 que altera schema/migração sem `docs/arquitetura.md` staged → `exit 1`. Documentação sem gatilho apodrece já na segunda fatia.
+     - **`## Comandos do Projeto` em `template/AGENTS.md`** (fora do bloco `governanca:inicio`, preservado em updates): instalar, rodar em dev, testar tudo, **testar um único arquivo**, typecheck, lint, build e migrações. É a informação que agentes mais consultam (padrão agents.md) e hoje não existe em lugar nenhum. `inicializar-stack` preenche no Gate 0; `README.md.jinja` aponta para ela em vez de duplicar.
+     - `template/README.md.jinja` + `template/.env.example` (protegidos): visão, pré-requisitos, instalação em 3 passos e índice Diátaxis.
+     - **`template/.gitignore`** (hoje inexistente): `.env`, `.env.*`, `!.env.example`, artefatos de build e `node_modules/`.
+  3. **Sensor `.env.example` + Proteção de Segredos Contra Leitura por Agentes:**
+     - `verificar-governanca.mjs` bloqueia variáveis lidas em arquivos de produção **staged** e ausentes de `.env.example`.
+     - Bloqueio de leitura de `.env*` (exceto `.env.example`) pelos agentes: `permissions.deny` em `.claude/settings.json` e regra `deny` em `hook-agente.mjs` para `read_file`/`view` e comandos `cat`/`type`/`Get-Content`/`more` sobre `.env*`. Segredos lidos pelo agente vão para o provedor do modelo — o Gitleaks só protege no commit.
+  4. **SemVer com Tags Reais, Ritual de Release e Faxina Histórica:**
+     - Fonte única de versão: `package.json`. Teste exige que todos os cabeçalhos `governanca:inicio vX.Y.Z` (incluindo `copilot-instructions.md`, hoje em `v2.0.0`), `project.md.jinja` ("Governança v2") e `atualizar-governanca` ("v2") batam com ela.
+     - Ritual de release documentado em `CONTRIBUTING.md` desta raiz: bump → `CHANGELOG.md` → testes → commit → `git tag vX.Y.Z` (com `force_ask`) → `git push --tags`.
+     - Reparo histórico: criar as tags faltantes `v3.4.0`–`v3.7.0` nos commits de fechamento correspondentes.
+     - Ciclo v4 em pré-release: Fatias 08, 09, 09a e 10 recebem `v4.0.0-alpha.N` (o `copier update` ignora pré-releases por padrão, então consumidores não recebem uma v4 incompleta); a Fatia 11 publica `v4.0.0`.
+     - Arquivamento dos 8 documentos v1→v2 da raiz em `docs/historico/` via `git mv`, com links de `00_INDICE_E_DECISOES.md` validados por teste.
 
 - **Por que esta fatia existe neste ponto da sequência:**
-  Cria os trilhos modulares por domínio sem pontos cegos e o mapa de arquitetura C4 + ER Core, preparando a base exata para a **Fatia 10** plugar Reúso, Tokens de Movimento e *Component-as-Asset*.
+  Cria os trilhos modulares por perfil sem pontos cegos e o mapa de arquitetura vivo, preparando a base para a **Fatia 09a** (comandos de atalho reutilizando o mesmo mecanismo de wrappers) e para a **Fatia 10** (Reúso, Tokens de Movimento e *Component-as-Asset* dentro de `web-ui-pwa.md`/`jogos-engines.md`).
 
 ---
 
 ## 2. Grafo de Dependências Incrementais
 
-- **Depende diretamente de:** `fatia-08-desburocratizacao-sdd-rolling-wave-e-cerimonia.md`.
+- **Depende diretamente de:** `fatia-08-desburocratizacao-sdd-rolling-wave-e-cerimonia.md` (Cartão de Invariantes, `roadmap.md`, `scripts/lib/`).
 - **O que esta fatia prepara/desbloqueia para a próxima:**
-  - Disponibiliza `template/.agents/rules/web-ui-pwa.md` e `template/.agents/rules/jogos-engines.md` (com ativação automática por glob e matriz universal em `AGENTS.md`) para a **Fatia 10** expandir com *Reuse-Before-Create*, Tokens de Movimento e *Component-as-Asset*.
+  - Mecanismo de wrappers multi-harness reaproveitado pela **Fatia 09a** para comandos de atalho.
+  - `web-ui-pwa.md` e `jogos-engines.md` prontos para a **Fatia 10**; `perfis_projeto` pronto para a Fatia 11 escolher jobs de CI.
 - **Fronteira de Isolamento (O que NÃO fazer nesta fatia):**
-  - **Proibido** apagar da Constituição os princípios pétreos de cada artigo ao detalhar os módulos em `.agents/rules/` (a Constituição guarda a lei inegociável; o módulo guarda o protocolo detalhado por glob/domínio, garantindo dupla rede de proteção).
-  - **Proibido** duplicar texto longo nos wrappers de `.claude/rules/`, `.cursor/rules/` e `.github/instructions/`.
-  - **Proibido** implementar `catalogo-reuso.md` ou teto de 350 linhas úteis nesta fatia (escopo exclusivo da **Fatia 10**).
+  - **Proibido** apagar da Constituição os princípios pétreos ao detalhar módulos (a Constituição guarda a lei; o módulo guarda o protocolo detalhado — dupla rede de proteção).
+  - **Proibido** duplicar texto longo nos wrappers.
+  - **Proibido** implementar `catalogo-reuso.md`, teto de linhas (Fatia 10) ou comandos de atalho (Fatia 09a).
+  - **Proibido** publicar a tag `v4.0.0` estável (reservada à Fatia 11).
 
 ---
 
 ## 3. Contratos de Dados, Configuração e Schemas (PT-BR — Artigo 10)
 
-### 3.1. Mapeamento de Globs, Fonte Única e Matriz Universal (`template/.agents/rules/` + `AGENTS.md`)
+### 3.1. Perfis, Módulos e Gatilhos
 
-| Fonte Única Canônica | Globs Nativos (`.claude`, `.cursor`, `.github`) | Gatilho Universal em `AGENTS.md` |
-|---|---|---|
-| `.agents/rules/web-ui-pwa.md` | `**/*.tsx`, `**/*.jsx`, `**/*.vue`, `**/*.svelte`, `**/*.css`, `**/manifest*.json` | Leitura obrigatória antes de planejar ou editar qualquer rota/componente de UI Web |
-| `.agents/rules/backend-seguranca-dados.md` | `**/api/**`, `**/server/**`, `**/routes/**`, `**/controllers/**`, `**/*.prisma`, `**/schema*.ts`, `**/*.py`, `**/*.rs`, `**/*.go`, `**/*.cs` | Leitura obrigatória antes de tocar em APIs, persistência, filas ou autenticação |
-| `.agents/rules/jogos-engines.md` | `**/*.gd`, `**/*.tscn`, `**/project.godot`, `**/scenes/**`, `**/prefabs/**`, `**/*.wgsl`, `**/*.glsl` | Leitura obrigatória antes de estruturar cenas, física, shaders ou loops de jogo |
-| `.agents/rules/linear-mcp.md` | `openspec/**` | Leitura obrigatória antes de qualquer chamada ao servidor MCP `linear` |
+| Módulo (`.agents/rules/`) | Renderizado quando `perfis_projeto` contém | Globs nativos | Gatilho Universal em `AGENTS.md` |
+|---|---|---|---|
+| `web-ui-pwa.md` | `web-ui`, `desktop`, `mobile` | `**/*.tsx`, `**/*.jsx`, `**/*.vue`, `**/*.svelte`, `**/*.css`, `**/manifest*.json` | Antes de planejar ou editar rota/componente de UI |
+| `backend-seguranca-dados.md` | `api-backend`, `web-ui` | `**/api/**`, `**/server/**`, `**/routes/**`, `**/controllers/**`, `**/*.prisma`, `**/schema*.ts`, `**/migrations/**`, `**/*.py`, `**/*.go` | Antes de tocar APIs, persistência, filas ou autenticação |
+| `jogos-engines.md` | `jogo` | `**/*.gd`, `**/*.tscn`, `**/project.godot`, `**/scenes/**`, `**/prefabs/**`, `**/*.wgsl`, `**/*.glsl` | Antes de estruturar cenas, física, shaders ou loops |
+| `linear-mcp.md` | `integrar_linear: true` (independe do perfil) | — (`trigger: model_decision`) | Antes de qualquer chamada ao MCP `linear` |
 
-### 3.2. Contrato do Sensor Determinístico `.env.example` (`verificar-governanca.mjs`)
-- Escaneia arquivos de produção modificados capturando leituras de ambiente em JS/TS, Python, Rust, Go e C#.
-- Ignora variáveis nativas de SO/runtime: `NODE_ENV`, `CI`, `PATH`, `HOME`, `USERPROFILE`, `TZ`, `LANG`, `PWD`, `PORT`, `HOST`, `TMP`, `TEMP`, `PROD`, `DEV`, `SSR`, `MODE`, `BASE_URL`.
-- Exige declaração da chave `VARIAVEL=` em `.env.example` (ou `.env.template`) e rejeita (`exit 1`) tanto variáveis omitidas quanto chaves reais sensíveis coladas acidentalmente no `.env.example`.
+*Nota:* `**/*.rs` e `**/*.cs` não entram no glob de backend porque colidiriam com Bevy e Godot C#; a Matriz em `AGENTS.md` cobre backends Rust/.NET por intenção.
 
-### 3.3. Proteções em `copier.yml`
-Garantir em `_skip_if_exists`: `"README.md"`, `".env.example"` e `"docs/arquitetura.md"`.
+### 3.2. Contrato do Sensor `.env.example`
+- Escopo: somente arquivos de produção **staged** (custo constante, sem varrer o repositório).
+- Padrões: `process.env.X`, `import.meta.env.X`, `os.getenv("X")`, `os.environ["X"]`, `std::env::var("X")`, `os.Getenv("X")`, `Environment.GetEnvironmentVariable("X")`.
+- Ignora variáveis de SO/runtime: `NODE_ENV`, `CI`, `PATH`, `HOME`, `USERPROFILE`, `TZ`, `LANG`, `PWD`, `PORT`, `HOST`, `TMP`, `TEMP`, `PROD`, `DEV`, `SSR`, `MODE`, `BASE_URL`.
+- Exige `VARIAVEL=` em `.env.example` (ou `.env.template`).
+- Rejeita valor que pareça segredo real em `.env.example`: prefixos `sk_live_`, `sk_test_`, `ghp_`, `github_pat_`, `xox`, `AKIA`, `-----BEGIN`, ou valor com 32+ caracteres alfanuméricos sem espaços. Placeholders (`""`, `changeme`, `<sua-chave>`, `sk_test_xxx`) passam.
+
+### 3.3. Contrato do Gatilho de `docs/arquitetura.md`
+Se o commit contém arquivo classificado por `ehSchemaOuMigracaoDeBanco` **e** não é Marco 1, então `docs/arquitetura.md` precisa estar staged; senão `exit 1` com orientação para atualizar o `erDiagram` e o Glossário.
+
+### 3.4. Proteções em `copier.yml`
+`_skip_if_exists`: `"README.md"`, `".env.example"`, `"docs/arquitetura.md"`, `".gitignore"`. Nova pergunta `perfis_projeto` (`multiselect: true`, padrão `["web-ui", "api-backend"]`).
 
 ---
 
 ## 4. Interface, Componentes e Estados Assíncronos (Artigo 6)
 
-- **Adequação de `template/openspec/config.yaml.jinja`:** Cobra 4 estados assíncronos, Toasts e Modais sempre que a mudança envolver interface interativa/mutações visuais, deixando CLIs, workers e bibliotecas livres de preenchimento artificial, mas **mantendo 100% de obrigatoriedade para aplicações Web/Desktop/Mobile**.
-- **Diagramas em `template/docs/arquitetura.md`:** Contém templates Mermaid prontos para `flowchart TD` (C4 Contexto e Containers) e `erDiagram` (Entidades Core e relacionamentos estruturantes definidos no Gate 0).
+- **`openspec/config.yaml.jinja` por perfil:** regras de 4 estados, Toasts e Modais aparecem em `rules.design` somente quando o perfil inclui `web-ui`/`desktop`/`mobile`; para `cli-biblioteca` e `api-backend` puro entram regras de contrato de saída/códigos de erro. A obrigatoriedade para apps interativos continua 100%.
+- **`docs/arquitetura.md`:** templates Mermaid `flowchart TD` (C4 Contexto e Containers) e `erDiagram`, mais tabela do Glossário (`Termo de Negócio` | `Identificador no Código` | `Tabela/Coleção` | `Observação`).
 
 ---
 
 ## 5. Regras de Negócio, Segurança e Backend (Artigo 7)
 
-1. **Dupla Rede de Proteção (Constituição + Regra Modular):** Os princípios constitucionais dos Artigos 6, 7 e 13 permanecem resumidos como cláusulas pétreas na `constitution.md` enquanto os checklists operacionais completos vivem em `.agents/rules/`, garantindo que nenhum agente desconheça a lei mesmo antes de abrir um arquivo específico.
-2. **Integridade Histórica Sem Perda de Dados:** Os 8 documentos históricos movidos para `docs/historico/` permanecem 100% íntegros no Git (`git mv` sem alterar uma vírgula do conteúdo histórico) e com todos os links de `00_INDICE_E_DECISOES.md` validados por teste.
+1. **Dupla Rede de Proteção:** princípios dos Artigos 6, 7 e 13 permanecem na Constituição; checklists operacionais vivem em `.agents/rules/`.
+2. **Segredos fora do contexto do agente:** bloqueio de leitura de `.env*` nos hooks; mensagem orientando usar `.env.example` como referência de nomes.
+3. **Integridade Histórica:** `git mv` sem alterar conteúdo; links validados por teste.
+4. **Tags somente com aprovação humana:** `git tag` e `git push --tags` passam a ser tratados como comandos sensíveis (`force_ask`) em `hook-agente.mjs`.
 
 ---
 
@@ -82,36 +103,31 @@ Garantir em `_skip_if_exists`: `"README.md"`, `".env.example"` e `"docs/arquitet
 
 Criar `tests/regras-modulares-e-docs-mercado.test.mjs` antes das edições de produção e comprovar falha (**Vermelho**):
 
-1. **Teste 1 (`deve_possuir_fonte_unica_wrappers_nativos_e_matriz_universal_sem_ponto_cego`):**
-   - *Cenário:* Auditar `template/.agents/rules/*.md`, wrappers em `.claude/rules/`, `.cursor/rules/`, `.github/instructions/` e a Matriz Obrigatória em `template/AGENTS.md`.
-   - *Resultado Esperado:* Quatro módulos existem, wrappers têm < 15 linhas apontando para `.agents/rules/` e `AGENTS.md` exige leitura pré-edição por domínio.
-2. **Teste 2 (`deve_bloquear_variavel_ambiente_omitida_ou_segredo_real_no_env_example`):**
-   - *Cenário:* Testar código lendo `process.env.ASAAS_API_KEY` sem `.env.example` $\rightarrow$ bloqueia (`exitCode === 1`); com `ASAAS_API_KEY=` vazia/placeholder em `.env.example` $\rightarrow$ aprova (`exitCode === 0`); `process.env.NODE_ENV` isolada $\rightarrow$ aprova (`exitCode === 0`).
-   - *Resultado Esperado:* Sensor determinístico preciso e sem falsos positivos.
-3. **Teste 3 (`deve_fornecer_arquitetura_c4_com_er_core_readme_e_protecao_copier`):**
-   - *Cenário:* Auditar `template/docs/arquitetura.md` (presença de C4 Contexto, Containers e `erDiagram`), `template/README.md.jinja`, `template/.env.example` e `_skip_if_exists` em `copier.yml`.
-   - *Resultado Esperado:* Todos presentes e protegidos contra sobrescrita.
-4. **Teste 4 (`deve_unificar_semver_v4_e_preservar_documentos_em_docs_historico_com_links_validos`):**
-   - *Cenário:* Conferir `v4.0.0` sincronizado, existência dos 8 documentos em `docs/historico/` e resolução física de todos os links Markdown em `00_INDICE_E_DECISOES.md`.
-   - *Resultado Esperado:* 100% íntegro e zero links quebrados.
+1. **Teste 1 (`deve_renderizar_modulos_conforme_perfil_e_wrappers_sem_duplicacao`):** gerar via Copier com `perfis_projeto=[cli-biblioteca]` → sem `web-ui-pwa.md`; com `[web-ui]` → presente com frontmatter `trigger: glob`; wrappers < 15 linhas apontando para `.agents/rules/`; `linear-mcp.md` só existe com `integrar_linear=true`.
+2. **Teste 2 (`deve_bloquear_variavel_ambiente_omitida_ou_segredo_real_no_env_example`):** `process.env.ASAAS_API_KEY` sem declaração → `1`; com `ASAAS_API_KEY=` → `0`; `NODE_ENV` isolada → `0`; `.env.example` com `STRIPE_SECRET_KEY=sk_live_51H...` → `1`.
+3. **Teste 3 (`deve_exigir_arquitetura_md_quando_schema_mudar`):** `schema.prisma` + delta ativo sem `docs/arquitetura.md` staged → `1`; com ele → `0`.
+4. **Teste 4 (`deve_bloquear_leitura_de_env_pelo_agente`):** payload `read_file` em `.env.local` e comando `Get-Content .env` → `deny`; `.env.example` → `allow`.
+5. **Teste 5 (`deve_fornecer_kit_de_docs_comandos_do_projeto_e_gitignore`):** existem `docs/arquitetura.md` (C4 + `erDiagram` + Glossário), `README.md.jinja`, `.env.example`, `.gitignore` com `!.env.example`, seção `## Comandos do Projeto` em `AGENTS.md` fora do bloco governado e proteções no `copier.yml`.
+6. **Teste 6 (`deve_sincronizar_versao_em_cabecalhos_e_preservar_historico`):** todos os cabeçalhos `governanca:inicio` iguais à versão do `package.json`; 8 documentos em `docs/historico/`; zero links quebrados em `00_INDICE_E_DECISOES.md`.
 
 ---
 
 ## 7. Critérios de Aceite e Roteiro de Teste Prático (Gate 2)
 
 ### 7.1. Critérios Determinísticos
-- [ ] Módulos em `template/.agents/rules/`, wrappers nativos nas 3 IDEs e Matriz Universal em `template/AGENTS.md` criados.
-- [ ] `template/docs/arquitetura.md` (C4 + `erDiagram` Core), `template/README.md.jinja` e `template/.env.example` criados e protegidos em `copier.yml`.
-- [ ] Sensor determinístico de `.env.example` ativo em `template/scripts/verificar-governanca.mjs`.
-- [ ] Versão SemVer `v4.0.0` unificada e documentos v1→v2 arquivados em `docs/historico/` com links íntegros.
-- [ ] `npm test`, `openspec validate --all --no-interactive` e `node template/scripts/verificar-governanca.mjs` passando com `exit 0`.
+- [ ] `perfis_projeto` no Copier; módulos condicionais com frontmatter Antigravity; wrappers nas 3 IDEs; Matriz em `AGENTS.md`.
+- [ ] `docs/arquitetura.md` (C4 + `erDiagram` + Glossário) com gatilho determinístico; `roadmap.md.jinja` aponta para ele.
+- [ ] `## Comandos do Projeto` em `AGENTS.md` e preenchimento obrigatório em `inicializar-stack`.
+- [ ] `.gitignore`, `README.md.jinja`, `.env.example` criados e protegidos; sensor `.env.example` e bloqueio de leitura de `.env` ativos.
+- [ ] Versões sincronizadas, tags `v3.4.0`–`v3.7.0` reparadas, `v4.0.0-alpha.N` aplicada; ritual de release documentado; histórico arquivado.
+- [ ] `npm test`, `openspec validate --all --no-interactive` e `node template/scripts/verificar-governanca.mjs` com `exit 0`.
 - [ ] `CHANGELOG.md` e `00_INDICE_E_DECISOES.md` atualizados.
 
 ### 7.2. Roteiro de Validação Prática do Usuário (Obrigatório no Gate 2)
-- **Onde testar:** Raiz do repositório, `docs/historico/`, `template/.agents/rules/` e `template/docs/arquitetura.md`.
+- **Onde testar:** raiz do repositório, projeto gerado em `$env:TEMP\gov-v4-web` e `$env:TEMP\gov-v4-cli`.
 - **Passo a passo com dados prontos:**
-  1. Execute `npm test` e confirme 100% de aprovação.
-  2. Abra `template/docs/arquitetura.md` no preview Markdown para validar os diagramas C4 e `erDiagram` das Entidades Core.
-  3. Clique nos links de `00_INDICE_E_DECISOES.md` apontando para `docs/historico/` e confirme navegação limpa.
-- **Comportamento visual esperado:** Raiz enxuta, regras carregadas por glob sem perder cobertura em CLIs e documentação de mercado completa desde o Gate 0.
-- **Teste de borda prático:** Referenciar uma variável `STRIPE_SECRET_KEY` num arquivo `.ts` de teste temporário sem declará-la no `.env.example` e comprovar o bloqueio determinístico imediato.
+  1. `uvx copier copy --defaults --data perfis_projeto='["cli-biblioteca"]' . $env:TEMP\gov-v4-cli` e confirme que não há `web-ui-pwa.md` nem regras de Toast no `openspec/config.yaml`.
+  2. Abra `template/docs/arquitetura.md` no preview Markdown e confira os diagramas C4, `erDiagram` e o Glossário.
+  3. Rode `git tag --list "v3.*"` e confirme `v3.4.0` até `v3.7.0`.
+- **Comportamento visual esperado:** projeto CLI enxuto; projeto Web com módulos de UI; agente recebe `deny` ao tentar ler `.env`.
+- **Teste de borda prático:** referenciar `process.env.STRIPE_SECRET_KEY` num `.ts` sem declarar em `.env.example` → bloqueio imediato.
