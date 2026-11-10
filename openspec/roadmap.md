@@ -58,6 +58,17 @@
 
 ---
 
+### `[~] Em Andamento` — `fatia-09b-apresentacao-por-artefatos-e-higiene-de-chat`
+- **Depende de:** `fatia-09a-comandos-atalho-handoff-de-sessao-e-pr`
+- **Objetivo de Valor:** Erradicar a poluição de contexto e o despejo de textos longos no chat, obrigando o agente em ambientes com suporte a artefatos (Antigravity / Generative UI) a publicar os planos de Gate 1, relatórios de entrega de Gate 2 e laudos do Inspetor Forense em artefatos dedicados com `RequestFeedback: true`, mantendo no chat apenas o link direto e a pergunta objetiva de decisão.
+- **O que ENTRA:**
+  1. **Cláusula Pétrea de Apresentação por Artefatos na Constituição (Artigo 8.5 e Artigo 12.5):** Obrigatório publicar planos de Gate 1 e relatórios de Gate 2 como artefatos dedicados interativos quando o harness suportar artefatos, limitando o chat a ≤ 20 linhas.
+  2. **Diretrizes em `template/AGENTS.md` e Skills (`ciclo-especificacao`, `revisar-fatia`, `inspetor-forense`):** Instrução explícita de uso de artefatos com `RequestFeedback: true` (botão Proceed) e emissão de `parecer-forense.md` no diretório de artefatos.
+  3. **Suíte de Testes Automatizados (`tests/artefatos-e-higiene-chat.test.mjs`):** Testes verificando a integridade das cláusulas na Constituição, `AGENTS.md` e skills.
+- **O que FICA DE FORA:** Modificações no catálogo de reúso ou teto anti-monólito (escopo da Fatia 10).
+
+---
+
 ### `[ ] Pendente` — `fatia-10-reuso-tokens-movimento-e-component-as-asset`
 - **Especificação Completa de Transição:** [openspec/roadmap/fatia-10-reuso-tokens-movimento-e-component-as-asset.md](roadmap/fatia-10-reuso-tokens-movimento-e-component-as-asset.md)
 - **Depende de:** `fatia-09a-comandos-atalho-handoff-de-sessao-e-pr`

@@ -8,6 +8,12 @@ O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.
 ## [4.0.0-alpha.1] - 2026-11-10
 
 ### Adicionado
+- **Apresentação por Artefatos e Higiene de Contexto no Chat (`fatia-09b`):**
+  - Instituição da apresentação obrigatória por artefatos dedicados em harnesses que suportam artefatos nativos (ex.: Antigravity): `plano-fatia-XX.md` com `RequestFeedback: true` (botão interativo de ação) para Gate 1, e `entrega-fatia-XX.md` e `parecer-forense.md` para Gate 2.
+  - Teto estrito de mensagem de chat (≤ 20 linhas) nos Gates 1 e 2, preservando a higiene de contexto, prevenindo Context Rot e poluição por dumps longos de texto.
+  - Em harnesses CLI (Claude Code, Cursor CLI), resumo conciso em ≤ 20 linhas apontando diretamente para os arquivos físicos do delta em disco.
+  - Atualização dos Artigos 8.5 e 12.5 na `template/constitution.md`, Gate 1 e Gate 2 em `template/AGENTS.md`, e skills `template/.agents/skills/ciclo-especificacao/` e `template/.agents/skills/revisar-fatia/`.
+  - Suíte `tests/artefatos-e-higiene-chat.test.mjs` com 3 novos testes automatizados, elevando o repositório para 69 testes verdes.
 - **Comandos de Atalho Multi-Harness com Paridade Total (`fatia-09a`):**
   - Criação de wrappers finos (≤ 20 linhas) nos 3 harnesses: Claude Code (`template/.claude/commands/`), GitHub Copilot (`template/.github/prompts/`) e Cursor (`template/.cursor/commands/`) cobrindo `/fix`, `/proxima-fatia`, `/retomar`, `/revisar`, `/grill-me`, `/refinar`, `/explorar`, `/aprendizado`, `/atualizar-governanca` e `/linear-inbox` (condicional a `integrar_linear: true`).
   - Tabela canônica de comandos de atalho documentada em `template/AGENTS.md`.

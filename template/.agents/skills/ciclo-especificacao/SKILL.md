@@ -60,7 +60,13 @@ Antes de iniciar, determine a via adequada conforme a Matriz de Cerimônia (D14 
 
 ## 4. Gate 1 — Aprovação do Plano da Fatia
 
-> **PARADA OBRIGATÓRIA:** Apresente ao humano a proposta, o desenho técnico e as tarefas da fatia atual (assegurando que todas as dúvidas e ambiguidades foram esgotadas no clarify/grill-me).
+> **PARADA OBRIGATÓRIA (Artigo 8 e Artigo 12.5):**
+> Apresente a proposta, o desenho técnico e as tarefas da fatia atual (assegurando que todas as dúvidas e ambiguidades foram esgotadas no clarify/grill-me).
+>
+> **Apresentação por Artefato Interativo vs. Higiene de Chat:**
+> - **Em harnesses com suporte a artefatos nativos (ex.: Antigravity):** É expressamente proibido despejar o plano longo em texto corrido no chat. Crie um artefato dedicado no diretório de artefatos denominado `plano-fatia-XX.md` com `RequestFeedback: true` (fornecendo o botão de ação e renderização rica de tabelas e diagramas). No chat, limite-se a uma mensagem concisa de no máximo 20 linhas apontando o link do artefato e fazendo a pergunta de parada.
+> - **Em harnesses baseados em terminal/CLI puro (ex.: Claude Code, Cursor CLI):** Mantenha o chat estritamente conciso (≤ 20 linhas), destacando objetivo, escopo e apontando os caminhos físicos dos arquivos em `openspec/changes/fatia-XX-<slug>/`.
+>
 > Pergunte: *"Você aprova este plano e desenho técnico da Fatia XX para iniciarmos a implementação?"*
 > **Nenhum código de produção deve ser escrito antes da aprovação do Gate 1.**
 > 
@@ -99,7 +105,9 @@ Antes de finalizar a tarefa ou commit:
    ```
 3. Atualize o arquivo `CHANGELOG.md` na seção correspondente (`### Adicionado` ou `### Modificado`).
 4. **Auditoria Factual Cega Pré-Gate 2 (Artigo 12):** Convoque o Subagente Inspetor Forense para avaliar o diff de forma cega. Realize o Duelo de Conformidade contra os 4 artefatos da fatia e corrija eventuais divergências.
-5. Apresente o Gate 2 ao humano com o Roteiro de Teste Prático Passo a Passo e evidências de testes (vermelho/verde).
+5. **Apresentação do Gate 2 e Higiene de Contexto (Artigo 8 e Artigo 12.5):**
+   - **Em harnesses com suporte a artefatos (ex.: Antigravity):** Crie um artefato dedicado `entrega-fatia-XX.md` contendo o relatório completo de entrega, tabela do duelo de conformidade, parecer da inspeção forense e o Roteiro de Teste Prático Passo a Passo. No chat, publique apenas uma mensagem concisa (teto de ≤ 20 linhas) com o link do artefato, resumo executivo e a pergunta formal de autorização para commit.
+   - **Em harnesses CLI:** Mantenha a resposta no chat em no máximo 20 linhas com o roteiro sintético e solicitação de autorização.
 6. **Autorização Humana e Commit (Artigo 11):** Somente após a aprovação explícita humana, execute o commit e arquive a mudança:
    ```bash
    git add .

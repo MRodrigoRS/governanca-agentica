@@ -89,4 +89,6 @@ O Agente Principal **NÃO apresenta o Gate 2 ao humano**. Ele:
 3. Repete a inspeção factual se a alteração tiver sido substancial.
 
 ### Se 100% Conforme:
-O Agente Principal anexa o resumo factual da auditoria e a comprovação de conformidade diretamente no chat do **Gate 2**, dando ao humano certeza matemática de que o código entrega exatamente o que a especificação pedia.
+O Agente Principal anexa a comprovação de conformidade no **Gate 2**, dando ao humano certeza matemática de que o código entrega exatamente o que a especificação pedia:
+- **Em harnesses com suporte a artefatos (ex.: Antigravity):** Registra o parecer da inspeção e o duelo de conformidade no artefato `parecer-forense.md` (ou integrados no artefato `entrega-fatia-XX.md`) no diretório de artefatos. No chat, preserva a higiene de contexto (≤ 20 linhas) referenciando o artefato.
+- **Em harnesses CLI:** Resume os pontos centrais em ≤ 20 linhas diretamente no terminal.
