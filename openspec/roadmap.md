@@ -58,7 +58,7 @@
 
 ---
 
-### `[~] Em Andamento` — `fatia-09b-apresentacao-por-artefatos-e-higiene-de-chat`
+### `[x] Concluído` — `fatia-09b-apresentacao-por-artefatos-e-higiene-de-chat`
 - **Depende de:** `fatia-09a-comandos-atalho-handoff-de-sessao-e-pr`
 - **Objetivo de Valor:** Erradicar a poluição de contexto e o despejo de textos longos no chat, obrigando o agente em ambientes com suporte a artefatos (Antigravity / Generative UI) a publicar os planos de Gate 1, relatórios de entrega de Gate 2 e laudos do Inspetor Forense em artefatos dedicados com `RequestFeedback: true`, mantendo no chat apenas o link direto e a pergunta objetiva de decisão.
 - **O que ENTRA:**
@@ -71,7 +71,7 @@
 
 ### `[ ] Pendente` — `fatia-10-reuso-tokens-movimento-e-component-as-asset`
 - **Especificação Completa de Transição:** [openspec/roadmap/fatia-10-reuso-tokens-movimento-e-component-as-asset.md](roadmap/fatia-10-reuso-tokens-movimento-e-component-as-asset.md)
-- **Depende de:** `fatia-09a-comandos-atalho-handoff-de-sessao-e-pr`
+- **Depende de:** `fatia-09b-apresentacao-por-artefatos-e-higiene-de-chat`
 - **Objetivo de Valor:** Impedir deriva estética/cinética e páginas ou cenas de jogos monolíticas, instituindo memória leve de reúso com sensor anti-apodrecimento, Tokens de Movimento na Fatia 01, *Component-as-Asset* e teto anti-monólito com **catraca** para não travar correções em arquivos legados.
 - **O que ENTRA:**
   1. **Artigo 14 (*Reuse-Before-Create* & *Component-as-Asset*, estendendo o Artigo 1.2):** Primitivos de UI, transições/animações e entidades/mecânicas de jogos nascem tokenizados/componentizados na 1ª ocorrência; blocos específicos extraem-se na 2ª ocorrência; Fatia 01 institui Tokens Base (cores, tipografia, durações e curvas de animação).
