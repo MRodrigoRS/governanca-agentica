@@ -46,7 +46,7 @@
 
 ---
 
-### `[~] Em Andamento` — `fatia-09a-comandos-atalho-handoff-de-sessao-e-pr`
+### `[x] Concluído` — `fatia-09a-comandos-atalho-handoff-de-sessao-e-pr`
 - **Especificação Completa de Transição:** [openspec/roadmap/fatia-09a-comandos-atalho-handoff-de-sessao-e-pr.md](roadmap/fatia-09a-comandos-atalho-handoff-de-sessao-e-pr.md)
 - **Depende de:** `fatia-09-regras-modulares-por-glob-e-docs-mercado`
 - **Objetivo de Valor:** Materializar fisicamente os comandos de atalho citados pela governança (`/fix`, `/proxima-fatia`, `/retomar`, `/revisar`, `/refinar`, `/explorar`, `/aprendizado`, `/atualizar-governanca`, `/linear-inbox`), instituir handoff determinístico de sessão em `tasks.md` (eliminando dependência de memória do chat após `/compact`) e fornecer template de PR + fluxo Git configurável (`trunk` vs. `branch-por-fatia`).
