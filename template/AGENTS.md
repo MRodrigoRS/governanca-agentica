@@ -114,6 +114,7 @@ Ao ser iniciado em um repositório, identifique o estado atual antes de agir:
 - **Mapa de Fatias Incrementais:** Diretório `openspec/roadmap/` e `openspec/project.md`.
 - **Especificações Vivas e Deltas:** Diretório `openspec/` gerenciado pelo OpenSpec CLI (`npx @fission-ai/openspec`).
 - **Registros de Arquitetura (ADRs):** Diretório `docs/adr/` no formato MADR.
+- **Catálogo de Reúso e Tokens:** Arquivo `docs/catalogo-reuso.md` (inventário vivo de primitivos, tokens de movimento e prefabs; consulta obrigatória antes de codificar conforme Artigo 14).
 - **Particularidades Operacionais e de Ambiente:** Arquivo `docs/particularidades.md` (leitura sob demanda antes de alterar infraestrutura, portas, variáveis de ambiente ou integrações externas).
 - **Diário de Aprendizados e Cicatrizes:** Arquivo `docs/aprendizados.md` (leitura mandatória no Gate 1 para prevenir reincidência de armadilhas empíricas catalogadas).
 - **Hooks Nativos de Agente:** Arquivo `.agents/hooks.json` e `.claude/settings.json`.
@@ -128,7 +129,7 @@ Ao ser iniciado em um repositório, identifique o estado atual antes de agir:
     * *Gate 1:* Localiza ou cria a issue correspondente dentro deste projeto (`[KEY-XXX] fatia-XXa-...`) e move para *In Progress*.
     * *Gate 2:* Publica a atualização oficial do projeto (*Project Update*) com resumo funcional e roteiro prático, movendo a issue para *Done*.
     * *Refinamento de Ideias:* Encaminha ideias despriorizadas para o Backlog deste mesmo projeto no Linear.
-- **Skills Ativas:** Diretório `.agents/skills/` (`inicializar-stack`, `ciclo-especificacao`, `refinar-ideia`, `explorar-produto`, `revisar-fatia`, `atualizar-governanca`).
+- **Skills Ativas:** Diretório `.agents/skills/` (`inicializar-stack`, `ciclo-especificacao`, `refinar-ideia`, `explorar-produto`, `revisar-fatia`, `reuso-e-modularizacao`, `atualizar-governanca`).
 - **Higiene de Contexto, Subagentes e Orçamento de MCPs:**
   - *Varredura Ampla e Prevenção de Context Rot:* Mapeamentos exploratórios de código ou buscas em dezenas de arquivos não devem poluir o contexto da sessão principal. Delegue varreduras amplas a subagentes efêmeros *read-only* (ex.: subagente `research` no Antigravity ou subagente de consulta no Claude Code), retornando ao agente principal apenas o resumo conciso e as linhas exatas.
   - *Padrão `/llms.txt` e CLIs Nativas:* Ao consultar documentações externas de bibliotecas, priorize endpoints `/llms.txt` (conteúdo limpo em Markdown) antes de baixar páginas HTML pesadas. Para automações do GitHub (issues, PRs, runs), priorize a CLI oficial `gh` em vez de acoplar servidores MCP redundantes.
@@ -145,6 +146,7 @@ Os comandos abaixo estão disponíveis em `.claude/commands/`, `.github/prompts/
 | `/proxima-fatia` | `ciclo-especificacao` §2 (Via 2) | Ler `roadmap.md`, abrir delta no OpenSpec e preparar Gate 1 |
 | `/retomar` | Handoff de Sessão (`tasks.md`) | Retomar trabalho ativo após `/compact` ou início de nova sessão |
 | `/revisar` | `revisar-fatia` | Inspetor Forense cego e Duelo de Conformidade pré-Gate 2 |
+| `/auditar-reuso` | `reuso-e-modularizacao` | Varredura de reúso, tokens de movimento e teto anti-monólito |
 | `/grill-me` | Protocolo `grill-me` / `grilling` | Interrogatório exaustivo de plano/design/ideia em rodadas |
 | `/refinar` | `refinar-ideia` | Nova ideia durante o projeto: congela código, poda e cria subfatia |
 | `/explorar` | `explorar-produto` | Reunião estratégica de produto e oportunidades sem mexer em código |

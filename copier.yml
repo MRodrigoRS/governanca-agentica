@@ -25,6 +25,7 @@ _skip_if_exists:
   - ".claude/settings.local.json"
   - "docs/particularidades.md"
   - "docs/aprendizados.md"
+  - "docs/catalogo-reuso.md"
 
 # ------------------------------------------------------------------------------
 # Questionário de Inicialização

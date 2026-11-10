@@ -44,3 +44,7 @@ Sua missão é inspecionar o código alterado (`git diff --cached` ou `git diff 
 6. **Lacunas e Mocks Observados:**
    - Há dados fictícios hardcoded no código de produção?
    - Há comentários `TODO`, `FIXME` ou funções vazias simuladas?
+7. **Reúso, Tokens e Teto Anti-Monólito (Artigo 14):**
+   - Verificar se botões, inputs, cards, modais, prefabs ou transições foram recriados inline em vez de reutilizar primitivos do catálogo.
+   - Verificar se há arquivos novos ou que cruzaram 350 linhas úteis, ou se a catraca foi violada em código legado.
+   - Auditar a legitimidade técnica de qualquer válvula `governanca:arquivo-extenso-justificado` (reprovar justificativas vagas ou evasivas).

@@ -653,6 +653,214 @@ function verificarTarefasAbertasEmDeltaArquivado(caminhoPasta, nomeMudanca) {
   }
 }
 
+// 6.3. Sensor Anti-Monólito com Catraca e Contagem por Linguagem (Fatia 10 / Artigo 14)
+export function contarLinhasUteisCodigo(conteudo, extensao) {
+  if (!conteudo) return 0;
+  const ext = (extensao || '').toLowerCase();
+  const linhas = conteudo.split('\n');
+  let total = 0;
+  let emBlocoComentario = false;
+  let emBlocoHtml = false;
+
+  for (let linha of linhas) {
+    const limpa = linha.trim();
+    if (!limpa) continue;
+
+    // Tratamento de blocos HTML (<!-- ... -->) em .vue, .svelte, .html
+    if (ext === '.vue' || ext === '.svelte' || ext === '.html') {
+      if (emBlocoHtml) {
+        if (limpa.includes('-->')) {
+          emBlocoHtml = false;
+        }
+        continue;
+      }
+      if (limpa.startsWith('<!--') && !limpa.includes('-->')) {
+        emBlocoHtml = true;
+        continue;
+      }
+      if (limpa.startsWith('<!--') && limpa.endsWith('-->')) {
+        continue;
+      }
+    }
+
+    // Tratamento de blocos C-style (/* ... */)
+    if (emBlocoComentario) {
+      if (limpa.includes('*/')) {
+        emBlocoComentario = false;
+      }
+      continue;
+    }
+
+    if (limpa.startsWith('/*') && !limpa.includes('*/')) {
+      emBlocoComentario = true;
+      continue;
+    }
+    if (limpa.startsWith('/*') && limpa.endsWith('*/')) {
+      continue;
+    }
+
+    // Comentários de linha específicos por linguagem
+    if (ext === '.py' || ext === '.gd' || ext === '.sh' || ext === '.rb') {
+      if (limpa.startsWith('#')) continue;
+    } else {
+      // Linguagens C-like, JS, TS, Rust, C#, Go, etc.
+      if (limpa.startsWith('//')) continue;
+      if (limpa.startsWith('*')) continue; // continuações de docblock
+      // Nota: em Rust, #[...] e em C#, #region não começam com // e são contados normalmente
+    }
+
+    total++;
+  }
+
+  return total;
+}
+
+export function ehArquivoIsentoDeTetoMonolito(arquivo) {
+  const minusculo = (arquivo || '').toLowerCase().replace(/\\/g, '/');
+  const padroesIsencao = [
+    'components/ui/',
+    'addons/',
+    'vendor/',
+    'generated/',
+    'migrations/',
+    'drizzle/',
+    '.d.ts',
+    '.generated.',
+    '.min.',
+    'routetree.gen.',
+  ];
+  return padroesIsencao.some((p) => minusculo.includes(p));
+}
+
+function verificarSensorAntiMonolitoComCatraca(arquivosProducao) {
+  for (const arq of arquivosProducao) {
+    if (ehArquivoIsentoDeTetoMonolito(arq)) continue;
+
+    let conteudoStaged = '';
+    try {
+      conteudoStaged = execSync(`git show :${arq}`, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] });
+    } catch {
+      const caminhoFisico = join(process.cwd(), arq);
+      if (existsSync(caminhoFisico)) {
+        conteudoStaged = readFileSync(caminhoFisico, 'utf8');
+      }
+    }
+
+    if (!conteudoStaged) continue;
+
+    const pontoIndex = arq.lastIndexOf('.');
+    const extensao = pontoIndex !== -1 ? arq.slice(pontoIndex) : '';
+    const linhasStaged = contarLinhasUteisCodigo(conteudoStaged, extensao);
+
+    if (linhasStaged <= 350) continue;
+
+    // Checagem de válvula de exceção justificada
+    if (/governanca:arquivo-extenso-justificado/i.test(conteudoStaged)) {
+      const matchValvula = conteudoStaged.match(/governanca:arquivo-extenso-justificado\s*[:—-]\s*(\S.{14,})/i);
+      if (matchValvula) {
+        registrarInfo(`Válvula de arquivo extenso aceita para '${arq}': "${matchValvula[1].trim()}"`);
+        continue;
+      } else {
+        registrarErro(
+          `Válvula de Arquivo Extenso Inválida (Artigo 14):\n` +
+          `O arquivo '${arq}' possui ${linhasStaged} linhas úteis e acionou a válvula 'governanca:arquivo-extenso-justificado', mas o motivo técnico fornecido é insuficiente (< 15 caracteres) ou ausente.\n\n` +
+          `-> Solução: Forneça uma justificativa técnica real com no mínimo 15 caracteres (ex.: '// governanca:arquivo-extenso-justificado: parser binário com tabela contígua de transições').`
+        );
+        process.exit(1);
+      }
+    }
+
+    // Mecanismo de Catraca
+    let linhasHead = 0;
+    try {
+      const conteudoHead = execSync(`git show HEAD:${arq}`, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] });
+      linhasHead = contarLinhasUteisCodigo(conteudoHead, extensao);
+    } catch {
+      linhasHead = 0;
+    }
+
+    if (linhasHead <= 350 || linhasStaged > linhasHead) {
+      const motivoCatraca = linhasHead > 350
+        ? `Arquivo legado que já excedia o teto aumentou de tamanho (catraca: HEAD tinha ${linhasHead} linhas úteis, staged foi para ${linhasStaged}). A catraca proíbe o crescimento de arquivos que já ultrapassaram o teto.`
+        : `Arquivo novo ou que cruzou o teto de 350 linhas úteis (HEAD tinha ${linhasHead} linhas úteis, staged foi para ${linhasStaged}).`;
+
+      registrarErro(
+        `Sensor Anti-Monólito e Catraca de Linhas Úteis (Artigo 14):\n` +
+        `O arquivo '${arq}' possui ${linhasStaged} linhas úteis de código, excedendo o teto estrito de 350 linhas úteis.\n` +
+        `${motivoCatraca}\n\n` +
+        `-> Solução: Decomponha o arquivo em subcomponentes, módulos puros ou Prefabs/Cenas do catálogo de reúso, ou utilize a válvula 'governanca:arquivo-extenso-justificado: <motivo técnico de 15+ caracteres>'.`
+      );
+      process.exit(1);
+    }
+  }
+}
+
+// 6.4. Sensor Anti-Apodrecimento do Catálogo de Reúso (Fatia 10 / Artigo 14)
+function verificarSensorAntiApodrecimentoCatalogo(arquivosModificados) {
+  const caminhoCatalogo = join(process.cwd(), 'docs', 'catalogo-reuso.md');
+  const catalogoExisteNoDisco = existsSync(caminhoCatalogo);
+
+  let conteudoCatalogo = '';
+  if (catalogoExisteNoDisco) {
+    try {
+      conteudoCatalogo = readFileSync(caminhoCatalogo, 'utf8');
+    } catch {}
+  }
+
+  if (!conteudoCatalogo) return;
+
+  const ponteiros = [];
+  const linhas = conteudoCatalogo.split('\n');
+  for (let i = 0; i < linhas.length; i++) {
+    const linha = linhas[i].trim();
+    if (linha.startsWith('|') && linha.includes('`')) {
+      const matches = linha.matchAll(/`([^`]+)`/g);
+      for (const m of matches) {
+        const caminho = m[1].trim();
+        if (caminho.includes('.') || caminho.includes('/')) {
+          ponteiros.push({ linha: i + 1, caminho });
+        }
+      }
+    }
+  }
+
+  const catalogoEstaStaged = arquivosModificados.some(
+    (item) => (item.arquivo || '').toLowerCase() === 'docs/catalogo-reuso.md'
+  );
+
+  // Cenário 1: Arquivos removidos ou renomeados citados no catálogo
+  for (const item of arquivosModificados) {
+    const status = item.status || '';
+    if (status === 'D' || status.startsWith('R')) {
+      const arqRemovido = item.arquivo;
+      const citado = ponteiros.find((p) => p.caminho.replace(/\\/g, '/') === arqRemovido.replace(/\\/g, '/'));
+      if (citado && !catalogoEstaStaged) {
+        registrarErro(
+          `Sensor Anti-Apodrecimento do Catálogo (Artigo 14):\n` +
+          `O arquivo catalogado '${citado.caminho}' em 'docs/catalogo-reuso.md' foi removido ou renomeado, mas o catálogo não foi atualizado neste commit para evitar apodrecimento.\n\n` +
+          `-> Solução: Atualize 'docs/catalogo-reuso.md' removendo ou atualizando o ponteiro para '${citado.caminho}'.`
+        );
+        process.exit(1);
+      }
+    }
+  }
+
+  // Cenário 2: Catálogo staged apontando para arquivos inexistentes
+  if (catalogoEstaStaged) {
+    for (const p of ponteiros) {
+      const caminhoFisico = join(process.cwd(), p.caminho);
+      if (!existsSync(caminhoFisico)) {
+        registrarErro(
+          `Sensor Anti-Apodrecimento do Catálogo (Artigo 14):\n` +
+          `O arquivo 'docs/catalogo-reuso.md' (linha ${p.linha}) referencia o caminho '${p.caminho}', mas este arquivo não foi encontrado no disco (ponteiro inexistente).\n\n` +
+          `-> Solução: Certifique-se de que o arquivo existe antes de catalogá-lo ou corrija o caminho apontado no catálogo.`
+        );
+        process.exit(1);
+      }
+    }
+  }
+}
+
 // 7. Execução das Verificações Determinísticas
 function executarAuditoria() {
   auditarFatiasDetalhadasV3();
@@ -681,6 +889,14 @@ function executarAuditoria() {
 
   // REGRA 2.1: Sensor de Variáveis de Ambiente (.env.example)
   verificarVariaveisAmbienteEmStaged(listaArquivos);
+
+  // REGRA 2.2: Sensor Anti-Monólito e Catraca de Linhas Úteis (Artigo 14)
+  if (arquivosProducao.length > 0) {
+    verificarSensorAntiMonolitoComCatraca(arquivosProducao);
+  }
+
+  // REGRA 2.3: Sensor Anti-Apodrecimento do Catálogo de Reúso (Artigo 14)
+  verificarSensorAntiApodrecimentoCatalogo(modificados);
 
   // REGRA 3: Se há alteração de código de produção, CHANGELOG.md DEVE estar no commit (Artigo 10)
   if (arquivosProducao.length > 0 && !changelogIncluido) {

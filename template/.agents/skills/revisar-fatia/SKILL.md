@@ -62,6 +62,10 @@ Inspecionar o código modificado (`git diff` dos arquivos staged) e traduzir em 
 7. **Lacunas, Mocks e Pendências Factualmente Observadas:**
    - Há dados fictícios fixos no código (hardcoded mocks)?
    - Há funções vazias, retornos simulados ou comentários `TODO`/`FIXME` deixados?
+8. **Reúso, Tokens e Teto Anti-Monólito (Artigo 14):**
+   - Foram recriados botões, modais, transições ou prefabs inline quando já existiam no catálogo (`docs/catalogo-reuso.md`)?
+   - Há arquivos novos ou modificados que excedem 350 linhas úteis de código, ou violação da catraca em arquivos legados?
+   - Há ocorrência de válvula `governanca:arquivo-extenso-justificado`? Se houver, a justificativa técnica é genuína e consistente?
 ```
 
 ---

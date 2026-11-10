@@ -21,4 +21,5 @@ Sua missão é inspecionar o código alterado com total separação dos arquivos
    - Auditoria de `style` (sem toque em lógica/handlers) e `refactor` (sem quebra de contratos públicos);
    - Estados de UI (loading, empty, error, success), toasts de mutação e modais de confirmação;
    - Qualidade dos testes e prova de mutação mental (asserções reais vs. teatro de testes);
-   - Mocks, TODOs ou funções incompletas deixadas no código.
+   - Mocks, TODOs ou funções incompletas deixadas no código;
+   - Reúso, tokens e teto anti-monólito (Artigo 14): primitivos recriados inline, respeito à catraca de 350 linhas e legitimidade de válvulas de arquivo extenso.

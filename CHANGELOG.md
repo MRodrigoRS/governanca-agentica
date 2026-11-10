@@ -8,6 +8,14 @@ O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.
 ## [4.0.0-alpha.1] - 2026-11-10
 
 ### Adicionado
+- **Governança de Reúso, Tokens de Movimento, Component-as-Asset e Anti-Monólito (`fatia-10`):**
+  - **Artigo 14 na Constituição (`template/constitution.md`):** Instituição de *Reuse-Before-Create* como extensão do Artigo 1.2, exigência de Tokens Base (cores, tipografia, durações de 150ms/250ms e curvas canônicas de animação) na Fatia 01 (Fundação), e padrão *Component-as-Asset* em `template/.agents/rules/` (`web-ui-pwa.md.jinja` e `jogos-engines.md.jinja`).
+  - **Catálogo Vivo de Reúso (`template/docs/catalogo-reuso.md`):** Inventário enxuto de 1 linha por item em 4 tabelas canônicas (Tokens, Primitivos de UI, Prefabs/Cenas de Jogos, Hooks/Módulos de Domínio), protegido em `_skip_if_exists` no `copier.yml`.
+  - **Sensor Anti-Apodrecimento de Catálogo em `verificar-governanca.mjs`:** Bloqueio determinístico de remoção/renomeação de arquivos catalogados sem atualização do índice e rejeição de ponteiros inexistentes no disco.
+  - **Sensor Anti-Monólito com Catraca (> 350 Linhas Úteis):** Teto de 350 linhas úteis para código de produção com suporte a GDScript (`.gd`), descarte de comentários por sintaxe de linguagem (preservando atributos em Rust e diretivas em C#), mecanismo de catraca para arquivos legados (permite correções se linhas úteis não aumentarem) e válvula formal `governanca:arquivo-extenso-justificado: <motivo >= 15 chars>`.
+  - **Skill e Comando `/auditar-reuso`:** Nova skill `template/.agents/skills/reuso-e-modularizacao/` com modos preventivo e corretivo (Web e Engines: Godot 4, Phaser 3, Three.js, Bevy) e wrappers nos 3 harnesses (`template/.claude/commands/`, `template/.github/prompts/`, `template/.cursor/commands/`).
+  - **Paridade Tripla no Inspetor Forense:** Atualização de `.claude/agents/inspetor-forense.md`, `.github/agents/inspetor-forense.agent.md` e `revisar-fatia/SKILL.md` para auditar reúso, catraca e válvulas de arquivo extenso.
+  - **Suíte `tests/reuso-e-modularizacao.test.mjs`:** 7 novos testes automatizados elevando a suíte para 76 testes verdes.
 - **Apresentação por Artefatos e Higiene de Contexto no Chat (`fatia-09b`):**
   - Instituição da apresentação obrigatória por artefatos dedicados em harnesses que suportam artefatos nativos (ex.: Antigravity): `plano-fatia-XX.md` com `RequestFeedback: true` (botão interativo de ação) para Gate 1, e `entrega-fatia-XX.md` e `parecer-forense.md` para Gate 2.
   - Teto estrito de mensagem de chat (≤ 20 linhas) nos Gates 1 e 2, preservando a higiene de contexto, prevenindo Context Rot e poluição por dumps longos de texto.

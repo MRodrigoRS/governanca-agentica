@@ -58,10 +58,11 @@ export function ehArquivoDeTeste(arquivo) {
     return true;
   }
 
-  // Padrões Python em qualquer pasta
+  // Padrões Python e Godot GUT em qualquer pasta
   if (
-    (nomeBase.startsWith('test_') && nomeBase.endsWith('.py')) ||
-    nomeBase.endsWith('_test.py')
+    (nomeBase.startsWith('test_') && (nomeBase.endsWith('.py') || nomeBase.endsWith('.gd'))) ||
+    nomeBase.endsWith('_test.py') ||
+    nomeBase.endsWith('_test.gd')
   ) {
     return true;
   }

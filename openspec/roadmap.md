@@ -69,7 +69,7 @@
 
 ---
 
-### `[ ] Pendente` — `fatia-10-reuso-tokens-movimento-e-component-as-asset`
+### `[~] Em Andamento` — `fatia-10-reuso-tokens-movimento-e-component-as-asset`
 - **Especificação Completa de Transição:** [openspec/roadmap/fatia-10-reuso-tokens-movimento-e-component-as-asset.md](roadmap/fatia-10-reuso-tokens-movimento-e-component-as-asset.md)
 - **Depende de:** `fatia-09b-apresentacao-por-artefatos-e-higiene-de-chat`
 - **Objetivo de Valor:** Impedir deriva estética/cinética e páginas ou cenas de jogos monolíticas, instituindo memória leve de reúso com sensor anti-apodrecimento, Tokens de Movimento na Fatia 01, *Component-as-Asset* e teto anti-monólito com **catraca** para não travar correções em arquivos legados.

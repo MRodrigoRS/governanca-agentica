@@ -12,7 +12,7 @@
 2. Toda aplicação interativa parte obrigatoriamente de uma stack do catálogo oficial (ou aprovada no Gate 0) e deve garantir desde o primeiro commit:
    - **Tipagem Estrita:** TypeScript com `"strict": true` em `tsconfig.json`, Rust, C#/.NET ou Python com type hints completos validados por `mypy` ou `pyright`.
    - **Validação de Entradas na Fronteira:** Esquemas declarativos (ex.: Zod no ecossistema JS/TS, Pydantic em Python, Serde em Rust) validando dados externos em rotas de API, pontes IPC (Desktop), formulários, parâmetros de URL, cookies e webhooks.
-   - **Design System Modular:** Interface construída com base em componentes consistentes e reutilizáveis (ex.: Tailwind CSS + shadcn/ui ou equivalente nativo).
+   - **Design System Modular:** Interface construída com base em componentes consistentes e reutilizáveis (ex.: Tailwind CSS + shadcn/ui ou equivalente nativo), em estrita observância ao princípio *Reuse-Before-Create* e às regras de componentização do Artigo 14.
    - **Testes Automatizados Ativos:** Executor de testes configurado e ao menos um teste de sanidade passando desde a inicialização.
 3. **Exceção Única:** Protótipos descartáveis ou documentos HTML puramente estáticos, desde que formalmente aprovados como exceção no Gate 0.
 
@@ -150,6 +150,21 @@ Se durante a execução de uma tarefa o agente falhar 3 vezes consecutivas no me
 2. **Handshake Pré-Operação com `whoami`:** É expressamente proibido ao agente emitir qualquer instrução de leitura ou escrita no Linear sem antes disparar a ferramenta `whoami` para verificar a identidade e o workspace ativo na sessão.
 3. **Bloqueio Determinístico por Divergência de Workspace:** Se o workspace ativo retornado pelo `whoami` divergir do registrado na Tríade de Âncora, o agente deve interromper imediatamente a operação, emitir um alerta de contenção ao humano e recusar-se a prosseguir.
 4. **Proibição Absoluta de Fallback Silencioso:** Se o projeto ou equipe âncora não for localizado durante uma busca, é terminantemente proibido ao agente operar em issues de outras equipes ou criar tarefas órfãs sem atribuição de projeto. Qualquer falha de ancoragem exige alinhamento explícito com o humano.
+
+---
+
+## Artigo 14 — Governança de Reúso, Tokens de Movimento, Component-as-Asset e Teto Anti-Monólito
+
+1. **Princípio *Reuse-Before-Create* (Extensão do Artigo 1.2):** É expressamente proibido ao agente recriar componentes primitivos de interface (botões, inputs, cards, modais, skeletons, toasts), transições visuais ou entidades de jogos *inline* quando já existir implementação ou token equivalente no projeto. Antes de propor código ou desenhar uma tela/cena, o agente deve consultar `docs/catalogo-reuso.md` e declarar o que será reutilizado.
+2. **Tokens de Movimento e Fundação Obrigatória (Fatia 01):** Em todo projeto que envolva interface visual ou jogos (`web-ui`, `desktop`, `mobile`, `jogo`), a Fatia 01 (Fundação) deve obrigatoriamente definir os **Tokens Base** (cores semânticas, tipografia, espaçamentos, **durações e curvas canônicas de animação/easing**) e a árvore base de componentes ou prefabs antes de qualquer tela ou fase de negócio. É proibido o uso de valores arbitrários e durações de animação divergentes por rota.
+3. **Padrão *Component-as-Asset* e Regra Objetiva de Extração:**
+   - Primitivos de UI, transições/animações e entidades/mecânicas de jogos (inimigos, projéteis, áreas de dano, partículas, shaders, *tweens*) devem nascer componentizados ou pré-fabricados (Prefabs/Cenas) na **1ª ocorrência**.
+   - Elementos específicos de tela ou regras de domínio repetidas devem ser extraídos obrigatoriamente na **2ª ocorrência**.
+4. **Catálogo Vivo de Reúso com Sensor Anti-Apodrecimento:** O repositório mantém `docs/catalogo-reuso.md` com 1 linha por item em 4 tabelas canônicas. O auditor determinístico bloqueia commits que apaguem ou renomeiem arquivos citados no catálogo sem a devida atualização do índice, ou que insiram ponteiros para caminhos inexistentes no disco.
+5. **Sensor Anti-Monólito (> 350 Linhas Úteis) com Catraca Inteligente:**
+   - Nenhum arquivo de código de produção novo pode ultrapassar o teto estrito de **350 linhas úteis** (medidas com descarte de linhas em branco e comentários por sintaxe de linguagem, reconhecendo `.gd` e contando anotações de atributos em Rust e diretivas em C#).
+   - **Catraca para Código Legado:** Arquivos preexistentes em `HEAD` que já excediam o teto só podem ser alterados se o commit mantiver ou reduzir suas linhas úteis; qualquer acréscimo de linhas é sumariamente bloqueado (`exit 1`).
+   - **Válvula de Exceção Justificada:** Em casos raros de algoritmos ou tabelas indivisíveis, permite-se o marcador `governanca:arquivo-extenso-justificado: <motivo técnico de pelo menos 15 caracteres>`, fiscalizado de forma cética pela Auditoria Forense.
 <!-- governanca:fim -->
 
 ## Cláusulas Adicionais Deste Projeto

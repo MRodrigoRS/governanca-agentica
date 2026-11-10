@@ -54,4 +54,12 @@ Toda rota ou componente que carrega dados de forma assíncrona DEVE implementar 
 ## 6. Notificações Reativas (Toasts) e Modais de Confirmação
 - **Mutações de Dados:** Toda operação que criar, alterar ou excluir dados DEVE disparar uma notificação Toast temporária de feedback (sucesso ou erro claro).
 - **Ações Destrutivas ou Críticas:** Ações irreversíveis (excluir cadastro, cancelar contrato, resetar configurações) DEVEM obrigatoriamente abrir um Modal/Dialog de confirmação detalhando o impacto antes da mutação, com suporte a cancelamento explícito e tecla `Escape`.
+
+---
+
+## 7. Reúso, Tokens de Movimento e Component-as-Asset (Artigo 14)
+- **Reuse-Before-Create:** Proibido recriar botões, inputs, cards, modais ou transições inline. Consulte `docs/catalogo-reuso.md` antes de codificar.
+- **Tokens de Movimento na Fundação:** As animações e transições DEVEM consumir durações e curvas canônicas de easing do catálogo (`150ms` para microinterações, `250ms` para painéis/modais, curvas `cubic-bezier(0.4, 0, 0.2, 1)`). Proibido inventar durações ou transições arbitrárias por rota.
+- **Extração Objetiva:** Primitivos de UI e transições nascem componentizados na 1ª ocorrência; blocos repetidos de tela extraem-se na 2ª ocorrência.
+- **Teto Anti-Monólito:** Arquivos de tela e componentes limitados a 350 linhas úteis de código com catraca para código legado.
 {% endif %}

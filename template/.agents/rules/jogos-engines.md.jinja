@@ -32,4 +32,12 @@ globs:
 ## 3. Testes Automatizados Headless
 - Em Godot 4: testes estruturados via GUT (*Godot Unit Testing*) executáveis em modo headless no CI (`godot --headless -s addons/gut/gut_cmdln.gd`).
 - Em Web 2D/3D (Phaser/Three.js): testes unitários com Vitest rodando em Node.js com mocks apenas da camada Canvas/WebGL.
+
+---
+
+## 4. Component-as-Asset, Prefabs e Anti-Monólito (Artigo 14)
+- **Component-as-Asset:** Entidades de jogo (inimigos, projéteis, itens coletáveis, hurtboxes/hitboxes, HUD, partículas, tweens e shaders) DEVEM nascer como Prefabs ou Cenas componíveis atômicas (`.tscn`) na 1ª ocorrência.
+- **Proibição de Cenas Monolíticas:** Cenas de fase DEVEM compor instâncias de Prefabs reutilizáveis, sendo proibido programar toda a lógica do jogo no script da cena principal.
+- **Teto de 350 Linhas em GDScript (.gd):** Scripts `.gd` de produção possuem teto estrito de 350 linhas úteis com catraca para scripts legados. Decomponha scripts extensos em nós componentes ou `Resource` customizados.
+- **Tokens de Movimento e Easing:** Constantes de física (gravidade, aceleração) e curvas de tweening DEVEM ser centralizadas em recursos de configuração ou no catálogo de reúso (`docs/catalogo-reuso.md`).
 {% endif %}
