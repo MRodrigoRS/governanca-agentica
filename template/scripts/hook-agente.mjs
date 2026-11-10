@@ -306,8 +306,7 @@ function processarPostToolClaude() {
   process.exit(0);
 }
 
-function processarSessionStart() {
-  const raiz = obterRaizProjeto(payload);
+function obterMensagemSessao(raiz) {
   let mensagemStatus = 'Governança Agêntica Ativa.';
 
   const pastaMudancas = join(raiz, 'openspec', 'changes');
@@ -317,13 +316,67 @@ function processarSessionStart() {
         (f) => f !== 'archive' && !f.startsWith('.')
       );
       if (ativas.length > 0) {
-        mensagemStatus += ` Mudança ativa detectada em openspec/changes/: ${ativas.join(', ')}.`;
+        const resumos = [];
+        for (const mudanca of ativas) {
+          const arqTasks = join(pastaMudancas, mudanca, 'tasks.md');
+          if (existsSync(arqTasks)) {
+            try {
+              const conteudo = readFileSync(arqTasks, 'utf8');
+              const linhas = conteudo.split('\n');
+              let total = 0;
+              let concluidas = 0;
+              let primeiraPendente = null;
+              let proximoPasso = null;
+
+              for (const linha of linhas) {
+                const mTarefa = linha.match(/^\s*-\s*\[([ xX])\]\s*(.+)/);
+                if (mTarefa) {
+                  total++;
+                  if (mTarefa[1].toLowerCase() === 'x') {
+                    concluidas++;
+                  } else if (!primeiraPendente) {
+                    primeiraPendente = mTarefa[2].trim();
+                  }
+                }
+                const mPasso = linha.match(/\*\*Próximo passo:\*\*\s*(.+)/i);
+                if (mPasso && !proximoPasso) {
+                  proximoPasso = mPasso[1].trim();
+                }
+              }
+
+              let bloco = `${mudanca}: ${concluidas}/${total} tarefas concluídas.`;
+              if (primeiraPendente) {
+                bloco += ` Próxima: ${primeiraPendente}.`;
+              }
+              if (proximoPasso) {
+                bloco += ` Próximo passo: ${proximoPasso}.`;
+              }
+              resumos.push(bloco);
+            } catch {
+              resumos.push(mudanca);
+            }
+          } else {
+            resumos.push(mudanca);
+          }
+        }
+        mensagemStatus += ` Mudança ativa detectada em openspec/changes/: ${resumos.join(' ')}`;
       }
     } catch {}
   }
 
   mensagemStatus +=
     ' Lembre-se: obedeça rigorosamente a constitution.md e AGENTS.md. É proibido deduzir escopo de cabeça (Artigo 12).';
+
+  if (mensagemStatus.length > 600) {
+    mensagemStatus = mensagemStatus.slice(0, 597) + '...';
+  }
+
+  return mensagemStatus;
+}
+
+function processarSessionStart() {
+  const raiz = obterRaizProjeto(payload);
+  const mensagemStatus = obterMensagemSessao(raiz);
 
   const resposta = {
     injectSteps: [
@@ -341,22 +394,7 @@ function processarSessionStart() {
 
 function processarSessionStartClaude() {
   const raiz = obterRaizProjeto(payload);
-  let mensagemStatus = 'Governança Agêntica Ativa.';
-
-  const pastaMudancas = join(raiz, 'openspec', 'changes');
-  if (existsSync(pastaMudancas)) {
-    try {
-      const ativas = readdirSync(pastaMudancas).filter(
-        (f) => f !== 'archive' && !f.startsWith('.')
-      );
-      if (ativas.length > 0) {
-        mensagemStatus += ` Mudança ativa detectada em openspec/changes/: ${ativas.join(', ')}.`;
-      }
-    } catch {}
-  }
-
-  mensagemStatus +=
-    ' Lembre-se: obedeça rigorosamente a constitution.md e AGENTS.md. É proibido deduzir escopo de cabeça (Artigo 12).';
+  const mensagemStatus = obterMensagemSessao(raiz);
 
   const resposta = {
     hookSpecificOutput: {

@@ -8,6 +8,17 @@ O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.
 ## [4.0.0-alpha.1] - 2026-11-10
 
 ### Adicionado
+- **Comandos de Atalho Multi-Harness com Paridade Total (`fatia-09a`):**
+  - Criação de wrappers finos (≤ 20 linhas) nos 3 harnesses: Claude Code (`template/.claude/commands/`), GitHub Copilot (`template/.github/prompts/`) e Cursor (`template/.cursor/commands/`) cobrindo `/fix`, `/proxima-fatia`, `/retomar`, `/revisar`, `/grill-me`, `/refinar`, `/explorar`, `/aprendizado`, `/atualizar-governanca` e `/linear-inbox` (condicional a `integrar_linear: true`).
+  - Tabela canônica de comandos de atalho documentada em `template/AGENTS.md`.
+- **Handoff Determinístico de Sessão e Trava Anti-Arquivamento (`fatia-09a`):**
+  - Seção obrigatória `## Notas de Sessão` em `tasks.md` contendo decisões fora do plano, bloqueios e próximo passo acionável.
+  - Injeção contextual no evento `SessionStart` do `hook-agente.mjs` apresentando progresso (`X/Y tarefas`), próxima tarefa pendente e próximo passo (teto de 600 caracteres).
+  - Trava determinística em `verificar-governanca.mjs` bloqueando commits que arquivam deltas com tarefas `- [ ]` abertas sem justificativa `(adiada: ...)` ou `(cancelada: ...)`.
+- **Template de Pull Request e Configuração `fluxo_git` (`fatia-09a`):**
+  - `template/.github/pull_request_template.md` espelhando estruturalmente as 5 seções do Gate 2.
+  - Pergunta `fluxo_git` no `copier.yml` (`trunk` ou `branch-por-fatia`) com instruções para `gh pr create` na skill `ciclo-especificacao`.
+  - Suíte de testes `tests/comandos-e-handoff.test.mjs` com 4 novos testes automatizados, elevando o repositório para 66 testes verdes.
 - **Regras Modulares em Fonte Única e Wrappers Anti-Ponto-Cego (`template/.agents/rules/`):**
   - Pergunta `perfis_projeto` no `copier.yml` e módulos condicionais (`web-ui-pwa.md`, `backend-seguranca-dados.md`, `jogos-engines.md`, `linear-mcp.md`) com frontmatter nativo Antigravity (`trigger: glob`/`model_decision`).
   - Wrappers finos (< 15 linhas) em `template/.claude/rules/`, `template/.cursor/rules/`, `template/.github/instructions/`.

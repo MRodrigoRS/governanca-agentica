@@ -46,7 +46,7 @@ Antes de iniciar, determine a via adequada conforme a Matriz de Cerimônia (D14 
    - `proposal.md` (mín. 10 linhas): `## Por que` (ou `## Why`), `## O que muda` (ou `## What Changes`) e `## Fica de Fora` (ou `## Out of Scope`).
    - `specs/<dominio>/spec.md`: Deltas com cabeçalhos oficiais (`## ADDED Requirements`), `### Requirement:` e cenários `#### Scenario:` contendo `WHEN` e `THEN` (`GIVEN` recomendado).
    - `design.md` (mín. 18 linhas): `## Contratos, Dados e Schemas`, `## Interface e Estados Assíncronos` (loading, empty, error, success, Toasts e Modais, ou `Não se aplica: <motivo>`) e `## Regras de Negócio e Segurança`.
-   - `tasks.md` (mín. 12 linhas): Checklist `- [ ]` com marcação Test-First (`Vermelho` / `Red`) e seção obrigatória `## Roteiro de Validação Prática`.
+   - `tasks.md` (mín. 12 linhas): Checklist `- [ ]` com marcação Test-First (`Vermelho` / `Red`), seção obrigatória `## Roteiro de Validação Prática` e seção `## Notas de Sessão` (decisões fora do plano, bloqueios e próximo passo acionável).
 5. Marque o status da fatia como `[~] Em Andamento` em `openspec/roadmap.md`.
 
 ---
@@ -65,6 +65,8 @@ Antes de iniciar, determine a via adequada conforme a Matriz de Cerimônia (D14 
 > **Nenhum código de produção deve ser escrito antes da aprovação do Gate 1.**
 > 
 > *(Sincronização Linear MCP):* Caso o MCP `linear` esteja configurado, execute o handshake mandatório `whoami` (Artigo 13), localize ou associe a issue correspondente no Linear (`[LIN-XXX] fatia-XXa-...`) e atualize seu estado para *In Progress*.
+> 
+> *(Fluxo Git Branch por Fatia):* Caso o projeto utilize o modo `fluxo_git: branch-por-fatia`, crie e migre para a branch da fatia antes de codificar (`git checkout -b feat/fatia-XX-<slug>`). No modo padrão `trunk`, permaneça na branch principal de desenvolvimento.
 
 ---
 
@@ -103,5 +105,10 @@ Antes de finalizar a tarefa ou commit:
    git add .
    git commit -m "feat(<escopo>): implementa fatia XX - <descrição em PT-BR>"
    npx --yes @fission-ai/openspec archive fatia-XX-<slug> -y
+   ```
+   *(Abertura de PR no modo branch-por-fatia):* Em projetos com `fluxo_git: branch-por-fatia`, envie a branch e abra o PR utilizando a CLI oficial `gh` (evitando MCPs de GitHub):
+   ```bash
+   git push origin feat/fatia-XX-<slug>
+   gh pr create --fill --template .github/pull_request_template.md
    ```
 7. Marque `[x] Concluído` no bloco de `openspec/roadmap.md` e puxe proativamente a próxima fatia da fila.

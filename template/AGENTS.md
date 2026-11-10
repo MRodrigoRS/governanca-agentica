@@ -134,6 +134,23 @@ Ao ser iniciado em um repositório, identifique o estado atual antes de agir:
   - *Padrão `/llms.txt` e CLIs Nativas:* Ao consultar documentações externas de bibliotecas, priorize endpoints `/llms.txt` (conteúdo limpo em Markdown) antes de baixar páginas HTML pesadas. Para automações do GitHub (issues, PRs, runs), priorize a CLI oficial `gh` em vez de acoplar servidores MCP redundantes.
   - *Teto Estrito de MCPs (3 a 5 Servidores Ativos):* Evite manter dezenas de servidores MCP ativos simultaneamente. Cada ferramenta anunciada consome tokens na janela de contexto a cada turno e degrada a capacidade de raciocínio do modelo. Mantenha de 3 a 5 servidores essenciais por projeto (ex.: `context7`, `linear`, `playwright`).
   - *Credenciais Read-Only em Bancos de Dados:* Servidores MCP conectados a bancos relacionais (Postgres, SQLite, Supabase) devem utilizar credenciais estritamente de leitura (*read-only*), garantindo que mutações e migrações passem obrigatoriamente pelos testes e código versionado da aplicação.
+
+### Comandos de Atalho Rápidos (Multi-Harness)
+
+Os comandos abaixo estão disponíveis em `.claude/commands/`, `.github/prompts/` e `.cursor/commands/` (e mapeados nativamente no Antigravity):
+
+| Comando | Finalidade / Skill Acionada | Quando utilizar |
+|---|---|---|
+| `/fix` | `ciclo-especificacao` §1 (Via 1a) | Bug pontual com teste que reproduz a falha (máx. 3 arquivos) |
+| `/proxima-fatia` | `ciclo-especificacao` §2 (Via 2) | Ler `roadmap.md`, abrir delta no OpenSpec e preparar Gate 1 |
+| `/retomar` | Handoff de Sessão (`tasks.md`) | Retomar trabalho ativo após `/compact` ou início de nova sessão |
+| `/revisar` | `revisar-fatia` | Inspetor Forense cego e Duelo de Conformidade pré-Gate 2 |
+| `/grill-me` | Protocolo `grill-me` / `grilling` | Interrogatório exaustivo de plano/design/ideia em rodadas |
+| `/refinar` | `refinar-ideia` | Nova ideia durante o projeto: congela código, poda e cria subfatia |
+| `/explorar` | `explorar-produto` | Reunião estratégica de produto e oportunidades sem mexer em código |
+| `/aprendizado` | `docs/aprendizados.md` | Registrar armadilha empírica, bug recorrente ou lição aprendida |
+| `/atualizar-governanca` | `atualizar-governanca` | Atualizar template via `copier update` de forma segura |
+| `/linear-inbox` | `refinar-ideia` §Passo 0 | Puxar e refinar notas de ideias anotadas pelo celular (quando ativo) |
 <!-- governanca:fim -->
 
 ## Regras Específicas Deste Projeto

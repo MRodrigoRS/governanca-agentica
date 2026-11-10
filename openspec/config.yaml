@@ -35,4 +35,5 @@ rules:
     - "Checklist com tarefas atômicas '- [ ]' ou '- [x]'"
     - "Marcação obrigatória de ciclo Test-First com 'Vermelho' / 'Red' / 'teste falhando'"
     - "Conter seção obrigatória '## Roteiro de Validação Prática' com passo a passo e dados prontos"
+    - "Conter seção obrigatória '## Notas de Sessão' para handoff determinístico com decisões fora do plano, bloqueios e próximo passo"
     - "Mínimo de 12 linhas úteis de detalhamento"

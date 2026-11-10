@@ -621,6 +621,38 @@ function verificarVariaveisAmbienteEmStaged(listaArquivos) {
   }
 }
 
+// 6.2. Trava Anti-Arquivamento com Tarefas Abertas (Fatia 09a / Artigo 8)
+function verificarTarefasAbertasEmDeltaArquivado(caminhoPasta, nomeMudanca) {
+  const arqTasks = join(caminhoPasta, 'tasks.md');
+  if (!existsSync(arqTasks)) return;
+
+  const conteudo = readFileSync(arqTasks, 'utf8');
+  const linhas = conteudo.split('\n');
+  const tarefasAbertas = [];
+
+  for (let i = 0; i < linhas.length; i++) {
+    const linha = linhas[i];
+    const match = linha.match(/^\s*-\s*\[ \]\s*(.+)/);
+    if (match) {
+      const texto = match[1];
+      const ehJustificada = /\(adiada:|\(cancelada:/i.test(texto);
+      if (!ehJustificada) {
+        tarefasAbertas.push(`Linha ${i + 1}: ${texto.trim()}`);
+      }
+    }
+  }
+
+  if (tarefasAbertas.length > 0) {
+    registrarErro(
+      `Trava Anti-Arquivamento com Tarefas Abertas (Artigo 8 / Fatia 09a):\n` +
+      `A mudança arquivada '${nomeMudanca}' possui tarefas pendentes (- [ ]) sem justificativa formal:\n` +
+      tarefasAbertas.map((t) => `  * ${t}`).join('\n') +
+      `\n\n-> Solução: Conclua as tarefas e marque '- [x]', ou justifique formalmente no tasks.md adicionando '(adiada: <motivo>)' ou '(cancelada: <motivo>)'.`
+    );
+    process.exit(1);
+  }
+}
+
 // 7. Execução das Verificações Determinísticas
 function executarAuditoria() {
   auditarFatiasDetalhadasV3();
@@ -666,6 +698,23 @@ function executarAuditoria() {
   );
   const possuiMudancaArquivadaStaged = arquivosArchiveStaged.length > 0;
   const ehFundacao = ehCommitDeFundacao(listaArquivos);
+
+  // REGRA 4.0: Trava Anti-Arquivamento com Tarefas Abertas (Fatia 09a / D34)
+  if (possuiMudancaArquivadaStaged) {
+    const pastaBaseArchive = join(process.cwd(), 'openspec', 'changes', 'archive');
+    if (existsSync(pastaBaseArchive)) {
+      const subpastasArchiveStaged = new Set();
+      for (const arq of arquivosArchiveStaged) {
+        const partes = arq.split('/');
+        if (partes.length >= 4) {
+          subpastasArchiveStaged.add(partes[3]);
+        }
+      }
+      for (const sub of subpastasArchiveStaged) {
+        verificarTarefasAbertasEmDeltaArquivado(join(pastaBaseArchive, sub), sub);
+      }
+    }
+  }
 
   // REGRA 4.1: Atualização de docs/arquitetura.md em alterações de banco fora de fundação
   if (arquivosBanco.length > 0 && !ehFundacao) {

@@ -61,6 +61,14 @@ perfis_projeto:
     - "jogo"
     - "cli-biblioteca"
 
+fluxo_git:
+  type: str
+  help: "Estratégia de branches e versionamento Git do projeto"
+  default: "trunk"
+  choices:
+    - "trunk"
+    - "branch-por-fatia"
+
 integrar_linear:
   type: bool
   help: "Pré-configurar integração oficial com Linear MCP (gestão de tarefas e diário da equipe)?"
