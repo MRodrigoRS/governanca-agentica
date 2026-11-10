@@ -18,21 +18,21 @@ context: |
 # Regras determinísticas aplicadas a cada artefato do OpenSpec (D32)
 rules:
   proposal:
-    - O porquê da mudança deve estar claro e justificado sob cabeçalho '## Por que' ou '## Why'
-    - O escopo deve ser fechado especificando '## O que muda' ou '## What Changes'
-    - Deve conter menção explícita a '## Fica de Fora' ou '## Out of Scope'
-    - Mínimo de 10 linhas úteis de detalhamento
+    - "O porquê da mudança deve estar claro e justificado sob cabeçalho '## Por que' ou '## Why'"
+    - "O escopo deve ser fechado especificando '## O que muda' ou '## What Changes'"
+    - "Deve conter menção explícita a '## Fica de Fora' ou '## Out of Scope'"
+    - "Mínimo de 10 linhas úteis de detalhamento"
   specs:
-    - Estruturar em deltas usando cabeçalhos oficiais (## ADDED Requirements, ## MODIFIED Requirements, etc.)
-    - Cada requisito deve conter '### Requirement:' e ao menos um cenário '#### Scenario:' com WHEN e THEN (GIVEN recomendado)
-    - Especificar contratos de dados e tabelas com nomes em Português do Brasil
+    - "Estruturar em deltas usando cabeçalhos oficiais (## ADDED Requirements, ## MODIFIED Requirements, etc.)"
+    - "Cada requisito deve conter '### Requirement:' e ao menos um cenário '#### Scenario:' com WHEN e THEN (GIVEN recomendado)"
+    - "Especificar contratos de dados e tabelas com nomes em Português do Brasil"
   design:
-    - Conter cabeçalho '## Contratos, Dados e Schemas' com schemas declarativos e tipos
-    - Conter cabeçalho '## Interface e Estados Assíncronos' (ou 'Não se aplica: <motivo>') detalhando loading, empty, error, success, Toasts e Modais
-    - Conter cabeçalho '## Regras de Negócio e Segurança' com regras ACID, validação e autorização
-    - Mínimo de 18 linhas úteis de detalhamento
+    - "Conter cabeçalho '## Contratos, Dados e Schemas' com schemas declarativos e tipos"
+    - "Conter cabeçalho '## Interface e Estados Assíncronos' (ou 'Não se aplica: <motivo>') detalhando loading, empty, error, success, Toasts e Modais"
+    - "Conter cabeçalho '## Regras de Negócio e Segurança' com regras ACID, validação e autorização"
+    - "Mínimo de 18 linhas úteis de detalhamento"
   tasks:
-    - Checklist com tarefas atômicas '- [ ]' ou '- [x]'
-    - Marcação obrigatória de ciclo Test-First com 'Vermelho' / 'Red' / 'teste falhando'
-    - Conter seção obrigatória '## Roteiro de Validação Prática' com passo a passo e dados prontos
-    - Mínimo de 12 linhas úteis de detalhamento
+    - "Checklist com tarefas atômicas '- [ ]' ou '- [x]'"
+    - "Marcação obrigatória de ciclo Test-First com 'Vermelho' / 'Red' / 'teste falhando'"
+    - "Conter seção obrigatória '## Roteiro de Validação Prática' com passo a passo e dados prontos"
+    - "Mínimo de 12 linhas úteis de detalhamento"

@@ -1,0 +1,54 @@
+{% if 'api-backend' in perfis_projeto or 'web-ui' in perfis_projeto %}---
+trigger: glob
+globs:
+  - "**/api/**"
+  - "**/server/**"
+  - "**/routes/**"
+  - "**/controllers/**"
+  - "**/*.prisma"
+  - "**/schema*.ts"
+  - "**/migrations/**"
+  - "**/*.py"
+  - "**/*.go"
+---
+
+# Regras de Backend, Segurança e Persistência de Dados
+
+> **Aplicabilidade:** APIs, rotas de servidor, persistência, migrações de banco e filas.
+> **Fonte Canônica:** Artigo 7 da Constituição (`constitution.md`).
+
+---
+
+## 1. Zero-Trust Anti-F12 (Validação na Borda)
+- NUNCA confiar nos dados enviados pelo cliente frontend. O usuário pode abrir o Inspecionar Elemento (F12) ou disparar requisições artificiais via cURL/Postman.
+- Toda entrada de dados DEVE ser validada e tipada estritamente com schemas declarativos na borda (Zod, Pydantic, Serde).
+- Nomes de entidades de domínio, tabelas de banco e colunas DEVEM ser escritos em Português do Brasil (PT-BR).
+
+---
+
+## 2. Integridade Transacional (ACID)
+- Operações que envolvam alteração em múltiplas tabelas ou registros correlacionados DEVEM ser executadas dentro de uma transação atômica (`$transaction` no Prisma, `BEGIN...COMMIT` no SQL).
+- Se qualquer etapa da transação falhar, o rollback DEVE ser garantido para evitar corrupção ou inconsistência de estado.
+
+---
+
+## 3. Cabeçalhos de Segurança e Proteção HTTP
+- Configurar cabeçalhos de segurança adequados:
+  - `Content-Security-Policy` (CSP) restritivo.
+  - `Strict-Transport-Security` (HSTS) para conexões HTTPS.
+  - `X-Content-Type-Options: nosniff`.
+  - `X-Frame-Options: DENY` ou `SAMEORIGIN`.
+  - Políticas de CORS estritas liberando apenas origens autorizadas.
+
+---
+
+## 4. Rate Limiting e Proteção contra Abuso
+- Rotas públicas de autenticação (login, cadastro, recuperação de senha) e endpoints computacionalmente caros DEVEM conter Rate Limiting com limites proporcionais por IP/Token.
+
+---
+
+## 5. OWASP Agentic Top 10 e Higiene de MCPs
+- Chaves de API, credenciais e tokens NUNCA devem ser logados ou retornados para ferramentas de agentes.
+- Chamadas a ferramentas ou APIs externas DEVEM ser validadas com esquemas de permissão estritos por tenant.
+- Consultas ao banco relacional via MCP DEVEM operar com credenciais de leitura estrita (*read-only*).
+{% endif %}

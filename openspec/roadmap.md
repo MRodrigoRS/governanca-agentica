@@ -33,7 +33,7 @@
 
 ---
 
-### `[ ] Pendente` — `fatia-09-regras-modulares-por-glob-e-docs-mercado`
+### `[x] Concluído` — `fatia-09-regras-modulares-por-glob-e-docs-mercado`
 - **Especificação Completa de Transição:** [openspec/roadmap/fatia-09-regras-modulares-por-glob-e-docs-mercado.md](roadmap/fatia-09-regras-modulares-por-glob-e-docs-mercado.md)
 - **Depende de:** `fatia-08-desburocratizacao-sdd-rolling-wave-e-cerimonia`
 - **Objetivo de Valor:** Carregar regras detalhadas de Web, Backend, Jogos e Linear sob demanda por perfil/glob **sem criar pontos cegos em agentes CLI**, adotar os padrões de mercado de documentação viva (Diátaxis, C4 + `erDiagram` + Glossário, `## Comandos do Projeto`, `.env.example`, `.gitignore`, `README.md`), proteger `.env` contra leitura por agentes, reparar tags SemVer e higienizar a raiz deste repositório.

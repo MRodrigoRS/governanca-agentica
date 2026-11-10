@@ -1,0 +1,33 @@
+{% if integrar_linear %}---
+trigger: model_decision
+description: "Regras e protocolo de consulta e atualização do Linear MCP"
+---
+
+# Regras de Operação com o Linear MCP (Handshake e Tríade de Âncora)
+
+> **Aplicabilidade:** Toda e qualquer consulta, leitura ou escrita através do servidor Linear MCP.
+> **Fonte Canônica:** Artigo 13 da Constituição (`constitution.md`).
+
+---
+
+## 1. Handshake Pré-Operação Obrigatório com `whoami`
+- O agente DEVE obrigatoriamente chamar a ferramenta `whoami` antes de qualquer leitura ou escrita no Linear MCP.
+- O slug da organização retornado pelo `whoami` DEVE coincidir exatamente com o valor de `linear_workspace_slug` configurado na âncora de `openspec/project.md`.
+- Se o workspace divergir ou a ferramenta falhar, o agente DEVE interromper a operação imediatamente com alerta ao usuário. É expressamente PROIBIDO fallback silencioso.
+
+---
+
+## 2. Tríade de Âncora e Isolamento de Squad
+- Todas as operações no Linear estão estritamente isoladas na tríade:
+  - **Workspace:** slug imutável do projeto.
+  - **Equipe:** chave ou nome da equipe proprietária.
+  - **Projeto:** ID ou URL do projeto ancorado.
+- É terminantemente PROIBIDO listar, criar ou alterar tarefas ou issues pertencentes a outras equipes ou projetos do Linear.
+
+---
+
+## 3. Momentos Formais de Sincronização
+- **Gate 1:** Vincular a fatia atual à issue correspondente no Linear (`[LIN-XXX]`).
+- **Gate 2:** Publicar o Diário de Bordo no mural do projeto com o resumo funcional e roteiro prático testado.
+- **Skill `refinar-ideia`:** Enviar ideias podadas ou excedentes para o Backlog/Triage do projeto ancorado.
+{% endif %}

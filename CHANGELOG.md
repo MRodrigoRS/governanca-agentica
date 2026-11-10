@@ -5,9 +5,20 @@ O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.
 
 ---
 
-## [4.0.0-alpha.1] - 2026-11-09
+## [4.0.0-alpha.1] - 2026-11-10
 
 ### Adicionado
+- **Regras Modulares em Fonte Única e Wrappers Anti-Ponto-Cego (`template/.agents/rules/`):**
+  - Pergunta `perfis_projeto` no `copier.yml` e módulos condicionais (`web-ui-pwa.md`, `backend-seguranca-dados.md`, `jogos-engines.md`, `linear-mcp.md`) com frontmatter nativo Antigravity (`trigger: glob`/`model_decision`).
+  - Wrappers finos (< 15 linhas) em `template/.claude/rules/`, `template/.cursor/rules/`, `template/.github/instructions/`.
+  - Matriz Universal de Leitura Pré-Edição e seção `## Comandos do Projeto` em `template/AGENTS.md`.
+- **Kit de Documentação Viva e Sensor de Variáveis de Ambiente:**
+  - `template/docs/arquitetura.md` (C4 Nível 1/2 em Mermaid + `erDiagram` + Glossário de Domínio) protegido no Copier, com gatilho determinístico que bloqueia commits de banco sem atualização da arquitetura.
+  - `template/README.md.jinja`, `template/.env.example` e `template/.gitignore` protegidos no Copier.
+  - Sensor determinístico `.env.example` em `verificar-governanca.mjs` bloqueando variáveis de produção staged ausentes e rejeitando segredos reais no example.
+  - Bloqueio determinístico nos hooks de agente (`hook-agente.mjs` e `.claude/settings.json`) contra leitura de `.env*` por agentes.
+  - Ritual de release documentado em `CONTRIBUTING.md`.
+  - Suíte `tests/regras-modulares-e-docs-mercado.test.mjs` com 6 novos testes automatizados, elevando o repositório para 62 testes verdes.
 - **Planejamento Rolling Wave e Mapa Macro em Arquivo Único (`openspec/roadmap.md`):**
   - Criação de `template/openspec/roadmap.md.jinja` consolidando Invariantes Globais de Arquitetura no Gate 0 e blocos enxutos por onda (Onda 1 Imediata detalhada, Onda 2 Planejada, Onda 3 Futura).
   - Proteção de `openspec/roadmap.md` em `_skip_if_exists` no `copier.yml`.
@@ -18,13 +29,19 @@ O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.
   - Criação de `tests/desburocratizacao-sdd-v4.test.mjs` com 8 novos testes automatizados cobrindo os cenários de cabeçalhos OpenSpec, preservação retroativa v3, blocos de roadmap, cerimônias Via 1a, 1b e 1.5, elevando a suíte para 56 testes verdes.
 
 ### Modificado
+- **Reparo de Tags Históricas e SemVer:**
+  - Reparo das tags históricas `v3.4.0` a `v3.7.0` no Git.
+  - Bump de versão para `4.0.0-alpha.1` no `package.json` e sincronização dos cabeçalhos `governanca:inicio`.
+  - Atualização dos links em `00_INDICE_E_DECISOES.md` apontando para `docs/historico/`.
 - **Desburocratização SDD nos Deltas do OpenSpec (`openspec/`):**
   - `template/openspec/config.yaml.jinja` e `openspec/config.yaml`: substituição de checklists duplicados por validação determinística de cabeçalhos nos 4 pilares (`proposal.md`, `specs/`, `design.md`, `tasks.md`), contagem mínima de linhas e proibição de placeholders lazy.
   - `template/openspec/project.md.jinja`: Seção 3 convertida em ponteiro canônico para `openspec/roadmap.md`.
 - **Emenda Constitucional por Re-mapeamento (`template/constitution.md`):**
   - Re-mapeamento dos artigos 8.3, 8.5, 11.2, 12.2–12.4 para espelhar o `openspec/roadmap.md` e os 4 pilares de delta do OpenSpec, preservando 100% dos exemplos concretos de domínio e o hook de autorização humana `force_ask`.
 - **Cartão de Invariantes em `template/AGENTS.md`:**
-  - Inclusão do Cartão de Invariantes conciso (≤ 15 linhas) para máxima adesão de contexto pelos agentes.
+  - Inclusão do Cartão de Invariantes conciso (≤ 15 linhas) para máxima adesão de contexto pelos agentes, com cravação do item 9 (Interrogatório grill-me Mandatório e congelamento de código).
+- **Blindagem Constitucional do Protocolo grill-me (`template/constitution.md`, `template/AGENTS.md`, `ciclo-especificacao`):**
+  - Cravação pétrea nos Artigos 8.2 e 8.4 proibindo aceitação de ideias cruas e impondo rodadas sucessivas de interrogatório técnico (`➡️`), congelamento imediato de código em novas ideias e esclarecimento exaustivo antes do desenho técnico no Gate 1.
 - **Auditoria de Governança e Validação de Commits (`template/scripts/`):**
   - `verificar-governanca.mjs`: auditoria estrutural do `openspec/roadmap.md`, auditoria de deltas por cabeçalhos e postergação da Via 1.5 para o estágio `commit-msg`.
   - `validar-commit-msg.mjs`: validação determinística da Via 1.5, bloqueio de commits `fix` em código de produção sem teste staged e inspeção anti-contrabando de lógica em `style`.
@@ -33,6 +50,8 @@ O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.
   - Atualização de `inicializar-stack`, `ciclo-especificacao`, `refinar-ideia`, `explorar-produto`, `revisar-fatia`, `atualizar-governanca` e perfis de agente de `inspetor-forense`.
 
 ### Removido
+- **Faxina Histórica da Raiz:**
+  - Movimentação dos 8 arquivos históricos de transição v1→v2 da raiz para `docs/historico/` via `git mv`.
 - **Template Físico Legado:**
   - Remoção de `template/openspec/roadmap/_template-fatia.md` em prol do template único de roadmap `template/openspec/roadmap.md.jinja`.
 

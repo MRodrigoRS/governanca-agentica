@@ -1,0 +1,8 @@
+{% if 'api-backend' in perfis_projeto or 'web-ui' in perfis_projeto %}---
+description: Regras de Backend, Segurança e Dados
+globs: "**/api/**,**/server/**,**/routes/**,**/controllers/**,**/*.prisma,**/schema*.ts,**/migrations/**,**/*.py,**/*.go"
+alwaysApply: false
+---
+
+Consulte as regras oficiais em @.agents/rules/backend-seguranca-dados.md
+{% endif %}

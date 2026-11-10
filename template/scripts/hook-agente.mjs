@@ -58,6 +58,9 @@ function extrairLinhaComando(p) {
   if (p?.tool_input?.command) {
     return p.tool_input.command;
   }
+  if (p?.tool_input?.CommandLine) {
+    return p.tool_input.CommandLine;
+  }
   return '';
 }
 
@@ -79,8 +82,8 @@ function detectarComandoSensivelOuDestrutivo(comando) {
   if (!comando) return false;
   const semStrings = comando.replace(/"[^"]*"/g, '').replace(/'[^']*'/g, '');
 
-  const ehCommitPushReset = /(^|\s)git\s+(commit|push|reset\s+--hard)(\s|$)/i.test(semStrings);
-  if (ehCommitPushReset) return true;
+  const ehCommitPushTagReset = /(^|\s)git\s+(commit|push|tag|reset\s+--hard)(\s|$)/i.test(semStrings);
+  if (ehCommitPushTagReset) return true;
 
   const ehGitDestrutivo =
     /(^|\s)git\s+clean\s+(-[a-zA-Z]*f|--force)/i.test(semStrings) ||
@@ -93,6 +96,23 @@ function detectarComandoSensivelOuDestrutivo(comando) {
     /(^|\s)(npx\s+)?drizzle-kit\s+drop/i.test(semStrings) ||
     /(^|\s)supabase\s+db\s+reset/i.test(semStrings);
   return ehResetBanco;
+}
+
+function ehLeituraDeEnv(caminho) {
+  if (!caminho || typeof caminho !== 'string') return false;
+  const normalizado = normalizarCaminho(caminho);
+  const base = normalizado.split('/').pop();
+  if (base === '.env.example' || base === '.env.template' || base === '.env.sample') {
+    return false;
+  }
+  return base === '.env' || base.startsWith('.env.');
+}
+
+function ehComandoLeituraEnv(comando) {
+  if (!comando || typeof comando !== 'string') return false;
+  const semStrings = comando.replace(/"[^"]*"/g, '').replace(/'[^']*'/g, '');
+  const regex = /(^|\s)(cat|type|Get-Content|gc|more|head|tail)\s+([^\s]*\.env(?!\.(?:example|template|sample)))(\s|$)/i;
+  return regex.test(comando) || regex.test(semStrings);
 }
 
 function validarMutacaoConteudoArquivo(caminhoArquivo, conteudo) {
@@ -148,11 +168,23 @@ function validarMutacaoConteudoArquivo(caminhoArquivo, conteudo) {
 }
 
 function processarPreToolAntigravity() {
-  const nomeFerramenta = payload?.toolCall?.name;
+  const nomeFerramenta = payload?.toolCall?.name || payload?.tool_name || payload?.tool;
+  const args = payload?.toolCall?.args || payload?.tool_input || payload?.args || {};
+
+  // Bloqueio de leitura de .env* por ferramentas de leitura
+  if (nomeFerramenta === 'read_file' || nomeFerramenta === 'view' || nomeFerramenta === 'Read') {
+    const caminho = args.Path || args.path || args.file_path || '';
+    if (ehLeituraDeEnv(caminho)) {
+      console.log(JSON.stringify({
+        decision: 'deny',
+        reason: 'A governança proíbe a leitura direta de arquivos de segredos (.env). Consulte o arquivo .env.example para obter a lista de variáveis esperadas.'
+      }));
+      process.exit(0);
+    }
+  }
 
   if (nomeFerramenta === 'write_file' || nomeFerramenta === 'edit_file') {
-    const args = payload.toolCall.args || {};
-    const caminho = args.Path || '';
+    const caminho = args.Path || args.path || args.file_path || '';
     const conteudo = args.Content || args.Replacement || '';
     const erroMutacao = validarMutacaoConteudoArquivo(caminho, conteudo);
     if (erroMutacao) {
@@ -163,6 +195,14 @@ function processarPreToolAntigravity() {
 
   const comando = extrairLinhaComando(payload);
   if (comando) {
+    if (ehComandoLeituraEnv(comando)) {
+      console.log(JSON.stringify({
+        decision: 'deny',
+        reason: 'A governança proíbe a leitura direta de arquivos de segredos (.env). Consulte o arquivo .env.example para obter a lista de variáveis esperadas.'
+      }));
+      process.exit(0);
+    }
+
     if (detectarBypassGit(comando)) {
       console.log(JSON.stringify({
         decision: 'deny',
@@ -174,7 +214,7 @@ function processarPreToolAntigravity() {
     if (detectarComandoSensivelOuDestrutivo(comando)) {
       console.log(JSON.stringify({
         decision: 'force_ask',
-        reason: 'A Governança (Artigo 11 / Artigo 7) exige autorização humana explícita antes de realizar commits, pushes, limpezas de árvore ou resets de banco no repositório.'
+        reason: 'A Governança (Artigo 11 / Artigo 7) exige autorização humana explícita antes de realizar commits, pushes, tags, limpezas de árvore ou resets de banco no repositório.'
       }));
       process.exit(0);
     }
@@ -185,26 +225,48 @@ function processarPreToolAntigravity() {
 }
 
 function processarPreToolClaude() {
-  const comando = extrairLinhaComando(payload);
+  const nomeFerramenta = payload?.tool_name || payload?.tool;
+  const args = payload?.tool_input || {};
 
-  if (detectarBypassGit(comando)) {
-    console.error(
-      'A governança proíbe terminantemente o uso de --no-verify ou -n para burlar os hooks determinísticos locais (Artigo 11 / D15).'
-    );
-    process.exit(2);
+  if (nomeFerramenta === 'Read' || nomeFerramenta === 'read_file' || nomeFerramenta === 'view') {
+    const caminho = args.file_path || args.path || args.Path || '';
+    if (ehLeituraDeEnv(caminho)) {
+      console.error(
+        'A governança proíbe a leitura direta de arquivos de segredos (.env). Consulte o arquivo .env.example para obter a lista de variáveis esperadas.'
+      );
+      process.exit(2);
+    }
   }
 
-  if (detectarComandoSensivelOuDestrutivo(comando)) {
-    const resposta = {
-      hookSpecificOutput: {
-        hookEventName: 'PreToolUse',
-        permissionDecision: 'ask',
-        permissionDecisionReason:
-          'A Governança (Artigo 11 / Artigo 7) exige autorização humana explícita antes de realizar commits, pushes, limpezas de árvore ou resets de banco no repositório.',
-      },
-    };
-    console.log(JSON.stringify(resposta));
-    process.exit(0);
+  const comando = extrairLinhaComando(payload);
+
+  if (comando) {
+    if (ehComandoLeituraEnv(comando)) {
+      console.error(
+        'A governança proíbe a leitura direta de arquivos de segredos (.env). Consulte o arquivo .env.example para obter a lista de variáveis esperadas.'
+      );
+      process.exit(2);
+    }
+
+    if (detectarBypassGit(comando)) {
+      console.error(
+        'A governança proíbe terminantemente o uso de --no-verify ou -n para burlar os hooks determinísticos locais (Artigo 11 / D15).'
+      );
+      process.exit(2);
+    }
+
+    if (detectarComandoSensivelOuDestrutivo(comando)) {
+      const resposta = {
+        hookSpecificOutput: {
+          hookEventName: 'PreToolUse',
+          permissionDecision: 'ask',
+          permissionDecisionReason:
+            'A Governança (Artigo 11 / Artigo 7) exige autorização humana explícita antes de realizar commits, pushes, tags, limpezas de árvore ou resets de banco no repositório.',
+        },
+      };
+      console.log(JSON.stringify(resposta));
+      process.exit(0);
+    }
   }
 
   console.log(JSON.stringify({}));

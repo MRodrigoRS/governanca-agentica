@@ -1,0 +1,35 @@
+{% if 'jogo' in perfis_projeto %}---
+trigger: glob
+globs:
+  - "**/*.gd"
+  - "**/*.tscn"
+  - "**/project.godot"
+  - "**/scenes/**"
+  - "**/prefabs/**"
+  - "**/*.wgsl"
+  - "**/*.glsl"
+---
+
+# Regras de Desenvolvimento de Jogos, Simulações e Gráficos
+
+> **Aplicabilidade:** Cenas, scripts de gameplay, nós de física, shaders e loops de engine.
+> **Fonte Canônica:** Catálogo de Jogos da Governança e Artigo 2 da Constituição.
+
+---
+
+## 1. Regra de Ouro do Desacoplamento Arquitetural
+- A lógica matemática, regras de negócio, inventário, cálculos de dano e estados do jogo DEVEM ser rigorosamente desacoplados da renderização gráfica e dos nós de cena da engine.
+- A lógica pura DEVE ser testável de forma determinística em testes unitários headless com execução em menos de 50ms, sem depender de janelas gráficas abertas ou GPU.
+
+---
+
+## 2. Viewport Adaptativo e Performance
+- Suporte a múltiplas resoluções com dimensionamento fluido e aspect ratio controlado (evitando distorção visual).
+- Estruturação de cenas com ciclo de vida claro (nós limpos em descarte para evitar vazamentos de memória).
+
+---
+
+## 3. Testes Automatizados Headless
+- Em Godot 4: testes estruturados via GUT (*Godot Unit Testing*) executáveis em modo headless no CI (`godot --headless -s addons/gut/gut_cmdln.gd`).
+- Em Web 2D/3D (Phaser/Three.js): testes unitários com Vitest rodando em Node.js com mocks apenas da camada Canvas/WebGL.
+{% endif %}

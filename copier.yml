@@ -8,9 +8,12 @@ _subdirectory: template
 _templates_suffix: .jinja
 
 _skip_if_exists:
-  - CHANGELOG.md
-  - README.md
-  - package.json
+  - "CHANGELOG.md"
+  - "README.md"
+  - "package.json"
+  - ".env.example"
+  - ".gitignore"
+  - "docs/arquitetura.md"
   - "openspec/config.yaml"
   - "openspec/project.md"
   - "openspec/radar-oportunidades.md"
@@ -45,6 +48,18 @@ autor_email:
   type: str
   help: "E-mail de contato do autor ou equipe"
   default: "dev@exemplo.com"
+
+perfis_projeto:
+  type: str
+  help: "Quais perfis compõem este projeto? (separe por vírgula se mais de um)"
+  default: "web-ui, api-backend"
+  choices:
+    - "web-ui"
+    - "api-backend"
+    - "desktop"
+    - "mobile"
+    - "jogo"
+    - "cli-biblioteca"
 
 integrar_linear:
   type: bool

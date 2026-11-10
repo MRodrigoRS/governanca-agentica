@@ -1,0 +1,57 @@
+{% if 'web-ui' in perfis_projeto or 'desktop' in perfis_projeto or 'mobile' in perfis_projeto %}---
+trigger: glob
+globs:
+  - "**/*.tsx"
+  - "**/*.jsx"
+  - "**/*.vue"
+  - "**/*.svelte"
+  - "**/*.css"
+  - "**/manifest*.json"
+---
+
+# Regras de Engenharia Web, UI e Portabilidade PWA
+
+> **Aplicabilidade:** Rotas, telas, componentes e estilos visuais de aplicações interativas.
+> **Fonte Canônica:** Artigo 6 da Constituição (`constitution.md`).
+
+---
+
+## 1. Responsividade e Mobile-First (320px a Ultrawide)
+- O layout DEVE ser projetado primeiro para telas móveis (a partir de 320px de largura) e expandir fluidamente via CSS Grid e Flexbox.
+- É terminantemente proibido overflow horizontal acidental em qualquer resolução.
+- Alvos de toque (botões, links, ícones clicáveis) DEVEM ter dimensões mínimas de 44x44px em dispositivos móveis.
+
+---
+
+## 2. Portabilidade e Recursos PWA Inatos
+- Aplicações web DEVEM possuir manifesto web válido (`manifest.json` ou `manifest.webmanifest`) com nome, ícones adaptativos, tema de cores e modo de exibição standalone.
+- Configuração correta de meta tag `viewport` e cores de tema (`theme-color`).
+
+---
+
+## 3. Semântica, Acessibilidade e Teclado
+- Utilizar elementos HTML semânticos nativos (`<button>`, `<main>`, `<nav>`, `<header>`, `<dialog>`).
+- Suporte a teclado obrigatório: modais, dialogs, drawers e menus suspensos DEVEM fechar imediatamente ao pressionar a tecla `Escape`.
+- Foco visível preservado para navegação acessível.
+
+---
+
+## 4. Reatividade Limpa (Anti-Reload)
+- É terminantemente PROIBIDO utilizar `location.reload()`, `window.location.reload()` ou `window.location.href = ...` para atualizar dados na tela.
+- A interface DEVE ser 100% reativa, utilizando o gerenciamento de estado e cache da biblioteca/framework (ex: React State, TanStack Query, Svelte stores, Vue ref).
+
+---
+
+## 5. Os 4 Estados Assíncronos Obrigatórios
+Toda rota ou componente que carrega dados de forma assíncrona DEVE implementar explicitamente os 4 estados:
+1. **Loading:** Exibir skeletons animados estruturais (nunca telas brancas ou spinners bloqueantes genéricos).
+2. **Empty:** Exibir mensagem clara e amigável quando a consulta retornar vazia, com botão de ação sugerida.
+3. **Error:** Exibir mensagem amigável de erro com botão para tentar novamente (`retry`), sem expor stacktrace.
+4. **Success:** Renderizar o conteúdo normal de forma reativa.
+
+---
+
+## 6. Notificações Reativas (Toasts) e Modais de Confirmação
+- **Mutações de Dados:** Toda operação que criar, alterar ou excluir dados DEVE disparar uma notificação Toast temporária de feedback (sucesso ou erro claro).
+- **Ações Destrutivas ou Críticas:** Ações irreversíveis (excluir cadastro, cancelar contrato, resetar configurações) DEVEM obrigatoriamente abrir um Modal/Dialog de confirmação detalhando o impacto antes da mutação, com suporte a cancelamento explícito e tecla `Escape`.
+{% endif %}

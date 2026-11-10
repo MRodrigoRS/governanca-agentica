@@ -51,16 +51,16 @@ Antes de iniciar, determine a via adequada conforme a Matriz de Cerimônia (D14 
 
 ---
 
-## 3. Etapa Clarify e Registro de ADR
+## 3. Etapa Clarify, Interrogatório grill-me e Registro de ADR
 
-1. **Clarify (Esclarecer ambiguidades):** Revise a proposta e faça perguntas ao humano caso reste qualquer dúvida ou decisão de negócio em aberto antes de codificar.
+1. **Clarify e Protocolo grill-me (Esclarecer ambiguidades antes de desenhar):** Se a fatia ativa contiver contratos em aberto, múltiplos caminhos técnicos ou regras de negócio ambíguas, é proibido presumir a decisão. O agente deve conduzir uma rodada rápida de interrogatório **`grill-me`** (perguntas objetivas com recomendação técnica `➡️` e justificativa) para consolidar as respostas antes de submeter o plano no Gate 1.
 2. **ADR (Decisão de Arquitetura):** Se a mudança introduzir um novo padrão estrutural, biblioteca fundamental ou modelo de persistência, crie um novo ADR em `docs/adr/` baseado em `template.md`.
 
 ---
 
 ## 4. Gate 1 — Aprovação do Plano da Fatia
 
-> **PARADA OBRIGATÓRIA:** Apresente ao humano a proposta, o desenho técnico e as tarefas da fatia atual.
+> **PARADA OBRIGATÓRIA:** Apresente ao humano a proposta, o desenho técnico e as tarefas da fatia atual (assegurando que todas as dúvidas e ambiguidades foram esgotadas no clarify/grill-me).
 > Pergunte: *"Você aprova este plano e desenho técnico da Fatia XX para iniciarmos a implementação?"*
 > **Nenhum código de produção deve ser escrito antes da aprovação do Gate 1.**
 > 

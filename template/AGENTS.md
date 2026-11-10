@@ -1,4 +1,4 @@
-<!-- governanca:inicio v3.0.0 — não edite este bloco; alterações no repositório da governança -->
+<!-- governanca:inicio v4.0.0-alpha.1 — não edite este bloco; alterações no repositório da governança -->
 # Instruções Gerais para Agentes de IA — Governança
 
 > **Papel:** Fonte única da verdade para todos os agentes e assistentes de IA que operam neste repositório.
@@ -13,6 +13,18 @@
 6. **Reatividade Limpa (Artigo 6):** Proibido `location.reload` ou refresh forçado; feedback por Toasts e ações críticas com Modal.
 7. **Handshake e Isolamento Linear (Artigo 13):** Obrigatório `whoami` antes de operar no Linear; bloqueio determinístico se divergir da âncora.
 8. **Proibido Deduzir de Cabeça (Artigo 12):** Leitura física obrigatória do roadmap e delta nos 4 marcos.
+9. **Interrogatório grill-me Mandatório (Artigo 8):** Proibido aceitar ideias cruas ou alterar regras sem interrogatório em rodadas com recomendação técnica (➡️) e congelamento de código.
+
+### Matriz Universal de Leitura Pré-Edição
+
+Antes de editar qualquer arquivo, o agente DEVE consultar as regras do módulo correspondente em `.agents/rules/` (ou wrappers em `.claude/rules/`, `.cursor/rules/`, `.github/instructions/`):
+
+| Intenção ou Arquivos Tocados | Módulo de Regras Obrigatório | O que verificar antes de codificar |
+|---|---|---|
+| **Rotas, UI, Telas, CSS, PWA** (`.tsx`, `.jsx`, `.vue`, `.svelte`, `.css`, `manifest.json`) | `.agents/rules/web-ui-pwa.md` | Mobile-first 320px+, 4 estados assíncronos, Toasts para mutações, Modais destrutivos com `Escape`, zero `location.reload`. |
+| **APIs, Servidor, Banco, Filas** (`api/`, `server/`, `routes/`, `.prisma`, `.py`, `.go`) | `.agents/rules/backend-seguranca-dados.md` | Zero-Trust Anti-F12, schemas declarativos na borda, transações ACID, headers CSP/HSTS, rate limiting. |
+| **Jogos, Cenas, Shaders, Física** (`.gd`, `.tscn`, `project.godot`, `.wgsl`, `.glsl`) | `.agents/rules/jogos-engines.md` | Lógica pura desacoplada da renderização gráfica, testes unitários headless em < 50ms, viewport fluido. |
+| **Integração Linear MCP** (tarefas, issues, status, diário) | `.agents/rules/linear-mcp.md` | Handshake prévio obrigatório com `whoami`, Tríade de Âncora (Workspace/Equipe/Projeto), zero fallback silencioso. |
 
 ---
 
@@ -35,11 +47,11 @@
 ## 2. Diagnóstico Inicial e Condução Incremental
 
 Ao ser iniciado em um repositório, identifique o estado atual antes de agir:
-- **Repositório Greenfield (sem stack):** Acione imediatamente a skill `.agents/skills/inicializar-stack/SKILL.md`. Conduza uma **entrevista exaustiva (multi-rodadas)** para extrair a visão completa do sistema, polir o que entra e o que fica de fora, definir a stack/VPS/MCPs e **estruturar o roadmap de fatias incrementais** antes de executar o scaffolding oficial no **Gate 0**.
+- **Repositório Greenfield (sem stack):** Acione imediatamente a skill `.agents/skills/inicializar-stack/SKILL.md`. Conduza uma **entrevista exaustiva via protocolo grill-me (árvore de decisão em rodadas com recomendação técnica ➡️)** para extrair a visão completa do sistema, polir o que entra e o que fica de fora, definir a stack/VPS/MCPs e **estruturar o roadmap de fatias incrementais** antes de executar o scaffolding oficial no **Gate 0**.
 - **Repositório Brownfield (código existente sem specs):** Mapeie a arquitetura atual em `openspec/project.md`, configure `openspec/config.yaml` e crie as especificações vivas iniciais em `openspec/specs/` antes de alterar o código.
 - **Projeto em Andamento (Modo Execução):** Verifique `openspec/project.md`, `npx @fission-ai/openspec list`, as tarefas abertas em `openspec/changes/` e `CHANGELOG.md` para retomar exatamente de onde parou e puxar a próxima fatia `[ ] Pendente` automaticamente.
   * *Cláusula Pétrea — Proibido Deduzir de Cabeça (Artigo 12):* Nunca confie na memória do chat. Ao planejar, resumir, abrir delta ou iniciar a codificação, leia fisicamente o arquivo da fatia e cite trechos literais antes de propor mudanças ou codificar.
-- **Novas Ideias ou Mudanças no Meio do Caminho (Refinamento e Poda):** Se o usuário trouxer uma ideia ou solicitação de mudança durante o desenvolvimento, congele o código imediatamente e acione `.agents/skills/refinar-ideia/SKILL.md`. Conduza o raio-X de complexidade oculta, separe o que entra do que sai e, se houver afinidade com uma fatia pendente, encaixe-a como **subfatia alfanumérica hierárquica (ex.: `fatia-02a-<slug>.md`)**, preservando o grafo de dependências sem quebrar a ordenação nem o OpenSpec.
+- **Novas Ideias ou Mudanças no Meio do Caminho (Refinamento e Poda):** Se o usuário trouxer uma ideia ou solicitação de mudança durante o desenvolvimento, congele o código imediatamente e acione `.agents/skills/refinar-ideia/SKILL.md`. Conduza o interrogatório exaustivo via protocolo `grill-me` (esgotando todas as ambiguidades antes de qualquer código), raio-X de complexidade oculta, separe o que entra do que sai e, se houver afinidade com uma fatia pendente, encaixe-a como **subfatia alfanumérica hierárquica (ex.: `fatia-02a-<slug>.md`)**, preservando o grafo de dependências sem quebrar a ordenação nem o OpenSpec.
 - **Modo de Ampliação e Estratégia de Produto (Reunião de Negócios sem Código):** Quando o humano quiser analisar o repositório, explorar novos rumos, pesquisar concorrentes/mercado ou descobrir funcionalidades sinergéticas, acione `.agents/skills/explorar-produto/SKILL.md`. Congele qualquer edição de código e encaminhe as decisões nas 3 gavetas (`openspec/roadmap/`, `openspec/radar-oportunidades.md` ou Fora de Escopo).
 
 ---
@@ -127,3 +139,18 @@ Ao ser iniciado em um repositório, identifique o estado atual antes de agir:
 ## Regras Específicas Deste Projeto
 
 *(Adicione abaixo as regras, convenções de arquitetura ou integrações específicas deste projeto. Este bloco é preservado durante as atualizações da governança).*
+
+---
+
+## Comandos do Projeto
+
+Execute os comandos da stack instalada conforme necessário:
+
+- **Instalar Dependências:** `npm install`
+- **Executar em Desenvolvimento:** `npm run dev`
+- **Executar Todos os Testes:** `npm test`
+- **Executar Arquivo Único de Teste:** `npm test -- <caminho-do-arquivo>` (ou `npx vitest <arquivo>`, `npx jest <arquivo>`, `pytest <arquivo>`)
+- **Checagem de Tipos (Typecheck):** `npm run typecheck`
+- **Lint e Formatação:** `npm run lint`
+- **Build de Produção:** `npm run build`
+- **Migrações de Banco:** `npx prisma migrate dev` (ou comando equivalente da stack)

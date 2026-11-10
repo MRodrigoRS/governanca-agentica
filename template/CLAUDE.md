@@ -1,4 +1,4 @@
-<!-- governanca:inicio v3.0.0 — não edite este bloco -->
+<!-- governanca:inicio v4.0.0-alpha.1 — não edite este bloco -->
 # Claude Instructions
 
 @AGENTS.md

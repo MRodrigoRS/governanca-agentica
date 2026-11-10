@@ -1,4 +1,10 @@
 {
+  "permissions": {
+    "deny": [
+      "Read(path:**/.env)",
+      "Read(path:**/.env.*)"
+    ]
+  },
   "hooks": {
     "PreToolUse": [
       {

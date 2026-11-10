@@ -1,7 +1,7 @@
 # desburocratizacao-sdd-e-cerimonia Specification
 
 ## Purpose
-TBD - created by archiving change fatia-08-desburocratizacao-sdd-rolling-wave-e-cerimonia. Update Purpose after archive.
+Desburocratizar o ciclo de desenvolvimento orientado a especificações (SDD) consolidando o planejamento macro em um único arquivo de roadmap Rolling Wave, validando deltas no OpenSpec por cabeçalhos obrigatórios e graduando os níveis de cerimônia (Via 1a, Via 1b, Via 1.5 e Via 2).
 
 ## Requirements
 

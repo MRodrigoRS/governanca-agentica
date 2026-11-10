@@ -514,6 +514,113 @@ function verificarIntegridadeDeTestesEmStaged(listaArquivos) {
   }
 }
 
+// 6.1. Sensor Determinístico de Variáveis de Ambiente (.env.example)
+function verificarVariaveisAmbienteEmStaged(listaArquivos) {
+  const arquivosProducao = listaArquivos.filter(ehArquivoDeProducao);
+  const camEnvExample = existsSync(join(process.cwd(), '.env.example'))
+    ? join(process.cwd(), '.env.example')
+    : existsSync(join(process.cwd(), '.env.template'))
+    ? join(process.cwd(), '.env.template')
+    : null;
+
+  let conteudoEnvExample = '';
+  if (camEnvExample) {
+    try {
+      conteudoEnvExample = readFileSync(camEnvExample, 'utf8');
+    } catch {}
+  }
+
+  // 1. Audita se o próprio .env.example contém segredos reais
+  if (conteudoEnvExample) {
+    const prefixosSegredoReal = ['sk_live_', 'sk_test_', 'ghp_', 'github_pat_', 'xox', 'AKIA', '-----BEGIN'];
+    const regexSegredoLongo = /=\s*([A-Za-z0-9_\-]{32,})/;
+    const palavrasPlaceholder = ['placeholder', 'exemplo', 'sample', 'chave', 'token', 'secret', 'sua-chave', 'changeme', 'sua_chave'];
+
+    for (const linha of conteudoEnvExample.split('\n')) {
+      const limpa = linha.trim();
+      if (!limpa || limpa.startsWith('#')) continue;
+      const temPrefixo = prefixosSegredoReal.some((p) => limpa.includes(p));
+      let ehSegredoLongo = false;
+      const matchLongo = limpa.match(regexSegredoLongo);
+      if (matchLongo) {
+        const val = matchLongo[1].toLowerCase();
+        const contemPlaceholder = palavrasPlaceholder.some((p) => val.includes(p));
+        if (!contemPlaceholder) {
+          ehSegredoLongo = true;
+        }
+      }
+
+      if (temPrefixo || ehSegredoLongo) {
+        registrarErro(
+          `Sensor de Variáveis de Ambiente (.env.example):\n` +
+          `Detectado valor que parece ser um segredo real no arquivo .env.example: '${limpa}'.\n` +
+          `Arquivos de exemplo nunca devem conter credenciais ou segredos de verdade.\n\n` +
+          `-> Solução: Substitua o valor por um placeholder seguro (ex: SUA_CHAVE_AQUI, changeme, ou deixe em branco após o '=').`
+        );
+        process.exit(1);
+      }
+    }
+  }
+
+  if (arquivosProducao.length === 0) return;
+
+  const variaveisDeclaradas = new Set();
+  if (conteudoEnvExample) {
+    for (const linha of conteudoEnvExample.split('\n')) {
+      const match = linha.match(/^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=/);
+      if (match) {
+        variaveisDeclaradas.add(match[1]);
+      }
+    }
+  }
+
+  const variaveisIgnoradas = new Set([
+    'NODE_ENV', 'CI', 'PATH', 'HOME', 'USERPROFILE', 'TZ', 'LANG', 'PWD',
+    'PORT', 'HOST', 'TMP', 'TEMP', 'PROD', 'DEV', 'SSR', 'MODE', 'BASE_URL'
+  ]);
+
+  const regexesVariaveis = [
+    /process\.env\.([A-Z0-9_]+)/g,
+    /import\.meta\.env\.([A-Z0-9_]+)/g,
+    /os\.getenv\(["']([A-Z0-9_]+)["']\)/g,
+    /os\.environ\[["']([A-Z0-9_]+)["']\]/g,
+    /os\.environ\.get\(["']([A-Z0-9_]+)["']\)/g,
+    /std::env::var\(["']([A-Z0-9_]+)["']\)/g,
+    /os\.Getenv\(["']([A-Z0-9_]+)["']\)/g,
+    /Environment\.GetEnvironmentVariable\(["']([A-Z0-9_]+)["']\)/g,
+  ];
+
+  for (const arq of arquivosProducao) {
+    const caminhoCompleto = join(process.cwd(), arq);
+    if (!existsSync(caminhoCompleto)) continue;
+
+    let conteudo = '';
+    try {
+      conteudo = readFileSync(caminhoCompleto, 'utf8');
+    } catch {
+      continue;
+    }
+
+    for (const regex of regexesVariaveis) {
+      regex.lastIndex = 0;
+      let match;
+      while ((match = regex.exec(conteudo)) !== null) {
+        const nomeVar = match[1];
+        if (variaveisIgnoradas.has(nomeVar)) continue;
+
+        if (!variaveisDeclaradas.has(nomeVar)) {
+          registrarErro(
+            `Sensor de Variáveis de Ambiente (.env.example):\n` +
+            `A variável '${nomeVar}' é referenciada no código de produção ('${arq}'), mas não está declarada no arquivo .env.example (ou .env.template).\n\n` +
+            `-> Solução: Declare '${nomeVar}=' no arquivo .env.example para documentar a dependência sem expor segredos.`
+          );
+          process.exit(1);
+        }
+      }
+    }
+  }
+}
+
 // 7. Execução das Verificações Determinísticas
 function executarAuditoria() {
   auditarFatiasDetalhadasV3();
@@ -540,6 +647,9 @@ function executarAuditoria() {
   // REGRA 2: Integridade de Testes (Artigo 2 — Anti-Teatro de Testes)
   verificarIntegridadeDeTestesEmStaged(listaArquivos);
 
+  // REGRA 2.1: Sensor de Variáveis de Ambiente (.env.example)
+  verificarVariaveisAmbienteEmStaged(listaArquivos);
+
   // REGRA 3: Se há alteração de código de produção, CHANGELOG.md DEVE estar no commit (Artigo 10)
   if (arquivosProducao.length > 0 && !changelogIncluido) {
     registrarErro(
@@ -556,6 +666,18 @@ function executarAuditoria() {
   );
   const possuiMudancaArquivadaStaged = arquivosArchiveStaged.length > 0;
   const ehFundacao = ehCommitDeFundacao(listaArquivos);
+
+  // REGRA 4.1: Atualização de docs/arquitetura.md em alterações de banco fora de fundação
+  if (arquivosBanco.length > 0 && !ehFundacao) {
+    if (!listaArquivos.includes('docs/arquitetura.md')) {
+      registrarErro(
+        `Documentação de Arquitetura Obrigatória (Fatia 09):\n` +
+        `Foram detectadas alterações em esquemas de banco de dados ou migrações (${arquivosBanco.join(', ')}), mas o arquivo 'docs/arquitetura.md' não foi incluído no commit.\n\n` +
+        `-> Solução: Atualize o 'erDiagram' e o Glossário de Domínio em 'docs/arquitetura.md' e execute 'git add docs/arquitetura.md'.`
+      );
+      process.exit(1);
+    }
+  }
 
   if (ehFundacao) {
     registrarInfo(
