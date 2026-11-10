@@ -28,6 +28,9 @@ Sua missão é inspecionar o código alterado (`git diff --cached` ou `git diff 
 3. **Regras de Negócio e Validações Reais:**
    - O que o código realmente valida antes de processar ou persistir dados.
    - Tratamento de status HTTP, mensagens e códigos de erro.
+   - **Auditoria de `style` vs. `refactor`:**
+     - Em commits `style`: verificar se lógica, handlers ou branches condicionais foram tocados (proibido contrabando funcional).
+     - Em commits `refactor`: verificar se contratos públicos ou comportamento de negócio foram alterados.
 4. **Interface e Estados Visuais (se houver frontend):**
    - Implementação dos 4 estados (`loading`, `empty`, `error`, `success`).
    - Disparo de notificações Toast reativas em mutações de banco/dados.

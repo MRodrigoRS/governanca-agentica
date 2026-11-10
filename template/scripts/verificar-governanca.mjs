@@ -2,10 +2,10 @@
 
 /**
  * ==============================================================================
- * Algoritmo Determinístico da Governança — verificar-governanca.mjs
+ * Algoritmo Determinístico da Governança — verificar-governanca.mjs (v4.0.0)
  * ==============================================================================
  * Executado pelo Lefthook (pre-commit) e pelo CI para auditar as regras da
- * Constituição e Níveis de Cerimônia (D14 + D15) com Zero-Trust no Agente.
+ * Constituição, Rolling Wave e Níveis de Cerimônia (D14 + D15 + D32) com Zero-Trust.
  *
  * Zero dependências externas: roda nativamente em qualquer ambiente Node.js.
  * ==============================================================================
@@ -14,6 +14,20 @@
 import { execSync } from 'node:child_process';
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
+import {
+  ehArquivoDeTeste,
+  ehArquivoDeDocumentacaoOuGovernanca,
+  ehManifestoDeDependencia,
+  ehSchemaOuMigracaoDeBanco,
+  ehArquivoDeConfiguracao,
+  ehArquivoDeFrontend,
+  ehArquivoDeProducao,
+} from './lib/classificar-arquivos.mjs';
+import {
+  ehManifestoNaoNpm,
+  verificarChavesNovasPackageJson,
+  validarCerimoniaNoCommit,
+} from './lib/classificar-cerimonia.mjs';
 
 const VERMELHO = '\x1b[31m';
 const VERDE = '\x1b[32m';
@@ -66,117 +80,7 @@ function obterArquivosModificados() {
   }
 }
 
-// 2. Classificação de arquivos
-const PADROES_MANIFESTO = [
-  'package.json',
-  'pyproject.toml',
-  'Cargo.toml',
-  'tauri.conf.json',
-  'go.mod',
-  'pom.xml',
-  'build.gradle',
-  'requirements.txt',
-  'project.godot',
-];
-
-const PADROES_SCHEMA_BANCO = [
-  'schema.prisma',
-  'drizzle',
-  'migrations',
-  'alembic',
-  'migration',
-  'db/schema',
-];
-
-const ARQUIVOS_CONFIG_ROOT = [
-  'vite.config.ts', 'vite.config.js', 'vite.config.mjs',
-  'next.config.ts', 'next.config.js', 'next.config.mjs',
-  'tailwind.config.ts', 'tailwind.config.js', 'tailwind.config.mjs',
-  'postcss.config.js', 'postcss.config.mjs',
-  'vitest.config.ts', 'vitest.config.js',
-  'playwright.config.ts', 'playwright.config.js',
-  'tsconfig.json', 'biome.json', 'eslint.config.js', 'eslint.config.mjs',
-];
-
-function ehArquivoDeTeste(arquivo) {
-  const minusculo = arquivo.toLowerCase();
-  return (
-    minusculo.includes('.test.') ||
-    minusculo.includes('.spec.') ||
-    minusculo.includes('/__tests__/') ||
-    minusculo.includes('/tests/') ||
-    minusculo.startsWith('test_') ||
-    minusculo.endsWith('_test.go') ||
-    minusculo.endsWith('_test.rs') ||
-    minusculo.endsWith('tests.cs') ||
-    minusculo.endsWith('test.cs')
-  );
-}
-
-function ehArquivoDeDocumentacaoOuGovernanca(arquivo) {
-  const minusculo = arquivo.toLowerCase();
-  return (
-    minusculo === 'changelog.md' ||
-    minusculo === 'agents.md' ||
-    minusculo === 'claude.md' ||
-    minusculo === 'gemini.md' ||
-    minusculo === 'constitution.md' ||
-    minusculo === 'readme.md' ||
-    minusculo === 'license' ||
-    minusculo.startsWith('.github/') ||
-    minusculo.startsWith('.cursor/') ||
-    minusculo.startsWith('.claude/') ||
-    minusculo.startsWith('docs/') ||
-    minusculo.startsWith('openspec/') ||
-    minusculo.startsWith('.agents/') ||
-    minusculo.startsWith('scripts/') ||
-    minusculo.startsWith('template/') ||
-    minusculo === 'lefthook.yml' ||
-    minusculo === 'copier.yml' ||
-    minusculo === '.gitignore' ||
-    minusculo === '.copier-answers.yml' ||
-    minusculo === '.mcp.json'
-  );
-}
-
-function ehManifestoDeDependencia(arquivo) {
-  const nomeBase = arquivo.split('/').pop().toLowerCase();
-  return PADROES_MANIFESTO.some((p) => nomeBase === p.toLowerCase()) || nomeBase.endsWith('.csproj');
-}
-
-function ehSchemaOuMigracaoDeBanco(arquivo) {
-  const minusculo = arquivo.toLowerCase();
-  return (
-    PADROES_SCHEMA_BANCO.some((p) => minusculo.includes(p.toLowerCase())) ||
-    minusculo.endsWith('.sql') ||
-    minusculo.endsWith('.prisma')
-  );
-}
-
-function ehArquivoDeConfiguracao(arquivo) {
-  const nomeBase = arquivo.split('/').pop().toLowerCase();
-  return ARQUIVOS_CONFIG_ROOT.some((cfg) => nomeBase === cfg.toLowerCase());
-}
-
-function ehArquivoDeFrontend(arquivo) {
-  const extensoes = ['.tsx', '.jsx', '.vue', '.svelte', '.html'];
-  return extensoes.some((ext) => arquivo.toLowerCase().endsWith(ext));
-}
-
-function ehArquivoDeProducao(arquivo) {
-  if (ehArquivoDeDocumentacaoOuGovernanca(arquivo)) return false;
-  if (ehArquivoDeTeste(arquivo)) return false;
-  if (ehArquivoDeConfiguracao(arquivo)) return false;
-
-  const extensoesCodigo = [
-    '.ts', '.tsx', '.js', '.jsx', '.mjs', '.cjs',
-    '.py', '.go', '.rs', '.java', '.c', '.cpp',
-    '.cs', '.vue', '.svelte', '.dart', '.kt', '.swift',
-  ];
-  return extensoesCodigo.some((ext) => arquivo.toLowerCase().endsWith(ext));
-}
-
-// 3. Checagem de Deltas Ativos em openspec/changes/ e Marcos de Commit
+// 2. Checagem de Deltas Ativos em openspec/changes/ e Marcos de Commit
 function obterMudancasAtivasOpenSpec() {
   const pastaMudancas = join(process.cwd(), 'openspec', 'changes');
   if (!existsSync(pastaMudancas)) return [];
@@ -196,7 +100,12 @@ function obterMudancasAtivasOpenSpec() {
 function ehCommitDeFundacao(listaArquivos) {
   const incluiFundacao = listaArquivos.some((f) => {
     const min = f.toLowerCase();
-    return min === 'openspec/project.md' || min.startsWith('openspec/roadmap/') || min === 'openspec/config.yaml';
+    return (
+      min === 'openspec/project.md' ||
+      min === 'openspec/roadmap.md' ||
+      min.startsWith('openspec/roadmap/') ||
+      min === 'openspec/config.yaml'
+    );
   });
 
   if (!incluiFundacao) return false;
@@ -209,8 +118,20 @@ function ehCommitDeFundacao(listaArquivos) {
   return !possuiArchive;
 }
 
-// 4. Auditoria Determinística Anti-Preguiça para Fatias em openspec/roadmap/fatia-*.md
-function auditarFatiasDetalhadas() {
+// 3. Auditoria Determinística do Roadmap (v3 legado e v4 Rolling Wave)
+const MARCADORES_PREGUICA = [
+  '<NUMERO>',
+  '<TITULO_DA_FATIA>',
+  '<SLUG>',
+  '{{ NUMERO }}',
+  '{{ TITULO_DA_FATIA }}',
+  '[Descreva claramente',
+  '[preencher]',
+  'TODO:',
+  'TBD:',
+];
+
+function auditarFatiasDetalhadasV3() {
   const pastaRoadmap = join(process.cwd(), 'openspec', 'roadmap');
   if (!existsSync(pastaRoadmap)) return;
 
@@ -222,18 +143,6 @@ function auditarFatiasDetalhadas() {
     '## 5.',
     '## 6.',
     '## 7.',
-  ];
-
-  const marcadoresPreguica = [
-    '<NUMERO>',
-    '<TITULO_DA_FATIA>',
-    '<SLUG>',
-    '{{ NUMERO }}',
-    '{{ TITULO_DA_FATIA }}',
-    '[Descreva claramente',
-    '[preencher]',
-    'TODO:',
-    'TBD:',
   ];
 
   const arquivos = readdirSync(pastaRoadmap).filter(
@@ -268,7 +177,7 @@ function auditarFatiasDetalhadas() {
       process.exit(1);
     }
 
-    const marcadorEncontrado = marcadoresPreguica.find((m) => conteudo.includes(m));
+    const marcadorEncontrado = MARCADORES_PREGUICA.find((m) => conteudo.includes(m));
     if (marcadorEncontrado) {
       registrarErro(
         `Cláusula Anti-Preguiça nas Fatias Incrementais (D18):\n` +
@@ -280,7 +189,54 @@ function auditarFatiasDetalhadas() {
   }
 }
 
-// 5. Auditoria de Integridade de Pasta de Mudança OpenSpec (ativa ou arquivada)
+function auditarRoadmapV4() {
+  const caminhoRoadmap = join(process.cwd(), 'openspec', 'roadmap.md');
+  if (!existsSync(caminhoRoadmap)) return;
+
+  const conteudo = readFileSync(caminhoRoadmap, 'utf8');
+
+  const marcador = MARCADORES_PREGUICA.find((m) => conteudo.includes(m));
+  if (marcador) {
+    registrarErro(
+      `Cláusula Anti-Preguiça no Roadmap (D18 + D32):\n` +
+      `O arquivo 'openspec/roadmap.md' contém marcadores não preenchidos ('${marcador}').\n\n` +
+      `-> Solução: Preencha o planejamento com o escopo real e detalhado da fatia.`
+    );
+    process.exit(1);
+  }
+
+  // Audita blocos de fatias no formato Rolling Wave: ### [ ] fatia-XX ou ### fatia-XX
+  const blocos = conteudo.split(/(?=\n###\s+(?:\[[ x~]\]\s+)?fatia-)/i);
+  for (const bloco of blocos) {
+    if (!/^\n?###\s+(?:\[[ x~]\]\s+)?fatia-/i.test(bloco)) continue;
+
+    const primeiraLinha = bloco.trim().split('\n')[0];
+    const nomeBloco = primeiraLinha.replace(/^###\s+/, '');
+
+    const temDepende = /Depende de/i.test(bloco);
+    const temObjetivo = /Objetivo/i.test(bloco);
+    const temEntra = /ENTRA/i.test(bloco);
+    const temFicaDeFora = /FICA DE FORA/i.test(bloco);
+
+    const ausentes = [];
+    if (!temDepende) ausentes.push('Depende de');
+    if (!temObjetivo) ausentes.push('Objetivo');
+    if (!temEntra) ausentes.push('ENTRA');
+    if (!temFicaDeFora) ausentes.push('FICA DE FORA');
+
+    if (ausentes.length > 0) {
+      registrarErro(
+        `Auditoria Estrutural do Roadmap Rolling Wave (D32):\n` +
+        `O bloco '${nomeBloco}' em 'openspec/roadmap.md' não contém as âncoras obrigatórias.\n` +
+        `Âncoras ausentes: ${ausentes.join(', ')}\n\n` +
+        `-> Solução: Estruture cada fatia com 'Depende de', 'Objetivo de Valor', 'O que ENTRA' e 'O que FICA DE FORA'.`
+      );
+      process.exit(1);
+    }
+  }
+}
+
+// 4. Auditoria de Integridade de Pasta de Mudança OpenSpec
 function extrairNomeFatiaCanonica(nomeMudanca) {
   const semData = nomeMudanca.replace(/^\d{4}-\d{2}-\d{2}-/, '');
   if (semData.startsWith('fatia-')) {
@@ -289,21 +245,7 @@ function extrairNomeFatiaCanonica(nomeMudanca) {
   return null;
 }
 
-function auditarPastaMudancaOpenSpec(caminhoPasta, nomeMudanca) {
-  const fatiaCanonica = extrairNomeFatiaCanonica(nomeMudanca);
-  if (fatiaCanonica) {
-    const caminhoRoadmap = join(process.cwd(), 'openspec', 'roadmap', `${fatiaCanonica}.md`);
-    if (!existsSync(caminhoRoadmap)) {
-      registrarErro(
-        `Vínculo Obrigatório Roadmap ↔ OpenSpec (D18 + D21):\n` +
-        `A mudança '${nomeMudanca}' refere-se à fatia incremental '${fatiaCanonica}', mas o arquivo correspondente no roadmap não existe:\n` +
-        `Ausente: 'openspec/roadmap/${fatiaCanonica}.md'\n\n` +
-        `-> Solução: Crie o arquivo 'openspec/roadmap/${fatiaCanonica}.md' com as 7 seções obrigatórias antes de abrir ou comitar a fatia.`
-      );
-      process.exit(1);
-    }
-  }
-
+function auditarDeltaModoV3(caminhoPasta, nomeMudanca) {
   const arquivosObrigatoriosDelta = ['proposal.md', 'design.md', 'tasks.md'];
 
   for (const nomeArquivo of arquivosObrigatoriosDelta) {
@@ -329,7 +271,177 @@ function auditarPastaMudancaOpenSpec(caminhoPasta, nomeMudanca) {
   }
 }
 
-// 6. Proibição de location.reload (Artigo 6 — Reatividade Limpa)
+function auditarDeltaModoV4(caminhoPasta, nomeMudanca) {
+  const arquivosObrigatorios = ['proposal.md', 'design.md', 'tasks.md'];
+  for (const arq of arquivosObrigatorios) {
+    const caminho = join(caminhoPasta, arq);
+    if (!existsSync(caminho)) {
+      registrarErro(
+        `Delta OpenSpec Incompleto (D14 + D32):\n` +
+        `A mudança '${nomeMudanca}' não possui o arquivo obrigatório '${arq}'.\n\n` +
+        `-> Solução: Crie '${arq}' com os pilares obrigatórios da governança v4.`
+      );
+      process.exit(1);
+    }
+  }
+
+  // 1. proposal.md: mínimo 10 linhas úteis + cabeçalhos obrigatórios
+  const conteudoProposal = readFileSync(join(caminhoPasta, 'proposal.md'), 'utf8');
+  const linhasProposal = conteudoProposal.split('\n').map((l) => l.trim()).filter((l) => l.length > 0);
+  if (linhasProposal.length < 10) {
+    registrarErro(
+      `Pilar Proposal Superficial (D32):\n` +
+      `O arquivo '${nomeMudanca}/proposal.md' tem apenas ${linhasProposal.length} linhas úteis (mínimo exigido: 10).`
+    );
+    process.exit(1);
+  }
+  const temPorQue = /##\s+(Por que|Por Quê|Why)/i.test(conteudoProposal);
+  const temOQueMuda = /##\s+(O que muda|Escopo|What Changes)/i.test(conteudoProposal);
+  const temFicaDeFora = /(Fica de Fora|Fora de Escopo|Out of Scope)/i.test(conteudoProposal);
+  if (!temPorQue || !temOQueMuda || !temFicaDeFora) {
+    registrarErro(
+      `Cabeçalhos Obrigatórios em Proposal (D32):\n` +
+      `O arquivo '${nomeMudanca}/proposal.md' deve conter seções 'Por que'/'Why', 'O que muda'/'What Changes' e menção a 'Fica de Fora'/'Out of Scope'.`
+    );
+    process.exit(1);
+  }
+
+  // 2. specs/: ao menos um spec.md com Requirement e Scenario com WHEN e THEN
+  const pastaSpecs = join(caminhoPasta, 'specs');
+  if (!existsSync(pastaSpecs)) {
+    registrarErro(
+      `Specs Ausentes no Delta (D32):\n` +
+      `A mudança '${nomeMudanca}' não possui o diretório 'specs/'. Todo delta de Nível 2 exige ao menos uma especificação com cenários Given/When/Then.`
+    );
+    process.exit(1);
+  }
+  const arquivosSpec = [];
+  function coletarSpecs(dir) {
+    const entradas = readdirSync(dir, { withFileTypes: true });
+    for (const ent of entradas) {
+      const sub = join(dir, ent.name);
+      if (ent.isDirectory()) coletarSpecs(sub);
+      else if (ent.name.endsWith('.md')) arquivosSpec.push(sub);
+    }
+  }
+  coletarSpecs(pastaSpecs);
+  if (arquivosSpec.length === 0) {
+    registrarErro(
+      `Nenhum arquivo spec.md em '${nomeMudanca}/specs/' (D32).\n` +
+      `Todo delta de Nível 2 exige ao menos um arquivo de especificação com cenários de teste.`
+    );
+    process.exit(1);
+  }
+  for (const arqSpec of arquivosSpec) {
+    const conteudoSpec = readFileSync(arqSpec, 'utf8');
+    const temAddedOrMod = /##\s+(ADDED|MODIFIED)\s+Requirements/i.test(conteudoSpec);
+    if (temAddedOrMod) {
+      const temReq = /###\s+Requirement:/i.test(conteudoSpec);
+      const temCenario = /####\s+Scenario:/i.test(conteudoSpec);
+      const temWhen = /\bWHEN\b/i.test(conteudoSpec);
+      const temThen = /\bTHEN\b/i.test(conteudoSpec);
+      if (!temReq || !temCenario || !temWhen || !temThen) {
+        registrarErro(
+          `Formato Inválido de Spec (D32):\n` +
+          `O arquivo '${arqSpec.replace(process.cwd(), '')}' contém deltas ADDED/MODIFIED mas não implementa '### Requirement:', '#### Scenario:' com 'WHEN' e 'THEN'.`
+        );
+        process.exit(1);
+      }
+    }
+  }
+
+  // 3. design.md: mínimo 18 linhas úteis + Schemas + Interface/Estados + Regras
+  const conteudoDesign = readFileSync(join(caminhoPasta, 'design.md'), 'utf8');
+  const linhasDesign = conteudoDesign.split('\n').map((l) => l.trim()).filter((l) => l.length > 0);
+  if (linhasDesign.length < 18) {
+    registrarErro(
+      `Pilar Design Técnico Superficial (D32):\n` +
+      `O arquivo '${nomeMudanca}/design.md' tem apenas ${linhasDesign.length} linhas úteis (mínimo exigido: 18).`
+    );
+    process.exit(1);
+  }
+  const temContratos = /##\s+.*(Contratos|Dados|Schemas)/i.test(conteudoDesign);
+  const temInterface = /##\s+.*(Interface|Estados)/i.test(conteudoDesign) || /Não se aplica:\s*.{10,}/i.test(conteudoDesign);
+  const temRegras = /##\s+.*(Regras|Segurança|Seguranca)/i.test(conteudoDesign);
+  if (!temContratos || !temInterface || !temRegras) {
+    registrarErro(
+      `Cabeçalhos Obrigatórios em Design (D32):\n` +
+      `O arquivo '${nomeMudanca}/design.md' deve conter seções de 'Contratos/Dados/Schemas', 'Interface/Estados' (ou 'Não se aplica: ...') e 'Regras de Negócio/Segurança'.`
+    );
+    process.exit(1);
+  }
+
+  // 4. tasks.md: mínimo 12 linhas úteis + Test-First + Roteiro Prático
+  const conteudoTasks = readFileSync(join(caminhoPasta, 'tasks.md'), 'utf8');
+  const linhasTasks = conteudoTasks.split('\n').map((l) => l.trim()).filter((l) => l.length > 0);
+  if (linhasTasks.length < 12) {
+    registrarErro(
+      `Pilar Tarefas Superficial (D32):\n` +
+      `O arquivo '${nomeMudanca}/tasks.md' tem apenas ${linhasTasks.length} linhas úteis (mínimo exigido: 12).`
+    );
+    process.exit(1);
+  }
+  const temTestFirst = /(Vermelho|Red|teste falhando)/i.test(conteudoTasks);
+  const temRoteiro = /##\s+.*(Roteiro de Validação Prática|Roteiro Prático|Roteiro de Validacao)/i.test(conteudoTasks);
+  if (!temTestFirst || !temRoteiro) {
+    registrarErro(
+      `Marcações Obrigatórias em Tasks (D32):\n` +
+      `O arquivo '${nomeMudanca}/tasks.md' deve conter tarefas marcadas com Test-First ('Vermelho'/'Red'/'teste falhando') e seção '## Roteiro de Validação Prática'.`
+    );
+    process.exit(1);
+  }
+
+  // Marcadores de preguiça
+  for (const arq of [...arquivosObrigatorios, ...arquivosSpec]) {
+    const caminho = arq.startsWith(caminhoPasta) ? arq : join(caminhoPasta, arq);
+    const conteudo = readFileSync(caminho, 'utf8');
+    const marcador = MARCADORES_PREGUICA.find((m) => conteudo.includes(m));
+    if (marcador) {
+      registrarErro(
+        `Cláusula Anti-Preguiça no Delta (D18 + D32):\n` +
+        `O arquivo '${arq}' ainda contém marcadores não preenchidos ('${marcador}').`
+      );
+      process.exit(1);
+    }
+  }
+}
+
+function auditarPastaMudancaOpenSpec(caminhoPasta, nomeMudanca) {
+  const fatiaCanonica = extrairNomeFatiaCanonica(nomeMudanca);
+  if (fatiaCanonica) {
+    const caminhoRoadmapV3 = join(process.cwd(), 'openspec', 'roadmap', `${fatiaCanonica}.md`);
+    const caminhoRoadmapV4 = join(process.cwd(), 'openspec', 'roadmap.md');
+
+    if (existsSync(caminhoRoadmapV3)) {
+      auditarDeltaModoV3(caminhoPasta, nomeMudanca);
+      return;
+    }
+
+    if (!existsSync(caminhoRoadmapV4)) {
+      registrarErro(
+        `Vínculo Obrigatório Roadmap ↔ OpenSpec (D18 + D21):\n` +
+        `A mudança '${nomeMudanca}' refere-se à fatia incremental '${fatiaCanonica}', mas nem 'openspec/roadmap.md' nem 'openspec/roadmap/${fatiaCanonica}.md' existem.\n\n` +
+        `-> Solução: Crie 'openspec/roadmap.md' contendo o bloco da fatia ou 'openspec/roadmap/${fatiaCanonica}.md'.`
+      );
+      process.exit(1);
+    }
+
+    const conteudoRoadmap = readFileSync(caminhoRoadmapV4, 'utf8');
+    if (!conteudoRoadmap.includes(fatiaCanonica)) {
+      registrarErro(
+        `Vínculo Obrigatório Roadmap ↔ OpenSpec (D18 + D21):\n` +
+        `A mudança '${nomeMudanca}' refere-se à fatia incremental '${fatiaCanonica}', mas o identificador não foi encontrado em 'openspec/roadmap.md':\n` +
+        `Ausente: '${fatiaCanonica}'\n\n` +
+        `-> Solução: Registre o bloco da fatia em 'openspec/roadmap.md' antes de abrir ou comitar a fatia.`
+      );
+      process.exit(1);
+    }
+  }
+
+  auditarDeltaModoV4(caminhoPasta, nomeMudanca);
+}
+
+// 5. Proibição de location.reload (Artigo 6 — Reatividade Limpa)
 function verificarLocationReloadEmStaged(listaArquivos) {
   const arquivosUI = listaArquivos.filter(ehArquivoDeFrontend);
   if (arquivosUI.length === 0) return;
@@ -357,7 +469,7 @@ function verificarLocationReloadEmStaged(listaArquivos) {
   }
 }
 
-// 7. Auditoria de Integridade de Testes (Artigo 2 — Anti-Teatro de Testes)
+// 6. Auditoria de Integridade de Testes (Artigo 2 — Anti-Teatro de Testes)
 function verificarIntegridadeDeTestesEmStaged(listaArquivos) {
   const arquivosTeste = listaArquivos.filter(ehArquivoDeTeste);
   if (arquivosTeste.length === 0) return;
@@ -374,7 +486,6 @@ function verificarIntegridadeDeTestesEmStaged(listaArquivos) {
     try {
       const conteudo = readFileSync(caminhoCompleto, 'utf8');
 
-      // 1. Bloqueia foco exclusivo esquecido (.only)
       if (
         conteudo.includes('.only(') ||
         conteudo.includes('.only`') ||
@@ -389,7 +500,6 @@ function verificarIntegridadeDeTestesEmStaged(listaArquivos) {
         process.exit(1);
       }
 
-      // 2. Bloqueia arquivo de teste oco (zero asserções)
       const possuiAssercao = marcadoresAssercoes.some((m) => conteudo.includes(m));
       if (!possuiAssercao) {
         registrarErro(
@@ -404,9 +514,10 @@ function verificarIntegridadeDeTestesEmStaged(listaArquivos) {
   }
 }
 
-// 8. Execução das Verificações Determinísticas
+// 7. Execução das Verificações Determinísticas
 function executarAuditoria() {
-  auditarFatiasDetalhadas();
+  auditarFatiasDetalhadasV3();
+  auditarRoadmapV4();
 
   const modificados = obterArquivosModificados();
 
@@ -439,7 +550,7 @@ function executarAuditoria() {
     process.exit(1);
   }
 
-  // REGRA 3: Identificação do Marco de Commit
+  // REGRA 4: Identificação do Marco de Commit
   const arquivosArchiveStaged = listaArquivos.filter((f) =>
     f.startsWith('openspec/changes/archive/')
   );
@@ -451,43 +562,72 @@ function executarAuditoria() {
       'Marco 1 — Fundação e Sedimentação Inicial (Gate 0 / D21) detectado e aprovado com sucesso.'
     );
   } else {
-    // Trava de Escalonamento Automático: Dependências ou Banco isolados exigem Nível 2
-    if ((arquivosManifesto.length > 0 || arquivosBanco.length > 0) && !possuiMudancaAtiva && !possuiMudancaArquivadaStaged) {
-      const itensAlterados = [...arquivosManifesto, ...arquivosBanco];
-      registrarErro(
-        `Escalonamento Automático Obrigatório (D14):\n` +
-        `Arquivos de manifesto de dependências ou banco de dados foram alterados (${itensAlterados.join(', ')}) sem um delta ativo em 'openspec/changes/'.\n` +
-        `Adicionar dependências ou modificar esquemas de dados exige planejamento formal no Nível 2.\n\n` +
-        `-> Solução: Abra um delta de Nível 2 via 'npx @fission-ai/openspec new change <nome-da-mudanca>'.`
-      );
-      process.exit(1);
+    const modoCi = process.env.CI === 'true' || process.argv.includes('--ci');
+    if (modoCi) {
+      try {
+        const msgCommit = execSync('git log -1 --format=%s', { encoding: 'utf8' }).trim();
+        const match = msgCommit.match(/^([a-z0-9_.-]+)(\([a-z0-9_.-]+\))?!?: (.+)$/i);
+        if (match) {
+          const tipo = match[1].toLowerCase();
+          const escopo = match[2] ? match[2].slice(1, -1) : '';
+          const descricao = match[3];
+          const veredito = validarCerimoniaNoCommit(process.cwd(), tipo, escopo, descricao);
+          if (!veredito.valida) {
+            registrarErro(`Validação de Cerimônia no CI:\n${veredito.motivo}`);
+            process.exit(1);
+          }
+        }
+      } catch {}
     }
 
-    if (arquivosProducao.length > 0 && !possuiMudancaAtiva && !possuiMudancaArquivadaStaged) {
-      // Nível 1 — Via Rápida (/fix)
-      if (arquivosProducao.length > 3) {
+    // Trava de Escalonamento Automático: Dependências ou Banco isolados exigem Nível 2
+    if ((arquivosManifesto.length > 0 || arquivosBanco.length > 0) && !possuiMudancaAtiva && !possuiMudancaArquivadaStaged) {
+      const manifestosNaoNpm = arquivosManifesto.filter(ehManifestoNaoNpm);
+      if (arquivosBanco.length > 0 || manifestosNaoNpm.length > 0) {
+        const itensAlterados = [...manifestosNaoNpm, ...arquivosBanco];
         registrarErro(
           `Escalonamento Automático Obrigatório (D14):\n` +
-          `Este commit altera ${arquivosProducao.length} arquivos de produção sem um delta ativo em 'openspec/changes/'.\n` +
-          `No Nível 1 (/fix), o teto estrito é de até 3 arquivos de produção.\n\n` +
-          `Arquivos alterados (${arquivosProducao.length}):\n${arquivosProducao.map((f) => `  - ${f}`).join('\n')}\n\n` +
-          `-> Solução: Abra um delta de especificação para o Nível 2 executando:\n` +
-          `   npx @fission-ai/openspec new change <nome-da-mudanca>\n` +
-          `   Em seguida, documente a proposta e submeta ao Gate 1 antes de codificar.`
+          `Arquivos de manifesto não-npm ou banco de dados foram alterados (${itensAlterados.join(', ')}) sem um delta ativo em 'openspec/changes/'.\n` +
+          `Adicionar dependências ou modificar esquemas de dados exige planejamento formal no Nível 2.\n\n` +
+          `-> Solução: Abra um delta de Nível 2 via 'npx @fission-ai/openspec new change <nome-da-mudanca>'.`
+        );
+        process.exit(1);
+      }
+
+      // Para package.json: se houver dependência inédita, bloqueia imediatamente
+      const checagemPkg = verificarChavesNovasPackageJson(process.cwd());
+      if (checagemPkg.temChaveNova) {
+        registrarErro(
+          `Escalonamento Automático Obrigatório (D14):\n` +
+          `Dependência inédita detectada no package.json (${checagemPkg.detalhes}) sem um delta ativo em 'openspec/changes/'.\n` +
+          `Adicionar novas dependências exige planejamento formal no Nível 2.\n\n` +
+          `-> Solução: Abra um delta de Nível 2 via 'npx @fission-ai/openspec new change <nome-da-mudanca>'.`
         );
         process.exit(1);
       }
 
       registrarInfo(
-        `Nível 1 (/fix) validado com sucesso: ${arquivosProducao.length} arquivo(s) de produção alterado(s).`
+        'Alteração em package.json com dependências existentes: deferido para validação de tipo no commit-msg (Via 1.5).'
       );
+    }
+
+    if (arquivosProducao.length > 0 && !possuiMudancaAtiva && !possuiMudancaArquivadaStaged) {
+      if (arquivosProducao.length > 3) {
+        // Deferido para o commit-msg (Via 1.5)
+        registrarInfo(
+          `Detectados ${arquivosProducao.length} arquivos de produção sem delta ativo. Deferido para validação de cerimônia no commit-msg (Via 1.5).`
+        );
+      } else {
+        registrarInfo(
+          `Nível 1 (/fix) validado preliminarmente no pre-commit: ${arquivosProducao.length} arquivo(s) de produção alterado(s).`
+        );
+      }
     } else if (arquivosProducao.length > 0 && (possuiMudancaAtiva || possuiMudancaArquivadaStaged)) {
       if (possuiMudancaAtiva) {
         for (const mudanca of mudancasAtivas) {
           auditarPastaMudancaOpenSpec(join(process.cwd(), 'openspec', 'changes', mudanca), mudanca);
         }
       } else if (possuiMudancaArquivadaStaged) {
-        // Localiza pastas arquivadas correspondentes e audita integridade
         const pastaBase = join(process.cwd(), 'openspec', 'changes', 'archive');
         if (existsSync(pastaBase)) {
           const subpastasStaged = new Set();

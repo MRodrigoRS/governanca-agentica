@@ -16,6 +16,7 @@
 import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { execFileSync } from 'node:child_process';
+import { ehArquivoDeTeste, normalizarCaminho } from './lib/classificar-arquivos.mjs';
 
 function lerStdin() {
   try {
@@ -97,7 +98,7 @@ function detectarComandoSensivelOuDestrutivo(comando) {
 function validarMutacaoConteudoArquivo(caminhoArquivo, conteudo) {
   if (!caminhoArquivo || typeof conteudo !== 'string') return null;
 
-  const minusculo = caminhoArquivo.toLowerCase().replace(/\\/g, '/');
+  const minusculo = normalizarCaminho(caminhoArquivo);
 
   // 1. Frontend: proibido location.reload (Artigo 6)
   const ehFrontend = ['.tsx', '.jsx', '.vue', '.svelte', '.html'].some(ext => minusculo.endsWith(ext));
@@ -112,20 +113,20 @@ function validarMutacaoConteudoArquivo(caminhoArquivo, conteudo) {
   }
 
   // 2. Testes: proibido .only (Artigo 2)
-  const ehTeste =
-    minusculo.includes('.test.') ||
-    minusculo.includes('.spec.') ||
-    minusculo.includes('/__tests__/') ||
-    minusculo.includes('/tests/');
-  if (ehTeste) {
+  if (ehArquivoDeTeste(caminhoArquivo)) {
     if (conteudo.includes('.only(') || conteudo.includes('.only`') || conteudo.includes('@unittest.skip')) {
       return 'Foco Exclusivo Esquecido (Artigo 2 — Test-First): proibido usar .only em arquivos de teste.';
     }
   }
 
-  // 3. Roadmap: proibido placeholders preguiçosos
-  const ehRoadmap = minusculo.includes('openspec/roadmap/') && minusculo.endsWith('.md');
-  if (ehRoadmap) {
+  // 3. Roadmap e Deltas do OpenSpec: proibido placeholders preguiçosos
+  const ehRoadmapOuDelta =
+    (minusculo.includes('openspec/roadmap/') ||
+      minusculo.endsWith('openspec/roadmap.md') ||
+      minusculo.includes('openspec/changes/')) &&
+    minusculo.endsWith('.md');
+
+  if (ehRoadmapOuDelta) {
     const marcadoresPreguica = [
       '<NUMERO>',
       '<TITULO_DA_FATIA>',
@@ -139,7 +140,7 @@ function validarMutacaoConteudoArquivo(caminhoArquivo, conteudo) {
     ];
     const marcador = marcadoresPreguica.find(m => conteudo.includes(m));
     if (marcador) {
-      return `Cláusula Anti-Preguiça no Roadmap (D18): proibido gravar placeholders ou marcadores não preenchidos ('${marcador}') em openspec/roadmap/.`;
+      return `Cláusula Anti-Preguiça no Roadmap/Delta (D18 + D32): proibido gravar placeholders ou marcadores não preenchidos ('${marcador}') em artefatos do OpenSpec.`;
     }
   }
 

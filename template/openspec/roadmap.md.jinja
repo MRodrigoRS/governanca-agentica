@@ -1,0 +1,46 @@
+# Roadmap Incremental — {{ nome_do_projeto }}
+
+> **Papel:** Fonte única do planejamento macro incremental do projeto (*Rolling Wave Planning*).
+> **Regra de Ouro (Zero Escrita Duplicada):** Este arquivo registra a visão macro, dependências e fronteiras (`O que ENTRA` vs. `O que FICA DE FORA`) de cada fatia. A especificação técnica profunda (contratos, schemas, cenários Given/When/Then e tarefas Test-First) nasce **Just-in-Time exclusivamente dentro de `openspec/changes/fatia-XX-<slug>/`** no momento de executar aquela fatia, consolidando-se em `openspec/specs/` após o `archive`.
+> **Proteção Copier:** Listado em `_skip_if_exists` no `copier.yml` para proteger o planejamento vivo do seu projeto.
+
+---
+
+## 1. Invariantes Globais do Gate 0
+
+*(Definidos após a Entrevista Exaustiva no Gate 0 antes da primeira linha de código).*
+
+| Invariante | Decisão Arquitetural | Impacto nas Fatias |
+|---|---|---|
+| **Chave de Isolamento / Multi-tenancy** | `[Ex.: organizacao_id em todas as tabelas de negócio]` | Todo schema e query de fatia filtra pelo tenant ativo |
+| **Modelo de Autenticação e Papéis** | `[Ex.: Supabase Auth / JWT estrito com papéis Admin e Membro]` | Rotas protegidas e contexto de sessão consistente |
+| **Filas e Eventos Assíncronos** | `[Ex.: Redis + BullMQ / pg_boss / In-memory]` | Handlers desacoplados e idempotência obrigatória |
+| **Entidades Estruturantes do Domínio** | `[Ex.: Usuario, Organizacao, Conta, Transacao]` | Nomes em PT-BR (Artigo 10) e integridade referencial ACID |
+| **Convenção de Identificadores (IDs)** | `[Ex.: UUID v4 / CUID2 / ULID]` | Chaves primárias padronizadas e seguras contra enumeração |
+
+---
+
+## 2. Fila de Fatias Incrementais (Rolling Wave)
+
+### [ ] fatia-01-fundacao
+- **Depende de:** Nenhuma (fatia inicial de fundação)
+- **Objetivo de Valor:** Inicializar infraestrutura básica, banco de dados, autenticação e layout principal responsivo.
+- **Entidades/Contratos Tocados:** Configurações base, conexão de banco, modelo de usuários e sessões.
+- **O que ENTRA:**
+  - Scaffolding oficial da stack aprovada no Gate 0 com tipagem estrita
+  - Conexão com banco de dados e migração inicial
+  - Layout mestre responsivo (320px+) com PWA inato
+- **O que FICA DE FORA:**
+  - Regras específicas de módulos de negócio avançados
+  - Integrações com gateways de pagamento externos
+
+### [ ] fatia-02-[slug-da-segunda-fatia]
+- **Depende de:** fatia-01-fundacao
+- **Objetivo de Valor:** Implementar o primeiro fluxo de valor fim a fim para o usuário principal.
+- **Entidades/Contratos Tocados:** Entidades de domínio da funcionalidade central.
+- **O que ENTRA:**
+  - Rota e tela principal da funcionalidade
+  - Validação de entrada na fronteira com schema estrito
+  - Feedback com Toasts e proteção com Modais destrutivos
+- **O que FICA DE FORA:**
+  - Relatórios analíticos e exportação em lote

@@ -12,7 +12,7 @@ flowchart TD
     A["Código Staged Não-Commitado (git diff)"] --> B["1. Subagente Inspetor Forense (Auditoria Cega)"]
     B -->|Traduz código em linguagem literal fria| C["Relatório Factual do Código"]
     C --> D["2. Agente Principal (Duelo de Conformidade)"]
-    E["openspec/roadmap/fatia-XX-*.md"] --> D
+    E["openspec/changes/<fatia>/ + openspec/roadmap.md"] --> D
     D -->|Cruza Fato Real vs. Requisito Escrito| F{"100% das regras e contratos atendidos?"}
     F -->|Não: Omissão / Divergência| G["Executor Corrige Código e Testes"]
     G --> A
@@ -25,7 +25,7 @@ flowchart TD
 
 O Subagente Inspetor é convocado utilizando a definição oficial de subagente isolado (`.claude/agents/inspetor-forense.md` no Claude Code, `.github/agents/inspetor-forense.agent.md` no Copilot, ou `invoke_subagent` com perfil isolado no Antigravity).
 
-A convocação é feita com instrução deliberadamente cega: **ele NÃO deve ler o arquivo de roadmap (`openspec/roadmap/fatia-XX-*.md`) nem deltas de planejamento**. Ele não sabe o que *deveria* ter sido feito, garantindo auditoria 100% imparcial.
+A convocação é feita com instrução deliberadamente cega: **ele NÃO deve ler os artefatos de planejamento (`openspec/changes/`, `openspec/roadmap.md` nem arquivos legados de roadmap)**. Ele não sabe o que *deveria* ter sido feito, garantindo auditoria 100% imparcial.
 
 ### Missão do Inspetor:
 Inspecionar o código modificado (`git diff` dos arquivos staged) e traduzir em **linguagem literal e factual** exatamente o que o código está fazendo na prática.
@@ -42,6 +42,9 @@ Inspecionar o código modificado (`git diff` dos arquivos staged) e traduzir em 
 3. **Regras de Negócio e Validações Implementadas:**
    - O que o código realmente valida na prática? (Ex.: checa se e-mail tem `@`, se valor é maior que zero, etc.).
    - Quais checagens de autorização/permissão são feitas antes de persistir dados?
+   - **Auditoria de `style` vs. `refactor`:**
+     - Se o commit for categorizado como `style`: houve alteração em handlers, branches condicionais ou lógica funcional? (Proibido: `style` deve ser puramente cosmético/formatação).
+     - Se o commit for categorizado como `refactor`: houve alteração em contratos públicos, schemas externos ou comportamento observável de negócio? (Refatoração deve preservar contratos existentes).
 4. **Tratamento de Erros e Exceções:**
    - Quais exceções são tratadas e quais códigos HTTP/mensagens são retornados?
    - Existem blocos `catch` vazios ou erros engolidos silenciosamente?
@@ -65,15 +68,15 @@ Inspecionar o código modificado (`git diff` dos arquivos staged) e traduzir em 
 
 ## 2. Papel 2: O Agente Principal (Duelo de Conformidade)
 
-O Agente Principal recebe o **Relatório Factual do Inspetor**, abre o arquivo físico [`openspec/roadmap/fatia-XX-<slug>.md`](../../openspec/roadmap/_template-fatia.md) e realiza o **Duelo Fato vs. Requisito**:
+O Agente Principal recebe o **Relatório Factual do Inspetor**, abre os artefatos da fatia ativa em `openspec/changes/<fatia>/` (`proposal.md`, `specs/`, `design.md`, `tasks.md`) e o bloco correspondente em `openspec/roadmap.md` (ou `openspec/roadmap/fatia-XX-*.md` se legado) e realiza o **Duelo Fato vs. Requisito**:
 
 ### Tabela do Duelo de Conformidade:
-| Seção do Roadmap Físico | O que a Fatia Exigia | O que o Relatório Factual Provou | Status |
+| Artefato de Planejamento | O que a Fatia Exigia | O que o Relatório Factual Provou | Status |
 |---|---|---|---|
-| **Seção 3 (Contratos/Banco)** | *Tabela `contatos` com colunas em PT-BR* | *Tabela `contatos` criada com `nome`, `email`, `telefone`* | ✅ Atendido |
-| **Seção 4 (Estados de UI)** | *4 estados (`loading`, `empty`, `error`, `success`)* | *Componente possui skeletons, mensagem de lista vazia e toast de erro* | ✅ Atendido |
-| **Seção 5 (Regras Backend)** | *Impedir e-mail duplicado por tenant* | *Validação no banco e na rota rejeitando duplicata com status 409* | ✅ Atendido |
-| **Seção 6 (Test-First & Mutação)** | *Testes automatizados cobrindo caso de borda* | *Testes cobrem mutação mental de cálculo e erro sem asserções ocas* | ✅ Atendido |
+| **Design / Schema** | *Tabela `contatos` com colunas em PT-BR* | *Tabela `contatos` criada com `nome`, `email`, `telefone`* | ✅ Atendido |
+| **Spec / Requisitos de UI** | *4 estados (`loading`, `empty`, `error`, `success`)* | *Componente possui skeletons, mensagem de lista vazia e toast de erro* | ✅ Atendido |
+| **Spec / Regras de Negócio** | *Impedir e-mail duplicado por tenant* | *Validação no banco e na rota rejeitando duplicata com status 409* | ✅ Atendido |
+| **Tasks / Test-First & Mutação** | *Testes automatizados cobrindo caso de borda* | *Testes cobrem mutação mental de cálculo e erro sem asserções ocas* | ✅ Atendido |
 
 ---
 

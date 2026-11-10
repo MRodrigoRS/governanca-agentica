@@ -48,25 +48,34 @@ Com as decisões de produto fechadas, o agente traduz o consenso para a arquitet
 
 ---
 
-## Passo 2 — Decomposição em Fatias Incrementais Detalhadas (`openspec/roadmap/`)
+## Passo 2 — Invariantes Globais do Gate 0 e Fila de Fatias Rolling Wave (`openspec/roadmap.md`)
 
-Antes de fechar o Gate 0, o agente **DEVE** dividir o sistema completo em fatias lógicas e naturalmente incrementais, na ordem exata de engenharia em que **uma ponta puxa a outra** (ex.: *Fatia 01: Fundação e Banco Base* $\rightarrow$ *Fatia 02: Funis e Kanban* $\rightarrow$ *Fatia 03: Inbox Tempo Real e Selos* $\rightarrow$ *Fatia 04: Webhooks Externos* $\rightarrow$ *Fatia 05: Agentes de IA e Presets* $\rightarrow$ *Fatia 06: Agendamentos em Fila* $\rightarrow$ *Fatia 07: Gráficos e Métricas*).
+Antes de fechar o Gate 0, o agente **DEVE** consolidar a arquitetura macro e dividir o sistema completo em fatias lógicas incrementais no arquivo único `openspec/roadmap.md`, na ordem exata de engenharia em que **uma ponta puxa a outra**:
 
-> **CLÁUSULA ANTI-PREGUIÇA (OBRIGATÓRIA):**
-> 1. É **terminantemente proibido** resumir o planejamento em uma lista comprimida de 1 linha por fatia ou jogar tudo dentro de um único `.md` superficial.
-> 2. Para **cada fatia** do mapa, o agente deve criar um arquivo individual `openspec/roadmap/fatia-XX-<slug>.md` seguindo rigorosamente todas as 7 seções de `openspec/roadmap/_template-fatia.md`.
-> 3. **Teste do Agente Executor:** Cada arquivo `fatia-XX-<slug>.md` deve detalhar tabelas, colunas em PT-BR, schemas Zod/Pydantic, estados de tela (`loading`, `empty`, `error`, `success`), regras de negócio e lista de testes automatizados com tanta clareza que **até um modelo de IA mais fraco ou uma sessão nova consiga implementá-la sem adivinhar nada**.
+1. **`## 1. Invariantes Globais do Gate 0`:** Tabela contendo decisões transversais inegociáveis:
+   - Chave de Isolamento / Multi-tenancy (ex.: `organizacao_id` em todas as tabelas)
+   - Modelo de Autenticação e Papéis (ex.: Supabase Auth / JWT com RBAC)
+   - Filas, Tempo Real e Eventos Assíncronos (ex.: Redis + BullMQ)
+   - Entidades Estruturantes do Domínio (nomes em PT-BR)
+   - Convenção de Identificadores (ex.: UUID v4)
+2. **`## 2. Fila de Fatias Incrementais (Rolling Wave)`:** Um bloco `### [ ] fatia-XX-<slug>` por fatia, contendo obrigatoriamente:
+   - `Depende de:`
+   - `Objetivo de Valor:`
+   - `Entidades/Contratos Tocados:`
+   - `O que ENTRA:` (mínimo de 3 itens nas próximas fatias)
+   - `O que FICA DE FORA:`
+3. **Especificação Técnica Profunda Just-in-Time:** Contratos de API, schemas Zod/Pydantic, estados assíncronos de UI e tarefas Test-First nascem exclusivamente ao abrir o delta da fatia em `openspec/changes/fatia-XX-<slug>/` (eliminando a escrita duplicada).
 
 ---
 
-## Passo 3 — Gate 0 (Aprovação Humana da Stack e do Mapa de Fatias)
+## Passo 3 — Gate 0 (Aprovação Humana da Stack e do Roadmap)
 
 > **PARADA OBRIGATÓRIA:** É expressamente proibido rodar comandos de instalação da stack sem a confirmação explícita do humano.
 > Apresente ao humano:
 > 1. O resumo do escopo polido (o que entra e o que foi descartado).
 > 2. A stack e estratégia de hospedagem/MCPs recomendadas.
-> 3. A sequência de fatias criadas em `openspec/roadmap/fatia-XX-*.md`.
-> Pergunte: *"Você aprova esta stack e o nosso Mapa de Fatias Incrementais para inicializarmos o projeto?"*
+> 3. Os Invariantes Globais e a Fila de Fatias registradas em `openspec/roadmap.md`.
+> Pergunte: *"Você aprova esta stack e o nosso Roadmap de Fatias Incrementais para inicializarmos o projeto?"*
 
 ---
 

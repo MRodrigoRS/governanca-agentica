@@ -1,9 +1,9 @@
 ---
 name: atualizar-governanca
-description: Guia o procedimento seguro de atualização da Governança v2 via Copier, preservando customizações locais e resolvendo eventuais conflitos.
+description: Guia o procedimento seguro de atualização da Governança via Copier, preservando customizações locais e fornecendo roteiro de migração v3 para v4.
 ---
 
-# Skill: Atualizar Governança v2
+# Skill: Atualizar Governança
 
 Esta skill orienta o agente na atualização contínua dos arquivos de governança do projeto quando novas versões forem lançadas no repositório matriz.
 
@@ -28,22 +28,31 @@ O Copier verificará a versão registrada em `.copier-answers.yml`, baixará as 
 
 ---
 
-## 3. Verificação de Propriedade de Arquivos
+## 3. Roteiro de Migração Governança v3 → v4 (Rolling Wave)
 
-Inspecione as alterações usando `git status` e `git diff`:
+Se o projeto estiver migrando da Governança v3 para a v4, siga estes passos para adequar a estrutura sem quebrar fatias em andamento:
 
-* **Arquivos da Governança (Substituídos):** `scripts/`, `lefthook.yml`, `.github/workflows/ci.yml`, ponteiros (`CLAUDE.md`, `GEMINI.md`, etc.). Devem receber as novidades oficiais.
-* **Arquivos Mistos (Mesclados):** `AGENTS.md` e `constitution.md`. Verifique se o bloco `<!-- governanca:inicio ... -->` foi atualizado e se a seção `## Regras Específicas Deste Projeto` foi mantida intacta.
-* **Arquivos do Projeto (Intocados):** `openspec/`, `docs/adr/`, `CHANGELOG.md` e código-fonte. Não devem sofrer alterações involuntárias do template.
+1. **Criação de `openspec/roadmap.md`:**
+   - Crie o arquivo `openspec/roadmap.md` com a seção `## 1. Invariantes Globais do Gate 0` (tabela de isolamento, auth, filas, entidades e convenção de IDs).
+   - Adicione `## 2. Fila de Fatias Incrementais (Rolling Wave)`.
+2. **Preservação de Fatias Legadas:**
+   - Arquivos legados `openspec/roadmap/fatia-*.md` já existentes continuam protegidos e são auditados pela regra de retrocompatibilidade v3. Não é necessário apagá-los nem reescrevê-los.
+3. **Registro de Fatias Pendentes em Blocos:**
+   - Para cada fatia pendente futura, crie um bloco `### [ ] fatia-XX-<slug>` em `openspec/roadmap.md` com as 4 âncoras obrigatórias: `Depende de`, `Objetivo de Valor`, `O que ENTRA` e `O que FICA DE FORA`.
+4. **Simplificação de `openspec/project.md`:**
+   - Na Seção 3 de `openspec/project.md`, remova a tabela estática redundante e aponte para `openspec/roadmap.md`.
+5. **Aproveitamento da Via 1.5:**
+   - Refatorações e bumps de versões já presentes em `package.json` agora podem ser comitados sem delta artificial usando os tipos convencionais `refactor`, `perf`, `style`, `chore` e `build`.
 
 ---
 
-## 4. Resolução de Conflitos (se houver)
+## 4. Verificação de Propriedade de Arquivos
 
-Se o Git reportar marcadores de conflito (`<<<<<<<`, `=======`, `>>>>>>>`):
-1. Analise o conflito em conjunto com o desenvolvedor humano.
-2. Preserve as customizações locais do projeto.
-3. Marque os arquivos como resolvidos via `git add`.
+Inspecione as alterações usando `git status` e `git diff`:
+
+* **Arquivos da Governança (Substituídos):** `scripts/` (incluindo `scripts/lib/`), `lefthook.yml`, `.github/workflows/ci.yml`, ponteiros (`CLAUDE.md`, `GEMINI.md`, etc.). Devem receber as novidades oficiais.
+* **Arquivos Mistos (Mesclados):** `AGENTS.md` e `constitution.md`. Verifique se o bloco `<!-- governanca:inicio ... -->` foi atualizado (com o novo Cartão de Invariantes e Emenda por Re-mapeamento) e se a seção `## Cláusulas Adicionais Deste Projeto` foi mantida intacta.
+* **Arquivos do Projeto (Intocados):** `openspec/`, `docs/adr/`, `CHANGELOG.md` e código-fonte. Não devem sofrer alterações involuntárias do template.
 
 ---
 
@@ -53,7 +62,7 @@ Execute os testes automatizados e o validador da governança:
 
 ```bash
 node scripts/verificar-governanca.mjs
-npm test # ou pytest
+npm test # ou pytest / cargo test
 ```
 
 ---
@@ -64,5 +73,5 @@ Após validar que tudo está verde e funcionando perfeitamente:
 
 ```bash
 git add .
-git commit -m "chore(governanca): atualiza regras da governanca v2"
+git commit -m "chore(governanca): atualiza protocolo para governanca v4"
 ```

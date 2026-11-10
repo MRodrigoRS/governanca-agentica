@@ -15,20 +15,24 @@ context: |
   - Reatividade limpa: proibido location.reload() ou recarregamentos forçados de tela.
   - Feedback visual garantido: Toasts reativos para mutações de dados e Modais de confirmação para ações destrutivas.
 
-# Regras determinísticas aplicadas a cada artefato do OpenSpec
+# Regras determinísticas aplicadas a cada artefato do OpenSpec (D32)
 rules:
   proposal:
-    - O porquê da mudança deve estar claro e justificado
-    - O escopo deve ser fechado (definir explicitamente o que entra e o que fica de fora)
-    - Vincular a fatia ou subfatia correspondente do roadmap
+    - O porquê da mudança deve estar claro e justificado sob cabeçalho '## Por que' ou '## Why'
+    - O escopo deve ser fechado especificando '## O que muda' ou '## What Changes'
+    - Deve conter menção explícita a '## Fica de Fora' ou '## Out of Scope'
+    - Mínimo de 10 linhas úteis de detalhamento
   specs:
     - Estruturar em deltas usando cabeçalhos oficiais (## ADDED Requirements, ## MODIFIED Requirements, etc.)
-    - Cada requisito deve conter ao menos um cenário de teste '#### Scenario:' com Given / When / Then
+    - Cada requisito deve conter '### Requirement:' e ao menos um cenário '#### Scenario:' com WHEN e THEN (GIVEN recomendado)
     - Especificar contratos de dados e tabelas com nomes em Português do Brasil
   design:
-    - Especificar contratos de interface e schemas de validação
-    - Detalhar os 4 estados assíncronos fundamentais (loading, empty, error, success)
-    - Documentar Toasts de mutação e Modais de confirmação necessários
+    - Conter cabeçalho '## Contratos, Dados e Schemas' com schemas declarativos e tipos
+    - Conter cabeçalho '## Interface e Estados Assíncronos' (ou 'Não se aplica: <motivo>') detalhando loading, empty, error, success, Toasts e Modais
+    - Conter cabeçalho '## Regras de Negócio e Segurança' com regras ACID, validação e autorização
+    - Mínimo de 18 linhas úteis de detalhamento
   tasks:
-    - Cada tarefa deve seguir o ciclo Test-First (teste automatizado unitário ou de integração antes do código)
-    - As tarefas devem ser atômicas e sequenciais
+    - Checklist com tarefas atômicas '- [ ]' ou '- [x]'
+    - Marcação obrigatória de ciclo Test-First com 'Vermelho' / 'Red' / 'teste falhando'
+    - Conter seção obrigatória '## Roteiro de Validação Prática' com passo a passo e dados prontos
+    - Mínimo de 12 linhas úteis de detalhamento

@@ -9,7 +9,9 @@
  * ==============================================================================
  */
 
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
+import { join } from 'node:path';
+import { validarCerimoniaNoCommit } from './lib/classificar-cerimonia.mjs';
 
 const VERMELHO = '\x1b[31m';
 const VERDE = '\x1b[32m';
@@ -113,6 +115,18 @@ if (INICIOS_EM_INGLES.some((prefixo) => descricaoMinuscula.startsWith(prefixo)))
     `  "corrige..." em vez de "fix..."\n` +
     `  "atualiza..." em vez de "update..."\n` +
     `  "remove..." em vez de "remove..." ou "delete..."\n`
+  );
+  process.exit(1);
+}
+
+// Validação de Níveis de Cerimônia e Vias de Manutenção (D14 + D32)
+const tipo = resultado[1];
+const escopo = resultado[2] ? resultado[2].replace(/[()]/g, '') : '';
+const vereditoCerimonia = validarCerimoniaNoCommit(process.cwd(), tipo, escopo, descricao);
+if (!vereditoCerimonia.valida) {
+  console.error(
+    `\n${VERMELHO}${NEGRITO}[GOVERNANÇA] VIOLAÇÃO DETERMINÍSTICA DE CERIMÔNIA:${RESET}\n` +
+    `${vereditoCerimonia.motivo}\n`
   );
   process.exit(1);
 }

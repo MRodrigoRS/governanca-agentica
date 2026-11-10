@@ -79,7 +79,7 @@ O agente pergunta ao humano:
 
 ### Passo 3 — Leitura Física e Análise de Afinidade no Roadmap
 Após o alinhamento da poda com o humano:
-1. O agente executa a leitura física (`read_file`) em `openspec/project.md` e em todas as fatias com status `[ ] Pendente` no diretório `openspec/roadmap/`.
+1. O agente executa a leitura física (`read_file`) em `openspec/project.md` e nos blocos de fatias com status `[ ] Pendente` em `openspec/roadmap.md` (ou arquivos legados `openspec/roadmap/fatia-*.md` se o projeto estiver em transição v3).
 2. O agente analisa a **afinidade de domínio**:
    - Essa novidade mexe nas mesmas tabelas, telas ou componentes de alguma fatia que ainda está na fila para ser construída?
    - Ou é um assunto totalmente novo e desconectado das fatias pendentes?
@@ -91,22 +91,27 @@ Após o alinhamento da poda com o humano:
 Com base na análise de afinidade, o agente propõe uma das 3 destinações formais:
 
 #### Caso A: Extensão Natural de uma Fatia Pendente (Subfatia Alfanumérica `XXa`, `XXb`)
-Se a novidade complementar o trabalho de uma fatia existente (ex.: a ideia envolve produtos e a `fatia-02-produtos-e-catalogo.md` ainda está pendente):
+Se a novidade complementar o trabalho de uma fatia existente (ex.: a ideia envolve produtos e a `fatia-02` ainda está pendente):
 * **Não mande para o fim do roadmap!**
-* Crie uma **subfatia alfanumérica hierárquica**: `openspec/roadmap/fatia-02a-<slug>.md` baseada em `_template-fatia.md`.
+* Crie uma **subfatia alfanumérica hierárquica** inserindo o bloco diretamente no arquivo único `openspec/roadmap.md` logo após a fatia-mãe:
+  ```markdown
+  ### fatia-02a-<slug>
+  - **Objetivo**: [MVP cirúrgico do que entra]
+  - **Critérios de Aceite**: [Comportamentos testáveis]
+  - **Dependências Técnicas**: [Tabelas/APIs da fatia-02 reaproveitadas]
+  - **Status**: [ ] Pendente
+  ```
 * **Vantagem:** A subfatia `02a` será executada imediatamente após a `02`, aproveitando o contexto fresco de código sem exigir renomear as fatias posteriores (03, 04, etc.) e mantendo 100% de compatibilidade com o OpenSpec CLI e Conventional Commits.
-* Atualize a tabela em `openspec/project.md` inserindo a linha `fatia-02a` logo após a `02`.
 
 #### Caso B: Domínio Independente (Nova Fatia Inteira ao Fim da Fila)
 Se a novidade for um módulo novo e autônomo (ex.: um novo painel financeiro desconectado das fatias atuais):
-* Crie o arquivo como a próxima fatia inteira no fim da fila: `openspec/roadmap/fatia-YY-<slug>.md`.
-* Adicione-a ao final da tabela do Mapa de Fatias em `openspec/project.md`.
+* Adicione o bloco da próxima fatia inteira na seção de onda apropriada no fim do arquivo `openspec/roadmap.md`: `### fatia-YY-<slug>`.
 
 #### Caso C: Ideia Descartada ou Estacionada
 Se no polimento o humano concordar que a ideia não deve entrar no roadmap agora:
 * Registre a inteligência da discussão no arquivo `openspec/radar-oportunidades.md` na seção apropriada.
 * *(Linear MCP):* Caso o MCP `linear` esteja configurado, crie a issue no Backlog/Triage do Linear para acompanhamento futuro da equipe.
-* Nenhum arquivo de fatia é criado.
+* Nenhum bloco de fatia é inserido no roadmap.
 
 ---
 
@@ -118,9 +123,9 @@ Ao concluir o protocolo, apresente a recomendação pronta:
 ### 🎯 Refinamento da Ideia Concluído
 
 - **Escopo Podado:** [Resumo em 2 frases do que entra].
-- **Fatia-Mãe Identificada:** `openspec/roadmap/fatia-02-produtos.md` (Pendente).
-- **Encaixe Recomendado:** Subfatia Alfanumérica `fatia-02a-variacoes-e-fotos.md`.
+- **Fatia-Mãe Identificada:** `fatia-02-produtos` (Pendente).
+- **Encaixe Recomendado:** Subfatia Alfanumérica `fatia-02a-variacoes-e-fotos`.
 - **Por que agora?** Aproveita as tabelas e rotas de produtos que acabaram de ser especificadas na Fatia 02, sem mexer na numeração da Fatia 03.
 
-Posso criar o arquivo `openspec/roadmap/fatia-02a-variacoes-e-fotos.md` com as 7 seções completas e registrar no roadmap?
+Posso registrar o bloco de subfatia alfanumérica `fatia-02a-variacoes-e-fotos` diretamente no `openspec/roadmap.md`?
 ```

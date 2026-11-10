@@ -17,7 +17,7 @@ Esta skill coloca o agente no **Modo Divergente / Estratégico**. Não é uma en
 Antes de opinar, leia silenciosamente o estado real do projeto:
 1. `openspec/project.md` (visão atual, escopo aprovado, itens já descartados e Mapa de Fatias).
 2. `openspec/radar-oportunidades.md` (pesquisas anteriores e ideias já estacionadas).
-3. `openspec/specs/` e `openspec/roadmap/fatia-*.md` (e a estrutura de banco/código existente, se o projeto já tiver código).
+3. `openspec/specs/` e `openspec/roadmap.md` (ou arquivos legados `openspec/roadmap/fatia-*.md` se o projeto estiver em transição v3).
 4. Identifique **Sinergias Arquiteturais ("Ouro Barato")**: quais tabelas, filas, integrações ou telas já existentes (ou planejadas) permitiriam criar recursos de altíssimo valor percebido com apenas ~10% a 20% de esforço adicional?
 
 ---
@@ -50,10 +50,17 @@ Debata livremente com o humano, combinando ideias, refinando fluxos de negócio 
 
 Nenhuma conclusão estratégica pode evaporar no histórico do chat. Quando o humano decidir encerrar a sessão de ampliação (ou aprovar os rumos debatidos), classifique cada item discutido em uma das **3 Gavetas Oficiais**:
 
-### Gaveta 1: Aprovada para o Plano Atual $\rightarrow$ Vira Fatia Detalhada (`openspec/roadmap/`)
+### Gaveta 1: Aprovada para o Plano Atual $\rightarrow$ Vira Bloco no Roadmap (`openspec/roadmap.md`)
 * Para as funcionalidades que o humano decidiu incluir na fila de construção:
-  1. Posicione a nova fatia na ordem lógica de dependência técnica na tabela da seção 3 de `openspec/project.md`.
-  2. Crie imediatamente o arquivo individual `openspec/roadmap/fatia-XX-<slug>.md` preenchendo todas as 7 seções obrigatórias de `openspec/roadmap/_template-fatia.md` (respeitando a Cláusula Anti-Preguiça).
+  1. Posicione a nova fatia na ordem lógica de dependência técnica no arquivo único `openspec/roadmap.md` (na seção de onda apropriada: Onda 1 Imediata ou Onda 2 Planejada).
+  2. Adicione o bloco com o formato oficial:
+     ```markdown
+     ### fatia-XX-<slug>
+     - **Objetivo**: [MVP cirúrgico do que entra]
+     - **Critérios de Aceite**: [Comportamentos testáveis e verificáveis]
+     - **Dependências Técnicas**: [Fatias prévias, tabelas ou integrações necessárias]
+     - **Status**: [ ] Pendente
+     ```
 
 ### Gaveta 2: Excelente Ideia para o Futuro $\rightarrow$ Vai para `openspec/radar-oportunidades.md`
 * Para ideias promissoras que não devem furar a fila agora, além de toda a pesquisa de concorrência e sinergias descobertas na sessão:
@@ -68,8 +75,8 @@ Nenhuma conclusão estratégica pode evaporar no histórico do chat. Quando o hu
 
 ## Passo 5 — Validação de Integridade Pós-Reunião
 
-Se qualquer nova fatia tiver sido criada em `openspec/roadmap/`, execute:
+Se qualquer nova fatia tiver sido registrada em `openspec/roadmap.md`, execute:
 ```bash
 node scripts/verificar-governanca.mjs
 ```
-Para comprovar que todas as novas fatias atendem à Cláusula Anti-Preguiça antes de encerrar a reunião ou retornar ao modo de execução (`ciclo-especificacao`).
+Para comprovar que o arquivo de roadmap atende à estrutura rolling wave e às regras de governança antes de retornar ao modo de execução (`ciclo-especificacao`).

@@ -1,6 +1,6 @@
 ---
 name: ciclo-especificacao
-description: Conduz o desenvolvimento guiado por especificação (SDD) via OpenSpec, níveis de cerimônia (Nível 1 /fix e Nível 2 Feature), Test-First mandatório e Gates 1 e 2.
+description: Conduz o desenvolvimento guiado por especificação (SDD) via OpenSpec, níveis de cerimônia (Via 1a /fix, Via 1b style, Via 1.5 Estrutural e Via 2 Feature), Test-First mandatório e Gates 1 e 2.
 ---
 
 # Skill: Ciclo de Especificação e Desenvolvimento (SDD)
@@ -11,45 +11,43 @@ Esta skill orienta o agente em qualquer alteração de código no projeto, garan
 
 ## 1. Escolha do Nível de Cerimônia
 
-Antes de iniciar, determine o nível adequado:
+Antes de iniciar, determine a via adequada conforme a Matriz de Cerimônia (D14 + D32):
 
-### Nível 1 — Via Rápida (`/fix`)
-* **Quando usar:** Correção de bug pontual, ajuste de estilo/CSS, refatoração interna de código ou correção de texto.
-* **Regra estrita:** Toca em **no máximo 3 arquivos de produção** (fora testes) e **não altera** requisitos da base viva (`openspec/specs/`), novos pacotes em `package.json` ou schemas de banco.
-* **Fluxo:**
-  1. Identificar o defeito e a causa raiz.
-  2. Escrever o teste automatizado que reproduz a falha.
-  3. Executar o teste no terminal e registrar a saída com erro (**Vermelho**).
-  4. Implementar o código mínimo necessário para corrigir.
-  5. Executar o teste novamente e comprovar o sucesso (**Verde**).
-  6. **Diretriz de Antifragilidade:** Se a correção revelar uma falha ou classe recorrente de erro de agentes (ex.: esquecer tratamento de exceção em promises, uso de APIs depreciadas, mutações diretas de estado, testes ocos ou violação de convenções), converta o aprendizado em regra determinística no linter/validador (`verificar-governanca.mjs`, ESLint/Biome, Ruff ou hooks de ciclo de vida). Quando a regra aplicar-se apenas a um domínio específico, utilize regras escopadas por padrão *glob* (ex.: regras no formato `globs` em Cursor/Claude ou matchers de arquivo nos hooks).
-  7. Atualizar `CHANGELOG.md` na seção `### Corrigido`.
-  8. **Gate 2 (Apresentação Estruturada):** Apresentar ao humano o resumo do defeito corrigido, o **🧪 Roteiro de Teste Prático** (onde ver a correção, dados para testar e comportamento esperado), as evidências dos testes (vermelho/verde) e o diff limpo.
-  9. **Marco 2 da Rotina de Commits (Artigo 11):** Somente após a aprovação humana explícita no Gate 2, realizar o commit: `fix(<escopo>): <descrição em PT-BR>`.
+### Via 1a — Correção Funcional Pontual (`fix`)
+* **Quando usar:** Correção de bug de lógica ou cálculo.
+* **Regra estrita:** Toca em **no máximo 3 arquivos de produção** (fora testes), **exige ao menos um arquivo de teste staged** e **não altera** schemas de banco nem adiciona novos pacotes em `package.json`.
+* **Fluxo:** Diagnóstico → Teste que reproduz a falha (**Vermelho**) → Código mínimo (**Verde**) → `CHANGELOG.md` em `### Corrigido` → Gate 2.
 
-### Nível 2 — Ciclo Completo (Feature / Requisito)
-* **Quando usar:** Qualquer funcionalidade nova, alteração de regras de negócio, nova dependência de biblioteca, alteração de banco de dados ou refatoração ampla.
-* **Fluxo:** Detalhado nas seções seguintes.
+### Via 1b — Ajuste Estético / Copy (`style`)
+* **Quando usar:** Ajuste de cores, fontes, classes CSS/Tailwind ou copy textual.
+* **Regra estrita:** Toca em **no máximo 3 arquivos**, dispensa teste novo, mas é inspecionada pela heurística anti-contrabando (linhas adicionadas em código não podem conter condicionais, hooks, handlers ou I/O).
+
+### Via 1.5 — Manutenção Estrutural Blindada (`refactor` / `perf` / `style` / `chore` / `build`)
+* **Quando usar:** Refatoração interna que toque em **mais de 3 arquivos de produção** ou atualização/bump de versão de dependências já presentes em `package.json`.
+* **Regra estrita:** Bloqueia terminantemente schemas ou migrações de banco, dependências inéditas, manifestos não-npm e linhas novas sob `### Adicionado` no `CHANGELOG.md`.
+
+### Via 2 — Ciclo Completo (Feature / Nova Capacidade de Domínio)
+* **Quando usar:** Nova funcionalidade de produto, regras de negócio inéditas, pacotes novos, rotas de API ou alterações no banco de dados.
+* **Fluxo:** Exige delta formal no OpenSpec (`openspec/changes/fatia-XX-<slug>/`), Gate 1, Test-First e Gate 2.
 
 ---
 
-## 2. Nível 2 — Seleção da Fatia e Criação do Delta de Mudança
+## 2. Via 2 — Seleção da Fatia e Criação do Delta de Mudança
 
-1. **Consulte o Mapa de Fatias Incrementais:** Leia a seção 3 de `openspec/project.md` e localize a próxima fatia com status `[ ] Pendente` (ou a fatia solicitada pelo humano).
-2. **Leitura Física Obrigatória do Documento da Fatia (Artigo 12 — Proibido Deduzir de Cabeça):**
-   - É expressamente proibido resumir ou abrir delta com base apenas na memória da sessão. Execute a ferramenta de leitura física no arquivo `openspec/roadmap/fatia-XX-<slug>.md`.
-   - Revise integralmente as 7 seções (Objetivo, Dependências, Contratos de Dados/Banco, Estados de UI, Regras Backend, Roteiro Test-First e Critérios de Aceite).
-   - Se a fatia ainda não possuir seu arquivo detalhado em `openspec/roadmap/`, crie-o imediatamente seguindo `openspec/roadmap/_template-fatia.md` antes de prosseguir.
+1. **Consulte a Fila de Fatias:** Leia `openspec/roadmap.md` e localize a próxima fatia com status `[ ] Pendente` (ou a fatia solicitada pelo humano).
+2. **Leitura Física Obrigatória do Bloco da Fatia (Artigo 12 — Proibido Deduzir de Cabeça):**
+   - É expressamente proibido resumir ou abrir delta com base apenas na memória da sessão. Execute a ferramenta de leitura física no bloco correspondente em `openspec/roadmap.md`.
+   - Revise as 4 âncoras obrigatórias: `Depende de`, `Objetivo de Valor`, `O que ENTRA` e `O que FICA DE FORA`.
 3. **Abra o Delta no OpenSpec:**
    ```bash
    npx --yes @fission-ai/openspec new change fatia-XX-<slug>
    ```
-4. Preencha os arquivos da pasta criada em `openspec/changes/fatia-XX-<slug>/` sem resumos preguiçosos, consultando as instruções e regras oficiais (`npx --yes @fission-ai/openspec instructions <artefato> --change fatia-XX-<slug> --json`):
-   - `proposal.md`: O *porquê* da mudança, motivação, escopo fechado e o que fica de fora.
-   - `specs/`: Deltas de especificação com cabeçalhos oficiais (`## ADDED Requirements`) e cenários `#### Scenario:` (Given/When/Then).
-   - `design.md`: O *como* técnico, tabelas, schemas Zod/Pydantic, rotas, Toasts, Modais e decisões técnicas.
-   - `tasks.md`: Checklist sequencial e atômico de implementação (cada tarefa vinculada ao seu teste).
-5. Marque o status da fatia como `[~] Em Andamento` em `openspec/project.md` e em `openspec/roadmap/fatia-XX-<slug>.md`.
+4. Preencha os arquivos da pasta criada em `openspec/changes/fatia-XX-<slug>/` atendendo aos cabeçalhos canônicos e linhas úteis mínimas auditados pela governança:
+   - `proposal.md` (mín. 10 linhas): `## Por que` (ou `## Why`), `## O que muda` (ou `## What Changes`) e `## Fica de Fora` (ou `## Out of Scope`).
+   - `specs/<dominio>/spec.md`: Deltas com cabeçalhos oficiais (`## ADDED Requirements`), `### Requirement:` e cenários `#### Scenario:` contendo `WHEN` e `THEN` (`GIVEN` recomendado).
+   - `design.md` (mín. 18 linhas): `## Contratos, Dados e Schemas`, `## Interface e Estados Assíncronos` (loading, empty, error, success, Toasts e Modais, ou `Não se aplica: <motivo>`) e `## Regras de Negócio e Segurança`.
+   - `tasks.md` (mín. 12 linhas): Checklist `- [ ]` com marcação Test-First (`Vermelho` / `Red`) e seção obrigatória `## Roteiro de Validação Prática`.
+5. Marque o status da fatia como `[~] Em Andamento` em `openspec/roadmap.md`.
 
 ---
 
@@ -66,15 +64,15 @@ Antes de iniciar, determine o nível adequado:
 > Pergunte: *"Você aprova este plano e desenho técnico da Fatia XX para iniciarmos a implementação?"*
 > **Nenhum código de produção deve ser escrito antes da aprovação do Gate 1.**
 > 
-> *(Sincronização Linear MCP):* Caso o MCP `linear` esteja configurado, localize ou associe a issue correspondente no Linear (`[LIN-XXX] fatia-XXa-...`) e atualize seu estado para *In Progress*.
+> *(Sincronização Linear MCP):* Caso o MCP `linear` esteja configurado, execute o handshake mandatório `whoami` (Artigo 13), localize ou associe a issue correspondente no Linear (`[LIN-XXX] fatia-XXa-...`) e atualize seu estado para *In Progress*.
 
 ---
 
 ## 5. Implementação com Test-First Mandatório
 
-> **RELEITURA PRÉ-CÓDIGO (Artigo 12):** Imediatamente antes de escrever o primeiro teste ou linha de código, o executor deve reler o arquivo físico `openspec/roadmap/fatia-XX-<slug>.md` para garantir fidelidade total aos contratos de dados, schemas e regras sem desvios de contexto.
+> **RELEITURA PRÉ-CÓDIGO (Artigo 12):** Imediatamente antes de escrever o primeiro teste ou linha de código, o executor deve reler o bloco físico em `openspec/roadmap.md` e os arquivos do delta ativo para garantir fidelidade total aos contratos de dados, schemas e regras sem desvios de contexto.
 
-Para cada item listado em `tasks.md` (seguindo a Seção 6 da fatia):
+Para cada item listado em `tasks.md`:
 1. **Vermelho (Especificar):** Escreva o teste correspondente com asserções reais (sem `.only` ou testes ocos). Execute e capture o log da falha legítima.
 2. **Verde (Faça Funcionar):** Implemente o código mínimo e direto de produção necessário para fazer o teste passar.
 3. **Refatorar (Faça Direito):** Eleve a qualidade antes de ir para a próxima tarefa:
@@ -98,37 +96,12 @@ Antes de finalizar a tarefa ou commit:
    node scripts/verificar-governanca.mjs
    ```
 3. Atualize o arquivo `CHANGELOG.md` na seção correspondente (`### Adicionado` ou `### Modificado`).
-4. **Auditoria Factual Cega e Duelo de Conformidade (Artigo 12 / D26):**
-   - **Etapa A (Subagente Inspetor Forense):** Invoque o subagente (`inspetor-forense`, definido em `.claude/agents/inspetor-forense.md` ou subagente read-only no Antigravity/Copilot) com instrução cega (sem o arquivo da fatia), para que ele inspecione o `git diff` e descreva literalmente em linguagem factual o que o código faz.
-   - **Etapa B (Duelo de Conformidade pelo Principal):** O Agente Principal recebe o relatório factual e cruza ponto a ponto com o arquivo físico da fatia.
-   - **Havendo omissões ou divergências:** O executor DEVE implementar o que faltou e revalidar os testes antes de apresentar ao humano.
-   - **Aprovado com 100% de conformidade:** O parecer e o resumo factual são anexados à mensagem do Gate 2.
-5. **Apresentação Obrigatória da Entrega no Chat (Gate 2):**
-   É expressamente proibido apenas despejar logs ou perguntar aprovação sem roteiro prático. A mensagem DEVE conter:
-   - **O que foi entregue:** Resumo claro do valor funcional construído nesta fatia.
-   - **📋 Relatório Factual de Conformidade:** Prova detalhada de que o código implementado corresponde 100% às exigências da fatia.
-   - **🧪 Roteiro de Teste Prático (Validação Humana):**
-     * **Onde acessar:** URL exata (ex.: `http://localhost:3000/painel/contatos`), comando CLI ou tela/modal onde o recurso se encontra.
-     * **Passo a passo mastigado:** Ações numeradas para reproduzir o fluxo.
-     * **Dados prontos de exemplo:** Valores para preenchimento de campos ou payloads (prontos para copiar e colar).
-     * **Comportamento visual esperado:** O que o humano deve observar acontecer (transição de estado, toast, listagem atualizada sem recarregar a tela).
-     * **Teste de borda prático:** Como testar uma entrada inválida para confirmar a mensagem de validação amigável.
-   - **Comprovação dos Testes Automatizados:** Saída do terminal com a falha legítima (vermelho) e o sucesso (verde).
-   - **Resumo das Tarefas e Diff:** Tarefas de `tasks.md` concluídas e diff limpo dos arquivos alterados.
-6. **Aprovação Final Humana (Marco 2 da Rotina de Commits — Artigo 11):**
-   - Pergunte: *"A fatia XX está testada no terminal, aprovada pelo Revisor Independente e validada pelo roteiro prático acima. Você aprova a entrega final para realizarmos o commit?"*
-   - **Somente após a aprovação humana explícita**:
-     - Arquive a mudança no OpenSpec para mesclá-la na base viva (`openspec/specs/`):
-       ```bash
-       npx --yes @fission-ai/openspec archive fatia-XX-<slug> -y
-       ```
-     - Atualize o status da fatia para `[x] Concluída` em `openspec/project.md` e em `openspec/roadmap/fatia-XX-<slug>.md`.
-     - Realize o commit da entrega respeitando o padrão em PT-BR:
-       ```bash
-       git commit -m "feat(<escopo>): <descrição clara em português>"
-       ```
-     - *(Diário de Bordo no Linear MCP):* Caso o MCP `linear` esteja configurado, publique um comentário na issue ou um *Project Update* com o resumo do que foi entregue e o roteiro de validação, marcando a issue como *Done*.
-7. **Condução Proativa e Prevenção de Context Rot (Artigo 12):** Imediatamente após o commit da fatia atual, consulte o Mapa de Fatias em `openspec/project.md`, identifique a próxima fatia `[ ] Pendente` e convide o humano:
-   > *"Fatia XX concluída e blindada! Pelo nosso Mapa de Fatias, o próximo passo natural é a **Fatia YY (`openspec/roadmap/fatia-YY-...`)**, que aproveita o que acabamos de criar para entregar [resumo lido do arquivo].*
-   >
-   > *🧹 **Prevenção de Context Rot:** Para garantir atenção máxima e evitar alucinações na próxima fatia, recomendo abrir uma nova sessão (ou rodar `/compact`) e dizer: 'Continuar a partir da Fatia YY'. Se preferir continuar nesta mesma sessão, posso ler a fatia no disco e abrir o Gate 1 agora."*
+4. **Auditoria Factual Cega Pré-Gate 2 (Artigo 12):** Convoque o Subagente Inspetor Forense para avaliar o diff de forma cega. Realize o Duelo de Conformidade contra os 4 artefatos da fatia e corrija eventuais divergências.
+5. Apresente o Gate 2 ao humano com o Roteiro de Teste Prático Passo a Passo e evidências de testes (vermelho/verde).
+6. **Autorização Humana e Commit (Artigo 11):** Somente após a aprovação explícita humana, execute o commit e arquive a mudança:
+   ```bash
+   git add .
+   git commit -m "feat(<escopo>): implementa fatia XX - <descrição em PT-BR>"
+   npx --yes @fission-ai/openspec archive fatia-XX-<slug> -y
+   ```
+7. Marque `[x] Concluído` no bloco de `openspec/roadmap.md` e puxe proativamente a próxima fatia da fila.

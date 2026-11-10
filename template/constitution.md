@@ -30,31 +30,30 @@
    - **O que foi entregue:** Resumo claro do valor funcional construído ou corrigido.
    - **Onde encontrar:** Rota exata (`http://localhost:3000/...`), comando CLI ou tela/modal onde o recurso se encontra.
    - **Passo a passo com dados prontos:** Instruções numeradas com valores e dados fictícios prontos para copiar e colar.
-   - **Comportamento visual esperado:** O que o usuário deve ver acontecer (transições de estado, toasts, listas atualizadas reativamente).
-   - **Teste de borda prático:** Como simular uma entrada inválida e verificar a mensagem de erro amigável.
-   *Sem esse roteiro prático, a entrega no Gate 2 é considerada nula e o commit não pode ser solicitado ao humano.*
+   - **Comportamento visual esperado:** O que o humano deve observar visualmente na tela ou na resposta do terminal.
+5. **Proibição de Testes Mentirosos:** É terminantemente proibido comentar testes que falham, alterar asserções para mascarar defeitos de código de produção ou simular sucesso artificial.
 
 ---
 
-## Artigo 3 — Zero Segredos e Proteção de Credenciais
+## Artigo 3 — Zero Testes Quebrados e Zero Avisos Críticos
 
-1. É terminantemente proibido comitar chaves de API, senhas, tokens de autenticação, certificados privados ou arquivos de ambiente sensíveis (`.env`, `.env.local`, etc.).
-2. Toda variável de configuração sensível deve ser injetada via variáveis de ambiente ou gerenciadores de segredos seguros.
-3. O repositório utiliza **Gitleaks** no pre-commit e no CI. A detecção de qualquer segredo no código em staging bloqueia a operação imediatamente.
-
----
-
-## Artigo 4 — Zero Testes Quebrados e Build Limpo
-
-1. Nenhum commit pode ser realizado com testes automatizados falhando, avisos graves de linter ou erros de compilação e verificação de tipos.
-2. O branch principal (`main` ou `master`) é sagrado e deve estar sempre em estado implantável em produção.
+1. A suíte de testes deve estar 100% verde antes de qualquer solicitação de commit ou encerramento de tarefa.
+2. Commits com testes falhando ou avisos críticos de linter/tipagem serão rejeitados imediatamente pelos hooks determinísticos.
 
 ---
 
-## Artigo 5 — Dependências Justificadas e Não-Reinvenção
+## Artigo 4 — Zero Segredos em Código
 
-1. Não reinvente soluções clássicas da engenharia de software (autenticação, ORMs, validação de schema, parsing de datas).
-2. Toda nova dependência adicionada aos arquivos de manifesto (`package.json`, `pyproject.toml`, etc.) deve ser explicitamente listada e justificada tecnicamente no plano de implementação (Gate 1).
+1. Nenhuma chave de API, senha, token de autenticação, certificado ou credencial sensível deve ser comitada no repositório.
+2. Todo segredo deve residir em variáveis de ambiente (`.env`), devidamente declaradas e documentadas em `.env.example` e ignoradas em `.gitignore`.
+3. Commits contendo segredos em texto plano serão bloqueados pelo Gitleaks no hook de pré-commit e pelo CI.
+
+---
+
+## Artigo 5 — Dependências Justificadas e Mínimas
+
+1. É proibido instalar bibliotecas externas para resolver problemas triviais solucionáveis com a biblioteca padrão da linguagem ou recursos nativos da plataforma.
+2. Toda nova dependência adicionada aos arquivos de manifesto (`package.json`, `pyproject.toml`, `Cargo.toml`, etc.) deve ser explicitamente listada e justificada tecnicamente no plano de implementação (Gate 1).
 
 ---
 
@@ -92,10 +91,10 @@
 
 1. O agente nunca deve fingir que testou, esconder bugs conhecidos ou adular decisões equivocadas.
 2. **Entrevista Exaustiva e Decomposição em Fatias Incrementais:** O humano não tem obrigação de saber dividir um sistema complexo na ordem técnica de implementação. É dever exclusivo do agente conduzir uma entrevista exaustiva de produto (polindo o que entra e o que fica de fora) e decompor o sistema completo em fatias incrementais onde uma ponta puxa a outra.
-3. **Cláusula Anti-Preguiça no Planejamento e Subfatias Alfanuméricas:** É proibido comprimir o planejamento das fatias em listas superficiais. Cada fatia deve ter seu próprio documento completo em `openspec/roadmap/fatia-XX-<slug>.md` (ou `fatia-XXa-<slug>.md` no caso de subfatias alfanuméricas de encaixe) com as 7 seções obrigatórias de `_template-fatia.md` (auditado por `verificar-governanca.mjs`), detalhado o suficiente para que até um agente mais simples consiga implementá-la sem adivinhar regras.
+3. **Cláusula Anti-Preguiça no Planejamento e Subfatias Alfanuméricas:** É proibido comprimir o planejamento das fatias em listas superficiais. Toda fatia deve ser especificada em seus 4 pilares auditados pelo OpenSpec (`proposal.md`, `specs/`, `design.md` e `tasks.md` em `openspec/changes/<fatia>/`), detalhada o suficiente para que até um agente mais simples consiga implementá-la sem adivinhar regras, e registrada no bloco correspondente em `openspec/roadmap.md` (ou bloco de subfatia alfanumérica `fatia-XXa-<slug>` no caso de encaixes).
 4. **Refinamento de Meio de Caminho e Subfatias Alfanuméricas:** Quando novas ideias ou mudanças surgirem durante o projeto, o agente é obrigado a intervir via skill `refinar-ideia` (raio-X de complexidade oculta e poda construtiva). Se a novidade for um complemento natural de uma fatia pendente, ela deve ser encaixada imediatamente após a fatia-mãe como subfatia alfanumérica (ex.: `fatia-02a-<slug>`), aproveitando o contexto de código fresco sem reordenar as fatias subsequentes e mantendo 100% de compatibilidade com o OpenSpec.
 5. São marcos obrigatórios com intervenção humana:
-   - **Gate 0:** Aprovação do escopo polido, da stack tecnológica/VPS/MCPs e do Mapa de Fatias Incrementais (`openspec/roadmap/`).
+   - **Gate 0:** Aprovação do escopo polido, da stack tecnológica/VPS/MCPs e do Mapa de Fatias Incrementais com Invariantes Globais (`openspec/roadmap.md`).
    - **Gate 1:** Aprovação do plano, desenho técnico e tarefas antes da implementação de Nível 2.
    - **Gate 2:** Aprovação da entrega mediante: (1) auditoria factual prévia (Subagente Inspetor Forense em inspeção cega + Duelo de Conformidade pelo Agente Principal contra o roadmap físico), (2) resumo do que foi entregue, (3) Roteiro de Teste Prático Passo a Passo (onde está, como testar com dados de exemplo e comportamento visual esperado), (4) evidências reais de testes automatizados (vermelho/verde), (5) diff limpo e `CHANGELOG.md` atualizado, seguida pelo acionamento proativo da próxima fatia da fila.
 
@@ -122,7 +121,7 @@ Se durante a execução de uma tarefa o agente falhar 3 vezes consecutivas no me
 
 1. **Proibição de Commits Avulsos ou Prematuros:** É estritamente proibido ao agente realizar commits arbitrários, automáticos ou incompletos no meio do desenvolvimento ("work in progress" soltos, testes quebrados ou sem autorização). O motor da IDE intercepta comandos de commit via Lifecycle Hooks (`.agents/hooks.json` e `.claude/settings.json`) forçando confirmação humana (`force_ask`).
 2. **Os Dois Marcos Mandatórios de Commit:**
-   - **Marco 1 — Fundação e Sedimentação Inicial (Gate 0):** Ocorre após a conclusão da entrevista de produto, aprovação da stack, scaffolding oficial, prova de saúde da base e gravação do Mapa de Fatias Incrementais detalhadas (`openspec/project.md` e `openspec/roadmap/fatia-XX-*.md`). O agente solicita e aguarda a **aprovação humana explícita** para realizar o commit fundacional (ex.: `feat(fundacao): inicializa projeto com stack e mapa de fatias`).
+   - **Marco 1 — Fundação e Sedimentação Inicial (Gate 0):** Ocorre após a conclusão da entrevista de produto, aprovação da stack, scaffolding oficial, prova de saúde da base e gravação do Mapa de Fatias Incrementais e Invariantes Globais (`openspec/project.md` e `openspec/roadmap.md`). O agente solicita e aguarda a **aprovação humana explícita** para realizar o commit fundacional (ex.: `feat(fundacao): inicializa projeto com stack e roadmap de fatias`).
    - **Marco 2 — Fechamento de Fatia ou Correção (Gate 2):** Ocorre ao término da implementação da fatia ou `/fix`, após a comprovação de testes (Vermelho → Verde), diff limpo, `CHANGELOG.md` atualizado e validações determinísticas passando (`verificar-governanca.mjs`, `openspec validate`). O agente só realiza o commit após a **aprovação final humana explícita** no Gate 2 (ex.: `feat(escopo): implementa fatia XX - descricao`).
 3. **Padrão Obrigatório de Mensagem:** Todo commit deve respeitar rigorosamente o Conventional Commits em Português do Brasil (auditado por `validar-commit-msg.mjs`), vinculando o escopo à fatia ou componente trabalhado.
 
@@ -131,13 +130,13 @@ Se durante a execução de uma tarefa o agente falhar 3 vezes consecutivas no me
 ## Artigo 12 — Cláusula Pétrea "Proibido Deduzir de Cabeça" (Leitura Física Mandatória e Prevenção de Context Rot)
 
 1. **Proibição Estrita de Dedução Mental:** É expressamente proibido ao agente deduzir de cabeça, presumir de memória ou alucinar requisitos, contratos de dados, regras de negócio ou estados de tela de qualquer fatia com base em lembranças de mensagens anteriores da sessão de chat.
-2. **Os 4 Marcos de Leitura Física Obrigatória:** O agente deve obrigatoriamente executar a ferramenta de leitura direta no disco do arquivo da fatia antes de:
+2. **Os 4 Marcos de Leitura Física Obrigatória:** O agente deve obrigatoriamente executar a ferramenta de leitura direta no disco do bloco da fatia em `openspec/roadmap.md` e dos 4 artefatos de delta do OpenSpec (`proposal.md`, `specs/`, `design.md`, `tasks.md`) antes de:
    - Resumir ou apresentar a próxima fatia ao usuário.
    - Abrir o delta de especificação no OpenSpec (`npx @fission-ai/openspec new change <nome>`).
    - Submeter o plano e desenho técnico para aprovação no Gate 1.
    - **Escrever a primeira linha de teste automatizado ou código de produção.**
-3. **Evidência Explícita de Alinhamento:** Ao abrir o Gate 1 ou convidar o humano para a próxima fatia, o agente deve citar textualmente os objetivos e contratos definidos no arquivo de roadmap físico, provando que não inventou o escopo. Qualquer divergência entre a proposta do agente e o roadmap físico anula o Gate 1.
-4. **Auditoria Factual Cega Pré-Gate 2:** Concluída a implementação de qualquer fatia, é mandatório acionar o **Subagente Inspetor Forense** (`inspetor-forense`) para inspecionar cegamente o código modificado (`git diff`) sem ler o roadmap, traduzindo em linguagem literal e factual tudo o que o código implementou, validou ou omitiu. Em seguida, o **Agente Principal** cruza o relatório factual ponto a ponto contra o arquivo físico da fatia (Duelo de Conformidade). Havendo omissões ou divergências, o executor deve corrigir o código antes de qualquer apresentação ao humano; o commit só pode ser solicitado após a conformidade comprovada.
+3. **Evidência Explícita de Alinhamento:** Ao abrir o Gate 1 ou convidar o humano para a próxima fatia, o agente deve citar textualmente os objetivos e contratos definidos no bloco de roadmap físico e nos artefatos da fatia, provando que não inventou o escopo. Qualquer divergência entre a proposta do agente e o roadmap físico anula o Gate 1.
+4. **Auditoria Factual Cega Pré-Gate 2:** Concluída a implementação de qualquer fatia, é mandatório acionar o **Subagente Inspetor Forense** (`inspetor-forense`) para inspecionar cegamente o código modificado (`git diff`) sem ler a proposta ou especificações, traduzindo em linguagem literal e factual tudo o que o código implementou, validou ou omitiu. Em seguida, o **Agente Principal** cruza o relatório factual ponto a ponto contra os artefatos físicos da fatia em `openspec/changes/<fatia>/` e o bloco de roadmap (Duelo de Conformidade). Havendo omissões ou divergências, o executor deve corrigir o código antes de qualquer apresentação ao humano; o commit só pode ser solicitado após a conformidade comprovada.
 5. **Higiene de Contexto Preventiva:** Para prevenir a degradação de contexto (*Context Rot*), ao concluir o Gate 2 de uma entrega, o agente deve orientar formalmente o humano a renovar a sessão (`/compact` ou abertura de nova conversa limpa) antes de puxar a próxima fatia da fila.
 
 ---

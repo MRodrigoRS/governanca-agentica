@@ -5,6 +5,39 @@ O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.
 
 ---
 
+## [4.0.0-alpha.1] - 2026-11-09
+
+### Adicionado
+- **Planejamento Rolling Wave e Mapa Macro em Arquivo Único (`openspec/roadmap.md`):**
+  - Criação de `template/openspec/roadmap.md.jinja` consolidando Invariantes Globais de Arquitetura no Gate 0 e blocos enxutos por onda (Onda 1 Imediata detalhada, Onda 2 Planejada, Onda 3 Futura).
+  - Proteção de `openspec/roadmap.md` em `_skip_if_exists` no `copier.yml`.
+- **Módulos Especializados de Classificação e Cerimônia (`template/scripts/lib/`):**
+  - `classificar-arquivos.mjs`: classificação determinística de testes (incluindo `tests/` e `test/` na raiz do projeto, `test_*.py` e `*_test.py`), arquivos de produção, banco, manifestos de dependência e restrição da isenção de `scripts/` apenas a scripts oficiais de governança.
+  - `classificar-cerimonia.mjs`: implementação pura das Vias de cerimônia: Via 1a (`fix` com teste), Via 1b (`style` cosmético anti-contrabando), Via 1.5 (Manutenção Estrutural aprovando `refactor`/`perf`/`style`/`chore`/`build` com >3 arquivos ou bump de dependência existente) e Via 2 (Feature com delta completo).
+- **Suíte de Testes da Governança v4:**
+  - Criação de `tests/desburocratizacao-sdd-v4.test.mjs` com 8 novos testes automatizados cobrindo os cenários de cabeçalhos OpenSpec, preservação retroativa v3, blocos de roadmap, cerimônias Via 1a, 1b e 1.5, elevando a suíte para 56 testes verdes.
+
+### Modificado
+- **Desburocratização SDD nos Deltas do OpenSpec (`openspec/`):**
+  - `template/openspec/config.yaml.jinja` e `openspec/config.yaml`: substituição de checklists duplicados por validação determinística de cabeçalhos nos 4 pilares (`proposal.md`, `specs/`, `design.md`, `tasks.md`), contagem mínima de linhas e proibição de placeholders lazy.
+  - `template/openspec/project.md.jinja`: Seção 3 convertida em ponteiro canônico para `openspec/roadmap.md`.
+- **Emenda Constitucional por Re-mapeamento (`template/constitution.md`):**
+  - Re-mapeamento dos artigos 8.3, 8.5, 11.2, 12.2–12.4 para espelhar o `openspec/roadmap.md` e os 4 pilares de delta do OpenSpec, preservando 100% dos exemplos concretos de domínio e o hook de autorização humana `force_ask`.
+- **Cartão de Invariantes em `template/AGENTS.md`:**
+  - Inclusão do Cartão de Invariantes conciso (≤ 15 linhas) para máxima adesão de contexto pelos agentes.
+- **Auditoria de Governança e Validação de Commits (`template/scripts/`):**
+  - `verificar-governanca.mjs`: auditoria estrutural do `openspec/roadmap.md`, auditoria de deltas por cabeçalhos e postergação da Via 1.5 para o estágio `commit-msg`.
+  - `validar-commit-msg.mjs`: validação determinística da Via 1.5, bloqueio de commits `fix` em código de produção sem teste staged e inspeção anti-contrabando de lógica em `style`.
+  - `hook-agente.mjs`: bloqueio de escrita com placeholders preguiçosos expandido para `openspec/roadmap.md` e `openspec/changes/`.
+- **Atualização de Skills e Subagentes:**
+  - Atualização de `inicializar-stack`, `ciclo-especificacao`, `refinar-ideia`, `explorar-produto`, `revisar-fatia`, `atualizar-governanca` e perfis de agente de `inspetor-forense`.
+
+### Removido
+- **Template Físico Legado:**
+  - Remoção de `template/openspec/roadmap/_template-fatia.md` em prol do template único de roadmap `template/openspec/roadmap.md.jinja`.
+
+---
+
 ## [3.7.0] - 2026-11-03
 
 ### Adicionado

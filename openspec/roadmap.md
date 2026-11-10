@@ -20,7 +20,7 @@
 
 ## Fila Evolutiva Ativa — Ciclo Governança v4.0.0
 
-### `[ ] Pendente` — `fatia-08-desburocratizacao-sdd-rolling-wave-e-cerimonia`
+### `[x] Concluído` — `fatia-08-desburocratizacao-sdd-rolling-wave-e-cerimonia`
 - **Especificação Completa de Transição:** [openspec/roadmap/fatia-08-desburocratizacao-sdd-rolling-wave-e-cerimonia.md](roadmap/fatia-08-desburocratizacao-sdd-rolling-wave-e-cerimonia.md)
 - **Depende de:** `fatia-07-protocolo-handshake-e-triade-linear`
 - **Objetivo de Valor:** Eliminar a tripla burocracia documental (`project.md` §3 + `roadmap/fatia-XX.md` + 4 arquivos repetidos no OpenSpec) **sem regredir 1 milímetro no rigor**: transfere a auditoria determinística dos pilares Anti-Preguiça (por cabeçalhos PT-BR/EN) para dentro do OpenSpec, exige Invariantes Globais no Gate 0, destrava manutenções estruturais legítimas no estágio `commit-msg`, corrige bugs de classificação de arquivos e desduplica `AGENTS.md` com Cartão de Invariantes + Emenda por Re-mapeamento da Constituição.

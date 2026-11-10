@@ -1,11 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { execSync } from 'node:child_process';
-import { mkdirSync, writeFileSync, rmSync, existsSync } from 'node:fs';
+import { mkdirSync, writeFileSync, rmSync, existsSync, copyFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 
 const scriptOriginal = join(process.cwd(), 'template', 'scripts', 'verificar-governanca.mjs');
+const dirTemplateScripts = join(process.cwd(), 'template', 'scripts');
 
 function criarRepoTemporario() {
   const dir = join(tmpdir(), `test-gov-${Date.now()}-${Math.random().toString(36).slice(2)}`);
@@ -14,9 +15,12 @@ function criarRepoTemporario() {
   execSync('git config user.email "test@exemplo.com"', { cwd: dir, stdio: 'ignore' });
   execSync('git config user.name "Tester"', { cwd: dir, stdio: 'ignore' });
 
-  // Copia o script
-  mkdirSync(join(dir, 'scripts'), { recursive: true });
-  writeFileSync(join(dir, 'scripts', 'verificar-governanca.mjs'), execSync(`node -e "process.stdout.write(require('fs').readFileSync('${scriptOriginal.replace(/\\/g, '/')}'))"`), 'utf8');
+  // Copia o script e bibliotecas auxiliares
+  const dirDestinoScripts = join(dir, 'scripts');
+  mkdirSync(join(dirDestinoScripts, 'lib'), { recursive: true });
+  copyFileSync(scriptOriginal, join(dirDestinoScripts, 'verificar-governanca.mjs'));
+  copyFileSync(join(dirTemplateScripts, 'lib', 'classificar-arquivos.mjs'), join(dirDestinoScripts, 'lib', 'classificar-arquivos.mjs'));
+  copyFileSync(join(dirTemplateScripts, 'lib', 'classificar-cerimonia.mjs'), join(dirDestinoScripts, 'lib', 'classificar-cerimonia.mjs'));
 
   return {
     dir,

@@ -4,6 +4,16 @@
 > **Papel:** Fonte única da verdade para todos os agentes e assistentes de IA que operam neste repositório.
 > **Regra Suprema:** Obedeça integralmente a @[constitution.md](constitution.md). Texto sozinho é intenção; quem audita e trava ações é o ecossistema determinístico da governança (Lifecycle Hooks de Agente, Git hooks com Lefthook e CI).
 
+### Cartão de Invariantes Centrais (Regras Inegociáveis)
+1. **Test-First Mandatório (Artigo 2):** Proibido código de produção sem teste que falhou antes (Vermelho → Verde → Refatorar).
+2. **Via 1a /fix com Teste (Artigo 14):** Até 3 arquivos de produção; exige ≥ 1 teste staged e menção em `CHANGELOG.md`.
+3. **Via 1.5 Manutenção Estrutural:** Commits > 3 arquivos exigem `refactor`/`perf`/`style`/`chore`/`build`; zero dependências inéditas ou banco.
+4. **Commits com Aprovação Humana (Artigo 11):** Proibido commit avulso; autorizado exclusivamente no Marco 1 (Gate 0) e Marco 2 (Gate 2).
+5. **Português do Brasil no Domínio (Artigo 10):** Nomes de negócio, tabelas, métodos e commits em PT-BR; termos de framework em EN.
+6. **Reatividade Limpa (Artigo 6):** Proibido `location.reload` ou refresh forçado; feedback por Toasts e ações críticas com Modal.
+7. **Handshake e Isolamento Linear (Artigo 13):** Obrigatório `whoami` antes de operar no Linear; bloqueio determinístico se divergir da âncora.
+8. **Proibido Deduzir de Cabeça (Artigo 12):** Leitura física obrigatória do roadmap e delta nos 4 marcos.
+
 ---
 
 ## 1. Postura Profissional e Idioma
