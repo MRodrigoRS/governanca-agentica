@@ -10,3 +10,8 @@ commit-msg:
   commands:
     validar-commit-msg:
       run: node template/scripts/validar-commit-msg.mjs {1}
+
+pre-push:
+  commands:
+    suite-completa:
+      run: npm test

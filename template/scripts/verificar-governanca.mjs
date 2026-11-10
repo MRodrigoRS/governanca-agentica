@@ -510,6 +510,32 @@ function verificarIntegridadeDeTestesEmStaged(listaArquivos) {
         );
         process.exit(1);
       }
+
+      // 6.0 Sensor Anti-Mocking e Anti-Spy de Banco Próprio (Testing Trophy)
+      const matchValvulaMock = conteudo.match(/governanca:mock-banco-justificado:\s*(.+)/i);
+      const valvulaMockValida = matchValvulaMock && matchValvulaMock[1].trim().length >= 15;
+
+      if (!valvulaMockValida) {
+        const padroesMockBanco = [
+          /(?:vi|jest)\.mock\(\s*['"][^'"]*(?:prisma|drizzle|\/db\b|database|repositorio|repository)['"]/i,
+          /(?:vi|jest)\.spyOn\(\s*(?:prisma|db|database|repositorio|repository)\b/i,
+          /\b(?:prisma|db)\.[a-zA-Z0-9_$]+\.(?:find|create|update|delete|upsert|execute|query)[a-zA-Z0-9_$]*\s*=\s*(?:vi|jest)\.fn\(/i,
+          /(?:@patch|mock\.patch(?:\.object)?)\(\s*['"][^'"]*(?:\bdb\b|database|db_session|SessionLocal|AsyncSession|sqlalchemy|prisma|repositorio|repository)/i
+        ];
+
+        const violacaoMock = padroesMockBanco.find(padrao => padrao.test(conteudo));
+        if (violacaoMock) {
+          registrarErro(
+            `Detecção de Anti-Mock de Banco Próprio (Artigo 2 — Testing Trophy):\n` +
+            `O arquivo de teste '${arq}' tenta mockar ou espionar o banco de dados ou ORM interno do projeto.\n` +
+            `Testes de integração e serviço devem validar persistência real (SQLite in-memory, PGlite ou banco de teste real).\n` +
+            `Mocks são reservados exclusivamente para serviços externos de terceiros (gateways de pagamento, e-mail, LLMs externos).\n\n` +
+            `-> Solução: Utilize banco em memória (SQLite, PGlite) ou banco real de teste. Para testes unitários de adaptadores com simulação de queda de driver, adicione a válvula:\n` +
+            `   '// governanca:mock-banco-justificado: <motivo técnico com ao menos 15 caracteres>'.`
+          );
+          process.exit(1);
+        }
+      }
     } catch {}
   }
 }

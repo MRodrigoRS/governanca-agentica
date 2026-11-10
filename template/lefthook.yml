@@ -34,9 +34,24 @@ pre-commit:
       skip:
         - run: node -e "process.exit(require('node:fs').existsSync('package.json') ? 1 : 0);"
 
+    unit-tests:
+      tags: tests unit
+      run: npm test --if-present
+      fail_text: "Falha na execução dos testes unitários!"
+      skip:
+        - run: node -e "process.exit(require('node:fs').existsSync('package.json') ? 1 : 0);"
+
 commit-msg:
   commands:
     validar-commit-msg:
       tags: conventional-commits pt-br
       run: node scripts/validar-commit-msg.mjs {1}
       fail_text: "A mensagem de commit não respeita o padrão Conventional Commits em PT-BR!"
+
+pre-push:
+  parallel: false
+  commands:
+    suite-testes-poliglota:
+      tags: tests ci
+      run: node -e "const { execSync } = require('node:child_process'); const fs = require('node:fs'); if (fs.existsSync('package.json')) { console.log('[LEFTHOOK] Executando testes Node.js...'); execSync('npm test --if-present', { stdio: 'inherit' }); } if (fs.existsSync('pyproject.toml')) { console.log('[LEFTHOOK] Executando testes Python (pytest)...'); execSync('uv run pytest || pytest', { stdio: 'inherit' }); } if (fs.existsSync('Cargo.toml')) { console.log('[LEFTHOOK] Executando testes Rust (cargo test)...'); execSync('cargo test', { stdio: 'inherit' }); } const temCsproj = fs.readdirSync('.').some(f => f.endsWith('.sln') || f.endsWith('.csproj')); if (temCsproj) { console.log('[LEFTHOOK] Executando testes .NET (dotnet test)...'); execSync('dotnet test', { stdio: 'inherit' }); } if (fs.existsSync('project.godot') && fs.existsSync('addons/gut/gut_cmdln.gd')) { try { execSync('godot --version', { stdio: 'ignore' }); console.log('[LEFTHOOK] Executando testes Godot 4 (GUT headless)...'); execSync('godot --headless --path . -s addons/gut/gut_cmdln.gd -gexit', { stdio: 'inherit' }); } catch { console.log('[LEFTHOOK] Aviso: binário \"godot\" não encontrado no PATH local. Testes GUT serão executados no CI do GitHub Actions.'); } }"
+      fail_text: "Falha na suíte poliglota de testes antes do push!"

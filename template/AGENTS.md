@@ -1,11 +1,11 @@
-<!-- governanca:inicio v4.0.0-alpha.1 — não edite este bloco; alterações no repositório da governança -->
+<!-- governanca:inicio v4.0.0 — não edite este bloco; alterações no repositório da governança -->
 # Instruções Gerais para Agentes de IA — Governança
 
 > **Papel:** Fonte única da verdade para todos os agentes e assistentes de IA que operam neste repositório.
 > **Regra Suprema:** Obedeça integralmente a @[constitution.md](constitution.md). Texto sozinho é intenção; quem audita e trava ações é o ecossistema determinístico da governança (Lifecycle Hooks de Agente, Git hooks com Lefthook e CI).
 
 ### Cartão de Invariantes Centrais (Regras Inegociáveis)
-1. **Test-First Mandatório (Artigo 2):** Proibido código de produção sem teste que falhou antes (Vermelho → Verde → Refatorar).
+1. **Test-First & Testing Trophy (Artigo 2):** Proibido código de produção sem teste que falhou antes (Vermelho → Verde → Refatorar). Proibido mockar banco próprio (exige SQLite in-memory, PGlite ou banco real).
 2. **Via 1a /fix com Teste (Artigo 14):** Até 3 arquivos de produção; exige ≥ 1 teste staged e menção em `CHANGELOG.md`.
 3. **Via 1.5 Manutenção Estrutural:** Commits > 3 arquivos exigem `refactor`/`perf`/`style`/`chore`/`build`; zero dependências inéditas ou banco.
 4. **Commits com Aprovação Humana (Artigo 11):** Proibido commit avulso; autorizado exclusivamente no Marco 1 (Gate 0) e Marco 2 (Gate 2).
@@ -88,9 +88,9 @@ Ao ser iniciado em um repositório, identifique o estado atual antes de agir:
   git commit -m "feat(fundacao): inicializa projeto com stack <nome> e roadmap de fatias"
   ```
 - **Gate 1 (Aprovação de Plano e Desenho Técnico):** Sem commit de código. Leitura física comprovada do roadmap, alinhamento de escopo, delta no OpenSpec e tarefas antes de codificar. Em ambientes com suporte a artefatos nativos (Antigravity), o agente **deve** emitir o plano como artefato dedicado (`plano-fatia-XX.md`) configurado com `RequestFeedback: true` (habilitando o botão interativo `Proceed`), limitando a mensagem de chat a no máximo 20 linhas com o link e a pergunta objetiva. Em terminais CLI puros, fornece resumo conciso (≤ 20 linhas) apontando para o disco.
-- **Marco 2 — Fechamento de Fatia ou Correção (Gate 2):** Ao término da implementação, o fluxo segue 2 níveis obrigatórios:
-  1. **Auditoria Factual Cega e Duelo de Conformidade (Artigo 12 / D26):** Antes de chamar o humano, o executor aciona o **Subagente Inspetor Forense** (`.claude/agents/inspetor-forense.md`, `.github/agents/inspetor-forense.agent.md` ou subagente read-only no Antigravity) para inspecionar o `git diff` de forma cega (sem ler o roadmap), traduzindo literalmente o que o código faz e gerando o relatório `parecer-forense.md` no diretório de artefatos quando suportado. Em seguida, o **Agente Principal** cruza esse relatório factual contra o arquivo físico da fatia. Se faltar qualquer regra ou estado, o executor corrige antes de incomodar o humano.
-  2. **Apresentação ao Humano (Artefato e Chat):** Comprovada a conformidade factual, em ambientes com suporte a artefatos (Antigravity), o agente emite o relatório completo como artefato dedicado (`entrega-fatia-XX.md`), limitando o chat a um link direto, resumo executivo e roteiro prático em no máximo 20 linhas. Em terminais CLI puros, apresenta a entrega estruturada de forma concisa (≤ 20 linhas):
+- **Marco 2 — Fechamento de Fatia ou Correção (Gate 2):** Ao término da implementação, o fluxo segue 2 níveis:
+  1. **Validação Determinística e Auditoria Factual:** O fluxo regular apoia-se diretamente na prova dos testes reais (`npm test`), na inspeção estrita dos hooks locais (`verificar-governanca.mjs`) e no roteiro prático. A auditoria cega por subagente (`inspetor-forense`) é opcional e sob demanda através do comando `/revisar`. Quando acionado, o subagente inspeciona o `git diff` de forma cega gerando o laudo em artefato (`parecer-forense.md`).
+  2. **Apresentação ao Humano (Artefato e Chat):** Em ambientes com suporte a artefatos (Antigravity), o agente emite o relatório completo como artefato dedicado (`entrega-fatia-XX.md`), limitando o chat a um link direto, resumo executivo e roteiro prático em no máximo 20 linhas. Em terminais CLI puros, apresenta a entrega estruturada de forma concisa (≤ 20 linhas):
      * *O que foi entregue e valor funcional gerado.*
      * *📋 Parecer Factual de Conformidade (Código validado contra o roadmap físico).*
      * *🧪 Roteiro de Teste Prático (onde acessar, passo a passo com dados de teste e comportamento visual esperado).*
@@ -145,7 +145,7 @@ Os comandos abaixo estão disponíveis em `.claude/commands/`, `.github/prompts/
 | `/fix` | `ciclo-especificacao` §1 (Via 1a) | Bug pontual com teste que reproduz a falha (máx. 3 arquivos) |
 | `/proxima-fatia` | `ciclo-especificacao` §2 (Via 2) | Ler `roadmap.md`, abrir delta no OpenSpec e preparar Gate 1 |
 | `/retomar` | Handoff de Sessão (`tasks.md`) | Retomar trabalho ativo após `/compact` ou início de nova sessão |
-| `/revisar` | `revisar-fatia` | Inspetor Forense cego e Duelo de Conformidade pré-Gate 2 |
+| `/revisar` | `revisar-fatia` | Auditoria sob demanda com Inspetor Forense cego e Duelo de Conformidade |
 | `/auditar-reuso` | `reuso-e-modularizacao` | Varredura de reúso, tokens de movimento e teto anti-monólito |
 | `/grill-me` | Protocolo `grill-me` / `grilling` | Interrogatório exaustivo de plano/design/ideia em rodadas |
 | `/refinar` | `refinar-ideia` | Nova ideia durante o projeto: congela código, poda e cria subfatia |

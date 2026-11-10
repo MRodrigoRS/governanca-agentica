@@ -5,9 +5,17 @@ O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.
 
 ---
 
-## [4.0.0-alpha.1] - 2026-11-10
+## [4.0.0] - 2026-11-10
 
 ### Adicionado
+- **Pirâmide Moderna de Testes (Testing Trophy), Anti-Mock de Banco, CI Poliglota e Graduação v4.0.0 Estável (`fatia-11`):**
+  - **Testing Trophy e Anti-Mock de Banco Próprio:** Inclusão no Artigo 2 da Constituição (`template/constitution.md`) e em `template/.agents/rules/backend-seguranca-dados.md.jinja` das 3 camadas (Unitário Puro < 50ms, Integração Real contra SQLite in-memory/PGlite/banco real, e Smoke E2E Crítico + Acessibilidade). Proibição de mockar ou espionar o próprio cliente de banco/ORM (`prisma`, `drizzle`, `db`, `session`, `repository`), com sensor determinístico em `template/scripts/verificar-governanca.mjs` e válvula formal `governanca:mock-banco-justificado:`. Falsos positivos em clientes externos (`requests.Session`, `stripe`) rigorosamente prevenidos.
+  - **Fechamento do Furo no Lefthook (`pre-commit` Rápido + `pre-push` Poliglota Completo):** Execução de testes unitários rápidos no `pre-commit` (garantindo o Artigo 4 antes do commit no Marco 2) e suíte poliglota completa no `pre-push` (Node/TS, Python pytest, Rust cargo test, .NET dotnet test e Godot 4 GUT headless com fallback seguro e amigável caso o binário não esteja no PATH local).
+  - **CI Poliglota Íntegro e Lockfile Obrigatório:** Eliminação do fallback inseguro `npm ci || npm install` no CI (falha com erro explícito se nenhum lockfile for versionado), execução de `validar-commit-msg.mjs` no GitHub Actions, suporte nativo a Godot 4 GUT, .NET (`dotnet test`), Python uv e Rust no template do CI, e dogfooding completo de todos os artefatos da v4 no workflow de CI da Governança.
+  - **Contrato Oficial de Smoke Test Web Real (Playwright + Axe):** Padrão oficial em `template/.agents/rules/web-ui-pwa.md.jinja` com `@axe-core/playwright`, ausência de overflow horizontal em 320px e monitoramento de `pageerror`/console.
+  - **Desburocratização dos Subagentes (Eficiência de Tokens e Tempo):** Formalização na Constituição (Artigos 8 e 12), `AGENTS.md` e skills de que a auditoria cega por subagente é um recurso opcional sob demanda (acionável a qualquer momento via `/revisar`), tornando a entrega do Gate 2 direta, ágil e respaldada por testes reais determinísticos e roteiro prático.
+  - **Graduação para Release Estável `v4.0.0`:** Bump final de `4.0.0-alpha.1` para `4.0.0` em `package.json`, cabeçalhos `governanca:inicio` e documentação oficial.
+  - **Suíte `tests/piramide-testes-e-ci-poliglota.test.mjs`:** 4 novos testes automatizados elevando a suíte para 80 testes verdes (zero falhas).
 - **Governança de Reúso, Tokens de Movimento, Component-as-Asset e Anti-Monólito (`fatia-10`):**
   - **Artigo 14 na Constituição (`template/constitution.md`):** Instituição de *Reuse-Before-Create* como extensão do Artigo 1.2, exigência de Tokens Base (cores, tipografia, durações de 150ms/250ms e curvas canônicas de animação) na Fatia 01 (Fundação), e padrão *Component-as-Asset* em `template/.agents/rules/` (`web-ui-pwa.md.jinja` e `jogos-engines.md.jinja`).
   - **Catálogo Vivo de Reúso (`template/docs/catalogo-reuso.md`):** Inventário enxuto de 1 linha por item em 4 tabelas canônicas (Tokens, Primitivos de UI, Prefabs/Cenas de Jogos, Hooks/Módulos de Domínio), protegido em `_skip_if_exists` no `copier.yml`.

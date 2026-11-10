@@ -51,4 +51,12 @@ globs:
 - Chaves de API, credenciais e tokens NUNCA devem ser logados ou retornados para ferramentas de agentes.
 - Chamadas a ferramentas ou APIs externas DEVEM ser validadas com esquemas de permissão estritos por tenant.
 - Consultas ao banco relacional via MCP DEVEM operar com credenciais de leitura estrita (*read-only*).
+
+---
+
+## 6. Testing Trophy e Anti-Mocking de Banco Próprio (Artigo 2)
+- Testes de integração e serviços DEVEM validar persistência real: utilize SQLite in-memory, PGlite ou banco de teste real em container.
+- É terminantemente PROIBIDO mockar ou criar spies sobre o próprio cliente ORM/banco (`prisma`, `drizzle`, `db`, `session`, `repository`).
+- Mocks são reservados exclusivamente para chamadas externas de terceiros (gateways de pagamento, e-mail, LLMs).
+- Testes de adaptadores de erro de rede no driver admitem a válvula formal `governanca:mock-banco-justificado: <motivo >= 15 chars>`.
 {% endif %}

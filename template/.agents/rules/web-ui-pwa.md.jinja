@@ -62,4 +62,12 @@ Toda rota ou componente que carrega dados de forma assíncrona DEVE implementar 
 - **Tokens de Movimento na Fundação:** As animações e transições DEVEM consumir durações e curvas canônicas de easing do catálogo (`150ms` para microinterações, `250ms` para painéis/modais, curvas `cubic-bezier(0.4, 0, 0.2, 1)`). Proibido inventar durações ou transições arbitrárias por rota.
 - **Extração Objetiva:** Primitivos de UI e transições nascem componentizados na 1ª ocorrência; blocos repetidos de tela extraem-se na 2ª ocorrência.
 - **Teto Anti-Monólito:** Arquivos de tela e componentes limitados a 350 linhas úteis de código com catraca para código legado.
+
+---
+
+## 8. Contrato Oficial de Smoke Test Web Real (Playwright + Axe)
+- Todo projeto web com Playwright DEVE manter ao menos 1 Smoke Test cobrindo as rotas principais:
+  - **Acessibilidade Automatizada:** Varredura com `@axe-core/playwright` sem violações críticas ou sérias (`critical` / `serious`).
+  - **Higiene de Console:** Monitoramento via `page.on('pageerror')`, falhando se houver exceções JavaScript não tratadas durante o carregamento da página.
+  - **Zero Overflow:** Verificação nos viewports `320x640` (mobile) e `1280x800` (desktop) assegurando ausência de barra de rolagem horizontal (`scrollWidth <= innerWidth`).
 {% endif %}

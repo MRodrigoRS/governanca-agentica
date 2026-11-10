@@ -69,7 +69,7 @@
 
 ---
 
-### `[~] Em Andamento` — `fatia-10-reuso-tokens-movimento-e-component-as-asset`
+### `[x] Concluído` — `fatia-10-reuso-tokens-movimento-e-component-as-asset`
 - **Especificação Completa de Transição:** [openspec/roadmap/fatia-10-reuso-tokens-movimento-e-component-as-asset.md](roadmap/fatia-10-reuso-tokens-movimento-e-component-as-asset.md)
 - **Depende de:** `fatia-09b-apresentacao-por-artefatos-e-higiene-de-chat`
 - **Objetivo de Valor:** Impedir deriva estética/cinética e páginas ou cenas de jogos monolíticas, instituindo memória leve de reúso com sensor anti-apodrecimento, Tokens de Movimento na Fatia 01, *Component-as-Asset* e teto anti-monólito com **catraca** para não travar correções em arquivos legados.
@@ -82,7 +82,7 @@
 
 ---
 
-### `[ ] Pendente` — `fatia-11-piramide-testes-anti-mock-e-ci-poliglota`
+### `[~] Em Andamento` — `fatia-11-piramide-testes-anti-mock-e-ci-poliglota`
 - **Especificação Completa de Transição:** [openspec/roadmap/fatia-11-piramide-testes-anti-mock-e-ci-poliglota.md](roadmap/fatia-11-piramide-testes-anti-mock-e-ci-poliglota.md)
 - **Depende de:** `fatia-10-reuso-tokens-movimento-e-component-as-asset`
 - **Objetivo de Valor:** Erradicar falsos positivos de testes mockados/spies no banco próprio, fechar o furo local de commits e pushes sem rodar testes, tornar o CI poliglota com lockfile estrito e validação de mensagem de commit, e publicar a release estável `v4.0.0`.

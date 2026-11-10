@@ -1,11 +1,11 @@
 ---
 name: revisar-fatia
-description: Executa a auditoria factual cega (Inspeção Forense) do código staged/não-commitado pelo Subagente e o Duelo de Conformidade contra o roadmap físico pelo Agente Principal antes do Gate 2.
+description: Executa sob demanda a auditoria factual cega (Inspeção Forense) do código staged/não-commitado pelo Subagente e o Duelo de Conformidade contra o roadmap físico pelo Agente Principal.
 ---
 
-# Skill: Revisar Fatia (Auditoria Factual Cega e Duelo de Conformidade)
+# Skill: Revisar Fatia (Auditoria Factual Cega e Duelo de Conformidade Sob Demanda)
 
-Esta skill define o protocolo de auditoria de qualidade pré-Gate 2. Para eliminar o viés de confirmação e a preguiça de LLM ("carimbador de aprovações"), a auditoria é dividida em dois papéis estritamente separados:
+Esta skill define o protocolo de auditoria de qualidade sob demanda (acionável a qualquer momento via comando `/revisar`). Para eliminar o viés de confirmação e a preguiça de LLM ("carimbador de aprovações"), a auditoria é dividida em dois papéis estritamente separados:
 
 ```mermaid
 flowchart TD

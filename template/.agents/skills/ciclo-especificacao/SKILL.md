@@ -104,9 +104,9 @@ Antes de finalizar a tarefa ou commit:
    node scripts/verificar-governanca.mjs
    ```
 3. Atualize o arquivo `CHANGELOG.md` na seção correspondente (`### Adicionado` ou `### Modificado`).
-4. **Auditoria Factual Cega Pré-Gate 2 (Artigo 12):** Convoque o Subagente Inspetor Forense para avaliar o diff de forma cega. Realize o Duelo de Conformidade contra os 4 artefatos da fatia e corrija eventuais divergências.
+4. **Validação Determinística e Auditoria Sob Demanda (Artigos 8 e 12):** Execute a suíte completa de testes (`npm test`) comprovando aprovação verde. Para fatias críticas de alto risco, o usuário ou o agente podem acionar sob demanda a auditoria cega do Subagente Inspetor Forense através do comando `/revisar`.
 5. **Apresentação do Gate 2 e Higiene de Contexto (Artigo 8 e Artigo 12.5):**
-   - **Em harnesses com suporte a artefatos (ex.: Antigravity):** Crie um artefato dedicado `entrega-fatia-XX.md` contendo o relatório completo de entrega, tabela do duelo de conformidade, parecer da inspeção forense e o Roteiro de Teste Prático Passo a Passo. No chat, publique apenas uma mensagem concisa (teto de ≤ 20 linhas) com o link do artefato, resumo executivo e a pergunta formal de autorização para commit.
+   - **Em harnesses com suporte a artefatos (ex.: Antigravity):** Crie um artefato dedicado `entrega-fatia-XX.md` contendo o relatório completo de entrega, comprovação dos testes executados e o Roteiro de Teste Prático Passo a Passo. No chat, publique apenas uma mensagem concisa (teto de ≤ 20 linhas) com o link do artefato, resumo executivo e a pergunta formal de autorização para commit.
    - **Em harnesses CLI:** Mantenha a resposta no chat em no máximo 20 linhas com o roteiro sintético e solicitação de autorização.
 6. **Autorização Humana e Commit (Artigo 11):** Somente após a aprovação explícita humana, execute o commit e arquive a mudança:
    ```bash

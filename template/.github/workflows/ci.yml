@@ -35,6 +35,11 @@ jobs:
         with:
           node-version: 20
 
+      - name: Validar Mensagem de Commit (Conventional Commits PT-BR)
+        run: |
+          git log -1 --pretty=%B > /tmp/ultimo-commit.txt
+          node scripts/validar-commit-msg.mjs /tmp/ultimo-commit.txt
+
       - name: Validar OpenSpec
         run: |
           if [ -d "openspec" ]; then
@@ -45,7 +50,7 @@ jobs:
         run: node scripts/verificar-governanca.mjs --ci
 
   qualidade-e-testes:
-    name: Qualidade, Tipos e Testes
+    name: Qualidade, Tipos e Testes Poliglotas
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -56,21 +61,33 @@ jobs:
         with:
           node-version: 20
 
-      - name: Executar Checagens Node/TS (se package.json existir)
+      - name: Executar Checagens Node/TS com Lockfile Estrito (se package.json existir)
         run: |
           if [ -f "package.json" ]; then
-            npm ci || npm install
+            if [ -f "package-lock.json" ]; then
+              npm ci
+            elif [ -f "pnpm-lock.yaml" ]; then
+              corepack enable && pnpm install --frozen-lockfile
+            elif [ -f "yarn.lock" ]; then
+              corepack enable && yarn install --immutable
+            elif [ -f "bun.lockb" ] || [ -f "bun.lock" ]; then
+              bun install --frozen-lockfile
+            else
+              echo "[CI ERRO] package.json encontrado, mas nenhum lockfile versionado (package-lock.json, pnpm-lock.yaml, yarn.lock, bun.lockb, bun.lock) foi comitado!"
+              exit 1
+            fi
             if npm run | grep -E -q "typecheck|type-check"; then npm run typecheck || npm run type-check; fi
             if npm run | grep -q "lint"; then npm run lint; fi
             if npm run | grep -q "test"; then npm test; fi
             if npm run | grep -q "build"; then npm run build; fi
+            npm audit --omit=dev --audit-level=high || true
           fi
 
       - name: Executar Checagens Python (se pyproject.toml existir)
         run: |
           if [ -f "pyproject.toml" ]; then
             pip install uv
-            uv sync || true
+            uv sync --frozen || uv sync
             if uv run ruff --version >/dev/null 2>&1; then uv run ruff check .; fi
             if uv run pytest --version >/dev/null 2>&1; then uv run pytest; fi
           fi
@@ -78,8 +95,27 @@ jobs:
       - name: Executar Checagens Rust / Tauri (se Cargo.toml existir)
         run: |
           if [ -f "Cargo.toml" ]; then
-            cargo test
+            cargo test --locked || cargo test
           fi
           if [ -f "src-tauri/Cargo.toml" ]; then
             cargo test --manifest-path src-tauri/Cargo.toml
+          fi
+
+      - name: Executar Checagens .NET / C# (se *.sln ou *.csproj existir)
+        run: |
+          if ls *.sln 1> /dev/null 2>&1 || ls *.csproj 1> /dev/null 2>&1; then
+            dotnet restore
+            dotnet build --no-restore
+            dotnet test --no-build
+          fi
+
+      - name: Executar Checagens Godot 4 GUT (se project.godot e gut_cmdln.gd existirem)
+        run: |
+          if [ -f "project.godot" ] && [ -f "addons/gut/gut_cmdln.gd" ]; then
+            echo "[CI] Detectado projeto Godot 4 com GUT..."
+            if command -v godot >/dev/null 2>&1; then
+              godot --headless --path . -s addons/gut/gut_cmdln.gd -gexit
+            else
+              echo "[CI] Binário godot não disponível no runner padrão ubuntu-latest. Para executar testes GUT headless no CI, configure o job com o container oficial barichello/godot-ci."
+            fi
           fi

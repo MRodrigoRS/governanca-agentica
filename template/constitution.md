@@ -1,4 +1,4 @@
-<!-- governanca:inicio v3.0.0 — não edite este bloco; alterações no repositório da governança -->
+<!-- governanca:inicio v4.0.0 — não edite este bloco; alterações no repositório da governança -->
 # Constituição do Projeto — Governança
 
 > **Papel:** Lei Suprema do repositório. Cláusulas pétreas obrigatórias para agentes de IA e desenvolvedores humanos.
@@ -32,6 +32,7 @@
    - **Passo a passo com dados prontos:** Instruções numeradas com valores e dados fictícios prontos para copiar e colar.
    - **Comportamento visual esperado:** O que o humano deve observar visualmente na tela ou na resposta do terminal.
 5. **Proibição de Testes Mentirosos:** É terminantemente proibido comentar testes que falham, alterar asserções para mascarar defeitos de código de produção ou simular sucesso artificial.
+6. **Testing Trophy e Anti-Mock de Banco Próprio:** A pirâmide moderna de testes equilibra três camadas essenciais: (a) *Unitários Puros* (< 50ms, regras matemáticas, lógica de domínio pura, desacoplados de IO), (b) *Integração Real* (rotas, repositórios, schemas e transações executados contra persistência real: SQLite in-memory, PGlite ou banco de dados local de teste), e (c) *Smoke E2E Crítico + Acessibilidade* (fluxos vitais no navegador com `@axe-core/playwright`, ausência de overflow horizontal em 320px e zero exceções não tratadas). É expressamente proibido mockar ou criar spies sobre o cliente de banco de dados ou ORM do próprio projeto (`prisma`, `drizzle`, `db`, `session`, `repository`), impedindo a fabricação de falsos positivos que não testam integridade referencial ou queries. Mocks são restritos exclusivamente a APIs externas de terceiros (gateways de pagamento, e-mail, LLMs). Para testes de resiliência com simulação de queda de driver físico, exige-se a válvula formal `governanca:mock-banco-justificado: <motivo >= 15 chars>`.
 
 ---
 
@@ -47,6 +48,7 @@
 1. Nenhuma chave de API, senha, token de autenticação, certificado ou credencial sensível deve ser comitada no repositório.
 2. Todo segredo deve residir em variáveis de ambiente (`.env`), devidamente declaradas e documentadas em `.env.example` e ignoradas em `.gitignore`.
 3. Commits contendo segredos em texto plano serão bloqueados pelo Gitleaks no hook de pré-commit e pelo CI.
+4. **Dupla Proteção Local e CI:** O Artigo 3 e o Artigo 4 são fiscalizados localmente antes do commit (testes unitários rápidos no `pre-commit` do Lefthook) e antes do push (suíte poliglota completa no `pre-push`), bem como no pipeline de CI com validação obrigatória de lockfile versionado e validação de mensagem de commit.
 
 ---
 
@@ -96,7 +98,7 @@
 5. São marcos obrigatórios com intervenção humana:
    - **Gate 0:** Aprovação do escopo polido, da stack tecnológica/VPS/MCPs e do Mapa de Fatias Incrementais com Invariantes Globais (`openspec/roadmap.md`).
    - **Gate 1:** Aprovação do plano, desenho técnico e tarefas antes da implementação de Nível 2. Em ambientes com suporte a artefatos nativos (Antigravity), é expressamente proibido despejar planos extensos em texto corrido no chat; o agente deve emitir o plano como artefato dedicado (`plano-fatia-XX.md`) com `RequestFeedback: true` (habilitando o botão nativo `Proceed`), limitando a mensagem do chat ao link direto e à pergunta objetiva de decisão (≤ 20 linhas). Em terminais CLI sem artefatos, fornecer resumo conciso (≤ 20 linhas) apontando para os arquivos do disco.
-   - **Gate 2:** Aprovação da entrega mediante: (1) auditoria factual prévia (Subagente Inspetor Forense em inspeção cega gerando `parecer-forense.md` em artefato + Duelo de Conformidade pelo Agente Principal contra o roadmap físico), (2) relatório de entrega estruturado emitido como artefato dedicado (`entrega-fatia-XX.md`) em ambientes compatíveis ou resumo conciso no chat (≤ 20 linhas), contendo o valor entregue, Roteiro de Teste Prático Passo a Passo (onde está, como testar com dados de exemplo e comportamento visual esperado), evidências reais de testes automatizados (vermelho/verde), diff limpo e `CHANGELOG.md` atualizado, seguida pelo acionamento proativo da próxima fatia da fila.
+   - **Gate 2:** Aprovação da entrega mediante relatório de entrega estruturado emitido como artefato dedicado (`entrega-fatia-XX.md`) em ambientes compatíveis ou resumo conciso no chat (≤ 20 linhas), contendo o valor entregue, Roteiro de Teste Prático Passo a Passo (onde está, como testar com dados de exemplo e comportamento visual esperado), evidências reais de testes automatizados (vermelho/verde), diff limpo e `CHANGELOG.md` atualizado, seguida pelo acionamento proativo da próxima fatia da fila. A auditoria cega por subagente (`inspetor-forense`) é opcional e sob demanda através do comando `/revisar`.
 
 ---
 
@@ -136,7 +138,7 @@ Se durante a execução de uma tarefa o agente falhar 3 vezes consecutivas no me
    - Submeter o plano e desenho técnico para aprovação no Gate 1.
    - **Escrever a primeira linha de teste automatizado ou código de produção.**
 3. **Evidência Explícita de Alinhamento:** Ao abrir o Gate 1 ou convidar o humano para a próxima fatia, o agente deve citar textualmente os objetivos e contratos definidos no bloco de roadmap físico e nos artefatos da fatia, provando que não inventou o escopo. Qualquer divergência entre a proposta do agente e o roadmap físico anula o Gate 1.
-4. **Auditoria Factual Cega Pré-Gate 2:** Concluída a implementação de qualquer fatia, é mandatório acionar o **Subagente Inspetor Forense** (`inspetor-forense`) para inspecionar cegamente o código modificado (`git diff`) sem ler a proposta ou especificações, traduzindo em linguagem literal e factual tudo o que o código implementou, validou ou omitiu. Em seguida, o **Agente Principal** cruza o relatório factual ponto a ponto contra os artefatos físicos da fatia em `openspec/changes/<fatia>/` e o bloco de roadmap (Duelo de Conformidade). Havendo omissões ou divergências, o executor deve corrigir o código antes de qualquer apresentação ao humano; o commit só pode ser solicitado após a conformidade comprovada.
+4. **Auditoria Cega por Subagente Opcional Sob Demanda (`/revisar`):** Para garantir eficiência de tempo e consumo de tokens, o fluxo regular do Gate 2 apoia-se diretamente na prova determinística dos testes reais automatizados (`npm test`, `node --test`), na auditoria estrita dos hooks locais (`verificar-governanca.mjs`) e na validação pelo Roteiro de Teste Prático do Usuário. A convocação do **Subagente Inspetor Forense** (`inspetor-forense`) é um recurso sob demanda, podendo ser acionada a qualquer momento através do comando `/revisar` para inspecionar cegamente o `git diff` e confrontá-lo com as especificações em fatias críticas de alto risco.
 5. **Higiene de Contexto Preventiva e Isolamento de Artefatos:** Para prevenir a degradação de contexto (*Context Rot*), relatórios técnicos extensos, planos detalhados e pareceres forenses devem ser isolados em artefatos dedicados sempre que o harness suportar, mantendo as mensagens de chat enxutas e focadas em decisões (≤ 20 linhas). Além disso, ao concluir o Gate 2 de uma entrega, o agente deve orientar formalmente o humano a renovar a sessão (`/compact` ou abertura de nova conversa limpa) antes de puxar a próxima fatia da fila.
 
 ---
