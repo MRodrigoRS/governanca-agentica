@@ -82,7 +82,7 @@
 
 ---
 
-### `[~] Em Andamento` — `fatia-11-piramide-testes-anti-mock-e-ci-poliglota`
+### `[x] Concluído` — `fatia-11-piramide-testes-anti-mock-e-ci-poliglota`
 - **Especificação Completa de Transição:** [openspec/roadmap/fatia-11-piramide-testes-anti-mock-e-ci-poliglota.md](roadmap/fatia-11-piramide-testes-anti-mock-e-ci-poliglota.md)
 - **Depende de:** `fatia-10-reuso-tokens-movimento-e-component-as-asset`
 - **Objetivo de Valor:** Erradicar falsos positivos de testes mockados/spies no banco próprio, fechar o furo local de commits e pushes sem rodar testes, tornar o CI poliglota com lockfile estrito e validação de mensagem de commit, e publicar a release estável `v4.0.0`.
