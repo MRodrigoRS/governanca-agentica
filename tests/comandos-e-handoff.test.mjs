@@ -202,3 +202,31 @@ test('deve_distribuir_template_de_pr_e_fluxo_git_condicional', () => {
   assert.match(copierContent, /trunk/);
   assert.match(copierContent, /branch-por-fatia/);
 });
+
+test('deve_manter_todas_as_7_skills_alinhadas_a_v4_e_padrao_universal', () => {
+  const dirSkills = join(process.cwd(), 'template', '.agents', 'skills');
+
+  const initSkill = readFileSync(join(dirSkills, 'inicializar-stack', 'SKILL.md'), 'utf8');
+  const cicloSkill = readFileSync(join(dirSkills, 'ciclo-especificacao', 'SKILL.md'), 'utf8');
+  const refinarSkill = readFileSync(join(dirSkills, 'refinar-ideia', 'SKILL.md'), 'utf8');
+  const explorarSkill = readFileSync(join(dirSkills, 'explorar-produto', 'SKILL.md'), 'utf8');
+
+  // 1. inicializar-stack: usa --tools antigravity,agents (sem recriar pastas legadas), preenche Comandos do Projeto, docs/arquitetura.md e docs/catalogo-reuso.md
+  assert.doesNotMatch(initSkill, /--tools\s+antigravity,claude,cursor/, 'inicializar-stack não deve passar claude/cursor no openspec init');
+  assert.match(initSkill, /--tools\s+antigravity,agents/, 'inicializar-stack deve usar --tools antigravity,agents');
+  assert.match(initSkill, /Comandos do Projeto/, 'inicializar-stack deve instruir preenchimento de Comandos do Projeto em AGENTS.md');
+  assert.match(initSkill, /docs\/arquitetura\.md/, 'inicializar-stack deve instruir atualização de docs/arquitetura.md');
+  assert.match(initSkill, /docs\/catalogo-reuso\.md/, 'inicializar-stack deve instruir Tokens Base / catalogo-reuso.md na Fatia 01');
+  assert.doesNotMatch(initSkill, /openspec\/roadmap\/fatia-01/, 'inicializar-stack deve referenciar openspec/roadmap.md e não arquivo legado fatia-01-*.md');
+
+  // 2. refinar-ideia e explorar-produto: modelos de bloco devem usar as 4 âncoras da v4 (Depende de, Objetivo de Valor, O que ENTRA, O que FICA DE FORA)
+  for (const [nome, conteudo] of [['refinar-ideia', refinarSkill], ['explorar-produto', explorarSkill]]) {
+    assert.match(conteudo, /Depende de:/, `${nome} deve ter âncora Depende de: no template de bloco`);
+    assert.match(conteudo, /Objetivo de Valor:/, `${nome} deve ter âncora Objetivo de Valor: no template de bloco`);
+    assert.match(conteudo, /O que ENTRA:/, `${nome} deve ter âncora O que ENTRA: no template de bloco`);
+    assert.match(conteudo, /O que FICA DE FORA:/, `${nome} deve ter âncora O que FICA DE FORA: no template de bloco`);
+  }
+
+  // 3. ciclo-especificacao: consulta obrigatória a docs/catalogo-reuso.md no /fix e no Gate 1
+  assert.match(cicloSkill, /docs\/catalogo-reuso\.md/, 'ciclo-especificacao deve exigir consulta a docs/catalogo-reuso.md');
+});

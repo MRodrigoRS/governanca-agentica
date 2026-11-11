@@ -1,6 +1,6 @@
 ---
 name: inicializar-stack
-description: Conduz entrevista estruturada de produto via protocolo oficial grill-me (árvore de decisão em rodadas com recomendação técnica), refina o que entra e sai do escopo, recomenda stacks/VPS/MCPs do catálogo oficial, instala a base no Gate 0 com skills oficiais upstream e decompõe o sistema inteiro em fatias incrementais detalhadas em openspec/roadmap/.
+description: Conduz entrevista estruturada de produto via protocolo oficial grill-me (árvore de decisão em rodadas com recomendação técnica), refina o que entra e sai do escopo, recomenda stacks/VPS/MCPs do catálogo oficial, instala a base no Gate 0 com skills oficiais upstream e decompõe o sistema inteiro em fatias incrementais Rolling Wave em openspec/roadmap.md.
 ---
 
 # Skill: Inicializar Stack e Decompor Sistema em Fatias (Gate 0)
@@ -62,7 +62,7 @@ Antes de fechar o Gate 0, o agente **DEVE** consolidar a arquitetura macro e div
    - `Depende de:`
    - `Objetivo de Valor:`
    - `Entidades/Contratos Tocados:`
-   - `O que ENTRA:` (mínimo de 3 itens nas próximas fatias)
+   - `O que ENTRA:` (mínimo de 3 itens nas próximas fatias; em projetos visuais/jogos, a Fatia 01 DEVE incluir a definição dos Tokens Base de cores, tipografia, durações e curvas de movimento em `docs/catalogo-reuso.md` conforme Artigo 14)
    - `O que FICA DE FORA:`
 3. **Especificação Técnica Profunda Just-in-Time:** Contratos de API, schemas Zod/Pydantic, estados assíncronos de UI e tarefas Test-First nascem exclusivamente ao abrir o delta da fatia em `openspec/changes/fatia-XX-<slug>/` (eliminando a escrita duplicada).
 
@@ -92,9 +92,9 @@ Após a aprovação no Gate 0:
 
 Imediatamente após a instalação:
 1. Instale as dependências com o gerenciador de pacotes da stack.
-2. Inicialize as integrações nativas de ferramentas do OpenSpec para gerar as skills e comandos `/opsx-*`:
+2. Inicialize as integrações nativas de ferramentas do OpenSpec no Padrão Universal (`AGENTS.md` + `.agents/`) para gerar as skills e comandos `/opsx-*`:
    ```bash
-   npx --yes @fission-ai/openspec init --tools antigravity,claude,cursor,gemini,github-copilot,agents --no-animation --no-copilot-cloud
+   npx --yes @fission-ai/openspec init --tools antigravity,agents --no-animation --no-copilot-cloud
    ```
 3. Instale as Agent Skills oficiais via padrão aberto da indústria (`skills.sh`), incluindo o interrogador canônico `grill-me`:
    ```bash
@@ -110,14 +110,14 @@ Imediatamente após a instalação:
 
 ## Passo 6 — Sedimentação da Documentação e Commit de Fundação (Marco 1)
 
-1. Preencha completamente as seções 1, 2 e 3 do arquivo `openspec/project.md` (Visão Polida, Stack/MCPs e Tabela do Mapa de Fatias Incrementais apontando para `openspec/roadmap/fatia-XX-*.md`).
+1. Preencha as seções 1 e 2 de `openspec/project.md` (Visão Polida e Stack/MCPs; a Seção 3 permanece como ponteiro para `openspec/roadmap.md`), atualize a seção `## Comandos do Projeto` em `AGENTS.md` com os comandos reais da stack instalada, inicialize os diagramas C4 e Glossário em `docs/arquitetura.md` e os ponteiros iniciais em `docs/catalogo-reuso.md`.
 2. Atualize `CHANGELOG.md` na seção `### Adicionado` registrando a inicialização da stack e a sedimentação da documentação e fatiação inicial.
 3. **Marco 1 da Rotina de Commits (Sedimentação e Fundação com Aprovação Humana — Artigo 11):**
    - Apresente ao humano a base instalada e o conjunto de fatias sedimentadas.
-   - Pergunte: *"A documentação inicial, stack e o Mapa de Fatias em `openspec/roadmap/` estão totalmente sedimentados e testados verdes. Você aprova a realização do nosso commit de fundação inicial?"*
+   - Pergunte: *"A documentação inicial, stack e o Mapa de Fatias em `openspec/roadmap.md` estão totalmente sedimentados e testados verdes. Você aprova a realização do nosso commit de fundação inicial?"*
    - **Somente após a aprovação humana explícita**, realize o commit de fundação:
      ```bash
      git add .
      git commit -m "feat(fundacao): inicializa projeto com stack <nome> e roadmap de fatias"
      ```
-4. Informe o humano que a fundação está commitada e protegida, e **já apresente imediatamente a abertura da Fatia 01** (`npx --yes @fission-ai/openspec new change fatia-01-...`) usando o plano detalhado em `openspec/roadmap/fatia-01-*.md`.
+4. Informe o humano que a fundação está commitada e protegida, e **já apresente imediatamente a abertura da Fatia 01** (`npx --yes @fission-ai/openspec new change fatia-01-...`) lendo o bloco correspondente em `openspec/roadmap.md`.

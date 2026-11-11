@@ -53,13 +53,16 @@ Nenhuma conclusão estratégica pode evaporar no histórico do chat. Quando o hu
 ### Gaveta 1: Aprovada para o Plano Atual $\rightarrow$ Vira Bloco no Roadmap (`openspec/roadmap.md`)
 * Para as funcionalidades que o humano decidiu incluir na fila de construção:
   1. Posicione a nova fatia na ordem lógica de dependência técnica no arquivo único `openspec/roadmap.md` (na seção de onda apropriada: Onda 1 Imediata ou Onda 2 Planejada).
-  2. Adicione o bloco com o formato oficial:
+  2. Adicione o bloco com as 4 âncoras obrigatórias auditadas pela governança:
      ```markdown
-     ### fatia-XX-<slug>
-     - **Objetivo**: [MVP cirúrgico do que entra]
-     - **Critérios de Aceite**: [Comportamentos testáveis e verificáveis]
-     - **Dependências Técnicas**: [Fatias prévias, tabelas ou integrações necessárias]
-     - **Status**: [ ] Pendente
+     ### [ ] Pendente — `fatia-XX-<slug>`
+     - **Depende de:** `fatia-YY-<slug>`
+     - **Objetivo de Valor:** [MVP cirúrgico do valor entregue ao usuário]
+     - **Entidades/Contratos Tocados:** [Tabelas, eventos ou telas afetadas]
+     - **O que ENTRA:**
+       1. [Comportamento/entrega 1]
+       2. [Comportamento/entrega 2]
+     - **O que FICA DE FORA:** [Exageros cortados na Mesa-Redonda]
      ```
 
 ### Gaveta 2: Excelente Ideia para o Futuro $\rightarrow$ Vai para `openspec/radar-oportunidades.md`

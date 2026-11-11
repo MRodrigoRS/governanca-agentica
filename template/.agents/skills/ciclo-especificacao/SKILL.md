@@ -15,8 +15,8 @@ Antes de iniciar, determine a via adequada conforme a Matriz de Cerimônia (D14 
 
 ### Via 1a — Correção Funcional Pontual (`fix`)
 * **Quando usar:** Correção de bug de lógica ou cálculo.
-* **Regra estrita:** Toca em **no máximo 3 arquivos de produção** (fora testes), **exige ao menos um arquivo de teste staged** e **não altera** schemas de banco nem adiciona novos pacotes em `package.json`.
-* **Fluxo:** Diagnóstico → Teste que reproduz a falha (**Vermelho**) → Código mínimo (**Verde**) → `CHANGELOG.md` em `### Corrigido` → Gate 2.
+* **Regra estrita:** Toca em **no máximo 3 arquivos de produção** (fora testes), **exige ao menos um arquivo de teste staged**, consulta `docs/catalogo-reuso.md` antes de tocar UI/cenas (Artigo 14) e **não altera** schemas de banco nem adiciona novos pacotes em `package.json`.
+* **Fluxo:** Diagnóstico → Consulta a `docs/catalogo-reuso.md` (se UI/jogo) → Teste que reproduz a falha (**Vermelho**) → Código mínimo (**Verde**) → `CHANGELOG.md` em `### Corrigido` → Gate 2.
 
 ### Via 1b — Ajuste Estético / Copy (`style`)
 * **Quando usar:** Ajuste de cores, fontes, classes CSS/Tailwind ou copy textual.
@@ -45,7 +45,7 @@ Antes de iniciar, determine a via adequada conforme a Matriz de Cerimônia (D14 
 4. Preencha os arquivos da pasta criada em `openspec/changes/fatia-XX-<slug>/` atendendo aos cabeçalhos canônicos e linhas úteis mínimas auditados pela governança:
    - `proposal.md` (mín. 10 linhas): `## Por que` (ou `## Why`), `## O que muda` (ou `## What Changes`) e `## Fica de Fora` (ou `## Out of Scope`).
    - `specs/<dominio>/spec.md`: Deltas com cabeçalhos oficiais (`## ADDED Requirements`), `### Requirement:` e cenários `#### Scenario:` contendo `WHEN` e `THEN` (`GIVEN` recomendado).
-   - `design.md` (mín. 18 linhas): `## Contratos, Dados e Schemas`, `## Interface e Estados Assíncronos` (loading, empty, error, success, Toasts e Modais, ou `Não se aplica: <motivo>`) e `## Regras de Negócio e Segurança`.
+   - `design.md` (mín. 18 linhas): `## Contratos, Dados e Schemas`, `## Interface e Estados Assíncronos` (loading, empty, error, success, Toasts e Modais, mais matriz `Reutilizar vs. Extrair Novo` consultando `docs/catalogo-reuso.md` conforme Artigo 14, ou `Não se aplica: <motivo>`) e `## Regras de Negócio e Segurança`.
    - `tasks.md` (mín. 12 linhas): Checklist `- [ ]` com marcação Test-First (`Vermelho` / `Red`), seção obrigatória `## Roteiro de Validação Prática` e seção `## Notas de Sessão` (decisões fora do plano, bloqueios e próximo passo acionável).
 5. Marque o status da fatia como `[~] Em Andamento` em `openspec/roadmap.md`.
 

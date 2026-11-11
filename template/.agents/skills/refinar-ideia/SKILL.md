@@ -93,13 +93,16 @@ Com base na análise de afinidade, o agente propõe uma das 3 destinações form
 #### Caso A: Extensão Natural de uma Fatia Pendente (Subfatia Alfanumérica `XXa`, `XXb`)
 Se a novidade complementar o trabalho de uma fatia existente (ex.: a ideia envolve produtos e a `fatia-02` ainda está pendente):
 * **Não mande para o fim do roadmap!**
-* Crie uma **subfatia alfanumérica hierárquica** inserindo o bloco diretamente no arquivo único `openspec/roadmap.md` logo após a fatia-mãe:
+* Crie uma **subfatia alfanumérica hierárquica** inserindo o bloco diretamente no arquivo único `openspec/roadmap.md` logo após a fatia-mãe (contendo as 4 âncoras auditadas pela governança):
   ```markdown
-  ### fatia-02a-<slug>
-  - **Objetivo**: [MVP cirúrgico do que entra]
-  - **Critérios de Aceite**: [Comportamentos testáveis]
-  - **Dependências Técnicas**: [Tabelas/APIs da fatia-02 reaproveitadas]
-  - **Status**: [ ] Pendente
+  ### [ ] Pendente — `fatia-02a-<slug>`
+  - **Depende de:** `fatia-02-<slug>`
+  - **Objetivo de Valor:** [MVP cirúrgico do valor entregue ao usuário]
+  - **Entidades/Contratos Tocados:** [Tabelas/APIs da fatia-02 reaproveitadas]
+  - **O que ENTRA:**
+    1. [Comportamento/entrega 1]
+    2. [Comportamento/entrega 2]
+  - **O que FICA DE FORA:** [Itens podados na etapa anterior]
   ```
 * **Vantagem:** A subfatia `02a` será executada imediatamente após a `02`, aproveitando o contexto fresco de código sem exigir renomear as fatias posteriores (03, 04, etc.) e mantendo 100% de compatibilidade com o OpenSpec CLI e Conventional Commits.
 

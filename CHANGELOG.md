@@ -65,6 +65,10 @@ O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.
   - Criação de `tests/desburocratizacao-sdd-v4.test.mjs` com 8 novos testes automatizados cobrindo os cenários de cabeçalhos OpenSpec, preservação retroativa v3, blocos de roadmap, cerimônias Via 1a, 1b e 1.5, elevando a suíte para 56 testes verdes.
 
 ### Modificado
+- **Alinhamento Integral das 7 Skills ao Padrão Universal e Âncoras v4 (`template/.agents/skills/`):**
+  - `inicializar-stack/SKILL.md`: comando `openspec init` ajustado para `--tools antigravity,agents` (evitando recriar pastas proprietárias legadas), instrução de preenchimento de `## Comandos do Projeto` em `AGENTS.md`, `docs/arquitetura.md` e Tokens Base em `docs/catalogo-reuso.md` na Fatia 01.
+  - `refinar-ideia/SKILL.md` e `explorar-produto/SKILL.md`: exemplos de blocos de fatia sincronizados com as 4 âncoras obrigatórias auditadas (`Depende de`, `Objetivo de Valor`, `O que ENTRA`, `O que FICA DE FORA`).
+  - `ciclo-especificacao/SKILL.md`: consulta explícita a `docs/catalogo-reuso.md` na Via 1a (`/fix`) e na matriz `Reutilizar vs. Extrair Novo` do `design.md` (Gate 1).
 - **Reparo de Tags Históricas e SemVer:**
   - Reparo das tags históricas `v3.4.0` a `v3.7.0` no Git.
   - Bump de versão para `4.0.0-alpha.1` no `package.json` e sincronização dos cabeçalhos `governanca:inicio`.
