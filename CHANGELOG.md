@@ -5,9 +5,12 @@ O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.
 
 ---
 
-## [4.0.0] - 2026-11-10
+## [4.0.0] - 2026-11-11
 
 ### Adicionado
+- **Consolidação no Padrão Universal Puro (`AGENTS.md` + `.agents/`) e Fechamento Fino da Auditoria v4.0.0 (`fatia-12`):**
+  - **Padrão Universal Puro (D40):** Eliminação dos 51 arquivos de wrappers proprietários redundantes (`template/CLAUDE.md`, `template/GEMINI.md`, `template/.claude/`, `template/.cursor/`, `template/.vscode/`, `template/.github/copilot-instructions.md`, `template/.github/agents/`, `template/.github/instructions/`, `template/.github/prompts/`), mantendo exclusivamente a estrutura universal agnóstica (`template/AGENTS.md`, `template/.agents/rules/`, `template/.agents/skills/`, `template/.agents/hooks.json` e `template/.mcp.json.jinja`).
+  - **Fechamento das 6 Pendências da Auditoria v4.0.0:** Assert real de versão `v4.0.0` nos cabeçalhos e templates (`project.md.jinja`, `catalogo-stacks.md`), execução rápida poliglota no `pre-commit` de `template/lefthook.yml` (Node, Python `pytest -m "not slow"`, Rust `cargo test --lib`), contrato `@axe-core/playwright` em `catalogo-stacks.md`, cláusula explícita de auditoria de persistência real (SQLite/PGlite) e válvula `governanca:mock-banco-justificado` em `revisar-fatia/SKILL.md`, e validação de migrações (`prisma migrate status` / `alembic`) + `pip-audit`/`cargo audit` em `template/.github/workflows/ci.yml`.
 - **Pirâmide Moderna de Testes (Testing Trophy), Anti-Mock de Banco, CI Poliglota e Graduação v4.0.0 Estável (`fatia-11`):**
   - **Testing Trophy e Anti-Mock de Banco Próprio:** Inclusão no Artigo 2 da Constituição (`template/constitution.md`) e em `template/.agents/rules/backend-seguranca-dados.md.jinja` das 3 camadas (Unitário Puro < 50ms, Integração Real contra SQLite in-memory/PGlite/banco real, e Smoke E2E Crítico + Acessibilidade). Proibição de mockar ou espionar o próprio cliente de banco/ORM (`prisma`, `drizzle`, `db`, `session`, `repository`), com sensor determinístico em `template/scripts/verificar-governanca.mjs` e válvula formal `governanca:mock-banco-justificado:`. Falsos positivos em clientes externos (`requests.Session`, `stripe`) rigorosamente prevenidos.
   - **Fechamento do Furo no Lefthook (`pre-commit` Rápido + `pre-push` Poliglota Completo):** Execução de testes unitários rápidos no `pre-commit` (garantindo o Artigo 4 antes do commit no Marco 2) e suíte poliglota completa no `pre-push` (Node/TS, Python pytest, Rust cargo test, .NET dotnet test e Godot 4 GUT headless com fallback seguro e amigável caso o binário não esteja no PATH local).

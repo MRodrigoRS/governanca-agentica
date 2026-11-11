@@ -7,11 +7,11 @@ import { tmpdir } from 'node:os';
 
 const scriptPath = join(process.cwd(), 'template', 'scripts', 'validar-commit-msg.mjs');
 
-function testarMensagem(msg) {
+function testarMensagem(msg, cwd = tmpdir()) {
   const tmpFile = join(tmpdir(), `test-commit-${Date.now()}-${Math.random().toString(36).slice(2)}.txt`);
   writeFileSync(tmpFile, msg, 'utf8');
   try {
-    const stdout = execSync(`node "${scriptPath}" "${tmpFile}"`, { encoding: 'utf8' });
+    const stdout = execSync(`node "${scriptPath}" "${tmpFile}"`, { cwd, encoding: 'utf8' });
     return { exitCode: 0, stdout };
   } catch (error) {
     return { exitCode: error.status ?? 1, stderr: error.stderr?.toString() ?? '', stdout: error.stdout?.toString() ?? '' };

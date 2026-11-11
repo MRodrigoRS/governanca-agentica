@@ -21,9 +21,9 @@ flowchart TD
 
 ---
 
-## 1. Papel 1: O Subagente Inspetor Forense (Auditoria Cega)
+## 1. Papel 1: O Subagente Inspetor Forense (Auditoria Cega Universal)
 
-O Subagente Inspetor é convocado utilizando a definição oficial de subagente isolado (`.claude/agents/inspetor-forense.md` no Claude Code, `.github/agents/inspetor-forense.agent.md` no Copilot, ou `invoke_subagent` com perfil isolado no Antigravity).
+Quando o humano acionar `/revisar`, convoque um subagente isolado somente-leitura (`invoke_subagent` ou equivalente no harness ativo) passando as diretrizes abaixo.
 
 A convocação é feita com instrução deliberadamente cega: **ele NÃO deve ler os artefatos de planejamento (`openspec/changes/`, `openspec/roadmap.md` nem arquivos legados de roadmap)**. Ele não sabe o que *deveria* ter sido feito, garantindo auditoria 100% imparcial.
 
@@ -55,8 +55,9 @@ Inspecionar o código modificado (`git diff` dos arquivos staged) e traduzir em 
    - Há Modais de Confirmação protegendo ações destrutivas (exclusões, cancelamentos, desativações)?
    - Há indícios de `location.reload` ou atualizações forçadas de tela?
    - O layout é mobile-first e há manifesto PWA se for app web?
-6. **Qualidade dos Testes, Mutação Mental e Saúde Estrutural:**
+6. **Qualidade dos Testes, Persistência Real (Anti-Mock de Banco), Mutação Mental e Saúde Estrutural:**
    - **Asserções Reais vs. Teatro de Testes:** Os testes validam resultados concretos de negócio e persistência, ou limitam-se a asserções fracas (`toBeDefined()`, mocks testando o próprio mock)?
+   - **Fidelidade de Integração (Testing Trophy & Anti-Mock de Banco Próprio):** Os testes de backend/repositório exercitam persistência real (SQLite in-memory, PGlite ou banco local de teste) ou mockaram/espionaram camadas internas do próprio ORM/banco (`vi.mock`, `vi.spyOn(prisma|db...)`, `@patch('app.db.session')`)? Se houver uso da válvula `governanca:mock-banco-justificado`, audite se o motivo técnico (>= 15 caracteres, ex.: teste de falha de socket/driver) é legítimo ou se foi usado para fabricar um falso verde.
    - **Prova de Mutação Mental:** Se um operador condicional crítico (`>=`, `&&`, `!==`) for invertido ou uma validação de guarda for comentada no código de produção, qual teste exato do diff falharia imediatamente? *(Se nenhum teste quebrar, aponte como fragilidade crítica).*
    - **Saúde Estrutural (CRAP & DRY):** Existem funções no diff com excesso de ramificações aninhadas (> 5 `if/else/switch`) sem testes proporcionais para cada ramo, ou blocos de lógica duplicados?
 7. **Lacunas, Mocks e Pendências Factualmente Observadas:**

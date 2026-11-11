@@ -42,8 +42,6 @@ jobs:
           test -f /tmp/teste-governanca/CHANGELOG.md
           test -f /tmp/teste-governanca/openspec/config.yaml
           test -f /tmp/teste-governanca/.agents/hooks.json
-          test -f /tmp/teste-governanca/.claude/settings.json
-          test -f /tmp/teste-governanca/.claude/agents/inspetor-forense.md
           test -f /tmp/teste-governanca/.mcp.json
           test -d /tmp/teste-governanca/openspec
           test -f /tmp/teste-governanca/openspec/roadmap.md

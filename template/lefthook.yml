@@ -36,10 +36,10 @@ pre-commit:
 
     unit-tests:
       tags: tests unit
-      run: npm test --if-present
-      fail_text: "Falha na execução dos testes unitários!"
+      run: node -e "const { execSync } = require('node:child_process'); const fs = require('node:fs'); if (fs.existsSync('package.json')) { execSync('npm run --if-present test:unit || npm test --if-present', { stdio: 'inherit' }); } if (fs.existsSync('pyproject.toml')) { execSync('uv run pytest -m \"not slow\" || pytest -m \"not slow\"', { stdio: 'inherit' }); } if (fs.existsSync('Cargo.toml')) { execSync('cargo test --lib', { stdio: 'inherit' }); }"
+      fail_text: "Falha na execução dos testes unitários rápidos no pre-commit!"
       skip:
-        - run: node -e "process.exit(require('node:fs').existsSync('package.json') ? 1 : 0);"
+        - run: node -e "const fs = require('node:fs'); const temStack = fs.existsSync('package.json') || fs.existsSync('pyproject.toml') || fs.existsSync('Cargo.toml'); process.exit(temStack ? 1 : 0);"
 
 commit-msg:
   commands:

@@ -1,7 +1,7 @@
 # piramide-testes-e-ci Specification
 
 ## Purpose
-TBD - created by archiving change fatia-11-piramide-testes-anti-mock-e-ci-poliglota. Update Purpose after archive.
+Define a pirâmide moderna de testes (*Testing Trophy*), o sensor anti-mocking de banco próprio, a dupla proteção do Lefthook (`pre-commit` + `pre-push`) e o CI poliglota da Governança v4.0.0.
 
 ## Requirements
 

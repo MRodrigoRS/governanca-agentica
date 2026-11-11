@@ -47,65 +47,49 @@ function criarRepoTemporario() {
   };
 }
 
-test('deve_ter_paridade_de_comandos_nos_3_harnesses_apontando_para_skills_existentes', () => {
-  const comandosEstaticos = [
-    'fix',
-    'proxima-fatia',
-    'retomar',
-    'revisar',
-    'grill-me',
-    'refinar',
-    'explorar',
-    'aprendizado',
-    'atualizar-governanca'
-  ];
-
+test('deve_ter_comandos_universais_em_agents_md_apontando_para_skills_sem_wrappers_proprietarios', () => {
   const dirClaude = join(process.cwd(), 'template', '.claude', 'commands');
   const dirCopilot = join(process.cwd(), 'template', '.github', 'prompts');
   const dirCursor = join(process.cwd(), 'template', '.cursor', 'commands');
 
-  // Checa existência dos diretórios de comandos
-  assert.ok(existsSync(dirClaude), 'template/.claude/commands deve existir');
-  assert.ok(existsSync(dirCopilot), 'template/.github/prompts deve existir');
-  assert.ok(existsSync(dirCursor), 'template/.cursor/commands deve existir');
+  // No Padrão Universal Puro, diretórios proprietários de comandos não devem existir
+  assert.strictEqual(existsSync(dirClaude), false, 'template/.claude/commands não deve existir');
+  assert.strictEqual(existsSync(dirCopilot), false, 'template/.github/prompts não deve existir');
+  assert.strictEqual(existsSync(dirCursor), false, 'template/.cursor/commands não deve existir');
 
-  for (const cmd of comandosEstaticos) {
-    const arqClaude = join(dirClaude, `${cmd}.md`);
-    const arqCopilot = join(dirCopilot, `${cmd}.prompt.md`);
-    const arqCursor = join(dirCursor, `${cmd}.md`);
-
-    assert.ok(existsSync(arqClaude), `Claude deve ter comando ${cmd}.md`);
-    assert.ok(existsSync(arqCopilot), `Copilot deve ter prompt ${cmd}.prompt.md`);
-    assert.ok(existsSync(arqCursor), `Cursor deve ter comando ${cmd}.md`);
-
-    const conteudoClaude = readFileSync(arqClaude, 'utf8');
-    const conteudoCopilot = readFileSync(arqCopilot, 'utf8');
-    const conteudoCursor = readFileSync(arqCursor, 'utf8');
-
-    // Teto estrito de 20 linhas por wrapper
-    assert.ok(conteudoClaude.split('\n').length <= 20, `${arqClaude} deve ter no máximo 20 linhas`);
-    assert.ok(conteudoCopilot.split('\n').length <= 20, `${arqCopilot} deve ter no máximo 20 linhas`);
-    assert.ok(conteudoCursor.split('\n').length <= 20, `${arqCursor} deve ter no máximo 20 linhas`);
-
-    // Frontmatter de cada harness
-    assert.match(conteudoClaude, /description:/i, `${arqClaude} deve ter frontmatter description`);
-    assert.match(conteudoCopilot, /mode:\s*agent/i, `${arqCopilot} deve ter frontmatter mode: agent`);
-    assert.match(conteudoCopilot, /description:/i, `${arqCopilot} deve ter frontmatter description`);
-  }
-
-  // Comando condicional linear-inbox (.jinja)
-  assert.ok(existsSync(join(dirClaude, 'linear-inbox.md.jinja')), 'Claude deve ter linear-inbox.md.jinja');
-  assert.ok(existsSync(join(dirCopilot, 'linear-inbox.prompt.md.jinja')), 'Copilot deve ter linear-inbox.prompt.md.jinja');
-  assert.ok(existsSync(join(dirCursor, 'linear-inbox.md.jinja')), 'Cursor deve ter linear-inbox.md.jinja');
-
-  // Tabela canônica de comandos em AGENTS.md
+  // Tabela canônica de comandos em AGENTS.md apontando para skills reais em .agents/skills/
   const agentsPath = join(process.cwd(), 'template', 'AGENTS.md');
   const agentsContent = readFileSync(agentsPath, 'utf8');
-  assert.ok(agentsContent.includes('/fix'), 'AGENTS.md deve listar /fix');
-  assert.ok(agentsContent.includes('/proxima-fatia'), 'AGENTS.md deve listar /proxima-fatia');
-  assert.ok(agentsContent.includes('/retomar'), 'AGENTS.md deve listar /retomar');
-  assert.ok(agentsContent.includes('/grill-me'), 'AGENTS.md deve listar /grill-me');
-  assert.ok(agentsContent.includes('/linear-inbox'), 'AGENTS.md deve listar /linear-inbox');
+  const comandosEsperados = [
+    '/fix',
+    '/proxima-fatia',
+    '/retomar',
+    '/revisar',
+    '/auditar-reuso',
+    '/grill-me',
+    '/refinar',
+    '/explorar',
+    '/aprendizado',
+    '/atualizar-governanca',
+    '/linear-inbox'
+  ];
+  for (const cmd of comandosEsperados) {
+    assert.ok(agentsContent.includes(cmd), `AGENTS.md deve listar o comando universal ${cmd}`);
+  }
+
+  const skillsEsperadas = [
+    'ciclo-especificacao',
+    'revisar-fatia',
+    'reuso-e-modularizacao',
+    'refinar-ideia',
+    'explorar-produto',
+    'atualizar-governanca',
+    'inicializar-stack'
+  ];
+  for (const skill of skillsEsperadas) {
+    const camSkill = join(process.cwd(), 'template', '.agents', 'skills', skill, 'SKILL.md');
+    assert.ok(existsSync(camSkill), `Skill universal ${skill}/SKILL.md deve existir`);
+  }
 });
 
 test('deve_injetar_progresso_e_proximo_passo_no_session_start', () => {

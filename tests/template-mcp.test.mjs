@@ -3,12 +3,15 @@ import assert from 'node:assert';
 import fs from 'node:fs';
 import path from 'node:path';
 
-describe('template: mcp configs jinja', () => {
+describe('template: mcp configs jinja (Padrao Universal)', () => {
   const mcpFiles = [
-    'template/.mcp.json.jinja',
-    'template/.cursor/mcp.json.jinja',
-    'template/.vscode/mcp.json.jinja'
+    'template/.mcp.json.jinja'
   ];
+
+  test('nao deve manter wrappers proprietarios de MCP (.cursor/mcp.json.jinja e .vscode/mcp.json.jinja)', () => {
+    assert.strictEqual(fs.existsSync(path.resolve(process.cwd(), 'template/.cursor/mcp.json.jinja')), false, '.cursor/mcp.json.jinja deve ser removido');
+    assert.strictEqual(fs.existsSync(path.resolve(process.cwd(), 'template/.vscode/mcp.json.jinja')), false, '.vscode/mcp.json.jinja deve ser removido');
+  });
 
   for (const relPath of mcpFiles) {
     test(`renderiza JSON válido com integrar_linear = false em ${relPath}`, () => {

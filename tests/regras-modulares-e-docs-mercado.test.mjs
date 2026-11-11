@@ -91,17 +91,14 @@ test('deve_renderizar_modulos_conforme_perfil_e_wrappers_sem_duplicacao', () => 
   const linear = readFileSync(join(dirRules, 'linear-mcp.md.jinja'), 'utf8');
   assert.ok(linear.includes('trigger: model_decision'), 'linear deve ter trigger model_decision');
 
-  // 3. Checa wrappers finos (< 15 linhas)
+  // 3. Padrão Universal Puro: garante ausência de wrappers proprietários de regras
   const dirClaude = join(process.cwd(), 'template', '.claude', 'rules');
   const dirCursor = join(process.cwd(), 'template', '.cursor', 'rules');
   const dirGithub = join(process.cwd(), 'template', '.github', 'instructions');
 
-  assert.ok(existsSync(join(dirClaude, 'web-ui-pwa.md.jinja')), 'wrapper claude web-ui deve existir');
-  assert.ok(existsSync(join(dirCursor, 'web-ui-pwa.mdc.jinja')), 'wrapper cursor web-ui deve existir');
-  assert.ok(existsSync(join(dirGithub, 'web-ui-pwa.instructions.md.jinja')), 'wrapper github web-ui deve existir');
-
-  const linhasWrapperClaude = readFileSync(join(dirClaude, 'web-ui-pwa.md.jinja'), 'utf8').trim().split('\n').length;
-  assert.ok(linhasWrapperClaude <= 15, `wrapper claude deve ter <= 15 linhas, teve ${linhasWrapperClaude}`);
+  assert.strictEqual(existsSync(dirClaude), false, 'template/.claude/rules nao deve existir no Padrao Universal');
+  assert.strictEqual(existsSync(dirCursor), false, 'template/.cursor/rules nao deve existir no Padrao Universal');
+  assert.strictEqual(existsSync(dirGithub), false, 'template/.github/instructions nao deve existir no Padrao Universal');
 });
 
 test('deve_bloquear_variavel_ambiente_omitida_ou_segredo_real_no_env_example', () => {
@@ -262,6 +259,22 @@ test('deve_fornecer_kit_de_docs_comandos_do_projeto_e_gitignore', () => {
 test('deve_sincronizar_versao_em_cabecalhos_e_preservar_historico', () => {
   const pkg = JSON.parse(readFileSync(join(process.cwd(), 'package.json'), 'utf8'));
   const versao = pkg.version;
+
+  // 0. Validação real de sincronia de versão nos cabeçalhos universais e templates
+  const agentsMd = readFileSync(join(process.cwd(), 'template', 'AGENTS.md'), 'utf8');
+  const constitutionMd = readFileSync(join(process.cwd(), 'template', 'constitution.md'), 'utf8');
+  const projectJinja = readFileSync(join(process.cwd(), 'template', 'openspec', 'project.md.jinja'), 'utf8');
+  const catalogoStacks = readFileSync(join(process.cwd(), 'template', '.agents', 'skills', 'inicializar-stack', 'references', 'catalogo-stacks.md'), 'utf8');
+
+  assert.ok(agentsMd.includes(`governanca:inicio v${versao}`), `template/AGENTS.md deve ter cabeçalho v${versao}`);
+  assert.ok(constitutionMd.includes(`governanca:inicio v${versao}`), `template/constitution.md deve ter cabeçalho v${versao}`);
+  assert.ok(projectJinja.includes(`Governança v${versao}`), `project.md.jinja deve referenciar Governança v${versao}`);
+  assert.ok(catalogoStacks.includes(`Governança v${versao}`), `catalogo-stacks.md deve referenciar Governança v${versao}`);
+
+  // Garante remoção de CLAUDE.md, GEMINI.md e copilot-instructions.md redundantes
+  assert.strictEqual(existsSync(join(process.cwd(), 'template', 'CLAUDE.md')), false, 'template/CLAUDE.md deve ser removido');
+  assert.strictEqual(existsSync(join(process.cwd(), 'template', 'GEMINI.md')), false, 'template/GEMINI.md deve ser removido');
+  assert.strictEqual(existsSync(join(process.cwd(), 'template', '.github', 'copilot-instructions.md')), false, 'copilot-instructions.md deve ser removido');
 
   // 1. Arquivamento dos 8 arquivos históricos
   const dirHistorico = join(process.cwd(), 'docs', 'historico');

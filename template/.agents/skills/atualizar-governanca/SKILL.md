@@ -50,7 +50,7 @@ Se o projeto estiver migrando da Governança v3 para a v4, siga estes passos par
 
 Inspecione as alterações usando `git status` e `git diff`:
 
-* **Arquivos da Governança (Substituídos):** `scripts/` (incluindo `scripts/lib/`), `lefthook.yml`, `.github/workflows/ci.yml`, ponteiros (`CLAUDE.md`, `GEMINI.md`, etc.). Devem receber as novidades oficiais.
+* **Arquivos da Governança (Substituídos):** `scripts/` (incluindo `scripts/lib/`), `lefthook.yml`, `.github/workflows/ci.yml`, `.agents/rules/`, `.agents/skills/` e `.agents/hooks.json`. Devem receber as novidades oficiais no Padrão Universal (`AGENTS.md` + `.agents/`).
 * **Arquivos Mistos (Mesclados):** `AGENTS.md` e `constitution.md`. Verifique se o bloco `<!-- governanca:inicio ... -->` foi atualizado (com o novo Cartão de Invariantes e Emenda por Re-mapeamento) e se a seção `## Cláusulas Adicionais Deste Projeto` foi mantida intacta.
 * **Arquivos do Projeto (Intocados):** `openspec/`, `docs/adr/`, `CHANGELOG.md` e código-fonte. Não devem sofrer alterações involuntárias do template.
 

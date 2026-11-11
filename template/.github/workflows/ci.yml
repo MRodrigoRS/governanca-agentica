@@ -80,6 +80,7 @@ jobs:
             if npm run | grep -q "lint"; then npm run lint; fi
             if npm run | grep -q "test"; then npm test; fi
             if npm run | grep -q "build"; then npm run build; fi
+            if [ -f "prisma/schema.prisma" ] && [ -n "$DATABASE_URL" ]; then npx prisma migrate status; fi
             npm audit --omit=dev --audit-level=high || true
           fi
 
@@ -90,12 +91,15 @@ jobs:
             uv sync --frozen || uv sync
             if uv run ruff --version >/dev/null 2>&1; then uv run ruff check .; fi
             if uv run pytest --version >/dev/null 2>&1; then uv run pytest; fi
+            if [ -f "alembic.ini" ]; then uv run alembic check || true; fi
+            if uv run pip-audit --version >/dev/null 2>&1; then uv run pip-audit || true; fi
           fi
 
       - name: Executar Checagens Rust / Tauri (se Cargo.toml existir)
         run: |
           if [ -f "Cargo.toml" ]; then
             cargo test --locked || cargo test
+            if command -v cargo-audit >/dev/null 2>&1; then cargo audit || true; fi
           fi
           if [ -f "src-tauri/Cargo.toml" ]; then
             cargo test --manifest-path src-tauri/Cargo.toml

@@ -185,8 +185,11 @@ test('deve_configurar_testes_no_pre_commit_e_pre_push_do_lefthook', () => {
   const conteudoTemplate = readFileSync(caminhoLefthookTemplate, 'utf8');
   const conteudoRaiz = readFileSync(caminhoLefthookRaiz, 'utf8');
 
-  // pre-commit deve ter testes unitários rápidos
-  assert.match(conteudoTemplate, /pre-commit:[\s\S]*?(?:unit-tests|test)/, 'template pre-commit deve rodar testes');
+  // pre-commit deve ter testes unitários rápidos poliglotas (Node, Python pytest e Rust cargo test)
+  const blocoPreCommit = conteudoTemplate.split('commit-msg:')[0];
+  assert.match(blocoPreCommit, /unit-tests:/, 'template pre-commit deve ter comando unit-tests');
+  assert.match(blocoPreCommit, /pytest/, 'template pre-commit deve suportar pytest rápido');
+  assert.match(blocoPreCommit, /cargo test/, 'template pre-commit deve suportar cargo test rápido');
   assert.match(conteudoRaiz, /pre-commit:[\s\S]*?(?:unit-tests|test)/, 'raiz pre-commit deve rodar testes');
 
   // pre-push deve existir em ambos
@@ -217,15 +220,19 @@ test('deve_garantir_ci_poliglota_lockfile_estrito_e_validacao_commit_msg', () =>
   // Deve executar validar-commit-msg.mjs
   assert.match(conteudoCiTemplate, /validar-commit-msg\.mjs/, 'CI do template deve rodar validar-commit-msg.mjs');
 
-  // Cobertura poliglota
+  // Cobertura poliglota + migrações + auditoria de CVEs
   assert.match(conteudoCiTemplate, /gut_cmdln\.gd|godot/i, 'CI do template deve ter suporte a Godot GUT headless');
   assert.match(conteudoCiTemplate, /dotnet test/i, 'CI do template deve ter suporte a .NET');
   assert.match(conteudoCiTemplate, /pytest|uv run/i, 'CI do template deve ter suporte a Python');
   assert.match(conteudoCiTemplate, /cargo test/i, 'CI do template deve ter suporte a Rust');
+  assert.match(conteudoCiTemplate, /pip-audit/i, 'CI do template deve incluir pip-audit para Python');
+  assert.match(conteudoCiTemplate, /cargo audit/i, 'CI do template deve incluir cargo audit para Rust');
+  assert.match(conteudoCiTemplate, /migrate status|alembic/i, 'CI do template deve validar migrações limpas');
 
-  // CI da raiz deve testar artefatos da v4 no Copier
+  // CI da raiz deve testar artefatos da v4 no Copier sem exigir .claude legado
   assert.match(conteudoCiRaiz, /catalogo-reuso\.md/, 'CI da raiz deve verificar catalogo-reuso.md no teste do Copier');
   assert.match(conteudoCiRaiz, /roadmap\.md/, 'CI da raiz deve verificar roadmap.md no teste do Copier');
+  assert.doesNotMatch(conteudoCiRaiz, /\.claude\//, 'CI da raiz não deve exigir .claude/ removido no Padrão Universal');
 });
 
 test('deve_formalizar_subagente_opcional_sob_demanda_e_graduar_versao_v4_estavel', () => {
@@ -237,6 +244,15 @@ test('deve_formalizar_subagente_opcional_sob_demanda_e_graduar_versao_v4_estavel
   // AGENTS.md
   const agentsMd = readFileSync(join(dirTemplate, 'AGENTS.md'), 'utf8');
   assert.match(agentsMd, /\/revisar/i, 'AGENTS.md deve documentar /revisar para auditoria sob demanda');
+
+  // revisar-fatia/SKILL.md deve auditar persistência real vs mocks de banco e válvula mock-banco-justificado
+  const revisarSkill = readFileSync(join(dirTemplate, '.agents', 'skills', 'revisar-fatia', 'SKILL.md'), 'utf8');
+  assert.match(revisarSkill, /governanca:mock-banco-justificado/i, 'revisar-fatia/SKILL.md deve auditar a válvula governanca:mock-banco-justificado');
+  assert.match(revisarSkill, /SQLite|PGlite/i, 'revisar-fatia/SKILL.md deve mencionar persistência real (SQLite/PGlite)');
+
+  // catalogo-stacks.md deve conter contrato @axe-core/playwright
+  const catalogoStacks = readFileSync(join(dirTemplate, '.agents', 'skills', 'inicializar-stack', 'references', 'catalogo-stacks.md'), 'utf8');
+  assert.match(catalogoStacks, /@axe-core\/playwright/i, 'catalogo-stacks.md deve documentar @axe-core/playwright nos Smoke Tests Web');
 
   // package.json na raiz deve estar na versão estável 4.0.0
   const pkgRaiz = JSON.parse(readFileSync(join(process.cwd(), 'package.json'), 'utf8'));

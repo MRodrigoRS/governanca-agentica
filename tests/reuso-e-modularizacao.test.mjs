@@ -319,13 +319,12 @@ test('deve_conter_catalogo_skill_comando_artigo_14_e_paridade_forense', () => {
   assert.match(conteudoSkill, /auditar-reuso/i);
   assert.match(conteudoSkill, /Godot/i);
 
-  // 3. Wrappers do comando /auditar-reuso nos 3 harnesses
-  const camClaude = join(dirTemplate, '.claude', 'commands', 'auditar-reuso.md');
-  const camCopilot = join(dirTemplate, '.github', 'prompts', 'auditar-reuso.prompt.md');
-  const camCursor = join(dirTemplate, '.cursor', 'commands', 'auditar-reuso.md');
-  assert.ok(existsSync(camClaude), 'wrapper claude deve existir');
-  assert.ok(existsSync(camCopilot), 'wrapper copilot deve existir');
-  assert.ok(existsSync(camCursor), 'wrapper cursor deve existir');
+  // 3. Comando /auditar-reuso em AGENTS.md (sem wrappers proprietários)
+  const agentsContent = readFileSync(join(dirTemplate, 'AGENTS.md'), 'utf8');
+  assert.ok(agentsContent.includes('/auditar-reuso'), 'AGENTS.md deve conter /auditar-reuso');
+  assert.strictEqual(existsSync(join(dirTemplate, '.claude')), false, 'template/.claude não deve existir');
+  assert.strictEqual(existsSync(join(dirTemplate, '.cursor')), false, 'template/.cursor não deve existir');
+  assert.strictEqual(existsSync(join(dirTemplate, '.github', 'agents')), false, 'template/.github/agents não deve existir');
 
   // 4. Artigo 14 na Constituição e referência no Artigo 1.2
   const camConst = join(dirTemplate, 'constitution.md');
@@ -335,11 +334,7 @@ test('deve_conter_catalogo_skill_comando_artigo_14_e_paridade_forense', () => {
   assert.match(conteudoConst, /Component-as-Asset/i);
   assert.match(conteudoConst, /Tokens de Movimento/i);
 
-  // 5. Paridade tripla nos perfis do Inspetor Forense
-  const camInspClaude = join(dirTemplate, '.claude', 'agents', 'inspetor-forense.md');
-  const camInspCopilot = join(dirTemplate, '.github', 'agents', 'inspetor-forense.agent.md');
+  // 5. Auditoria Forense consolidada na skill universal revisar-fatia/SKILL.md
   const camInspSkill = join(dirTemplate, '.agents', 'skills', 'revisar-fatia', 'SKILL.md');
-  assert.match(readFileSync(camInspClaude, 'utf8'), /reúso|monólito|catraca/i);
-  assert.match(readFileSync(camInspCopilot, 'utf8'), /reúso|monólito|catraca/i);
   assert.match(readFileSync(camInspSkill, 'utf8'), /reúso|monólito|catraca/i);
 });

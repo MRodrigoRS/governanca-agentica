@@ -17,7 +17,7 @@
 
 ### Matriz Universal de Leitura Pré-Edição
 
-Antes de editar qualquer arquivo, o agente DEVE consultar as regras do módulo correspondente em `.agents/rules/` (ou wrappers em `.claude/rules/`, `.cursor/rules/`, `.github/instructions/`):
+Antes de editar qualquer arquivo, o agente DEVE consultar as regras do módulo correspondente em `.agents/rules/`:
 
 | Intenção ou Arquivos Tocados | Módulo de Regras Obrigatório | O que verificar antes de codificar |
 |---|---|---|
@@ -31,7 +31,7 @@ Antes de editar qualquer arquivo, o agente DEVE consultar as regras do módulo c
 ## 1. Postura Profissional e Idioma
 
 1. **Dever de Crítica e Honestidade Radical:** Nunca adultere elogios ou finja conformidade. Aponte falhas de arquitetura, inconsistências de requisitos e complexidade desnecessária antes de escrever código. Declare abertamente o que foi testado e o que não foi.
-2. **Zero-Trust no Agente:** Todo commit e ação crítica é inspecionado por hooks determinísticos (`.agents/hooks.json`, `.claude/settings.json`, `Lefthook + Gitleaks + verificar-governanca.mjs`). Se violar qualquer cláusula, a operação será bloqueada (`exit 1` / `deny`).
+2. **Zero-Trust no Agente:** Todo commit e ação crítica é inspecionado por hooks determinísticos (`.agents/hooks.json`, `Lefthook + Gitleaks + verificar-governanca.mjs`). Se violar qualquer cláusula, a operação será bloqueada (`exit 1` / `deny`).
 3. **As 3 Posturas Sequenciais:**
    - **Produto:** Compreender o problema, regras de negócio e critérios de aceite sem discutir código.
    - **Arquitetura:** Definir contratos de dados, interfaces, schemas, riscos e registrar ADRs em `docs/adr/` quando a decisão for estrutural (Gate 1).
@@ -117,8 +117,8 @@ Ao ser iniciado em um repositório, identifique o estado atual antes de agir:
 - **Catálogo de Reúso e Tokens:** Arquivo `docs/catalogo-reuso.md` (inventário vivo de primitivos, tokens de movimento e prefabs; consulta obrigatória antes de codificar conforme Artigo 14).
 - **Particularidades Operacionais e de Ambiente:** Arquivo `docs/particularidades.md` (leitura sob demanda antes de alterar infraestrutura, portas, variáveis de ambiente ou integrações externas).
 - **Diário de Aprendizados e Cicatrizes:** Arquivo `docs/aprendizados.md` (leitura mandatória no Gate 1 para prevenir reincidência de armadilhas empíricas catalogadas).
-- **Hooks Nativos de Agente:** Arquivo `.agents/hooks.json` e `.claude/settings.json`.
-- **Subagente Inspetor Forense:** `.claude/agents/inspetor-forense.md` e `.github/agents/inspetor-forense.agent.md`.
+- **Hooks Nativos de Agente:** Arquivo `.agents/hooks.json` acionando `scripts/hook-agente.mjs`.
+- **Auditoria Forense Cega (Sob Demanda via `/revisar`):** Protocolo universal consolidado em `.agents/skills/revisar-fatia/SKILL.md`.
 - **Servidores MCP Oficiais (.mcp.json):**
   - `context7`: Consulta a documentações técnicas oficiais e atualizadas.
   - `linear` (opcional/configurado): Coordenação de backlog, issues e **Diário de Bordo** da equipe.
@@ -136,9 +136,9 @@ Ao ser iniciado em um repositório, identifique o estado atual antes de agir:
   - *Teto Estrito de MCPs (3 a 5 Servidores Ativos):* Evite manter dezenas de servidores MCP ativos simultaneamente. Cada ferramenta anunciada consome tokens na janela de contexto a cada turno e degrada a capacidade de raciocínio do modelo. Mantenha de 3 a 5 servidores essenciais por projeto (ex.: `context7`, `linear`, `playwright`).
   - *Credenciais Read-Only em Bancos de Dados:* Servidores MCP conectados a bancos relacionais (Postgres, SQLite, Supabase) devem utilizar credenciais estritamente de leitura (*read-only*), garantindo que mutações e migrações passem obrigatoriamente pelos testes e código versionado da aplicação.
 
-### Comandos de Atalho Rápidos (Multi-Harness)
+### Comandos de Atalho Rápidos (Padrão Universal `AGENTS.md` + `.agents/skills/`)
 
-Os comandos abaixo estão disponíveis em `.claude/commands/`, `.github/prompts/` e `.cursor/commands/` (e mapeados nativamente no Antigravity):
+Os comandos abaixo são mapeados universalmente por `AGENTS.md` para as skills em `.agents/skills/`:
 
 | Comando | Finalidade / Skill Acionada | Quando utilizar |
 |---|---|---|

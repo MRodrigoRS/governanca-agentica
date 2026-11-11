@@ -92,3 +92,19 @@
   3. **CI Poliglota Íntegro (`template/.github/workflows/ci.yml` e `.github/workflows/ci.yml`):** Exigência determinística de lockfile (sem `npm ci || npm install`), execução de `validar-commit-msg.mjs` no CI, cobertura nativa para **Godot 4 (GUT headless)** e **.NET / Avalonia (`dotnet test`)**, validação de migrações, auditoria de CVEs e validação dos artefatos v4 no job Copier da própria governança.
   4. **Qualidade Web Real (Smoke E2E + `@axe-core/playwright`) e Fechamento `v4.0.0` Estável:** Padrão oficial de Smoke Test Playwright (viewports `320x640` e `1280x800`, zero overflow, `pageerror` e Axe) e graduação final da versão para `4.0.0` estável com tag `v4.0.0`.
 - **O que FICA DE FORA:** Frameworks lentos de mutação física (Stryker/Mutmut) no pre-commit ou cobertura 100% E2E para cada botão secundário.
+
+---
+
+### `[x] Concluído` — `fatia-12-consolidacao-padrao-universal-agents`
+- **Depende de:** `fatia-11-piramide-testes-anti-mock-e-ci-poliglota`
+- **Objetivo de Valor:** Eliminar a proliferação de ~50 wrappers proprietários de harnesses (`CLAUDE.md`, `GEMINI.md`, `.cursor/`, `.vscode/`, `.claude/`, `.github/prompts|instructions|agents|copilot-instructions.md`) consolidando o template no **Padrão Universal Puro** (`AGENTS.md` + `.agents/rules/` + `.agents/skills/` + `.agents/hooks.json` + `.mcp.json.jinja`), e fechar as 6 pendências residuais identificadas na auditoria de fechamento da `v4.0.0`.
+- **O que ENTRA:**
+  1. **Consolidação Universal (`AGENTS.md` + `.agents/`):** Remoção integral dos diretórios e arquivos wrappers proprietários (`template/CLAUDE.md`, `template/GEMINI.md`, `template/.claude/`, `template/.cursor/`, `template/.vscode/`, `template/.github/copilot-instructions.md`, `template/.github/agents/`, `template/.github/instructions/`, `template/.github/prompts/`), mantendo exclusivamente `template/AGENTS.md`, `template/.agents/` (`rules/`, `skills/`, `hooks.json`), `template/.mcp.json.jinja` e `template/.github/workflows/ci.yml` + `pull_request_template.md`.
+  2. **Fechamento das 6 Pendências da Auditoria `v4.0.0`:**
+     - Assert real de sincronia de versão `4.0.0` nos cabeçalhos `governanca:inicio` e em `template/openspec/project.md.jinja` / `catalogo-stacks.md`.
+     - Item explícito de auditoria de *Anti-Mock de Banco Próprio* e válvula `governanca:mock-banco-justificado` em `template/.agents/skills/revisar-fatia/SKILL.md`.
+     - Execução poliglota rápida no `pre-commit` de `template/lefthook.yml` (Node, Python `pytest -m "not slow"`, Rust `cargo test --lib`).
+     - Contrato `@axe-core/playwright` espelhado em `template/.agents/skills/inicializar-stack/references/catalogo-stacks.md`.
+     - Passos de validação de migrações e `pip-audit`/`cargo audit` em `template/.github/workflows/ci.yml` e limpeza de asserções legadas no `.github/workflows/ci.yml` da raiz.
+     - Atualização das suítes de teste e documentação (`00_INDICE_E_DECISOES.md` D40 e `CHANGELOG.md`).
+- **O que FICA DE FORA:** Criação de novos sensores no verificador ou alteração nos contratos de `classificar-cerimonia.mjs`.

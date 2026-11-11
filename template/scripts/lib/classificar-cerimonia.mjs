@@ -202,7 +202,7 @@ export function validarCerimoniaNoCommit(cwd, tipo, escopo, descricao) {
   const manifestosNaoNpm = staged.filter(ehManifestoNaoNpm);
   const temPackageJson = staged.some((f) => f.toLowerCase() === 'package.json');
 
-  // Checa se há delta ativo no OpenSpec
+  // Checa se há delta ativo ou arquivamento de delta neste commit (Via 2 — Feature Just-in-Time)
   const pastaChanges = join(cwd, 'openspec', 'changes');
   let temDeltaAtivo = false;
   if (existsSync(pastaChanges)) {
@@ -215,8 +215,10 @@ export function validarCerimoniaNoCommit(cwd, tipo, escopo, descricao) {
     } catch {}
   }
 
-  // Se já há delta ativo, estamos na Via 2 (Feature Just-in-Time)
-  if (temDeltaAtivo) {
+  const arquivandoDelta = staged.some((f) => f.startsWith('openspec/changes/archive/'));
+
+  // Se já há delta ativo ou estamos concluindo/arquivando um delta, estamos na Via 2 (Feature Just-in-Time)
+  if (temDeltaAtivo || arquivandoDelta) {
     return { valida: true, via: '2' };
   }
 
