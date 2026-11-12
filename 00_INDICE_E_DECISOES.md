@@ -1,4 +1,4 @@
-# Índice e Registro de Decisões — Governança v2
+# Índice e Registro de Decisões — Governança Agêntica (v4.0.0)
 
 > **Ponto de entrada do planejamento.** Leia este arquivo primeiro em qualquer sessão nova.
 > **Última atualização:** 10/11/2026 (após [revisão](docs/historico/REVISAO_2026-10-27.md))
