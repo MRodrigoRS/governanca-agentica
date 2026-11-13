@@ -43,6 +43,11 @@ Se o projeto estiver migrando da Governança v3 para a v4, siga estes passos par
    - Na Seção 3 de `openspec/project.md`, remova a tabela estática redundante e aponte para `openspec/roadmap.md`.
 5. **Aproveitamento da Via 1.5:**
    - Refatorações e bumps de versões já presentes em `package.json` agora podem ser comitados sem delta artificial usando os tipos convencionais `refactor`, `perf`, `style`, `chore` e `build`.
+6. **Instalação das Agent Skills Upstream (`grill-me` / `grilling`):**
+   - Caso a pasta `.agents/skills/grill-me/` ainda não exista no repositório alvo após a atualização, instale o pacote canônico via `skills.sh`:
+     ```bash
+     npx --yes skills add mattpocock/skills --skill grill-me grilling -y
+     ```
 
 ---
 
@@ -50,7 +55,7 @@ Se o projeto estiver migrando da Governança v3 para a v4, siga estes passos par
 
 Inspecione as alterações usando `git status` e `git diff`:
 
-* **Arquivos da Governança (Substituídos):** `scripts/` (incluindo `scripts/lib/`), `lefthook.yml`, `.github/workflows/ci.yml`, `.agents/rules/`, `.agents/skills/` e `.agents/hooks.json`. Devem receber as novidades oficiais no Padrão Universal (`AGENTS.md` + `.agents/`).
+* **Arquivos da Governança (Substituídos):** `scripts/` (incluindo `scripts/lib/`), `lefthook.yml`, `.github/workflows/ci.yml`, `.agents/rules/`, `.agents/skills/` e `.agents/hooks.json`. Devem receber as novidades oficiais no Padrão Universal (`AGENTS.md` + `.agents/`). Skills externas instaladas via `skills.sh` em `.agents/skills/` (como `grill-me`) devem ser preservadas após o merge.
 * **Arquivos Mistos (Mesclados):** `AGENTS.md` e `constitution.md`. Verifique se o bloco `<!-- governanca:inicio ... -->` foi atualizado (com o novo Cartão de Invariantes e Emenda por Re-mapeamento) e se a seção `## Cláusulas Adicionais Deste Projeto` foi mantida intacta.
 * **Arquivos do Projeto (Intocados):** `openspec/`, `docs/adr/`, `CHANGELOG.md` e código-fonte. Não devem sofrer alterações involuntárias do template.
 

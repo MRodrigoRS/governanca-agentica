@@ -40,11 +40,12 @@ Com as respostas da Rodada 1 assentadas, o agente avança a fronteira para os po
 - **Permissões e Colisões:** Papéis de acesso e comportamentos quando dois usuários alteram o mesmo dado simultaneamente.
 - **Poda Construtiva (MVP Cirúrgico):** O agente recomenda o corte imediato de features acessórias (relatórios avançados, conciliações raras, customizações excessivas) que adicionariam 80% de esforço para < 20% de valor inicial. Registra os cortes na seção *"Fora de Escopo / Descartado no Polimento"* de `openspec/project.md`.
 
-### Rodada 3: Tradução Invisível para Arquitetura, Stack, VPS e MCPs
-Com as decisões de produto fechadas, o agente traduz o consenso para a arquitetura técnica consultando [references/catalogo-stacks.md](references/catalogo-stacks.md):
+### Rodada 3: Tradução Invisível para Arquitetura, Stack, VPS e MCPs (com Pesquisa Viva)
+Com as decisões de produto fechadas, o agente conduz **Pesquisa Viva Obrigatória** (`context7`, `/llms.txt` ou busca web) usando [references/catalogo-stacks.md](references/catalogo-stacks.md) como **ponto de partida vivo** (nunca uma lista fechada ou resposta só de memória de treinamento):
+- **Validação de Versões, Segurança e Mercado:** Confirme versões estáveis atuais, recomendações recentes do ecossistema, postura de segurança e eventuais pré-requisitos de toolchain nativa (ex.: MSVC/WebView2/`webkit2gtk` no Tauri v2) antes de recomendar.
 - **Stack Recomendada e Alternativa:** Framework, banco de dados relacional (Postgres/SQLite), filas/tempo real e design system.
 - **Operação Assistida e MCPs:** Hospedagem (Docker + Coolify/Dokploy via SSH ou Supabase/Railway) e ferramentas determinísticas de operação.
-- **Justificativa Anti-Brinquedo:** Demonstra conformidade estrita com o Artigo 1 da `constitution.md`.
+- **Justificativa Anti-Brinquedo:** Demonstra conformidade estrita com o Artigo 1 da `constitution.md` e lista as fontes consultadas (ou declara ambiente offline).
 
 ---
 
@@ -96,10 +97,12 @@ Imediatamente após a instalação:
    ```bash
    npx --yes @fission-ai/openspec init --tools antigravity,agents --no-animation --no-copilot-cloud
    ```
-3. Instale as Agent Skills oficiais via padrão aberto da indústria (`skills.sh`), incluindo o interrogador canônico `grill-me`:
+3. Instale as Agent Skills oficiais via padrão aberto da indústria (`skills.sh`), incluindo o interrogador canônico `grill-me` e skills específicas da stack escolhida (via `npx skills find <tecnologia>` para ecossistemas como Python, Rust, Tauri, Expo, Godot, etc.):
    ```bash
-   # Instalação canônica do interrogador e de skills de ecossistema
+   # Instalação canônica do interrogador e descoberta dinâmica por stack
    npx --yes skills add mattpocock/skills --skill grill-me grilling -y
+   npx --yes skills find <tecnologia-da-stack>
+   # Exemplos web/TypeScript/Supabase/Playwright (quando aplicáveis):
    npx --yes skills add vercel-labs/agent-skills -y
    ```
 4. Ative os Git hooks determinísticos da governança executando `npx lefthook install`.

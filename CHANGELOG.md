@@ -5,6 +5,23 @@ O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.
 
 ---
 
+## [Não publicado]
+
+### Adicionado
+- **Pesquisa Viva Obrigatória e Papel Ativo de Arquiteto Crítico (Artigo 8 / `AGENTS.md` / `ciclo-especificacao`):**
+  - Proibição de recomendar stacks, versões, APIs ou segurança apenas por memória de treinamento quando houver `context7`, `/llms.txt` ou busca web disponíveis, com registro das fontes consultadas em `design.md`.
+  - Gate 1 em 2 tempos com **Check-up Ativo de Saúde Arquitetural** e **Discussão Pré-Plano Obrigatória (`grill-me`)** antes do plano fechado, mantendo isenção explícita para ajustes puramente triviais/cosméticos (`Via 1b` `style`, copy, cor, espaçamento).
+- **Ampliação do Catálogo de Stacks (`catalogo-stacks.md` + `inicializar-stack`):**
+  - Inclusão de **Vite + React + TanStack Router**, **Monorepo (`pnpm` + Turborepo)**, **Go (Chi/Echo/Fiber + `sqlc`)**, **Rust (Axum + SQLx)**, **Flutter**, pré-requisitos nativos de **Tauri v2** (`MSVC/WebView2`/`webkit2gtk`), **Extensões de Navegador (`WXT`)**, diretriz **AI-Native** e descoberta dinâmica via `npx skills find`.
+- **Atualização de `grill-me` em Projetos Existentes (`atualizar-governanca`):**
+  - Inclusão do passo de instalação de `mattpocock/skills --skill grill-me grilling` na migração v3 → v4 e preservação de skills instaladas via `skills.sh`.
+- **Suíte `tests/pesquisa-viva-e-arquiteto-critico.test.mjs`:** 4 novos testes automatizados elevando a suíte para 82 testes verdes.
+
+### Corrigido
+- Remoção de referências legadas a `.cursor/mcp.json` e `.vscode/mcp.json` em `catalogo-stacks.md` após a consolidação no Padrão Universal Puro (`fatia-12`).
+
+---
+
 ## [4.0.0] - 2026-11-11
 
 ### Adicionado

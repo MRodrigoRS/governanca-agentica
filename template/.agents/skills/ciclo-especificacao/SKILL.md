@@ -15,12 +15,12 @@ Antes de iniciar, determine a via adequada conforme a Matriz de Cerimônia (D14 
 
 ### Via 1a — Correção Funcional Pontual (`fix`)
 * **Quando usar:** Correção de bug de lógica ou cálculo.
-* **Regra estrita:** Toca em **no máximo 3 arquivos de produção** (fora testes), **exige ao menos um arquivo de teste staged**, consulta `docs/catalogo-reuso.md` antes de tocar UI/cenas (Artigo 14) e **não altera** schemas de banco nem adiciona novos pacotes em `package.json`.
-* **Fluxo:** Diagnóstico → Consulta a `docs/catalogo-reuso.md` (se UI/jogo) → Teste que reproduz a falha (**Vermelho**) → Código mínimo (**Verde**) → `CHANGELOG.md` em `### Corrigido` → Gate 2.
+* **Regra estrita:** Toca em **no máximo 3 arquivos de produção** (fora testes), **exige ao menos um arquivo de teste staged**, consulta `docs/catalogo-reuso.md` antes de tocar UI/cenas (Artigo 14) e **não altera** schemas de banco nem adiciona novos pacotes em `package.json`. Se a correção alterar comportamento/UX, contrato de dados ou parecer um remendo sobre dívida estrutural, **exponha o impacto e alinhe antes de codar** (atalho vs. correção estrutural).
+* **Fluxo:** Diagnóstico → Alinhamento prévio (se não trivial) → Consulta a `docs/catalogo-reuso.md` (se UI/jogo) → Teste que reproduz a falha (**Vermelho**) → Código mínimo (**Verde**) → `CHANGELOG.md` em `### Corrigido` → Gate 2.
 
 ### Via 1b — Ajuste Estético / Copy (`style`)
 * **Quando usar:** Ajuste de cores, fontes, classes CSS/Tailwind ou copy textual.
-* **Regra estrita:** Toca em **no máximo 3 arquivos**, dispensa teste novo, mas é inspecionada pela heurística anti-contrabando (linhas adicionadas em código não podem conter condicionais, hooks, handlers ou I/O).
+* **Regra estrita:** Toca em **no máximo 3 arquivos**, dispensa teste novo e **é isento da discussão pré-plano** (ajustes puramente triviais/cosméticos), mas é inspecionada pela heurística anti-contrabando (linhas adicionadas em código não podem conter condicionais, hooks, handlers ou I/O).
 
 ### Via 1.5 — Manutenção Estrutural Blindada (`refactor` / `perf` / `style` / `chore` / `build`)
 * **Quando usar:** Refatoração interna que toque em **mais de 3 arquivos de produção** ou atualização/bump de versão de dependências já presentes em `package.json`.
@@ -45,16 +45,20 @@ Antes de iniciar, determine a via adequada conforme a Matriz de Cerimônia (D14 
 4. Preencha os arquivos da pasta criada em `openspec/changes/fatia-XX-<slug>/` atendendo aos cabeçalhos canônicos e linhas úteis mínimas auditados pela governança:
    - `proposal.md` (mín. 10 linhas): `## Por que` (ou `## Why`), `## O que muda` (ou `## What Changes`) e `## Fica de Fora` (ou `## Out of Scope`).
    - `specs/<dominio>/spec.md`: Deltas com cabeçalhos oficiais (`## ADDED Requirements`), `### Requirement:` e cenários `#### Scenario:` contendo `WHEN` e `THEN` (`GIVEN` recomendado).
-   - `design.md` (mín. 18 linhas): `## Contratos, Dados e Schemas`, `## Interface e Estados Assíncronos` (loading, empty, error, success, Toasts e Modais, mais matriz `Reutilizar vs. Extrair Novo` consultando `docs/catalogo-reuso.md` conforme Artigo 14, ou `Não se aplica: <motivo>`) e `## Regras de Negócio e Segurança`.
+   - `design.md` (mín. 18 linhas): `## Contratos, Dados e Schemas`, `## Interface e Estados Assíncronos` (loading, empty, error, success, Toasts e Modais, mais matriz `Reutilizar vs. Extrair Novo` consultando `docs/catalogo-reuso.md` conforme Artigo 14, ou `Não se aplica: <motivo>`) e `## Regras de Negócio e Segurança` (incluindo registro explícito das **fontes consultadas** em docs vivas/segurança ou declaração de ambiente offline quando tocar bibliotecas, APIs externas ou autenticação).
    - `tasks.md` (mín. 12 linhas): Checklist `- [ ]` com marcação Test-First (`Vermelho` / `Red`), seção obrigatória `## Roteiro de Validação Prática` e seção `## Notas de Sessão` (decisões fora do plano, bloqueios e próximo passo acionável).
 5. Marque o status da fatia como `[~] Em Andamento` em `openspec/roadmap.md`.
 
 ---
 
-## 3. Etapa Clarify, Interrogatório grill-me e Registro de ADR
+## 3. Discussão Pré-Plano Obrigatória, Check-up Arquitetural, Pesquisa Viva e ADR
 
-1. **Clarify e Protocolo grill-me (Esclarecer ambiguidades antes de desenhar):** Se a fatia ativa contiver contratos em aberto, múltiplos caminhos técnicos ou regras de negócio ambíguas, é proibido presumir a decisão. O agente deve conduzir uma rodada rápida de interrogatório **`grill-me`** (perguntas objetivas com recomendação técnica `➡️` e justificativa) para consolidar as respostas antes de submeter o plano no Gate 1.
-2. **ADR (Decisão de Arquitetura):** Se a mudança introduzir um novo padrão estrutural, biblioteca fundamental ou modelo de persistência, crie um novo ADR em `docs/adr/` baseado em `template.md`.
+> **Gate 1 em 2 tempos (Artigo 8 — Exceto Ajustes Triviais):** É proibido ir direto do roadmap para o plano fechado (`plano-fatia-XX.md`) no piloto automático. Antes de consolidar `design.md`/`tasks.md` e pedir `Proceed` no Gate 1:
+
+1. **Check-up Ativo de Saúde Arquitetural:** Inspecione o trecho relacionado do repositório em busca de caminho vicioso, acoplamento excessivo, padrão atrasado ou dívida crítica. Se detectar problema estrutural, alerte o humano antes de construir em cima e proponha correção (`Via 1.5` ou ajuste no roadmap).
+2. **Pesquisa Viva Obrigatória (Anti-Memória de Treinamento):** Quando a fatia envolver novas bibliotecas, APIs externas, autenticação ou configurações de segurança, consulte documentação viva (`context7`, `/llms.txt` ou busca web) para confirmar versões e práticas atuais, registrando as **fontes consultadas** em `design.md` (ou declarando honestamente se o ambiente estiver offline).
+3. **Discussão Pré-Plano Obrigatória (`grill-me`):** Conduza uma rodada prévia de alinhamento expondo decisões em aberto, trade-offs técnicos, riscos e sua recomendação fundamentada (`➡️`) antes de fechar o plano para aprovação no Gate 1. *(Ajustes puramente triviais/cosméticos via `Via 1b` ficam isentos dessa cerimônia).*
+4. **ADR (Decisão de Arquitetura):** Se a mudança introduzir um novo padrão estrutural, biblioteca fundamental ou modelo de persistência, crie um novo ADR em `docs/adr/` baseado em `template.md`.
 
 ---
 

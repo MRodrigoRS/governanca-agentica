@@ -14,6 +14,7 @@
 7. **Handshake e Isolamento Linear (Artigo 13):** Obrigatório `whoami` antes de operar no Linear; bloqueio determinístico se divergir da âncora.
 8. **Proibido Deduzir de Cabeça (Artigo 12):** Leitura física obrigatória do roadmap e delta nos 4 marcos.
 9. **Interrogatório grill-me Mandatório (Artigo 8):** Proibido aceitar ideias cruas ou alterar regras sem interrogatório em rodadas com recomendação técnica (➡️) e congelamento de código.
+10. **Pesquisa Viva & Arquiteto Crítico (Artigo 8):** Proibido decidir stack, API ou segurança só de memória de treinamento (`context7`/`/llms.txt`/web); discuta trade-offs e alerte caminhos viciosos antes do Gate 1 ou código (isento para ajustes triviais/cosméticos).
 
 ### Matriz Universal de Leitura Pré-Edição
 
@@ -30,7 +31,7 @@ Antes de editar qualquer arquivo, o agente DEVE consultar as regras do módulo c
 
 ## 1. Postura Profissional e Idioma
 
-1. **Dever de Crítica e Honestidade Radical:** Nunca adultere elogios ou finja conformidade. Aponte falhas de arquitetura, inconsistências de requisitos e complexidade desnecessária antes de escrever código. Declare abertamente o que foi testado e o que não foi.
+1. **Dever de Crítica, Arquiteto Ativo e Pesquisa Viva:** Nunca adultere elogios, finja conformidade ou execute no piloto automático. Aponte falhas de arquitetura, caminhos viciosos/atrasados, inconsistências de requisitos e complexidade desnecessária antes de desenhar ou codificar. Proibido recomendar stacks, versões, APIs ou segurança apenas por memória de treinamento quando houver `context7`, `/llms.txt` ou busca web disponíveis (declare explicitamente se estiver offline). Declare abertamente o que foi testado e o que não foi.
 2. **Zero-Trust no Agente:** Todo commit e ação crítica é inspecionado por hooks determinísticos (`.agents/hooks.json`, `Lefthook + Gitleaks + verificar-governanca.mjs`). Se violar qualquer cláusula, a operação será bloqueada (`exit 1` / `deny`).
 3. **As 3 Posturas Sequenciais:**
    - **Produto:** Compreender o problema, regras de negócio e critérios de aceite sem discutir código.
@@ -49,7 +50,7 @@ Antes de editar qualquer arquivo, o agente DEVE consultar as regras do módulo c
 Ao ser iniciado em um repositório, identifique o estado atual antes de agir:
 - **Repositório Greenfield (sem stack):** Acione imediatamente a skill `.agents/skills/inicializar-stack/SKILL.md`. Conduza uma **entrevista exaustiva via protocolo grill-me (árvore de decisão em rodadas com recomendação técnica ➡️)** para extrair a visão completa do sistema, polir o que entra e o que fica de fora, definir a stack/VPS/MCPs e **estruturar o roadmap de fatias incrementais** antes de executar o scaffolding oficial no **Gate 0**.
 - **Repositório Brownfield (código existente sem specs):** Mapeie a arquitetura atual em `openspec/project.md`, configure `openspec/config.yaml` e crie as especificações vivas iniciais em `openspec/specs/` antes de alterar o código.
-- **Projeto em Andamento (Modo Execução):** Verifique `openspec/project.md`, `npx @fission-ai/openspec list`, as tarefas abertas em `openspec/changes/` e `CHANGELOG.md` para retomar exatamente de onde parou e puxar a próxima fatia `[ ] Pendente` automaticamente.
+- **Projeto em Andamento (Modo Execução):** Verifique `openspec/project.md`, `npx @fission-ai/openspec list`, as tarefas abertas em `openspec/changes/` e `CHANGELOG.md` para retomar exatamente de onde parou e puxar a próxima fatia `[ ] Pendente` automaticamente — conduzindo primeiro o **Check-up de Saúde Arquitetural** e a **Discussão Pré-Plano (`grill-me`)** antes de fechar o Gate 1 (exceto ajustes puramente triviais/cosméticos).
   * *Cláusula Pétrea — Proibido Deduzir de Cabeça (Artigo 12):* Nunca confie na memória do chat. Ao planejar, resumir, abrir delta ou iniciar a codificação, leia fisicamente o arquivo da fatia e cite trechos literais antes de propor mudanças ou codificar.
 - **Novas Ideias ou Mudanças no Meio do Caminho (Refinamento e Poda):** Se o usuário trouxer uma ideia ou solicitação de mudança durante o desenvolvimento, congele o código imediatamente e acione `.agents/skills/refinar-ideia/SKILL.md`. Conduza o interrogatório exaustivo via protocolo `grill-me` (esgotando todas as ambiguidades antes de qualquer código), raio-X de complexidade oculta, separe o que entra do que sai e, se houver afinidade com uma fatia pendente, encaixe-a como **subfatia alfanumérica hierárquica (ex.: `fatia-02a-<slug>`)** em `openspec/roadmap.md`, preservando o grafo de dependências sem quebrar a ordenação nem o OpenSpec.
 - **Modo de Ampliação e Estratégia de Produto (Reunião de Negócios sem Código):** Quando o humano quiser analisar o repositório, explorar novos rumos, pesquisar concorrentes/mercado ou descobrir funcionalidades sinergéticas, acione `.agents/skills/explorar-produto/SKILL.md`. Congele qualquer edição de código e encaminhe as decisões nas 3 gavetas (`openspec/roadmap.md`, `openspec/radar-oportunidades.md` ou Fora de Escopo).
@@ -63,7 +64,7 @@ Ao ser iniciado em um repositório, identifique o estado atual antes de agir:
 | **Escopo** | Bug pontual, correção estética, refatoração interna | Fatia do roadmap, nova funcionalidade, regra de negócio, schema/banco, nova rota/API |
 | **Impacto em Specs** | Não altera `openspec/specs/` | Consome a fatia do roadmap e expande `openspec/specs/` |
 | **Limite de Arquivos** | Até **3 arquivos** de produção (fora testes) | Sem limite (escopo fechado da fatia) |
-| **Fluxo** | Diagnóstico → Teste que reproduz a falha → Código mínimo → Gate 2 | Ler fatia → `openspec new change <nome>` → **Gate 1** → Test-First → **Gate 2** → `openspec archive <nome> -y` → Próxima fatia |
+| **Fluxo** | Diagnóstico → Alinhamento prévio (se não trivial) → Teste que reproduz a falha → Código mínimo → Gate 2 | Ler fatia → Check-up & Discussão Pré-Plano → `openspec new change <nome>` → **Gate 1** → Test-First → **Gate 2** → `openspec archive <nome> -y` → Próxima fatia |
 
 > **Trava de Escalonamento Automático:** Se durante um `/fix` o commit tocar em mais de 3 arquivos de produção, incluir novas dependências ou alterar o schema de banco sem um delta ativo em `openspec/changes/`, o algoritmo da governança travará o commit exigindo o Nível 2.
 

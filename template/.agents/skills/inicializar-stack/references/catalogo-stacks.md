@@ -1,6 +1,6 @@
 # Catálogo de Stacks Oficiais Robustas — Governança v4.0.0
 
-> **Papel:** Catálogo técnico consultado pelo agente para sugerir a stack tecnológica durante o Gate 0.
+> **Papel:** Catálogo técnico consultado pelo agente como **ponto de partida vivo** para sugerir a stack tecnológica durante o Gate 0. É obrigatório validar versões atuais, CLI e recomendações vigentes via **Pesquisa Viva** (`context7`, `/llms.txt` ou busca web) antes de recomendar.
 > **Regra Anti-Brinquedo (Artigo 1):** Nenhuma aplicação interativa nasce com arquivos HTML/CSS/JS soltos. Toda base deve ter tipagem estrita, validação de schema e testes.
 > **Responsividade e Portabilidade PWA Inatas (Artigo 6, item 6):** Qualquer desenvolvimento que envolva web deve nascer responsivo por padrão (mobile-first 320px+) e preparado para portabilidade como PWA instalável (`manifest.json`, viewport, theme-color e service workers) e Smoke Test E2E com Playwright + @axe-core/playwright (validando viewports 320x640 e 1280x800 sem overflow horizontal scrollWidth <= innerWidth e zero pageerror).
 
@@ -24,6 +24,22 @@
   npx create-epic-app@latest
   ```
 * **Composição padrão:** React Router v7 / Remix, TypeScript (`strict`), Tailwind CSS, Prisma, Zod, Vitest + Playwright com autenticação completa pré-configurada.
+
+### Opção C: Web SPA / Offline-First (Vite + React + TanStack Router + TanStack Query + shadcn/ui)
+* **Quando usar:** Aplicações client-heavy, frontends desacoplados de uma API dedicada (FastAPI, NestJS, Go, Rust) ou apps offline-first sem necessidade de SSR.
+* **Comando oficial de criação:**
+  ```bash
+  npm create vite@latest <nome-do-projeto> -- --template react-ts
+  ```
+* **Composição padrão:** Vite, React, TypeScript (`strict`), TanStack Router (rotas type-safe), TanStack Query, Tailwind CSS + shadcn/ui, Zod, Vitest + Playwright.
+
+### Opção D: Monorepo Multi-App (pnpm workspaces + Turborepo)
+* **Quando usar:** Projetos que combinam Web + API + Mobile compartilhando contratos Zod, tipos TypeScript e design system em pacotes internos.
+* **Comando oficial de criação:**
+  ```bash
+  npx create-turbo@latest
+  ```
+* **Composição padrão:** `pnpm` workspaces, Turborepo (cache e pipelines paralelos), pacotes compartilhados (`packages/schemas`, `packages/ui`) e Vitest.
 
 ---
 
@@ -57,6 +73,23 @@
   copier copy https://github.com/fastapi/full-stack-fastapi-template.git <nome-do-projeto>
   ```
 * **Composição padrão:** FastAPI, Pydantic v2, SQLModel, PostgreSQL, Docker Compose, Pytest, Ruff.
+
+### Opção C: Go API (Chi / Echo / Fiber + `sqlc` + `golangci-lint`)
+* **Quando usar:** APIs de altíssima concorrência, proxies, gateways de rede ou microserviços distribuídos como binário único enxuto.
+* **Comando oficial de criação:**
+  ```bash
+  go mod init <modulo>
+  ```
+* **Composição padrão:** Go moderno, router leve (Chi/Echo/Fiber), `sqlc` (SQL tipado em tempo de compilação), `golangci-lint` e `go test`.
+
+### Opção D: Rust API (Axum + SQLx + Tokio)
+* **Quando usar:** Serviços backend críticos em latência, segurança de memória e previsibilidade de recursos em produção.
+* **Comando oficial de criação:**
+  ```bash
+  cargo init <nome-do-projeto>
+  cargo add axum tokio --features tokio/full
+  ```
+* **Composição padrão:** Rust, Axum, Tokio, SQLx (queries verificadas contra o banco), Serde e `cargo test`.
 
 ---
 
@@ -93,6 +126,7 @@
   npm create tauri-app@latest
   ```
 * **Composição padrão:** Frontend em React + TypeScript (`strict`) + Tailwind CSS + shadcn/ui; núcleo nativo em Rust (`Cargo.toml`), ponte IPC tipada e empacotador nativo embutido.
+* **Pré-requisitos nativos (validar antes do Gate 0):** No Windows exige MSVC Build Tools + WebView2; no Linux exige `webkit2gtk` + `libayatana-appindicator` + `build-essential`.
 * **Executor de Testes:** Vitest (UI) + `cargo test` (núcleo Rust).
 
 ### Opção B: Electron-Vite (Node.js Completo + React/TypeScript)
@@ -111,6 +145,14 @@
   dotnet new avalonia.mvvm -o <nome-do-projeto>
   ```
 * **Composição padrão:** C# (.NET 8+), arquitetura MVVM, compilação nativa e xUnit para testes.
+
+### Opção D: Flutter (Codebase Única Desktop + Mobile sem WebView)
+* **Quando usar:** Quando o requisito central exige compartilhar 100% da interface compilada nativamente entre Desktop (Windows/macOS/Linux) e Mobile (Android/iOS) sem depender de WebView.
+* **Comando oficial de criação:**
+  ```bash
+  flutter create <nome-do-projeto>
+  ```
+* **Composição padrão:** Dart com null-safety estrita, Riverpod/Bloc, `flutter_test` e `integration_test`.
 
 ---
 
@@ -162,7 +204,7 @@ Sempre priorize configurar a infraestrutura usando ferramentas que o próprio ag
 Para que o agente não trabalhe isolado nem invente convenções, toda base inicializada deve conectar-se aos ecossistemas oficiais:
 
 ### A. MCPs Padrão Injetados na Governança
-- **Context7 MCP (`@upstash/context7-mcp`):** Configurado em `.mcp.json`, `.cursor/mcp.json` e `.vscode/mcp.json`. Fornece documentação oficial atualizada e assinaturas de métodos diretamente ao LLM sob demanda, eliminando alucinações de versões antigas.
+- **Context7 MCP (`@upstash/context7-mcp`):** Configurado em `.mcp.json` (Padrão Universal). Fornece documentação oficial atualizada e assinaturas de métodos diretamente ao LLM sob demanda, eliminando alucinações de versões antigas.
 - **Playwright MCP (`@playwright/mcp`):** Permite ao agente navegar no browser real nos viewports de 320px e desktop, comprovando visualmente estados assíncronos, toasts e modais de confirmação antes do Gate 2.
 - **Linear MCP (Oficial via Remote Server `https://mcp.linear.app/mcp`):** Conecta o agente ao fluxo de gestão e diário de bordo do time:
   * Associa a fatia à issue correspondente no Gate 1 (`[LIN-XXX]`).
@@ -175,6 +217,7 @@ Durante o Gate 0, o agente instala as skills oficiais mantidas pelos criadores d
 - **Ecossistema React / Next.js / TypeScript:** `npx --yes skills add vercel-labs/agent-skills`
 - **Ecossistema Backend / Supabase:** `npx --yes skills add supabase/agent-skills`
 - **Ecossistema de Testes E2E:** `npx --yes skills add microsoft/playwright`
+- **Descoberta Dinâmica para Demais Stacks (Python, Rust, Go, Tauri, Expo, Godot):** Execute `npx --yes skills find <tecnologia>` durante o Gate 0 para descobrir e instalar skills oficiais atualizadas do ecossistema adotado.
 
 ### C. Controle Leve de Complexidade via Linter Oficial (Zero Custo de Tokens)
 Em vez de criar scripts caseiros ou rodar mutadores físicos pesados (que consomem horas e dezenas de dólares em tokens lendo logs gigantescos), o controle de complexidade e duplicação é delegado exclusivamente a regras nativas do linter oficial da stack:
@@ -226,3 +269,18 @@ Quando o projeto envolver entretenimento digital, gamificação corporativa, sim
   cargo add bevy
   ```
 * **Composição padrão:** Rust, Bevy (arquitetura ECS - Entity Component System) e `cargo test` para testar sistemas e componentes puros sem abrir janela gráfica.
+
+---
+
+## 11. Extensões de Navegador e Produtos AI-Native
+
+### A. Extensões de Navegador (Manifest V3 — Chrome / Firefox / Edge)
+* **Quando usar:** Extensões modernas com popup, side panel, content scripts isolados e HMR instantâneo.
+* **Comando oficial de criação:**
+  ```bash
+  npx wxt@latest init <nome-do-projeto>
+  ```
+* **Composição padrão:** WXT, React + TypeScript (`strict`), Tailwind CSS, Zod na ponte de mensageria e Vitest.
+
+### B. Produtos AI-Native (Agentes, RAG, Workflows Duráveis)
+* **Diretriz de Pesquisa Viva:** Como o ecossistema de IA evolui semanalmente, consulte sempre `context7` / `/llms.txt` no Gate 0 antes de cravar SDKs e padrões (ex.: **Vercel AI SDK** para streaming/tool-calling/UI, **PostgreSQL + `pgvector`** para busca semântica unificada e workflows/filas duráveis para tarefas assíncronas de longa duração), evitando copiar padrões obsoletos da memória de treinamento.
