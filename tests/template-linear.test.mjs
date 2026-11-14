@@ -73,4 +73,14 @@ describe('fatia-07: protocolo de handshake e tríade de âncora linear', () => {
     assert.ok(conteudo.includes('RR_DIARIO_AGENTS') || conteudo.includes('`RR`'), 'Deve conter a equipe');
     assert.ok(conteudo.includes('P-RR-2'), 'Deve conter a âncora do projeto P-RR-2');
   });
+
+  test('exige confirmação humana antes de criar/editar tarefas ou publicar updates no Linear', () => {
+    const regraLinear = fs.readFileSync(path.join(process.cwd(), 'template/.agents/rules/linear-mcp.md.jinja'), 'utf8');
+    const agentsMd = fs.readFileSync(path.join(process.cwd(), 'template/AGENTS.md'), 'utf8');
+
+    assert.match(regraLinear, /confirmação explícita|Consentimento Prévio/i);
+    assert.match(regraLinear, /novas tarefas ou edições/i);
+    assert.match(agentsMd, /Mediante confirmação humana/i);
+    assert.match(agentsMd, /novas tarefas ou edições/i);
+  });
 });

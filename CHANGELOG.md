@@ -16,6 +16,12 @@ O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.
 - **Atualização de `grill-me` em Projetos Existentes (`atualizar-governanca`):**
   - Inclusão do passo de instalação de `mattpocock/skills --skill grill-me grilling` na migração v3 → v4 e preservação de skills instaladas via `skills.sh`.
 - **Suíte `tests/pesquisa-viva-e-arquiteto-critico.test.mjs`:** 4 novos testes automatizados elevando a suíte para 82 testes verdes.
+- **Onboarding Estruturado Brownfield (`mapear-brownfield` / `/mapear-projeto`):**
+  - Nova pergunta `repositorio_existente` (`bool`, padrão `false`) em `copier.yml`, marcando `openspec/project.md` com `Status: Aguardando Onboarding Brownfield` quando `true`.
+  - Nova skill [mapear-brownfield/SKILL.md](template/.agents/skills/mapear-brownfield/SKILL.md) e trava firme na Seção 2 de `AGENTS.md` congelando alterações até concluir varredura read-only, check-up de saúde do legado, preenchimento dos documentos vivos (`AGENTS.md`, `docs/arquitetura.md`, `docs/catalogo-reuso.md`, `docs/particularidades.md`, `.env.example`, `openspec/project.md`, `openspec/specs/` e `openspec/roadmap.md`) e **Gate de Onboarding**.
+  - Suíte `tests/onboarding-brownfield.test.mjs` com 3 novos testes automatizados elevando a suíte para 85 testes verdes.
+- **Confirmação Explícita no Linear MCP (`linear-mcp.md.jinja` / `AGENTS.md` / `ciclo-especificacao`):**
+  - Exigência de confirmação humana prévia antes de criar, editar ou mover issues e publicar *Project Updates* no Linear, com pergunta ao final do ciclo sobre novas tarefas ou edições a registrar.
 
 ### Corrigido
 - Remoção de referências legadas a `.cursor/mcp.json` e `.vscode/mcp.json` em `catalogo-stacks.md` após a consolidação no Padrão Universal Puro (`fatia-12`).

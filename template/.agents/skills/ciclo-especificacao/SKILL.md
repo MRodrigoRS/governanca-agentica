@@ -74,7 +74,7 @@ Antes de iniciar, determine a via adequada conforme a Matriz de Cerimônia (D14 
 > Pergunte: *"Você aprova este plano e desenho técnico da Fatia XX para iniciarmos a implementação?"*
 > **Nenhum código de produção deve ser escrito antes da aprovação do Gate 1.**
 > 
-> *(Sincronização Linear MCP):* Caso o MCP `linear` esteja configurado, execute o handshake mandatório `whoami` (Artigo 13), localize ou associe a issue correspondente no Linear (`[LIN-XXX] fatia-XXa-...`) e atualize seu estado para *In Progress*.
+> *(Sincronização Linear MCP):* Caso o MCP `linear` esteja configurado, execute o handshake mandatório `whoami` (Artigo 13) e, mediante confirmação prévia do humano, associe ou crie a issue correspondente no Linear (`[LIN-XXX] fatia-XXa-...`) e atualize seu estado para *In Progress*.
 > 
 > *(Fluxo Git Branch por Fatia):* Caso o projeto utilize o modo `fluxo_git: branch-por-fatia`, crie e migre para a branch da fatia antes de codificar (`git checkout -b feat/fatia-XX-<slug>`). No modo padrão `trunk`, permaneça na branch principal de desenvolvimento.
 

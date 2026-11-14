@@ -69,6 +69,11 @@ fluxo_git:
     - "trunk"
     - "branch-por-fatia"
 
+repositorio_existente:
+  type: bool
+  help: "Este repositório já possui código-fonte existente (Brownfield) que precisa ser mapeado nos documentos?"
+  default: false
+
 integrar_linear:
   type: bool
   help: "Pré-configurar integração oficial com Linear MCP (gestão de tarefas e diário da equipe)?"

@@ -26,8 +26,9 @@ description: "Regras e protocolo de consulta e atualização do Linear MCP"
 
 ---
 
-## 3. Momentos Formais de Sincronização
-- **Gate 1:** Vincular a fatia atual à issue correspondente no Linear (`[LIN-XXX]`).
-- **Gate 2:** Publicar o Diário de Bordo no mural do projeto com o resumo funcional e roteiro prático testado.
-- **Skill `refinar-ideia`:** Enviar ideias podadas ou excedentes para o Backlog/Triage do projeto ancorado.
+## 3. Momentos Formais de Sincronização (Com Confirmação Humana)
+- **Consentimento Prévio Obrigatório:** Mesmo com o Linear conectado, o agente **DEVE pedir confirmação explícita** ao humano antes de criar, editar ou alterar o status de qualquer issue/tarefa ou publicar *Project Updates*.
+- **Gate 1:** Propõe vincular ou criar a issue correspondente no Linear (`[LIN-XXX]`) e movê-la para *In Progress* após confirmação.
+- **Gate 2:** Ao encerrar o ciclo, confirma o envio do Diário de Bordo (*Project Update*), a transição para *Done* e **pergunta se há novas tarefas ou edições a registrar no Linear**.
+- **Skill `refinar-ideia`:** Propõe encaminhar ideias podadas ou excedentes para o Backlog/Triage do projeto ancorado após confirmação.
 {% endif %}
