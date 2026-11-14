@@ -24,6 +24,7 @@ O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.
   - Exigência de confirmação humana prévia antes de criar, editar ou mover issues e publicar *Project Updates* no Linear, com pergunta ao final do ciclo sobre novas tarefas ou edições a registrar.
 
 ### Corrigido
+- Correção do glob de `npm test` em `package.json` (`tests/*.test.mjs`) para compatibilidade com `/bin/sh` e Node 20 no GitHub Actions (`ubuntu-latest`).
 - Remoção de referências legadas a `.cursor/mcp.json` e `.vscode/mcp.json` em `catalogo-stacks.md` após a consolidação no Padrão Universal Puro (`fatia-12`).
 
 ---
