@@ -26,7 +26,7 @@ A **Governança v4** consolida o **Padrão Universal Puro**: um único ponto de 
 Em qualquer terminal com `uv` e `git` instalados, execute:
 
 ```bash
-uvx copier copy gh:MRodrigoRS/governan-a-de-agentes-v2 .
+uvx copier copy gh:MRodrigoRS/governanca-agentica .
 ```
 
 O instalador interativo perguntará o nome do projeto, perfis de arquitetura (`web-ui`, `api-backend`, `desktop`, `mobile`, `jogo`, `cli-biblioteca`) e integrações (Linear MCP e fluxo Git), injetando a governança imediatamente.

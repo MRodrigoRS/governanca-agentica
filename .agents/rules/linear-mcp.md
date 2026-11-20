@@ -20,7 +20,7 @@ description: "Regras e protocolo de consulta e atualização do Linear MCP neste
 ## 2. Tríade de Âncora Imutável da Matriz
 - **Workspace:** `rr-diario-agents` (`https://linear.app/rr-diario-agents`)
 - **Equipe:** `RR_DIARIO_AGENTS` (Chave: `RR` / UUID: `0eea2743-4241-41cb-832a-96cc625a085a`)
-- **Projeto:** `GOV-AGENTS-V2` (Identificador: `P-RR-2` / UUID: `ef07f846-1cd0-400a-a6bb-94fd723621ed`)
+- **Projeto:** `Governança Agêntica` (Identificador: `P-RR-2` / UUID: `ef07f846-1cd0-400a-a6bb-94fd723621ed`)
 - É terminantemente proibido listar, criar ou editar issues em outros workspaces, equipes ou projetos.
 
 ---

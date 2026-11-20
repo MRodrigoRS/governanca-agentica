@@ -1,4 +1,4 @@
-# Instruções Gerais para Agentes de IA — Repositório Matriz (`governança-de-agentes`)
+# Instruções Gerais para Agentes de IA — Repositório Matriz (`governanca-agentica`)
 
 > **Papel:** Fonte única da verdade para agentes de IA operando na evolução e manutenção do próprio protocolo da **Governança v4.0.0** (perfil `cli-biblioteca` + `Linear MCP`).
 > **Fonte Única Constitucional:** Obedeça integralmente a [template/constitution.md](template/constitution.md) — **não duplicada na raiz** para evitar deriva entre matriz e template. O enforcement determinístico é executado por [.agents/hooks.json](.agents/hooks.json) (`node ../template/scripts/hook-agente.mjs`), `Lefthook`, `verificar-governanca.mjs` e GitHub Actions.
@@ -13,7 +13,7 @@
 5. **Zero Dependências Externas nos Scripts:** `template/scripts/*.mjs` e `tests/*.test.mjs` usam exclusivamente Node.js ESM nativo (`node:fs`, `node:path`, `node:child_process`, `node:test`, `node:assert/strict`).
 6. **Commits com Aprovação Humana (Artigo 11):** Proibido `git commit`, `git push` ou `git tag` sem autorização explícita humana no Gate 2 (ou Gate 0), e proibido `--no-verify`.
 7. **Português do Brasil no Domínio (Artigo 10):** Identificadores de governança, tabelas, documentação, specs e mensagens de commit em PT-BR; termos técnicos universais em EN.
-8. **Handshake e Isolamento Linear (Artigo 13):** Obrigatório `whoami` antes de consultar/escrever no Linear; validar workspace `rr-diario-agents`, equipe `RR_DIARIO_AGENTS` (`RR`) e projeto `GOV-AGENTS-V2` (`P-RR-2`), sempre com confirmação humana antes de mutações.
+8. **Handshake e Isolamento Linear (Artigo 13):** Obrigatório `whoami` antes de consultar/escrever no Linear; validar workspace `rr-diario-agents`, equipe `RR_DIARIO_AGENTS` (`RR`) e projeto `Governança Agêntica` (`P-RR-2`), sempre com confirmação humana antes de mutações.
 9. **Proibido Deduzir de Cabeça (Artigo 12):** Leia fisicamente `openspec/roadmap.md`, `openspec/changes/<mudanca>/`, `docs/arquitetura.md §5` e os arquivos-alvo antes de planejar ou editar.
 10. **Interrogatório `grill-me` & Pesquisa Viva (Artigo 8):** Mudanças não triviais de regras/contratos exigem alinhamento com recomendações (`➡️`) antes de editar; nunca inventar APIs de memória.
 

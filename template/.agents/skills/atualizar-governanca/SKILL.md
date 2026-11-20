@@ -26,6 +26,8 @@ uvx copier update
 
 O Copier verificará a versão registrada em `.copier-answers.yml`, baixará as atualizações da governança e aplicará uma mesclagem de 3 vias (3-way merge) via Git.
 
+> **Nota de migração de origem (`_src_path`):** Caso `.copier-answers.yml` ainda aponte para o slug antigo `gh:MRodrigoRS/governan-a-de-agentes-v2`, atualize o campo `_src_path` para `gh:MRodrigoRS/governanca-agentica` antes de executar `uvx copier update` (o redirect do GitHub mantém compatibilidade, mas atualizar a referência elimina dependência do redirecionamento).
+
 ---
 
 ## 3. Roteiro de Migração Governança v3 → v4 (Rolling Wave)

@@ -1,4 +1,4 @@
-# Arquitetura do Sistema — Repositório Matriz (`governança-de-agentes`)
+# Arquitetura do Sistema — Repositório Matriz (`governanca-agentica`)
 
 > **Papel:** Documentação viva da arquitetura do protocolo **Governança v4.0.0**, seus fluxos de distribuição via Copier, módulos determinísticos em Node.js ESM e mapa físico real do repositório matriz.
 > **Nota sobre Banco de Dados:** Este repositório (`cli-biblioteca`) não possui banco de dados nem tabelas persistentes; o estado vivo reside em arquivos versionados (`openspec/`, `CHANGELOG.md`, `00_INDICE_E_DECISOES.md`).
@@ -14,7 +14,7 @@ flowchart TD
         Agente["Agente de IA (Antigravity, Claude Code, Codex, Cursor)"]
     end
 
-    subgraph Sistema["Repositório Matriz (governança-de-agentes)"]
+    subgraph Sistema["Repositório Matriz (governanca-agentica)"]
         Matriz["Protocolo Universal + Template Copier + Motor Determinístico"]
     end
 
@@ -68,7 +68,7 @@ Este repositório matriz é *stateless* e não opera banco relacional ou `erDiag
 
 | Termo | Significado Oficial na Matriz |
 |---|---|
-| **Matriz** | Este repositório (`governança-de-agentes`), origem do template Copier e do motor determinístico. |
+| **Matriz** | Este repositório (`governanca-agentica`), origem do template Copier e do motor determinístico. |
 | **Consumidor** | Projeto alvo que recebe a governança via `uvx copier copy` a partir de `template/`. |
 | **Padrão Universal Puro (D40)** | Estrutura agnóstica (`AGENTS.md` + `.agents/`) sem wrappers proprietários redundantes. |
 | **Fatia / Rolling Wave** | Unidade incremental de entrega registrada em `openspec/roadmap.md` com especificação Just-in-Time em `openspec/changes/`. |

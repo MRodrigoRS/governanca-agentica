@@ -1,6 +1,6 @@
 # Particularidades Operacionais e de Ambiente — Repositório Matriz
 
-> **Papel:** Restrições concretas do ambiente de desenvolvimento, regras meta-repositório e armadilhas operacionais específicas da matriz `governança-de-agentes`.
+> **Papel:** Restrições concretas do ambiente de desenvolvimento, regras meta-repositório e armadilhas operacionais específicas da matriz `governanca-agentica`.
 > **Zero Segredos (Artigo 3):** Não armazene chaves, tokens ou senhas reais neste documento.
 
 ---
@@ -25,7 +25,7 @@
 ## 3. Integrações Externas e Linear MCP
 
 - **Linear Hosted Remote MCP Server (`.mcp.json`):** Conectado via `npx -y mcp-remote https://mcp.linear.app/mcp`.
-- **Tríade de Âncora Imutável:** Operações Linear neste repositório são restritas ao Workspace `rr-diario-agents`, Equipe `RR_DIARIO_AGENTS` (`RR`) e Projeto `GOV-AGENTS-V2` (`P-RR-2`), sempre precedidas por `whoami` e confirmação humana antes de escrita.
+- **Tríade de Âncora Imutável:** Operações Linear neste repositório são restritas ao Workspace `rr-diario-agents`, Equipe `RR_DIARIO_AGENTS` (`RR`) e Projeto `Governança Agêntica` (`P-RR-2`), sempre precedidas por `whoami` e confirmação humana antes de escrita.
 - **Variável de Harness Excluída de `.env.example`:** `CLAUDE_PROJECT_DIR` é fornecida pelo runtime do agente e listada em `variaveisIgnoradas` no `verificar-governanca.mjs` para não gerar falso positivo de variável ausente em `.env.example`.
 
 ---

@@ -29,6 +29,10 @@ O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.
   - Exigência de confirmação humana prévia antes de criar, editar ou mover issues e publicar *Project Updates* no Linear, com pergunta ao final do ciclo sobre novas tarefas ou edições a registrar.
 
 ### Modificado
+- **Renomeação do Repositório para `governanca-agentica` e Limpeza de Identidade `-v2`:**
+  - Atualização das URLs oficiais do Copier (`gh:MRodrigoRS/governanca-agentica`) em `copier.yml`, `README.md`, `docs/runbook.md` e `00_INDICE_E_DECISOES.md`.
+  - Inclusão de nota preventiva de migração de `_src_path` em `template/.agents/skills/atualizar-governanca/SKILL.md` orientando projetos consumidores antigos antes de executar `uvx copier update`.
+  - Atualização da identidade interna do projeto (`package.json`, `AGENTS.md`, `.agents/rules/`, `docs/`, `openspec/`) e renomeação do projeto Linear `P-RR-2` para `Governança Agêntica`.
 - **Auditoria Sob Demanda de UX & Analytics (`auditoria-ux-analytics` / `/auditar-ux`):**
   - Inclusão da skill opcional para integração LGPD/CSP de PostHog/Microsoft Clarity e auditoria contínua de UX orientada a dados reais de uso.
 - **Hardening AppSec, Linguagem Humana na UI e Auditoria de Segurança (`/auditar-seguranca`):**

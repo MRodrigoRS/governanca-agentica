@@ -1,4 +1,4 @@
-# Runbook Operacional — Repositório Matriz (`governança-de-agentes`)
+# Runbook Operacional — Repositório Matriz (`governanca-agentica`)
 
 > **Papel:** Procedimentos reais de verificação local, simulação de geração Copier, ritual de release SemVer/tags e rollback seguro da matriz.
 > **Referência Complementar:** Veja também os passos de release em [CONTRIBUTING.md](../CONTRIBUTING.md).
@@ -7,7 +7,7 @@
 
 ## 1. Publicação e Release (Git Tags SemVer + Copier)
 
-A distribuição oficial ocorre diretamente via repositório Git consumido por `uvx copier copy gh:MRodrigoRS/governan-a-de-agentes-v2 .` e `uvx copier update` usando tags SemVer anotadas (`vX.Y.Z`):
+A distribuição oficial ocorre diretamente via repositório Git consumido por `uvx copier copy gh:MRodrigoRS/governanca-agentica .` e `uvx copier update` usando tags SemVer anotadas (`vX.Y.Z`):
 
 1. Garantir sincronia exata de versão entre `package.json`, `template/AGENTS.md` (`governanca:inicio vX.Y.Z`), `template/constitution.md` (`governanca:inicio vX.Y.Z`), `template/openspec/project.md.jinja` e seção aberta no `CHANGELOG.md`.
 2. Após aprovação humana explícita no Gate 2, criar o commit e a tag anotada:

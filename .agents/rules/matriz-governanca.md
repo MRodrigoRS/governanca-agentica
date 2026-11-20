@@ -1,10 +1,10 @@
 ---
 trigger: glob
 globs: ["template/**", "tests/**", "copier.yml", "lefthook.yml", ".github/**"]
-description: "Regras específicas do repositório matriz governança-de-agentes (Copier, scripts ESM, testes e Padrão Universal)"
+description: "Regras específicas do repositório matriz governanca-agentica (Copier, scripts ESM, testes e Padrão Universal)"
 ---
 
-# Regras da Matriz — `governança-de-agentes`
+# Regras da Matriz — `governanca-agentica`
 
 > **Escopo:** Evolução do template Copier (`template/`), scripts determinísticos (`template/scripts/`) e suíte de testes (`tests/`).
 

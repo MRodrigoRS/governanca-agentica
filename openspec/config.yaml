@@ -4,7 +4,7 @@ githubCopilot:
 
 # Contexto global do projeto injetado automaticamente nos prompts de planejamento
 context: |
-  Projeto: governanca-de-agentes-v2
+  Projeto: governanca-agentica
   Perfil: cli-biblioteca (Node.js ESM zero-dependências + Copier/Jinja2 + OpenSpec CLI)
   Descrição: Protocolo agêntico aberto para desenvolvimento de software com agentes de inteligência artificial.
   Diretrizes Centrais: Obedeça integralmente a AGENTS.md e template/constitution.md.

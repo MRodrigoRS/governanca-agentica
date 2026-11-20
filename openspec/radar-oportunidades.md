@@ -1,4 +1,4 @@
-# Radar de Oportunidades e Mercado: governanca-de-agentes-v2
+# Radar de Oportunidades e Mercado: governanca-agentica
 
 > **Papel:** Memória estratégica viva de mercado e repositório de ideias estacionadas.
 > **Alimentado por:** Skill `explorar-produto` e podas da skill `refinar-ideia`.

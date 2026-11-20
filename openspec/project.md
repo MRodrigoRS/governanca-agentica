@@ -1,4 +1,4 @@
-# Contexto do Projeto: governanca-de-agentes
+# Contexto do Projeto: governanca-agentica
 
 > **Descrição:** Protocolo agêntico aberto para desenvolvimento de software com agentes de inteligência artificial.
 > **Responsável:** Rodrigo Rafael de Sousa <rodrigorafaeldesousa@gmail.com>
@@ -42,7 +42,7 @@
 ### Tríade de Âncora Linear (Anti-Vazamento de Squads)
 - **Workspace:** `rr-diario-agents` (URL: `https://linear.app/rr-diario-agents`)
 - **Equipe:** `RR_DIARIO_AGENTS` (Chave: `RR` / UUID: `0eea2743-4241-41cb-832a-96cc625a085a`)
-- **Projeto:** `GOV-AGENTS-V2` (Identificador: `P-RR-2` / UUID: `ef07f846-1cd0-400a-a6bb-94fd723621ed`)
+- **Projeto:** `Governança Agêntica` (Identificador: `P-RR-2` / UUID: `ef07f846-1cd0-400a-a6bb-94fd723621ed`)
 
 - **Protocolo de Handshake Pré-Operação (Obrigatório — Artigo 13):**
   1. **Handshake com `whoami`:** Antes de qualquer leitura ou escrita no Linear, o agente executa `whoami` para verificar a organização/workspace ativa.
