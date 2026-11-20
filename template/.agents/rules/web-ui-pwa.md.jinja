@@ -1,12 +1,6 @@
 {% if 'web-ui' in perfis_projeto or 'desktop' in perfis_projeto or 'mobile' in perfis_projeto %}---
 trigger: glob
-globs:
-  - "**/*.tsx"
-  - "**/*.jsx"
-  - "**/*.vue"
-  - "**/*.svelte"
-  - "**/*.css"
-  - "**/manifest*.json"
+globs: "**/*.tsx, **/*.jsx, **/*.vue, **/*.svelte, **/*.css, **/manifest*.json"
 ---
 
 # Regras de Engenharia Web, UI e Portabilidade PWA
@@ -45,15 +39,15 @@ globs:
 ## 5. Os 4 Estados Assíncronos Obrigatórios
 Toda rota ou componente que carrega dados de forma assíncrona DEVE implementar explicitamente os 4 estados:
 1. **Loading:** Exibir skeletons animados estruturais (nunca telas brancas ou spinners bloqueantes genéricos).
-2. **Empty:** Exibir mensagem clara e amigável quando a consulta retornar vazia, com botão de ação sugerida.
-3. **Error:** Exibir mensagem amigável de erro com botão para tentar novamente (`retry`), sem expor stacktrace.
+2. **Empty:** Exibir mensagem clara e amigável quando a consulta retornar vazia, com botão de ação sugerida (sem dizer "nenhum registro na tabela" ou "array vazio").
+3. **Error:** Exibir mensagem amigável e humana de erro com botão para tentar novamente (`retry`), sem expor stacktrace ou `{error.message}` técnico cru.
 4. **Success:** Renderizar o conteúdo normal de forma reativa.
 
 ---
 
 ## 6. Notificações Reativas (Toasts) e Modais de Confirmação
-- **Mutações de Dados:** Toda operação que criar, alterar ou excluir dados DEVE disparar uma notificação Toast temporária de feedback (sucesso ou erro claro).
-- **Ações Destrutivas ou Críticas:** Ações irreversíveis (excluir cadastro, cancelar contrato, resetar configurações) DEVEM obrigatoriamente abrir um Modal/Dialog de confirmação detalhando o impacto antes da mutação, com suporte a cancelamento explícito e tecla `Escape`.
+- **Mutações de Dados:** Toda operação que criar, alterar ou excluir dados DEVE disparar uma notificação Toast temporária de feedback (sucesso ou erro claro em linguagem humana, sem jargões técnicos ou códigos de exceção crus).
+- **Ações Destrutivas ou Críticas:** Ações irreversíveis (excluir cadastro, cancelar contrato, resetar configurações) DEVEM obrigatoriamente abrir um Modal/Dialog de confirmação detalhando o impacto em linguagem clara ao usuário antes da mutação, com suporte a cancelamento explícito e tecla `Escape`.
 
 ---
 
@@ -70,4 +64,14 @@ Toda rota ou componente que carrega dados de forma assíncrona DEVE implementar 
   - **Acessibilidade Automatizada:** Varredura com `@axe-core/playwright` sem violações críticas ou sérias (`critical` / `serious`).
   - **Higiene de Console:** Monitoramento via `page.on('pageerror')`, falhando se houver exceções JavaScript não tratadas durante o carregamento da página.
   - **Zero Overflow:** Verificação nos viewports `320x640` (mobile) e `1280x800` (desktop) assegurando ausência de barra de rolagem horizontal (`scrollWidth <= innerWidth`).
+
+---
+
+## 9. Linguagem Humana na Interface e Prevenção de XSS (Zero Jargão Técnico)
+- **Zero Jargão Técnico, Banco ou Programação na UI:** Todo texto exibido ao usuário final (toasts, alertas, estados vazios/erro, modais, placeholders, labels e badges) DEVE usar linguagem humana natural e orientada à tarefa. É terminantemente PROIBIDO expor na interface:
+  - Termos de programação/rede (`payload`, `null`, `undefined`, `boolean`, `timeout`, `endpoint`, `webhook`, `JSON`, `hidratando`);
+  - Conceitos ou nomes de banco de dados (`registro`, `entidade`, `tabela`, `coluna`, `constraint`, `foreign key`, `UUID`, `usuario_id`);
+  - Enums crus em `SNAKE_CASE` (ex.: exibir `"Aguardando pagamento"` em vez de `"AGUARDANDO_PAGAMENTO"`);
+  - Códigos HTTP ou exceções brutas (`Erro 500`, `422`, `PrismaClientKnownRequestError`, `error.message`).
+- **Defesa contra XSS e Segredos no Bundle:** Proibido usar `dangerouslySetInnerHTML`, `v-html` ou `innerHTML` sem sanitização rigorosa; proibido referenciar segredos privados em variáveis com prefixos públicos (`NEXT_PUBLIC_`, `VITE_`, `EXPO_PUBLIC_`).
 {% endif %}

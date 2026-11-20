@@ -25,6 +25,7 @@ Antes de iniciar, determine a via adequada conforme a Matriz de Cerimônia (D14 
 ### Via 1.5 — Manutenção Estrutural Blindada (`refactor` / `perf` / `style` / `chore` / `build`)
 * **Quando usar:** Refatoração interna que toque em **mais de 3 arquivos de produção** ou atualização/bump de versão de dependências já presentes em `package.json`.
 * **Regra estrita:** Bloqueia terminantemente schemas ou migrações de banco, dependências inéditas, manifestos não-npm e linhas novas sob `### Adicionado` no `CHANGELOG.md`.
+* **Handoff fora do OpenSpec:** Quando uma Via 1a, Via 1.5 ou plano de auditoria (`/auditar-seguranca`, `/auditar-ux`) precisar ser pausado ou compactado (`/compact`) antes do fechamento no Gate 2, registre o estado em `.agents/handoff.md` (campos `**Status:** Em andamento`, `**Contexto:**`, `**Hipótese / Tentativas:**`, `**Arquivos tocados:**`, `**Próximo passo:**`), que será injetado automaticamente pelo `SessionStart`.
 
 ### Via 2 — Ciclo Completo (Feature / Nova Capacidade de Domínio)
 * **Quando usar:** Nova funcionalidade de produto, regras de negócio inéditas, pacotes novos, rotas de API ou alterações no banco de dados.
@@ -92,7 +93,7 @@ Para cada item listado em `tasks.md`:
    - Elimine trechos de código duplicados estruturalmente (DRY);
    - Garanta nomes de domínio em PT-BR (Artigo 10);
    - Teste mentalmente se a inversão de operadores quebraria o teste (prova de mutação).
-4. **Circuit Breaker:** Se falhar 3 vezes seguidas no mesmo teste ou problema técnico, pare imediatamente e consulte o humano com os detalhes.
+4. **Circuit Breaker:** Se falhar 3 vezes seguidas no mesmo teste ou problema técnico, pare imediatamente, registre o bloqueio em `tasks.md` (`## Notas de Sessão`) ou em `.agents/handoff.md` (se fora do OpenSpec) e consulte o humano com os detalhes.
 
 ---
 
@@ -123,4 +124,4 @@ Antes de finalizar a tarefa ou commit:
    git push origin feat/fatia-XX-<slug>
    gh pr create --fill --template .github/pull_request_template.md
    ```
-7. Marque `[x] Concluído` no bloco de `openspec/roadmap.md` e puxe proativamente a próxima fatia da fila.
+7. Marque `[x] Concluído` no bloco de `openspec/roadmap.md`, remova ou marque `**Status:** Concluído` em `.agents/handoff.md` (se houver handoff avulso ativo) e puxe proativamente a próxima fatia da fila.

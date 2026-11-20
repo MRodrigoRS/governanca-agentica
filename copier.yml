@@ -23,6 +23,7 @@ _skip_if_exists:
   - "openspec/changes/**"
   - "docs/adr/**"
   - "docs/particularidades.md"
+  - "docs/runbook.md"
   - "docs/aprendizados.md"
   - "docs/catalogo-reuso.md"
 

@@ -76,16 +76,17 @@
 7. **Feedback Reativo (Toasts) e Confirmação de Segurança (Modais de Ação):**
    - **Toasts de Persistência:** Toda operação que realize mutação física de estado no banco ou na persistência (criação, edição, exclusão, envio de formulário, ativação/desativação) deve obrigatoriamente disparar uma notificação Toast temporária e reativa informando o resultado concreto ao usuário (toast de sucesso verde com mensagem amigável ou toast de erro vermelho legível).
    - **Modais de Confirmação para Ações Destrutivas/Críticas:** É terminantemente proibido executar deleções, arquivamentos, desativações ou mudanças de estado críticas e irreversíveis com clique direto sem confirmação prévia. Tais operações devem obrigatoriamente exibir um Modal/Dialog de confirmação detalhando o impacto da ação, com foco inicial seguro, botão de cancelamento claro e suporte a fechamento pela tecla `Escape` ou clique fora.
+8. **Linguagem Humana e Zero Jargão Técnico na Interface (UX Writing Limpo):** Textos exibidos ao usuário final (toasts, mensagens de erro, estados vazios, modais, formulários, alertas e badges) devem usar linguagem natural, clara e orientada à tarefa humana. É terminantemente proibido expor termos de programação (`payload`, `null`, `undefined`, `timeout`, `endpoint`, `webhook`, `JSON`), conceitos ou nomes de banco de dados (`registro`, `tabela`, `entidade`, `constraint`, `foreign key`, `UUID`, `usuario_id`), enums crus (`AGUARDANDO_PAGAMENTO`) ou mensagens de exceção/códigos HTTP brutos (`err.message`, `Erro 500`, `422`).
 
 ---
 
 ## Artigo 7 — Padrões Práticos de Engenharia Backend e Zero-Trust
 
-1. **Zero-Trust no Cliente (Anti-F12):** Nunca confie em validações, identidades ou regras de negócio validadas apenas no cliente. O backend deve validar e autorizar rigorosamente cada requisição antes de persistir dados.
+1. **Zero-Trust no Cliente (Anti-F12), Anti-IDOR e Anti-Mass Assignment:** Nunca confie em validações, identidades, preços ou regras de negócio enviadas pelo cliente. Toda consulta ou mutação deve filtrar pelo `usuarioId`/`tenantId` autenticado no servidor (prevenção contra IDOR/BOLA), exigir RBAC explícito no servidor em rotas administrativas, aplicar *allowlist* via schema contra *Mass Assignment* (proibido passar `req.body` cru ao ORM) e recalcular preços/descontos no servidor validando webhooks por assinatura criptográfica (HMAC) com idempotência.
 2. **Integridade Transacional (ACID):** Operações que envolvem alterações em múltiplos registros ou tabelas devem ser encapsuladas em transações atômicas de banco de dados.
 3. **Segurança de Tráfego e Cabeçalhos:** Ambientes de produção devem aplicar cabeçalhos de segurança essenciais: Content Security Policy (CSP), HTTP Strict Transport Security (HSTS) e CORS estritamente configurado.
 4. **Prevenção de Abuso:** Endpoints públicos e operações sensíveis (login, recuperação de senha, pagamentos, geração de IA) devem implementar Rate Limiting determinístico.
-5. **OWASP Top 10 e OWASP Agentic Top 10:** Proteção ativa contra injeção SQL/NoSQL, CSRF, SSRF, injeção de prompt indireta e execução inadvertida de ferramentas por agentes autônomos.
+5. **OWASP Top 10 e OWASP Agentic Top 10:** Proteção ativa contra injeção SQL/NoSQL, XSS, CSRF, SSRF, vazamento de segredos em variáveis públicas de frontend (`NEXT_PUBLIC_`, `VITE_`, `EXPO_PUBLIC_`), injeção de prompt indireta e execução inadvertida de ferramentas por agentes autônomos; uso obrigatório de cookies `HttpOnly`/`Secure`/`SameSite`, hash de senhas com `Argon2id`/`bcrypt`, upload validado por *magic bytes* fora da raiz executável e ocultação total de stack traces/erros internos de banco nas respostas ao cliente.
 
 ---
 

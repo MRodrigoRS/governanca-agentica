@@ -39,17 +39,21 @@ Inspecionar o código modificado (`git diff` dos arquivos staged) e traduzir em 
 2. **Entidades, Banco e Schemas:**
    - Quais tabelas, colunas e enums foram criados? (Nomes literais exatos).
    - Quais schemas de validação de entrada/saída existem e quais campos exigem?
-3. **Regras de Negócio e Validações Implementadas:**
+3. **Regras de Negócio, Segurança (AppSec) e Validações Implementadas:**
    - O que o código realmente valida na prática? (Ex.: checa se e-mail tem `@`, se valor é maior que zero, etc.).
-   - Quais checagens de autorização/permissão são feitas antes de persistir dados?
+   - **IDOR / BOLA e RBAC:** As consultas e mutações filtram pelo `usuarioId`/`tenantId` autenticado no servidor ou aceitam `id` cru do cliente? Rotas administrativas exigem RBAC explícito no servidor?
+   - **Anti-Mass Assignment:** Alguma rota repassa `req.body` ou `payload` diretamente para `.create()`/`.update()` do ORM sem *allowlist* explícita?
+   - **Pagamentos, Webhooks e Fluxos Sensíveis:** Preços/descontos são recalculados no servidor? Webhooks verificam assinatura criptográfica (HMAC) e idempotência? Senhas usam `Argon2id`/`bcrypt` e cookies possuem `HttpOnly`, `Secure` e `SameSite`? Uploads validam *magic bytes* reais e tamanho fora da raiz executável?
+   - **Injeções, XSS, SSRF e Variáveis Públicas:** Há SQL raw interpolado, `dangerouslySetInnerHTML`/`v-html`/`innerHTML` sem sanitização, `fetch` para URL externa sem bloqueio de IP privado/metadata (`127.0.0.1`, `169.254.169.254`) ou segredo privado em variável `NEXT_PUBLIC_`/`VITE_`/`EXPO_PUBLIC_`?
    - **Auditoria de `style` vs. `refactor`:**
      - Se o commit for categorizado como `style`: houve alteração em handlers, branches condicionais ou lógica funcional? (Proibido: `style` deve ser puramente cosmético/formatação).
      - Se o commit for categorizado como `refactor`: houve alteração em contratos públicos, schemas externos ou comportamento observável de negócio? (Refatoração deve preservar contratos existentes).
 4. **Tratamento de Erros e Exceções:**
    - Quais exceções são tratadas e quais códigos HTTP/mensagens são retornados?
-   - Existem blocos `catch` vazios ou erros engolidos silenciosamente?
-5. **Interface e Estados Visuais (se aplicável):**
+   - Existem blocos `catch` vazios, stack traces expostos ou mensagens brutas do ORM/banco (`Unique constraint`, nomes de tabelas/colunas) vazando para o cliente?
+5. **Interface, Estados Visuais e Linguagem Humana (se aplicável):**
    - Quais rotas e componentes visuais foram adicionados?
+   - **Zero Jargão Técnico na UI:** Textos visíveis ao usuário final (toasts, erros, estados vazios, modais, badges) expõem jargões (`payload`, `null`, `undefined`, `timeout`, `endpoint`), termos de banco (`registro`, `tabela`, `constraint`), enums em `SNAKE_CASE` (`AGUARDANDO_PAGAMENTO`) ou `{error.message}` técnico cru?
    - Os 4 estados assíncronos (`loading`, `empty`, `error`, `success`) existem explicitamente no código?
    - As mutações de dados disparam notificações Toast temporárias de feedback (sucesso/erro)?
    - Há Modais de Confirmação protegendo ações destrutivas (exclusões, cancelamentos, desativações)?

@@ -113,7 +113,7 @@ Imediatamente após a instalação:
 
 ## Passo 6 — Sedimentação da Documentação e Commit de Fundação (Marco 1)
 
-1. Preencha as seções 1 e 2 de `openspec/project.md` (Visão Polida e Stack/MCPs; a Seção 3 permanece como ponteiro para `openspec/roadmap.md`), atualize a seção `## Comandos do Projeto` em `AGENTS.md` com os comandos reais da stack instalada, inicialize os diagramas C4 e Glossário em `docs/arquitetura.md` e os ponteiros iniciais em `docs/catalogo-reuso.md`.
+1. Preencha as seções 1 e 2 de `openspec/project.md` (Visão Polida e Stack/MCPs; a Seção 3 permanece como ponteiro para `openspec/roadmap.md`), atualize a seção `## Comandos do Projeto` em `AGENTS.md` com os comandos reais da stack instalada, inicialize os diagramas C4, Glossário e **Seção 5 (`Mapa Físico de Módulos`)** em `docs/arquitetura.md`, os comandos base de operação/deploy em `docs/runbook.md` e os ponteiros iniciais em `docs/catalogo-reuso.md`.
 2. Atualize `CHANGELOG.md` na seção `### Adicionado` registrando a inicialização da stack e a sedimentação da documentação e fatiação inicial.
 3. **Marco 1 da Rotina de Commits (Sedimentação e Fundação com Aprovação Humana — Artigo 11):**
    - Apresente ao humano a base instalada e o conjunto de fatias sedimentadas.

@@ -52,3 +52,6 @@ Thumbs.db
 
 # Configurações locais privadas de Agentes
 .claude/settings.local.json
+
+# Handoff efêmero de sessão fora do OpenSpec (lido por scripts/hook-agente.mjs)
+.agents/handoff.md

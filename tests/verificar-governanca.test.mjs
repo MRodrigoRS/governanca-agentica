@@ -316,3 +316,129 @@ test('verificar-governanca: aprova alteração de project.godot quando há spec 
     repo.limpar();
   }
 });
+
+test('verificar-governanca: bloqueia segredo privado com prefixo público de frontend e aprova variável pública legítima', () => {
+  const repo = criarRepoTemporario();
+  try {
+    writeFileSync(join(repo.dir, 'CHANGELOG.md'), '# Changelog\n## [Não publicado]\n### Adicionado\n- Config\n', 'utf8');
+    writeFileSync(join(repo.dir, '.env.example'), 'NEXT_PUBLIC_STRIPE_SECRET_KEY=placeholder\n', 'utf8');
+    mkdirSync(join(repo.dir, 'src'), { recursive: true });
+    writeFileSync(
+      join(repo.dir, 'src', 'cliente.ts'),
+      'export const chave = process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY;\n',
+      'utf8'
+    );
+    execSync('git add CHANGELOG.md .env.example src/cliente.ts', { cwd: repo.dir, stdio: 'ignore' });
+
+    const resBloqueio = repo.executar();
+    assert.equal(resBloqueio.exitCode, 1);
+    assert.match(resBloqueio.stderr, /Vazamento de Segredo em Variável Pública de Frontend/);
+
+    // Agora testa com variável privada no código via import.meta.env (sem constar como pública no .env.example)
+    writeFileSync(join(repo.dir, '.env.example'), 'NEXT_PUBLIC_APP_URL=http://localhost:3000\n', 'utf8');
+    writeFileSync(
+      join(repo.dir, 'src', 'cliente.ts'),
+      'export const segredo = import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY;\n',
+      'utf8'
+    );
+    execSync('git add .env.example src/cliente.ts', { cwd: repo.dir, stdio: 'ignore' });
+
+    const resVite = repo.executar();
+    assert.equal(resVite.exitCode, 1);
+    assert.match(resVite.stderr, /Vazamento de Segredo em Variável Pública de Frontend/);
+
+    // Agora testa variável pública legítima
+    writeFileSync(
+      join(repo.dir, 'src', 'cliente.ts'),
+      'export const appUrl = process.env.NEXT_PUBLIC_APP_URL;\n',
+      'utf8'
+    );
+    execSync('git add src/cliente.ts', { cwd: repo.dir, stdio: 'ignore' });
+
+    const resSucesso = repo.executar();
+    assert.equal(resSucesso.exitCode, 0);
+  } finally {
+    repo.limpar();
+  }
+});
+
+test('verificar-governanca: sensor anti-apodrecimento do Mapa Físico (§5 arquitetura.md) e avisos de Runbook e Handoff', () => {
+  const repo = criarRepoTemporario();
+  try {
+    mkdirSync(join(repo.dir, 'docs'), { recursive: true });
+    mkdirSync(join(repo.dir, 'src', 'pagamentos'), { recursive: true });
+    mkdirSync(join(repo.dir, '.agents'), { recursive: true });
+
+    writeFileSync(join(repo.dir, 'CHANGELOG.md'), '# Changelog\n## [Não publicado]\n### Adicionado\n- Estrutura inicial\n', 'utf8');
+    writeFileSync(join(repo.dir, 'src', 'pagamentos', 'servico.ts'), 'export function pagar() { return 1; }\n', 'utf8');
+    writeFileSync(
+      join(repo.dir, 'docs', 'arquitetura.md'),
+      `# Arquitetura\n\n## 5. Mapa Físico de Módulos (Onde Cada Coisa Mora)\n\n| Domínio | Pasta | Responsabilidade | Testes |\n|---|---|---|---|\n| **Pagamentos** | \`src/pagamentos/\` | Checkout | \`tests/\` |\n`,
+      'utf8'
+    );
+    mkdirSync(join(repo.dir, 'tests'), { recursive: true });
+    writeFileSync(join(repo.dir, 'tests', 'pagamentos.test.ts'), 'export const ok = true;\n', 'utf8');
+
+    // 1. Mapa válido (src/pagamentos/ e tests/ existem)
+    execSync('git add .', { cwd: repo.dir, stdio: 'ignore' });
+    execSync('git commit -m "chore: base com mapa fisico valido"', { cwd: repo.dir, stdio: 'ignore' });
+
+    // 2. Aponta para pasta inexistente em docs/arquitetura.md -> deve bloquear
+    writeFileSync(
+      join(repo.dir, 'docs', 'arquitetura.md'),
+      `# Arquitetura\n\n## 5. Mapa Físico de Módulos (Onde Cada Coisa Mora)\n\n| Domínio | Pasta | Responsabilidade | Testes |\n|---|---|---|---|\n| **Fantasma** | \`src/fantasma/\` | Quebrado | \`tests/\` |\n`,
+      'utf8'
+    );
+    execSync('git add docs/arquitetura.md', { cwd: repo.dir, stdio: 'ignore' });
+    const resFantasma = repo.executar();
+    assert.equal(resFantasma.exitCode, 1);
+    assert.match(resFantasma.stderr, /Sensor Anti-Apodrecimento do Mapa Físico/);
+
+    // Restaura mapa válido
+    writeFileSync(
+      join(repo.dir, 'docs', 'arquitetura.md'),
+      `# Arquitetura\n\n## 5. Mapa Físico de Módulos (Onde Cada Coisa Mora)\n\n| Domínio | Pasta | Responsabilidade | Testes |\n|---|---|---|---|\n| **Pagamentos** | \`src/pagamentos/\` | Checkout | \`tests/\` |\n`,
+      'utf8'
+    );
+    execSync('git reset', { cwd: repo.dir, stdio: 'ignore' });
+
+    // 3. Remove toda a pasta src/pagamentos sem atualizar docs/arquitetura.md -> deve bloquear
+    execSync('git rm -r src/pagamentos', { cwd: repo.dir, stdio: 'ignore' });
+    const resPastaRemovida = repo.executar();
+    assert.equal(resPastaRemovida.exitCode, 1);
+    assert.match(resPastaRemovida.stderr, /Sensor Anti-Apodrecimento do Mapa Físico/);
+
+    // 4. Restaura e testa avisos não-bloqueantes: Dockerfile sem docs/runbook.md + .agents/handoff.md ativo
+    execSync('git reset --hard HEAD', { cwd: repo.dir, stdio: 'ignore' });
+    writeFileSync(join(repo.dir, 'Dockerfile'), 'FROM node:20-alpine\n', 'utf8');
+    writeFileSync(join(repo.dir, 'src', 'pagamentos', 'servico.ts'), 'export function pagar() { return 2; }\n', 'utf8');
+    writeFileSync(join(repo.dir, 'CHANGELOG.md'), '# Changelog\n## [Não publicado]\n### Corrigido\n- Ajuste deploy e servico\n', 'utf8');
+    writeFileSync(
+      join(repo.dir, '.agents', 'handoff.md'),
+      '- **Status:** Em andamento\n- **Contexto:** Ajuste parcial\n- **Próximo passo:** Finalizar\n',
+      'utf8'
+    );
+    execSync('git add Dockerfile src/pagamentos/servico.ts CHANGELOG.md', { cwd: repo.dir, stdio: 'ignore' });
+
+    const resAvisos = repo.executar();
+    assert.equal(resAvisos.exitCode, 0);
+    assert.match(resAvisos.stdout, /\[AVISO RUNBOOK\]/);
+    assert.match(resAvisos.stdout, /\[AVISO HANDOFF\]/);
+
+    // 5. Quando docs/runbook.md é incluído e handoff marcado Concluído, os avisos somem
+    writeFileSync(join(repo.dir, 'docs', 'runbook.md'), '# Runbook\n', 'utf8');
+    writeFileSync(
+      join(repo.dir, '.agents', 'handoff.md'),
+      '- **Status:** Concluído\n- **Contexto:** Ajuste parcial\n- **Próximo passo:** Finalizar\n',
+      'utf8'
+    );
+    execSync('git add docs/runbook.md', { cwd: repo.dir, stdio: 'ignore' });
+
+    const resLimpo = repo.executar();
+    assert.equal(resLimpo.exitCode, 0);
+    assert.doesNotMatch(resLimpo.stdout, /\[AVISO RUNBOOK\]/);
+    assert.doesNotMatch(resLimpo.stdout, /\[AVISO HANDOFF\]/);
+  } finally {
+    repo.limpar();
+  }
+});

@@ -590,11 +590,27 @@ function verificarVariaveisAmbienteEmStaged(listaArquivos) {
 
   if (arquivosProducao.length === 0) return;
 
+  const regexPrefixoPublico = /^(?:NEXT_PUBLIC_|VITE_|EXPO_PUBLIC_|REACT_APP_|PUBLIC_)/;
+  const regexNomeSegredo = /(?:SECRET|PRIVATE|SERVICE_ROLE|PASSWORD|SENHA|DATABASE_URL|DB_URL|WEBHOOK_SECRET|ADMIN_KEY|MASTER_KEY)/;
+
+  const validarSegredoEmPrefixoPublico = (nomeVar, origem) => {
+    if (regexPrefixoPublico.test(nomeVar) && regexNomeSegredo.test(nomeVar)) {
+      registrarErro(
+        `Vazamento de Segredo em Variável Pública de Frontend (Artigo 4 e Artigo 7):\n` +
+        `A variável '${nomeVar}' (${origem}) usa um prefixo exposto no bundle do navegador junto a nome de credencial privada.\n` +
+        `Variáveis NEXT_PUBLIC_*, VITE_*, EXPO_PUBLIC_*, REACT_APP_* e PUBLIC_* são embutidas publicamente no código do cliente.\n\n` +
+        `-> Solução: Remova o prefixo público da variável sensível e mantenha seu uso exclusivamente no backend/servidor.`
+      );
+      process.exit(1);
+    }
+  };
+
   const variaveisDeclaradas = new Set();
   if (conteudoEnvExample) {
     for (const linha of conteudoEnvExample.split('\n')) {
       const match = linha.match(/^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=/);
       if (match) {
+        validarSegredoEmPrefixoPublico(match[1], '.env.example');
         variaveisDeclaradas.add(match[1]);
       }
     }
@@ -633,6 +649,8 @@ function verificarVariaveisAmbienteEmStaged(listaArquivos) {
       while ((match = regex.exec(conteudo)) !== null) {
         const nomeVar = match[1];
         if (variaveisIgnoradas.has(nomeVar)) continue;
+
+        validarSegredoEmPrefixoPublico(nomeVar, arq);
 
         if (!variaveisDeclaradas.has(nomeVar)) {
           registrarErro(
@@ -821,68 +839,194 @@ function verificarSensorAntiMonolitoComCatraca(arquivosProducao) {
   }
 }
 
-// 6.4. Sensor Anti-Apodrecimento do Catálogo de Reúso (Fatia 10 / Artigo 14)
-function verificarSensorAntiApodrecimentoCatalogo(arquivosModificados) {
-  const caminhoCatalogo = join(process.cwd(), 'docs', 'catalogo-reuso.md');
-  const catalogoExisteNoDisco = existsSync(caminhoCatalogo);
-
-  let conteudoCatalogo = '';
-  if (catalogoExisteNoDisco) {
-    try {
-      conteudoCatalogo = readFileSync(caminhoCatalogo, 'utf8');
-    } catch {}
-  }
-
-  if (!conteudoCatalogo) return;
-
+// 6.4. Sensor Anti-Apodrecimento de Índices em Markdown (Catálogo de Reúso e Mapa Físico)
+function extrairPonteirosTabelaMarkdown(linhas, permitirDiretorios = false) {
   const ponteiros = [];
-  const linhas = conteudoCatalogo.split('\n');
   for (let i = 0; i < linhas.length; i++) {
     const linha = linhas[i].trim();
-    if (linha.startsWith('|') && linha.includes('`')) {
-      const matches = linha.matchAll(/`([^`]+)`/g);
-      for (const m of matches) {
-        const caminho = m[1].trim();
-        if (caminho.includes('.') || caminho.includes('/')) {
-          ponteiros.push({ linha: i + 1, caminho });
-        }
-      }
+    if (!linha.startsWith('|') || !linha.includes('`')) continue;
+    if (/^\|[\s:-]+\|$/.test(linha)) continue;
+
+    const matches = linha.matchAll(/`([^`]+)`/g);
+    for (const m of matches) {
+      const caminho = m[1].trim();
+      const pareceCaminho = caminho.includes('.') || caminho.includes('/');
+      if (!pareceCaminho) continue;
+      if (permitirDiretorios && (/[\s*<>{}()]/.test(caminho) || caminho.startsWith('Ex.:'))) continue;
+      ponteiros.push({ linha: i + 1, caminho });
     }
   }
+  return ponteiros;
+}
 
-  const catalogoEstaStaged = arquivosModificados.some(
-    (item) => (item.arquivo || '').toLowerCase() === 'docs/catalogo-reuso.md'
+function auditarPonteirosTabela({
+  caminhoRelativo,
+  linhas,
+  arquivosModificados,
+  tituloErro,
+  solucaoRemocao,
+  solucaoInexistente,
+  permitirDiretorios = false,
+}) {
+  const ponteiros = extrairPonteirosTabelaMarkdown(linhas, permitirDiretorios);
+  if (ponteiros.length === 0) return;
+
+  const docEstaStaged = arquivosModificados.some(
+    (item) => (item.arquivo || '').toLowerCase() === caminhoRelativo.toLowerCase()
   );
 
-  // Cenário 1: Arquivos removidos ou renomeados citados no catálogo
+  // Cenário 1: Arquivos ou diretórios mapeados removidos/renomeados sem atualizar o índice
   for (const item of arquivosModificados) {
     const status = item.status || '';
-    if (status === 'D' || status.startsWith('R')) {
-      const arqRemovido = item.arquivo;
-      const citado = ponteiros.find((p) => p.caminho.replace(/\\/g, '/') === arqRemovido.replace(/\\/g, '/'));
-      if (citado && !catalogoEstaStaged) {
+    if (status !== 'D' && !status.startsWith('R')) continue;
+
+    const arqRemovidoNorm = item.arquivo.replace(/\\/g, '/');
+    for (const p of ponteiros) {
+      const pNorm = p.caminho.replace(/\\/g, '/');
+      const pPrefixo = pNorm.endsWith('/') ? pNorm : `${pNorm}/`;
+      const correspondenciaExata = pNorm === arqRemovidoNorm;
+      const pastaEsvaziada =
+        permitirDiretorios &&
+        arqRemovidoNorm.startsWith(pPrefixo) &&
+        !existsSync(join(process.cwd(), p.caminho));
+
+      if ((correspondenciaExata || pastaEsvaziada) && !docEstaStaged) {
         registrarErro(
-          `Sensor Anti-Apodrecimento do Catálogo (Artigo 14):\n` +
-          `O arquivo catalogado '${citado.caminho}' em 'docs/catalogo-reuso.md' foi removido ou renomeado, mas o catálogo não foi atualizado neste commit para evitar apodrecimento.\n\n` +
-          `-> Solução: Atualize 'docs/catalogo-reuso.md' removendo ou atualizando o ponteiro para '${citado.caminho}'.`
+          `${tituloErro}:\n` +
+          `O caminho catalogado '${p.caminho}' em '${caminhoRelativo}' foi removido ou renomeado, mas o documento não foi atualizado neste commit para evitar apodrecimento.\n\n` +
+          `-> Solução: ${solucaoRemocao(p.caminho)}`
         );
         process.exit(1);
       }
     }
   }
 
-  // Cenário 2: Catálogo staged apontando para arquivos inexistentes
-  if (catalogoEstaStaged) {
+  // Cenário 2: Índice staged apontando para caminhos inexistentes no disco
+  if (docEstaStaged) {
     for (const p of ponteiros) {
-      const caminhoFisico = join(process.cwd(), p.caminho);
-      if (!existsSync(caminhoFisico)) {
+      if (!existsSync(join(process.cwd(), p.caminho))) {
         registrarErro(
-          `Sensor Anti-Apodrecimento do Catálogo (Artigo 14):\n` +
-          `O arquivo 'docs/catalogo-reuso.md' (linha ${p.linha}) referencia o caminho '${p.caminho}', mas este arquivo não foi encontrado no disco (ponteiro inexistente).\n\n` +
-          `-> Solução: Certifique-se de que o arquivo existe antes de catalogá-lo ou corrija o caminho apontado no catálogo.`
+          `${tituloErro}:\n` +
+          `O arquivo '${caminhoRelativo}' (linha ${p.linha}) referencia o caminho '${p.caminho}', mas ele não foi encontrado no disco (ponteiro inexistente).\n\n` +
+          `-> Solução: ${solucaoInexistente}`
         );
         process.exit(1);
       }
+    }
+  }
+}
+
+function verificarSensorAntiApodrecimentoCatalogo(arquivosModificados) {
+  const caminhoCatalogo = join(process.cwd(), 'docs', 'catalogo-reuso.md');
+  if (!existsSync(caminhoCatalogo)) return;
+
+  let conteudoCatalogo = '';
+  try {
+    conteudoCatalogo = readFileSync(caminhoCatalogo, 'utf8');
+  } catch {
+    return;
+  }
+  if (!conteudoCatalogo) return;
+
+  auditarPonteirosTabela({
+    caminhoRelativo: 'docs/catalogo-reuso.md',
+    linhas: conteudoCatalogo.split('\n'),
+    arquivosModificados,
+    tituloErro: 'Sensor Anti-Apodrecimento do Catálogo (Artigo 14)',
+    solucaoRemocao: (caminho) =>
+      `Atualize 'docs/catalogo-reuso.md' removendo ou atualizando o ponteiro para '${caminho}'.`,
+    solucaoInexistente:
+      'Certifique-se de que o arquivo existe antes de catalogá-lo ou corrija o caminho apontado no catálogo.',
+    permitirDiretorios: false,
+  });
+}
+
+function extrairLinhasSecaoMapaFisico(conteudo) {
+  const linhas = conteudo.split('\n');
+  const resultado = [];
+  let dentroSecao = false;
+
+  for (const linha of linhas) {
+    if (/^##\s+5\.\s+Mapa F[ií]sico/i.test(linha.trim())) {
+      dentroSecao = true;
+      resultado.push(linha);
+      continue;
+    }
+    if (dentroSecao && /^##\s+/.test(linha.trim())) {
+      break;
+    }
+    resultado.push(dentroSecao ? linha : '');
+  }
+  return resultado;
+}
+
+function verificarSensorAntiApodrecimentoMapaArquitetura(arquivosModificados) {
+  const caminhoArq = join(process.cwd(), 'docs', 'arquitetura.md');
+  if (!existsSync(caminhoArq)) return;
+
+  let conteudoArq = '';
+  try {
+    conteudoArq = readFileSync(caminhoArq, 'utf8');
+  } catch {
+    return;
+  }
+  if (!conteudoArq) return;
+
+  auditarPonteirosTabela({
+    caminhoRelativo: 'docs/arquitetura.md',
+    linhas: extrairLinhasSecaoMapaFisico(conteudoArq),
+    arquivosModificados,
+    tituloErro: 'Sensor Anti-Apodrecimento do Mapa Físico (docs/arquitetura.md §5)',
+    solucaoRemocao: (caminho) =>
+      `Atualize a tabela '## 5. Mapa Físico de Módulos' em 'docs/arquitetura.md' removendo ou atualizando '${caminho}'.`,
+    solucaoInexistente:
+      'Certifique-se de que a pasta ou arquivo mapeado existe no disco ou corrija a tabela na Seção 5 de docs/arquitetura.md.',
+    permitirDiretorios: true,
+  });
+}
+
+function ehArquivoDeployOuEnv(arquivo) {
+  const minusculo = arquivo.toLowerCase().replace(/\\/g, '/');
+  const nomeBase = minusculo.split('/').pop() || '';
+  if (minusculo === '.env.example') return true;
+  if (nomeBase === 'dockerfile' || nomeBase.startsWith('dockerfile.')) return true;
+  if (/^docker-compose(\.[a-z0-9_-]+)?\.ya?ml$/i.test(nomeBase)) return true;
+  if (
+    ['fly.toml', 'vercel.json', 'render.yaml', 'render.yml', 'railway.json', 'railway.toml', 'procfile'].includes(
+      nomeBase
+    )
+  ) {
+    return true;
+  }
+  return minusculo.startsWith('.github/workflows/') && nomeBase.includes('deploy');
+}
+
+function emitirAvisosOperacionaisEHandoff(listaArquivos, ehFundacao, arquivosProducao) {
+  const modoCi = process.env.CI === 'true' || process.argv.includes('--ci');
+  const runbookIncluido = listaArquivos.some((f) => f.toLowerCase() === 'docs/runbook.md');
+
+  if (!ehFundacao && !runbookIncluido) {
+    const arquivosDeployOuEnv = listaArquivos.filter(ehArquivoDeployOuEnv);
+    if (arquivosDeployOuEnv.length > 0) {
+      registrarInfo(
+        `[AVISO RUNBOOK] Alterações de deploy/infra ou .env.example detectadas (${arquivosDeployOuEnv.join(', ')}) sem atualização de 'docs/runbook.md'. Se o fluxo de publicação, rollback ou variáveis de produção mudou, atualize 'docs/runbook.md'.`
+      );
+    }
+  }
+
+  if (!modoCi && arquivosProducao.length > 0) {
+    const caminhoHandoff = join(process.cwd(), '.agents', 'handoff.md');
+    if (existsSync(caminhoHandoff)) {
+      try {
+        const conteudo = readFileSync(caminhoHandoff, 'utf8');
+        const mStatus = conteudo.match(/\*\*Status:\*\*\s*(.+)/i);
+        const jaConcluido = mStatus && /conclu[ií]do|nenhum|limpo|inativo/i.test(mStatus[1]);
+        if (conteudo.trim() && !jaConcluido) {
+          registrarInfo(
+            `[AVISO HANDOFF] O arquivo efêmero '.agents/handoff.md' ainda está ativo. Remova-o ou marque '**Status:** Concluído' ao encerrar a entrega (Gate 2) para evitar contexto obsoleto na próxima sessão.`
+          );
+        }
+      } catch {}
     }
   }
 }
@@ -921,8 +1065,9 @@ function executarAuditoria() {
     verificarSensorAntiMonolitoComCatraca(arquivosProducao);
   }
 
-  // REGRA 2.3: Sensor Anti-Apodrecimento do Catálogo de Reúso (Artigo 14)
+  // REGRA 2.3: Sensor Anti-Apodrecimento do Catálogo de Reúso (Artigo 14) e do Mapa Físico
   verificarSensorAntiApodrecimentoCatalogo(modificados);
+  verificarSensorAntiApodrecimentoMapaArquitetura(modificados);
 
   // REGRA 3: Se há alteração de código de produção, CHANGELOG.md DEVE estar no commit (Artigo 10)
   if (arquivosProducao.length > 0 && !changelogIncluido) {
@@ -1073,6 +1218,8 @@ function executarAuditoria() {
       );
     }
   }
+
+  emitirAvisosOperacionaisEHandoff(listaArquivos, ehFundacao, arquivosProducao);
 
   registrarSucesso('Todas as verificações determinísticas da Governança foram satisfeitas.');
   process.exit(0);

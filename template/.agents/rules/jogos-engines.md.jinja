@@ -1,13 +1,6 @@
 {% if 'jogo' in perfis_projeto %}---
 trigger: glob
-globs:
-  - "**/*.gd"
-  - "**/*.tscn"
-  - "**/project.godot"
-  - "**/scenes/**"
-  - "**/prefabs/**"
-  - "**/*.wgsl"
-  - "**/*.glsl"
+globs: "**/*.gd, **/*.tscn, **/project.godot, **/scenes/**, **/prefabs/**, **/*.wgsl, **/*.glsl"
 ---
 
 # Regras de Desenvolvimento de Jogos, Simulações e Gráficos

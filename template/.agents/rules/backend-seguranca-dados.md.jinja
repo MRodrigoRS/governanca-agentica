@@ -1,15 +1,6 @@
 {% if 'api-backend' in perfis_projeto or 'web-ui' in perfis_projeto %}---
 trigger: glob
-globs:
-  - "**/api/**"
-  - "**/server/**"
-  - "**/routes/**"
-  - "**/controllers/**"
-  - "**/*.prisma"
-  - "**/schema*.ts"
-  - "**/migrations/**"
-  - "**/*.py"
-  - "**/*.go"
+globs: "**/api/**, **/server/**, **/routes/**, **/controllers/**, **/*.prisma, **/schema*.ts, **/migrations/**, **/*.py, **/*.go"
 ---
 
 # Regras de Backend, Segurança e Persistência de Dados
@@ -19,9 +10,12 @@ globs:
 
 ---
 
-## 1. Zero-Trust Anti-F12 (Validação na Borda)
-- NUNCA confiar nos dados enviados pelo cliente frontend. O usuário pode abrir o Inspecionar Elemento (F12) ou disparar requisições artificiais via cURL/Postman.
+## 1. Zero-Trust Anti-F12, Anti-IDOR e Anti-Mass Assignment
+- NUNCA confiar nos dados, preços ou identidades enviados pelo cliente frontend. O usuário pode abrir o Inspecionar Elemento (F12) ou disparar requisições artificiais via cURL/Postman.
 - Toda entrada de dados DEVE ser validada e tipada estritamente com schemas declarativos na borda (Zod, Pydantic, Serde).
+- **Prevenção contra IDOR / BOLA e RBAC:** Toda leitura, edição ou exclusão DEVE filtrar pelo `usuarioId` / `tenantId` extraído da sessão/token autenticado no servidor (nunca confiar apenas no `id` vindo da URL/body) e validar permissão (RBAC) no servidor para rotas administrativas.
+- **Anti-Mass Assignment:** Proibido repassar `req.body` ou `payload` diretamente para `.create()` / `.update()` do ORM; mapeie explicitamente apenas os campos permitidos pelo schema (*allowlist*).
+- **Integridade de Pagamentos e Webhooks:** Nunca confiar em preço, desconto ou status enviado pelo frontend; recalcular sempre no servidor e validar assinatura criptográfica (HMAC) + chave de idempotência em webhooks.
 - Nomes de entidades de domínio, tabelas de banco e colunas DEVEM ser escritos em Português do Brasil (PT-BR).
 
 ---
@@ -32,18 +26,25 @@ globs:
 
 ---
 
-## 3. Cabeçalhos de Segurança e Proteção HTTP
+## 3. Cabeçalhos de Segurança, Cookies, Sessão e Senhas
 - Configurar cabeçalhos de segurança adequados:
   - `Content-Security-Policy` (CSP) restritivo.
   - `Strict-Transport-Security` (HSTS) para conexões HTTPS.
   - `X-Content-Type-Options: nosniff`.
   - `X-Frame-Options: DENY` ou `SAMEORIGIN`.
+  - `Referrer-Policy` restritiva.
   - Políticas de CORS estritas liberando apenas origens autorizadas.
+- **Cookies de Sessão e CSRF:** Flags obrigatórias `HttpOnly`, `Secure` e `SameSite=Strict` (ou `Lax`) + proteção anti-CSRF para ações mutáveis baseadas em cookie.
+- **Senhas e Links de Recuperação:** Hash exclusivo com `Argon2id` ou `bcrypt` (com salt); tokens/links de redefinição de senha DEVEM ser de uso único e expirar em curto prazo (15 a 60 minutos).
 
 ---
 
-## 4. Rate Limiting e Proteção contra Abuso
+## 4. Rate Limiting, Upload Seguro, Anti-SSRF e Ocultação de Erros Internos
 - Rotas públicas de autenticação (login, cadastro, recuperação de senha) e endpoints computacionalmente caros DEVEM conter Rate Limiting com limites proporcionais por IP/Token.
+- **Upload Seguro de Arquivos:** Validar tipo MIME real (*magic bytes*), extensão permitida e tamanho máximo no servidor, armazenando fora da raiz executável (sem path traversal).
+- **Prevenção contra SSRF e Injeção:** Usar exclusivamente queries parametrizadas/ORM seguro; ao buscar URLs externas informadas pelo usuário, bloquear IPs privados/loopback/metadata (`127.0.0.1`, `169.254.169.254`, redes locais).
+- **Proibição de Prefixos Públicos em Segredos:** Chaves privadas nunca devem usar prefixos expostos ao bundle do cliente (`NEXT_PUBLIC_`, `VITE_`, `EXPO_PUBLIC_`, `PUBLIC_`, `REACT_APP_`).
+- **Erros Seguros e Sem Jargão Técnico para o Cliente:** Desativar `DEBUG`/stack traces em produção e nunca repassar mensagens cruas do ORM/banco (`Unique constraint`, nomes de tabelas/colunas) na resposta HTTP; traduzir sempre para mensagens de domínio amigáveis ao usuário final.
 
 ---
 

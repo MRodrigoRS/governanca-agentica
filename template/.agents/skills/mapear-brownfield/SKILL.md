@@ -27,7 +27,7 @@ Esta skill orienta o agente quando a governança é instalada em um repositório
 Antes de documentar ou planejar, levante de forma honesta os riscos encontrados no estado atual:
 - Arquivos monolíticos acima de **350 linhas úteis** (candidatos a catraca ou refatoração via `Via 1.5`).
 - Ausência de testes automatizados, testes ocos ou mocks abusivos de banco.
-- Padrões atrasados, acoplamentos fortes, falhas de segurança/Zero-Trust ou variáveis ausentes de `.env.example`.
+- Padrões atrasados, acoplamentos fortes, falhas de segurança/Zero-Trust ou variáveis ausentes de `.env.example` (para auditoria AppSec profunda dos 27+ controles em projetos legados, acione a skill `auditoria-seguranca` / `/auditar-seguranca`).
 
 ---
 
@@ -36,9 +36,9 @@ Antes de documentar ou planejar, levante de forma honesta os riscos encontrados 
 Atualize todos os documentos abaixo substituindo os placeholders genéricos pelos fatos reais do repositório:
 
 1. **`AGENTS.md` (Seção `## Comandos do Projeto`):** Preencha os comandos reais de instalação, dev, testes, typecheck, lint, build e migrações.
-2. **`docs/arquitetura.md`:** Atualize os diagramas C4 Nível 1 e 2, o `erDiagram` com as tabelas/entidades reais e o Glossário de Domínio.
+2. **`docs/arquitetura.md`:** Atualize os diagramas C4 Nível 1 e 2, o `erDiagram` com as tabelas/entidades reais, o Glossário de Domínio e a **Seção 5 (`Mapa Físico de Módulos`)** com as pastas/arquivos de entrada reais e suas suítes de testes.
 3. **`docs/catalogo-reuso.md`:** Inventarie tokens, primitivos de UI, prefabs e módulos de domínio já existentes para evitar duplicação futura (Artigo 14).
-4. **`docs/particularidades.md` e `.env.example`:** Registre portas, restrições de infra/banco/webhooks e garanta que todas as variáveis de ambiente usadas no código estejam documentadas sem segredos reais.
+4. **`docs/particularidades.md`, `docs/runbook.md` e `.env.example`:** Registre portas, restrições de infra/banco/webhooks em `particularidades.md`, documente os fluxos reais de deploy, *smoke check*, migrations/rollback e logs em `docs/runbook.md`, e garanta que todas as variáveis de ambiente usadas no código estejam em `.env.example` sem segredos reais.
 5. **`openspec/project.md`:** Preencha Visão do Produto, Fluxo, Perfis e Stack Tecnológica real (e atualize o status removendo o aviso de onboarding pendente).
 6. **`openspec/specs/`:** Crie as especificações vivas iniciais descrevendo os domínios e comportamentos já implementados.
 7. **`openspec/roadmap.md`:** Registre os **Invariantes Globais** observados e estruture a fila *Rolling Wave* (incluindo eventuais dívidas críticas identificadas no Passo 2).

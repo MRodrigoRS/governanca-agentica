@@ -23,9 +23,23 @@ O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.
 - **Confirmação Explícita no Linear MCP (`linear-mcp.md.jinja` / `AGENTS.md` / `ciclo-especificacao`):**
   - Exigência de confirmação humana prévia antes de criar, editar ou mover issues e publicar *Project Updates* no Linear, com pergunta ao final do ciclo sobre novas tarefas ou edições a registrar.
 
+### Modificado
+- **Auditoria Sob Demanda de UX & Analytics (`auditoria-ux-analytics` / `/auditar-ux`):**
+  - Inclusão da skill opcional para integração LGPD/CSP de PostHog/Microsoft Clarity e auditoria contínua de UX orientada a dados reais de uso.
+- **Hardening AppSec, Linguagem Humana na UI e Auditoria de Segurança (`/auditar-seguranca`):**
+  - Artigo 6.8 na Constituição (`template/constitution.md`) e Seção 9 em `web-ui-pwa.md.jinja` proibindo jargões técnicos/entidades de banco em textos exibidos ao usuário final, com prevenção de XSS.
+  - Reforço Zero-Trust no backend (`backend-seguranca-dados.md.jinja` + `constitution.md` Artigo 7): IDOR/BOLA, RBAC, Anti-Mass Assignment, webhooks HMAC/idempotência, cookies HttpOnly/Secure/SameSite, Argon2id/bcrypt, validação de magic bytes, anti-SSRF e bloqueio determinístico em `verificar-governanca.mjs` para credenciais privadas sob prefixos públicos (`NEXT_PUBLIC_`, `VITE_`, `EXPO_PUBLIC_`, `REACT_APP_`, `PUBLIC_`).
+  - Inclusão da skill `auditoria-seguranca` (`/auditar-seguranca`) com varredura paralela read-only (3 subagentes em legado/projeto ou 1 focado) e encaminhamento proporcional para `Via 1a`, `Via 1.5` ou `Via 2`.
+- **Runbook Dedicado, Handoff fora do OpenSpec, Mapa Físico e Integridade Referencial:**
+  - Inclusão de `template/docs/runbook.md` protegido no `copier.yml` (`_skip_if_exists`), com aviso determinístico não-bloqueante em `verificar-governanca.mjs` ao alterar deploy/infra ou `.env.example`.
+  - Protocolo de handoff efêmero `.agents/handoff.md` (no `.gitignore`) injetado no `SessionStart` (`hook-agente.mjs`) fora de deltas OpenSpec, com aviso local anti-handoff zumbi em commits locais.
+  - Seção 5 (`Mapa Físico de Módulos`) em `docs/arquitetura.md` protegida por sensor anti-apodrecimento unificado com `docs/catalogo-reuso.md`.
+  - Tabela completa em `template/README.md.jinja` e teste bidirecional de integridade referencial em `tests/template-docs.test.mjs` elevando a suíte para 94 testes verdes.
+
 ### Corrigido
 - Correção do glob de `npm test` em `package.json` (`tests/*.test.mjs`) para compatibilidade com `/bin/sh` e Node 20 no GitHub Actions (`ubuntu-latest`).
 - Remoção de referências legadas a `.cursor/mcp.json` e `.vscode/mcp.json` em `catalogo-stacks.md` após a consolidação no Padrão Universal Puro (`fatia-12`).
+- Padronização do frontmatter YAML (`globs`) nas rules em `template/.agents/rules/*.md.jinja` e correção de referência legada `openspec/roadmap/` → `openspec/roadmap.md` em `explorar-produto/SKILL.md`.
 
 ---
 

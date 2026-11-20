@@ -116,7 +116,10 @@ Ao ser iniciado em um repositório, identifique o estado atual antes de agir:
 - **Especificações Vivas e Deltas:** Diretório `openspec/` gerenciado pelo OpenSpec CLI (`npx @fission-ai/openspec`).
 - **Registros de Arquitetura (ADRs):** Diretório `docs/adr/` no formato MADR.
 - **Catálogo de Reúso e Tokens:** Arquivo `docs/catalogo-reuso.md` (inventário vivo de primitivos, tokens de movimento e prefabs; consulta obrigatória antes de codificar conforme Artigo 14).
+- **Mapa Físico e Arquitetura:** Arquivo `docs/arquitetura.md` (diagramas C4, `erDiagram`, Glossário e **Seção 5: Mapa Físico de Módulos** para localizar domínios e testes sem buscas repetidas; sensor anti-apodrecimento ativo).
 - **Particularidades Operacionais e de Ambiente:** Arquivo `docs/particularidades.md` (leitura sob demanda antes de alterar infraestrutura, portas, variáveis de ambiente ou integrações externas).
+- **Runbook Operacional:** Arquivo `docs/runbook.md` (procedimentos de deploy, *smoke check* pós-deploy, migrations seguras, rollback, logs e checklist Go-Live; consultado antes de mexer em infraestrutura/release).
+- **Handoff Efêmero fora do OpenSpec:** Arquivo `.agents/handoff.md` (ignorado no Git; usado sob demanda em `/fix` interrompido, Via 1.5 ou planos de auditoria quando não há delta em `openspec/changes/`, lido automaticamente no `SessionStart` e limpo no Gate 2).
 - **Diário de Aprendizados e Cicatrizes:** Arquivo `docs/aprendizados.md` (leitura mandatória no Gate 1 para prevenir reincidência de armadilhas empíricas catalogadas).
 - **Hooks Nativos de Agente:** Arquivo `.agents/hooks.json` acionando `scripts/hook-agente.mjs`.
 - **Auditoria Forense Cega (Sob Demanda via `/revisar`):** Protocolo universal consolidado em `.agents/skills/revisar-fatia/SKILL.md`.
@@ -130,7 +133,7 @@ Ao ser iniciado em um repositório, identifique o estado atual antes de agir:
     * *Gate 1:* Mediante confirmação humana, localiza ou cria a issue correspondente dentro deste projeto (`[KEY-XXX] fatia-XXa-...`) e move para *In Progress*.
     * *Gate 2:* Mediante confirmação humana, publica a atualização oficial do projeto (*Project Update*) com resumo funcional e roteiro prático, move a issue para *Done* e pergunta se há novas tarefas ou edições a registrar.
     * *Refinamento de Ideias:* Propõe encaminhar ideias despriorizadas para o Backlog deste mesmo projeto no Linear mediante confirmação.
-- **Skills Ativas:** Diretório `.agents/skills/` (`inicializar-stack`, `mapear-brownfield`, `ciclo-especificacao`, `refinar-ideia`, `explorar-produto`, `revisar-fatia`, `reuso-e-modularizacao`, `atualizar-governanca`).
+- **Skills Ativas:** Diretório `.agents/skills/` (`inicializar-stack`, `mapear-brownfield`, `ciclo-especificacao`, `refinar-ideia`, `explorar-produto`, `revisar-fatia`, `reuso-e-modularizacao`, `auditoria-ux-analytics`, `auditoria-seguranca`, `atualizar-governanca`).
 - **Higiene de Contexto, Subagentes e Orçamento de MCPs:**
   - *Varredura Ampla e Prevenção de Context Rot:* Mapeamentos exploratórios de código ou buscas em dezenas de arquivos não devem poluir o contexto da sessão principal. Delegue varreduras amplas a subagentes efêmeros *read-only* (ex.: subagente `research` no Antigravity ou subagente de consulta no Claude Code), retornando ao agente principal apenas o resumo conciso e as linhas exatas.
   - *Padrão `/llms.txt` e CLIs Nativas:* Ao consultar documentações externas de bibliotecas, priorize endpoints `/llms.txt` (conteúdo limpo em Markdown) antes de baixar páginas HTML pesadas. Para automações do GitHub (issues, PRs, runs), priorize a CLI oficial `gh` em vez de acoplar servidores MCP redundantes.
@@ -146,9 +149,11 @@ Os comandos abaixo são mapeados universalmente por `AGENTS.md` para as skills e
 | `/fix` | `ciclo-especificacao` §1 (Via 1a) | Bug pontual com teste que reproduz a falha (máx. 3 arquivos) |
 | `/mapear-projeto` | `mapear-brownfield` | Onboarding obrigatório de repositório existente antes de alterar código |
 | `/proxima-fatia` | `ciclo-especificacao` §2 (Via 2) | Ler `roadmap.md`, abrir delta no OpenSpec e preparar Gate 1 |
-| `/retomar` | Handoff de Sessão (`tasks.md`) | Retomar trabalho ativo após `/compact` ou início de nova sessão |
+| `/retomar` | Handoff de Sessão (`tasks.md` ou `.agents/handoff.md`) | Retomar fatia OpenSpec ou trabalho avulso (`/fix`, Via 1.5, auditoria) após `/compact` ou nova sessão |
 | `/revisar` | `revisar-fatia` | Auditoria sob demanda com Inspetor Forense cego e Duelo de Conformidade |
 | `/auditar-reuso` | `reuso-e-modularizacao` | Varredura de reúso, tokens de movimento e teto anti-monólito |
+| `/auditar-ux` | `auditoria-ux-analytics` | Integrar PostHog/Clarity sob demanda (LGPD/CSP) e auditar UX com dados reais |
+| `/auditar-seguranca` | `auditoria-seguranca` | Auditoria AppSec (3 subagentes em legado/projeto ou focado) e linguagem humana na UI |
 | `/grill-me` | Protocolo `grill-me` / `grilling` | Interrogatório exaustivo de plano/design/ideia em rodadas |
 | `/refinar` | `refinar-ideia` | Nova ideia durante o projeto: congela código, poda e cria subfatia |
 | `/explorar` | `explorar-produto` | Reunião estratégica de produto e oportunidades sem mexer em código |

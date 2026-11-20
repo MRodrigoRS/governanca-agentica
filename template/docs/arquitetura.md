@@ -87,3 +87,13 @@ Tabela canônica mapeando os conceitos de negócio, seus identificadores oficiai
 | **Usuário** | `usuario`, `Usuario` | `usuarios` | Ator autenticado com e-mail corporativo único por tenant. |
 | **Conta / Tenant** | `conta`, `Conta` | `contas` | Unidade de cobrança e isolamento lógico de dados da organização. |
 | **Assinatura** | `assinatura`, `Assinatura` | `assinaturas` | Vínculo financeiro entre uma conta e um plano recorrente de uso. |
+
+---
+
+## 5. Mapa Físico de Módulos (Onde Cada Coisa Mora)
+
+> **Objetivo:** Evitar varreduras exploratórias repetidas em sessões limpas. Mantenha 1 linha por módulo ou fronteira de domínio com caminhos reais entre crases (`src/modulo/`) — o sensor anti-apodrecimento bloqueia remoções sem sincronização desta tabela.
+
+| Domínio / Camada | Pasta ou Ponto de Entrada | Responsabilidade Principal | Suíte de Testes Correspondente |
+|---|---|---|---|
+| *(A preencher no Gate 0 / Onboarding)* | *(Preencher com caminho real entre crases na inicialização)* | *(Responsabilidade do módulo no sistema)* | *(Diretório ou arquivo de testes)* |

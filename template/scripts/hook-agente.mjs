@@ -306,8 +306,35 @@ function processarPostToolClaude() {
   process.exit(0);
 }
 
+function resumirHandoffAvulso(raiz) {
+  const arqHandoff = join(raiz, '.agents', 'handoff.md');
+  if (!existsSync(arqHandoff)) return '';
+
+  try {
+    const conteudo = readFileSync(arqHandoff, 'utf8');
+    if (!conteudo.trim()) return '';
+
+    const mStatus = conteudo.match(/\*\*Status:\*\*\s*(.+)/i);
+    if (mStatus && /conclu[ií]do|nenhum|limpo|inativo/i.test(mStatus[1])) {
+      return '';
+    }
+
+    const mContexto = conteudo.match(/\*\*Contexto:\*\*\s*(.+)/i);
+    const mPasso = conteudo.match(/\*\*Próximo passo:\*\*\s*(.+)/i);
+    if (!mContexto && !mPasso) return '';
+
+    const partes = [];
+    if (mContexto) partes.push(mContexto[1].trim());
+    if (mPasso) partes.push(`Próximo passo: ${mPasso[1].trim()}`);
+    return ` Handoff ativo (.agents/handoff.md): ${partes.join(' | ')}.`;
+  } catch {
+    return '';
+  }
+}
+
 function obterMensagemSessao(raiz) {
   let mensagemStatus = 'Governança Agêntica Ativa.';
+  let possuiMudancaAtiva = false;
 
   const pastaMudancas = join(raiz, 'openspec', 'changes');
   if (existsSync(pastaMudancas)) {
@@ -316,6 +343,7 @@ function obterMensagemSessao(raiz) {
         (f) => f !== 'archive' && !f.startsWith('.')
       );
       if (ativas.length > 0) {
+        possuiMudancaAtiva = true;
         const resumos = [];
         for (const mudanca of ativas) {
           const arqTasks = join(pastaMudancas, mudanca, 'tasks.md');
@@ -362,6 +390,10 @@ function obterMensagemSessao(raiz) {
         mensagemStatus += ` Mudança ativa detectada em openspec/changes/: ${resumos.join(' ')}`;
       }
     } catch {}
+  }
+
+  if (!possuiMudancaAtiva) {
+    mensagemStatus += resumirHandoffAvulso(raiz);
   }
 
   mensagemStatus +=

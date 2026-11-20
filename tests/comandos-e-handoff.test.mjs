@@ -229,4 +229,62 @@ test('deve_manter_todas_as_7_skills_alinhadas_a_v4_e_padrao_universal', () => {
 
   // 3. ciclo-especificacao: consulta obrigatória a docs/catalogo-reuso.md no /fix e no Gate 1
   assert.match(cicloSkill, /docs\/catalogo-reuso\.md/, 'ciclo-especificacao deve exigir consulta a docs/catalogo-reuso.md');
+  assert.match(cicloSkill, /\.agents\/handoff\.md/, 'ciclo-especificacao deve documentar .agents/handoff.md');
+});
+
+test('deve_injetar_handoff_avulso_no_session_start_quando_nao_houver_delta_openspec', () => {
+  const repo = criarRepoTemporario();
+  try {
+    mkdirSync(join(repo.dir, '.agents'), { recursive: true });
+    writeFileSync(
+      join(repo.dir, '.agents', 'handoff.md'),
+      `# Handoff Ativo
+- **Status:** Em andamento
+- **Contexto:** Via 1.5 refatorando validadores de pagamento em 5 arquivos
+- **Arquivos tocados:** src/pagamentos/a.ts, src/pagamentos/b.ts
+- **Próximo passo:** Executar npm test e remover fallback antigo de webhook
+`,
+      'utf8'
+    );
+
+    const stdoutAtivo = execSync('node scripts/hook-agente.mjs session-start', {
+      cwd: repo.dir,
+      encoding: 'utf8',
+    });
+    assert.match(stdoutAtivo, /Handoff ativo \(\.agents\/handoff\.md\)/i);
+    assert.match(stdoutAtivo, /Via 1\.5 refatorando validadores/i);
+    assert.match(stdoutAtivo, /Executar npm test e remover fallback/i);
+    assert.ok(stdoutAtivo.length <= 600, `Mensagem de contexto deve ter <= 600 caracteres (atual: ${stdoutAtivo.length})`);
+
+    // Quando houver delta ativo no OpenSpec, o delta mantém prioridade
+    const pastaDelta = join(repo.dir, 'openspec', 'changes', 'fatia-03-relatorios');
+    mkdirSync(pastaDelta, { recursive: true });
+    writeFileSync(
+      join(pastaDelta, 'tasks.md'),
+      `- [ ] 1. Gerar relatorio CSV\n## Notas de Sessão\n- **Próximo passo:** Criar query agregada\n`,
+      'utf8'
+    );
+
+    const stdoutComDelta = execSync('node scripts/hook-agente.mjs session-start', {
+      cwd: repo.dir,
+      encoding: 'utf8',
+    });
+    assert.match(stdoutComDelta, /fatia-03-relatorios/);
+    assert.doesNotMatch(stdoutComDelta, /Handoff ativo/);
+
+    // Sem delta ativo e com Status: Concluído, não injeta handoff antigo
+    rmSync(pastaDelta, { recursive: true, force: true });
+    writeFileSync(
+      join(repo.dir, '.agents', 'handoff.md'),
+      `- **Status:** Concluído\n- **Contexto:** Tarefa antiga\n- **Próximo passo:** Nada\n`,
+      'utf8'
+    );
+    const stdoutConcluido = execSync('node scripts/hook-agente.mjs session-start', {
+      cwd: repo.dir,
+      encoding: 'utf8',
+    });
+    assert.doesNotMatch(stdoutConcluido, /Handoff ativo/);
+  } finally {
+    repo.limpar();
+  }
 });

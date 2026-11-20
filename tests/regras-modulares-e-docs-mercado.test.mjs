@@ -78,14 +78,17 @@ test('deve_renderizar_modulos_conforme_perfil_e_wrappers_sem_duplicacao', () => 
 
   const webUi = readFileSync(join(dirRules, 'web-ui-pwa.md.jinja'), 'utf8');
   assert.ok(webUi.includes('trigger: glob'), 'web-ui-pwa deve ter trigger glob');
+  assert.match(webUi, /^globs:\s*"[^"]+"/m, 'web-ui-pwa deve declarar globs como string');
   assert.ok(webUi.includes('**/*.tsx'), 'web-ui-pwa deve conter glob tsx');
 
   const backend = readFileSync(join(dirRules, 'backend-seguranca-dados.md.jinja'), 'utf8');
   assert.ok(backend.includes('trigger: glob'), 'backend deve ter trigger glob');
+  assert.match(backend, /^globs:\s*"[^"]+"/m, 'backend deve declarar globs como string');
   assert.ok(backend.includes('**/api/**'), 'backend deve conter glob api');
 
   const jogos = readFileSync(join(dirRules, 'jogos-engines.md.jinja'), 'utf8');
   assert.ok(jogos.includes('trigger: glob'), 'jogos deve ter trigger glob');
+  assert.match(jogos, /^globs:\s*"[^"]+"/m, 'jogos deve declarar globs como string');
   assert.ok(jogos.includes('**/*.gd'), 'jogos deve conter glob gd');
 
   const linear = readFileSync(join(dirRules, 'linear-mcp.md.jinja'), 'utf8');
@@ -302,4 +305,58 @@ test('deve_sincronizar_versao_em_cabecalhos_e_preservar_historico', () => {
 
   // 3. CONTRIBUTING.md deve existir
   assert.ok(existsSync(join(process.cwd(), 'CONTRIBUTING.md')), 'CONTRIBUTING.md deve existir com ritual de release');
+});
+
+test('deve_ter_skill_auditoria_ux_analytics_sob_demanda_e_registrada_em_agents_md', () => {
+  const skillPath = join(process.cwd(), 'template', '.agents', 'skills', 'auditoria-ux-analytics', 'SKILL.md');
+  assert.ok(existsSync(skillPath), 'Skill auditoria-ux-analytics/SKILL.md deve existir');
+
+  const skill = readFileSync(skillPath, 'utf8');
+  assert.match(skill, /PostHog/i);
+  assert.match(skill, /Microsoft Clarity/i);
+  assert.match(skill, /LGPD|maskAllInputs/i);
+  assert.match(skill, /CSP|Content-Security-Policy/i);
+
+  const agentsMd = readFileSync(join(process.cwd(), 'template', 'AGENTS.md'), 'utf8');
+  assert.match(agentsMd, /auditoria-ux-analytics/);
+  assert.match(agentsMd, /\/auditar-ux/);
+});
+
+test('deve_blindar_seguranca_em_3_camadas_e_linguagem_humana_sem_jargao_na_ui', () => {
+  const backendRule = readFileSync(join(process.cwd(), 'template', '.agents', 'rules', 'backend-seguranca-dados.md.jinja'), 'utf8');
+  assert.match(backendRule, /IDOR/i);
+  assert.match(backendRule, /Mass Assignment/i);
+  assert.match(backendRule, /HMAC/i);
+  assert.match(backendRule, /HttpOnly/i);
+  assert.match(backendRule, /magic bytes/i);
+  assert.match(backendRule, /SSRF/i);
+
+  const webRule = readFileSync(join(process.cwd(), 'template', '.agents', 'rules', 'web-ui-pwa.md.jinja'), 'utf8');
+  assert.match(webRule, /Zero Jargão Técnico/i);
+  assert.match(webRule, /payload/i);
+  assert.match(webRule, /tabela|registro/i);
+  assert.match(webRule, /SNAKE_CASE/i);
+  assert.match(webRule, /dangerouslySetInnerHTML/i);
+
+  const constitution = readFileSync(join(process.cwd(), 'template', 'constitution.md'), 'utf8');
+  assert.match(constitution, /Linguagem Humana e Zero Jargão Técnico na Interface/i);
+  assert.match(constitution, /IDOR\/BOLA/i);
+  assert.match(constitution, /Mass Assignment/i);
+
+  const revisarSkill = readFileSync(join(process.cwd(), 'template', '.agents', 'skills', 'revisar-fatia', 'SKILL.md'), 'utf8');
+  assert.match(revisarSkill, /IDOR \/ BOLA/i);
+  assert.match(revisarSkill, /Anti-Mass Assignment/i);
+  assert.match(revisarSkill, /Zero Jargão Técnico na UI/i);
+
+  const secSkillPath = join(process.cwd(), 'template', '.agents', 'skills', 'auditoria-seguranca', 'SKILL.md');
+  assert.ok(existsSync(secSkillPath), 'Skill auditoria-seguranca/SKILL.md deve existir');
+  const secSkill = readFileSync(secSkillPath, 'utf8');
+  assert.match(secSkill, /3 subagentes/i);
+  assert.match(secSkill, /Via 1a \(`?\/fix`?\)/i);
+  assert.match(secSkill, /Via 1\.5/i);
+  assert.match(secSkill, /Via 2/i);
+
+  const agentsMd = readFileSync(join(process.cwd(), 'template', 'AGENTS.md'), 'utf8');
+  assert.match(agentsMd, /auditoria-seguranca/);
+  assert.match(agentsMd, /\/auditar-seguranca/);
 });

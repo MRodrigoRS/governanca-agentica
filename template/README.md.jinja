@@ -27,9 +27,20 @@ npm run dev
 
 Para visualizar os comandos operacionais completos (testar arquivo único, lint, typecheck, migrações de banco e build), consulte a seção `## Comandos do Projeto` no arquivo [`AGENTS.md`](AGENTS.md).
 
-### Índice de Documentação (Diátaxis)
-- **Tutoriais e Roteiros:** Consulte `AGENTS.md` e as fatias concluídas em `openspec/specs/`.
-- **Guias Práticos e Particularidades:** Consulte [`docs/particularidades.md`](docs/particularidades.md).
-- **Diário de Aprendizados e Cicatrizes:** Consulte [`docs/aprendizados.md`](docs/aprendizados.md).
-- **Arquitetura, Diagramas C4 e Glossário:** Consulte [`docs/arquitetura.md`](docs/arquitetura.md).
-- **Planejamento Macro Incremental:** Consulte [`openspec/roadmap.md`](openspec/roadmap.md).
+### Índice de Documentação (Mapa Completo)
+
+| Documento / Diretório | Para que serve | Quem / Quando atualiza |
+|---|---|---|
+| [`AGENTS.md`](AGENTS.md) | Guia mestre do agente, comandos do projeto e atalhos (`/fix`, `/proxima-fatia`, `/retomar`) | Governança (bloco protegido) + projeto (`## Comandos`) |
+| [`constitution.md`](constitution.md) | Cláusulas pétreas e limites inegociáveis (Test-First, Zero-Trust, PT-BR no domínio) | Governança (bloco protegido) + regras extras do projeto |
+| [`openspec/project.md`](openspec/project.md) | Visão do produto, o que ficou fora de escopo, stack e âncora Linear | Gate 0 / Onboarding |
+| [`openspec/roadmap.md`](openspec/roadmap.md) | Fila incremental (*Rolling Wave*) e invariantes globais de arquitetura | Gate 0 e fechamento de cada fatia |
+| [`openspec/radar-oportunidades.md`](openspec/radar-oportunidades.md) | Concorrentes, sinergias e ideias futuras estacionadas sem poluir o roadmap | Sessões de `/explorar` |
+| `openspec/specs/` | Especificações vivas consolidadas após o arquivo de cada fatia | Automático ao arquivar fatias (Gate 2) |
+| [`docs/arquitetura.md`](docs/arquitetura.md) | Diagramas C4, `erDiagram`, Glossário e **Mapa Físico de Módulos (§5)** | Gate 0, Onboarding e mudanças de banco |
+| [`docs/catalogo-reuso.md`](docs/catalogo-reuso.md) | Inventário de tokens visuais/movimento, primitivos de UI e utilitários compartilhados | Fatia 01 e novos componentes reutilizáveis |
+| [`docs/particularidades.md`](docs/particularidades.md) | Portas locais, restrições de infra/banco/planos, webhooks e regras não-óbvias | Onboarding e ao descobrir restrições de ambiente |
+| [`docs/runbook.md`](docs/runbook.md) | Procedimentos de deploy, *smoke check*, migrations seguras, rollback e logs | Gate 0, Onboarding e mudanças de deploy/release |
+| [`docs/aprendizados.md`](docs/aprendizados.md) | Cicatrizes de produção e armadilhas empíricas para não repetir erros | Ao resolver bugs difíceis (`/aprendizado`) |
+| `docs/adr/` | Decisões Arquiteturais Relevantes no formato MADR | Gate 1 em decisões estruturais |
+| [`CHANGELOG.md`](CHANGELOG.md) | Histórico contínuo de entregas e correções (Keep a Changelog) | Em toda entrega com código de produção |

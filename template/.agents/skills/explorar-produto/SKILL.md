@@ -1,6 +1,6 @@
 ---
 name: explorar-produto
-description: Ativa o Modo de Ampliação e Estratégia de Produto (reunião de negócios sem código). Analisa o repositório atual, pesquisa concorrentes e mercado na web, descobre sinergias ("ouro barato") e encaminha decisões para openspec/roadmap/, openspec/radar-oportunidades.md ou Fora de Escopo.
+description: Ativa o Modo de Ampliação e Estratégia de Produto (reunião de negócios sem código). Analisa o repositório atual, pesquisa concorrentes e mercado na web, descobre sinergias ("ouro barato") e encaminha decisões para openspec/roadmap.md, openspec/radar-oportunidades.md ou Fora de Escopo.
 ---
 
 # Skill: Modo de Ampliação e Estratégia de Produto (`explorar-produto`)
