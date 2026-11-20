@@ -108,3 +108,14 @@
      - Passos de validação de migrações e `pip-audit`/`cargo audit` em `template/.github/workflows/ci.yml` e limpeza de asserções legadas no `.github/workflows/ci.yml` da raiz.
      - Atualização das suítes de teste e documentação (`00_INDICE_E_DECISOES.md` D40 e `CHANGELOG.md`).
 - **O que FICA DE FORA:** Criação de novos sensores no verificador ou alteração nos contratos de `classificar-cerimonia.mjs`.
+
+---
+
+### `[x] Concluído` — `fatia-13-autogovernanca-dogfooding`
+- **Depende de:** `fatia-12-consolidacao-padrao-universal-agents`
+- **Objetivo de Valor:** Aplicar o próprio protocolo da Governança v4 para governar o repositório matriz (`dogfooding` em fonte única), fechando pontos cegos do harness na raiz (`AGENTS.md`, `.agents/hooks.json`, `.agents/rules/`), corrigindo a isenção cega de `template/` em `classificar-arquivos.mjs` (expondo bugs reais de código sob `template/scripts/*.mjs`), criando os documentos vivos da matriz (`docs/arquitetura.md`, `docs/particularidades.md`, `docs/runbook.md`, `docs/aprendizados.md`) e ligando `verificar-governanca.mjs` no `lefthook.yml` e no CI.
+- **O que ENTRA:**
+  1. **Camada Universal na Raiz em Fonte Única (`AGENTS.md`, `.agents/hooks.json`, `.agents/rules/`):** Entrada do harness na raiz apontando para `template/constitution.md` e `template/.agents/skills/` (zero duplicação e zero symlinks no Windows), `.agents/hooks.json` apontando para `../template/scripts/hook-agente.mjs`, `.agents/rules/linear-mcp.md` com a Tríade `rr-diario-agents` / `P-RR-2` e `.agents/rules/matriz-governanca.md`, além de `.agents/handoff.md` no `.gitignore`.
+  2. **Refinamento do Motor em `template/scripts/lib/classificar-arquivos.mjs`:** Remoção da isenção cega `template/` para passar a classificar apenas templates/docs (`.md`, `.jinja`, `.yml`, `.yaml`, `.json`, `.gitkeep`, `.gitignore`, `.env.example`) como governança e tratar `template/scripts/*.mjs` (ou código de usuário sob `template/`) como código de produção; inclusão de `'CLAUDE_PROJECT_DIR'` em `variaveisIgnoradas` no `verificar-governanca.mjs` respeitando a catraca anti-monólito.
+  3. **Docs Vivos da Matriz, OpenSpec `cli-biblioteca` e Enforcement Git/CI:** Criação de `docs/arquitetura.md` (C4 + §5 Mapa Físico), `docs/particularidades.md`, `docs/runbook.md` e `docs/aprendizados.md`; limpeza de `openspec/config.yaml` para `cli-biblioteca`; inclusão de `verificar-governanca.mjs` e checagem de `template/scripts/lib/*.mjs` em `lefthook.yml` e `.github/workflows/ci.yml` (`--ci` com `fetch-depth: 2`); registro da Decisão `D41` em `00_INDICE_E_DECISOES.md`, `CHANGELOG.md` e suíte `tests/autogovernanca-dogfooding.test.mjs`.
+- **O que FICA DE FORA:** Duplicação de `template/constitution.md` ou `template/.agents/skills/` na raiz, `docs/catalogo-reuso.md` (sem UI/jogos na matriz) ou `docs/adr/` paralelo ao `00_INDICE_E_DECISOES.md`.

@@ -5,15 +5,15 @@ githubCopilot:
 # Contexto global do projeto injetado automaticamente nos prompts de planejamento
 context: |
   Projeto: governanca-de-agentes-v2
+  Perfil: cli-biblioteca (Node.js ESM zero-dependências + Copier/Jinja2 + OpenSpec CLI)
   Descrição: Protocolo agêntico aberto para desenvolvimento de software com agentes de inteligência artificial.
-  Diretrizes Centrais: Obedeça integralmente a constitution.md e AGENTS.md.
+  Diretrizes Centrais: Obedeça integralmente a AGENTS.md e template/constitution.md.
   Idioma: Nomes de domínio, contratos, tabelas e mensagens de commit em Português do Brasil (PT-BR). Termos técnicos em Inglês.
   Padrões Obrigatórios:
-  - Test-First mandatório (teste falhando no terminal antes do código de produção).
-  - Tipagem estrita e validação de schema declarativa na fronteira (Zod / Pydantic / Serde).
-  - Interface web responsiva mobile-first (320px+) e portabilidade PWA inata.
-  - Reatividade limpa: proibido location.reload() ou recarregamentos forçados de tela.
-  - Feedback visual garantido: Toasts reativos para mutações de dados e Modais de confirmação para ações destrutivas.
+  - Test-First mandatório (teste falhando no terminal antes do código de produção, usando node:test e node:assert/strict).
+  - Zero dependências externas nos scripts determinísticos (template/scripts/*.mjs).
+  - Padrão Universal Puro (AGENTS.md + .agents/) sem wrappers proprietários redundantes.
+  - Integridade referencial entre docs vivos, skills, CHANGELOG.md e suíte de testes.
 
 # Regras determinísticas aplicadas a cada artefato do OpenSpec (D32)
 rules:
@@ -28,7 +28,7 @@ rules:
     - "Especificar contratos de dados e tabelas com nomes em Português do Brasil"
   design:
     - "Conter cabeçalho '## Contratos, Dados e Schemas' com schemas declarativos e tipos"
-    - "Conter cabeçalho '## Interface e Estados Assíncronos' (ou 'Não se aplica: <motivo>') detalhando loading, empty, error, success, Toasts e Modais"
+    - "Conter cabeçalho '## Interface e Estados Assíncronos' indicando 'Não se aplica: projeto sem interface gráfica de usuário'"
     - "Conter cabeçalho '## Regras de Negócio e Segurança' com regras ACID, validação e autorização"
     - "Mínimo de 18 linhas úteis de detalhamento"
   tasks:

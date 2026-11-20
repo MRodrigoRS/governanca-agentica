@@ -1,0 +1,24 @@
+{
+  "governanca-gate": {
+    "enabled": true,
+    "PreToolUse": [
+      {
+        "matcher": "run_command|write_file|edit_file",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ../template/scripts/hook-agente.mjs pre-tool",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "type": "command",
+        "command": "node ../template/scripts/hook-agente.mjs session-start",
+        "timeout": 15
+      }
+    ]
+  }
+}

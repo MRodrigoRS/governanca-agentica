@@ -618,7 +618,7 @@ function verificarVariaveisAmbienteEmStaged(listaArquivos) {
 
   const variaveisIgnoradas = new Set([
     'NODE_ENV', 'CI', 'PATH', 'HOME', 'USERPROFILE', 'TZ', 'LANG', 'PWD',
-    'PORT', 'HOST', 'TMP', 'TEMP', 'PROD', 'DEV', 'SSR', 'MODE', 'BASE_URL'
+    'PORT', 'HOST', 'TMP', 'TEMP', 'PROD', 'DEV', 'SSR', 'MODE', 'BASE_URL', 'CLAUDE_PROJECT_DIR'
   ]);
 
   const regexesVariaveis = [

@@ -29,3 +29,6 @@ Thumbs.db
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+# Handoff efêmero da governança
+.agents/handoff.md

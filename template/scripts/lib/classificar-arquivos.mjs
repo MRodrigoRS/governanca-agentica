@@ -104,8 +104,24 @@ export function ehArquivoDeDocumentacaoOuGovernanca(arquivo) {
     minusculo.startsWith('.claude/') ||
     minusculo.startsWith('docs/') ||
     minusculo.startsWith('openspec/') ||
-    minusculo.startsWith('.agents/') ||
-    minusculo.startsWith('template/')
+    minusculo.startsWith('.agents/')
+  ) {
+    return true;
+  }
+
+  // Templates e documentação interna em template/ (não isenta código executável como template/scripts/*.mjs ou código de usuário)
+  if (
+    minusculo.startsWith('template/') &&
+    (
+      minusculo.endsWith('.md') ||
+      minusculo.endsWith('.jinja') ||
+      minusculo.endsWith('.yml') ||
+      minusculo.endsWith('.yaml') ||
+      minusculo.endsWith('.json') ||
+      minusculo.endsWith('.gitkeep') ||
+      minusculo.endsWith('.gitignore') ||
+      minusculo.endsWith('.env.example')
+    )
   ) {
     return true;
   }

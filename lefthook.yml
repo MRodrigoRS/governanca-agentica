@@ -2,7 +2,9 @@
 pre-commit:
   commands:
     syntax-check:
-      run: node --check template/scripts/verificar-governanca.mjs && node --check template/scripts/validar-commit-msg.mjs && node --check template/scripts/hook-agente.mjs
+      run: node --check template/scripts/verificar-governanca.mjs && node --check template/scripts/validar-commit-msg.mjs && node --check template/scripts/hook-agente.mjs && node --check template/scripts/lib/classificar-arquivos.mjs && node --check template/scripts/lib/classificar-cerimonia.mjs
+    verificar-governanca:
+      run: node template/scripts/verificar-governanca.mjs
     unit-tests:
       run: npm test
 

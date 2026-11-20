@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
 
       - name: Configurar Node.js
         uses: actions/setup-node@v4
@@ -27,10 +29,16 @@ jobs:
           node --check template/scripts/verificar-governanca.mjs
           node --check template/scripts/validar-commit-msg.mjs
           node --check template/scripts/hook-agente.mjs
+          node --check template/scripts/lib/classificar-arquivos.mjs
+          node --check template/scripts/lib/classificar-cerimonia.mjs
 
       - name: Executar bateria de testes unitários da Governança
         run: |
           npm test
+
+      - name: Auditoria determinística da Governança (Dogfooding)
+        run: |
+          node template/scripts/verificar-governanca.mjs --ci
 
       - name: Testar geração do template Copier
         run: |
@@ -46,7 +54,10 @@ jobs:
           test -d /tmp/teste-governanca/openspec
           test -f /tmp/teste-governanca/openspec/roadmap.md
           test -f /tmp/teste-governanca/docs/catalogo-reuso.md
+          test -f /tmp/teste-governanca/docs/runbook.md
           test -f /tmp/teste-governanca/.github/pull_request_template.md
           test -d /tmp/teste-governanca/.agents/rules
           test -d /tmp/teste-governanca/docs/adr
           test -d /tmp/teste-governanca/.agents/skills
+          test -f /tmp/teste-governanca/.agents/skills/auditoria-seguranca/SKILL.md
+          test -f /tmp/teste-governanca/.agents/skills/auditoria-ux-analytics/SKILL.md

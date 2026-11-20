@@ -8,6 +8,11 @@ O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.
 ## [Não publicado]
 
 ### Adicionado
+- **Auto-Governança da Matriz / Dogfooding em Fonte Única (`fatia-13-autogovernanca-dogfooding`, D41):**
+  - Criação da camada universal na raiz em fonte única (`AGENTS.md`, `.agents/hooks.json` apontando para `../template/scripts/hook-agente.mjs`, `.agents/rules/linear-mcp.md`, `.agents/rules/matriz-governanca.md`) e inclusão de `.agents/handoff.md` no `.gitignore`, sem duplicar `template/constitution.md` nem skills.
+  - Refinamento de `template/scripts/lib/classificar-arquivos.mjs` para remover a isenção cega de `template/` (passando a isentar apenas templates/docs `.md`/`.jinja`/`.yml`/`.json` e auditar `template/scripts/*.mjs` como código de produção) e inclusão de `CLAUDE_PROJECT_DIR` em `variaveisIgnoradas` no `verificar-governanca.mjs` dentro da catraca anti-monólito.
+  - Documentação viva da matriz na raiz (`docs/arquitetura.md` com §5 Mapa Físico, `docs/particularidades.md`, `docs/runbook.md`, `docs/aprendizados.md`), alinhamento de `openspec/config.yaml` ao perfil `cli-biblioteca` e ativação de `verificar-governanca.mjs` no `lefthook.yml` e `.github/workflows/ci.yml` (`--ci`, `fetch-depth: 2` e checagem de `docs/runbook.md` / `auditoria-seguranca/SKILL.md` no Copier).
+  - Suíte `tests/autogovernanca-dogfooding.test.mjs` elevando a cobertura para 99 testes verdes.
 - **Pesquisa Viva Obrigatória e Papel Ativo de Arquiteto Crítico (Artigo 8 / `AGENTS.md` / `ciclo-especificacao`):**
   - Proibição de recomendar stacks, versões, APIs ou segurança apenas por memória de treinamento quando houver `context7`, `/llms.txt` ou busca web disponíveis, com registro das fontes consultadas em `design.md`.
   - Gate 1 em 2 tempos com **Check-up Ativo de Saúde Arquitetural** e **Discussão Pré-Plano Obrigatória (`grill-me`)** antes do plano fechado, mantendo isenção explícita para ajustes puramente triviais/cosméticos (`Via 1b` `style`, copy, cor, espaçamento).
