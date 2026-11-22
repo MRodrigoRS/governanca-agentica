@@ -113,8 +113,9 @@ Sempre que um capítulo for gravado ou atualizado com permissão do usuário, at
 
 Quando o usuário decidir encerrar uma etapa de descoberta ou pedir *"vamos transformar os capítulos X e Y em plano de execução"* / *"promover para o roadmap"*:
 
-1. Confirme com o usuário **quais capítulos ou subconjuntos** devem ser promovidos para construção (mantendo ideias ainda especulativas no livro sem poluir a fila de entrega).
-2. Decomponha o escopo promovido em blocos no arquivo único `openspec/roadmap.md`, respeitando estritamente as 4 âncoras auditadas pela governança:
+1. **Gatilho Automático de Síntese em Escala:** Se o diretório `docs/conhecimento/` somar **mais de 8 arquivos** ou contiver arquivos externos em `docs/conhecimento/materiais/`, **acione automaticamente `.agents/skills/sintetizar-conhecimento/SKILL.md`** (`/sintetizar`) para executar a extração *Map-Reduce* sem estourar o contexto.
+2. Caso o corpus seja enxuto (`≤ 8` capítulos curtos sem materiais extras), confirme com o usuário **quais capítulos ou subconjuntos** devem ser promovidos para construção (mantendo ideias ainda especulativas no livro sem poluir a fila de entrega).
+3. Decomponha o escopo promovido em blocos no arquivo único `openspec/roadmap.md`, respeitando estritamente as 4 âncoras auditadas pela governança:
    ```markdown
    ### [ ] Pendente — `fatia-XX-<slug>`
    - **Depende de:** `fatia-YY-<slug>`
@@ -125,4 +126,4 @@ Quando o usuário decidir encerrar uma etapa de descoberta ou pedir *"vamos tran
      2. [Regra / comportamento 2]
    - **O que FICA DE FORA:** [Cortes acordados e hipóteses deixadas no livro]
    ```
-3. Atualize o campo `status: promovido` no frontmatter dos capítulos promovidos (e na tabela de `docs/conhecimento/INDICE.md`), preservando todo o histórico reflexivo intacto como referência rica para quando as fatias forem especificadas no OpenSpec.
+4. Atualize o campo `status: promovido` no frontmatter dos capítulos promovidos (e na tabela de `docs/conhecimento/INDICE.md`), preservando todo o histórico reflexivo intacto como referência rica para quando as fatias forem especificadas no OpenSpec.

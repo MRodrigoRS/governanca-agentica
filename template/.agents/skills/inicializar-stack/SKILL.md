@@ -53,7 +53,7 @@ Com as decisões de produto fechadas, o agente conduz **Pesquisa Viva Obrigatór
 ## Passo 2 — Invariantes Globais do Gate 0 e Fila de Fatias Rolling Wave (`openspec/roadmap.md`)
 
 > **TRAVA ANTI-AMNÉSIA E ANTI-ALUCINAÇÃO (LEITURA FÍSICA OBRIGATÓRIA):**
-> Antes de redigir `openspec/project.md` ou `openspec/roadmap.md`, é **expressamente proibido tentar lembrar de cabeça** o que foi decidido ao longo da entrevista no chat. Você **DEVE ler fisicamente** `docs/conhecimento/INDICE.md` e **todos os capítulos consolidados** em `docs/conhecimento/<NN>-<slug>.md` (se existirem), citando-os como fonte ao decompor as fatias para impedir esquecimentos e alucinações no plano.
+> Antes de redigir `openspec/project.md` ou `openspec/roadmap.md`, é **expressamente proibido tentar lembrar de cabeça** o que foi decidido ao longo da entrevista no chat. Você **DEVE ler fisicamente** `docs/conhecimento/INDICE.md` e **todos os capítulos consolidados** em `docs/conhecimento/<NN>-<slug>.md` (se existirem), citando-os como fonte ao decompor as fatias para impedir esquecimentos e alucinações no plano. Se o livro ultrapassar **8 arquivos** ou houver insumos em `docs/conhecimento/materiais/`, **acione automaticamente `.agents/skills/sintetizar-conhecimento/SKILL.md`** (`/sintetizar`) para consolidar tudo via *Map-Reduce* sem estourar a janela de contexto.
 
 Antes de fechar o Gate 0, o agente **DEVE** consolidar a arquitetura macro e dividir o sistema completo em fatias lógicas incrementais no arquivo único `openspec/roadmap.md`, na ordem exata de engenharia em que **uma ponta puxa a outra**:
 

@@ -62,4 +62,6 @@ jobs:
           test -f /tmp/teste-governanca/.agents/skills/auditoria-seguranca/SKILL.md
           test -f /tmp/teste-governanca/.agents/skills/auditoria-ux-analytics/SKILL.md
           test -f /tmp/teste-governanca/.agents/skills/mesa-de-descoberta/SKILL.md
+          test -f /tmp/teste-governanca/.agents/skills/sintetizar-conhecimento/SKILL.md
           test -f /tmp/teste-governanca/docs/conhecimento/INDICE.md
+          test -d /tmp/teste-governanca/docs/conhecimento/materiais

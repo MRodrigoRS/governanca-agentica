@@ -55,6 +55,7 @@ Ao ser iniciado em um repositório, identifique o estado atual antes de agir:
 - **Novas Ideias ou Mudanças no Meio do Caminho (Refinamento e Poda):** Se o usuário trouxer uma ideia ou solicitação de mudança durante o desenvolvimento, congele o código imediatamente e acione `.agents/skills/refinar-ideia/SKILL.md`. Conduza o interrogatório exaustivo via protocolo `grill-me` (esgotando todas as ambiguidades antes de qualquer código), raio-X de complexidade oculta, separe o que entra do que sai e, se houver afinidade com uma fatia pendente, encaixe-a como **subfatia alfanumérica hierárquica (ex.: `fatia-02a-<slug>`)** em `openspec/roadmap.md`, preservando o grafo de dependências sem quebrar a ordenação nem o OpenSpec.
 - **Modo de Ampliação e Estratégia de Produto (Reunião de Negócios sem Código):** Quando o humano quiser analisar o repositório, explorar novos rumos, pesquisar concorrentes/mercado ou descobrir funcionalidades sinergéticas, acione `.agents/skills/explorar-produto/SKILL.md`. Congele qualquer edição de código e encaminhe as decisões nas 3 gavetas (`openspec/roadmap.md`, `openspec/radar-oportunidades.md` ou Fora de Escopo).
 - **Mesa de Descoberta Contínua e Livro de Conhecimento (`/descobrir` / `/mesa`):** Quando o humano quiser conduzir sessões contínuas ou multi-sessão de perguntas e reflexão multi-especialista para construir um livro vivo de regras de negócio e arquitetura, congele o código, acione `.agents/skills/mesa-de-descoberta/SKILL.md` e cristalize conclusões em `docs/conhecimento/` (somente com permissão explícita humana), mantendo `docs/conhecimento/INDICE.md` sincronizado sem concorrer com `openspec/specs/`.
+- **Síntese de Conhecimento em Escala (`/sintetizar`):** Quando o livro em `docs/conhecimento/` e eventuais materiais externos em `docs/conhecimento/materiais/` precisarem virar plano/fatias em `openspec/roadmap.md` (ou ultrapassarem 8 arquivos), acione `.agents/skills/sintetizar-conhecimento/SKILL.md` usando extração *Map-Reduce* com subagentes *read-only*, detector de contradições e rastreabilidade estrita das fontes.
 
 ---
 
@@ -122,7 +123,7 @@ Ao ser iniciado em um repositório, identifique o estado atual antes de agir:
 - **Runbook Operacional:** Arquivo `docs/runbook.md` (procedimentos de deploy, *smoke check* pós-deploy, migrations seguras, rollback, logs e checklist Go-Live; consultado antes de mexer em infraestrutura/release).
 - **Handoff Efêmero fora do OpenSpec:** Arquivo `.agents/handoff.md` (ignorado no Git; usado sob demanda em `/fix` interrompido, Via 1.5 ou planos de auditoria quando não há delta em `openspec/changes/`, lido automaticamente no `SessionStart` e limpo no Gate 2).
 - **Diário de Aprendizados e Cicatrizes:** Arquivo `docs/aprendizados.md` (leitura mandatória no Gate 1 para prevenir reincidência de armadilhas empíricas catalogadas).
-- **Base de Conhecimento e Descoberta:** Arquivo `docs/conhecimento/INDICE.md` (índice mestre do livro vivo de conhecimento construído via `/descobrir` / `/mesa`, usado como insumo *upstream* para NotebookLM, Obsidian e mega-planos).
+- **Base de Conhecimento e Descoberta:** Arquivo `docs/conhecimento/INDICE.md` (índice mestre do livro vivo de conhecimento construído via `/descobrir` / `/mesa`, acompanhado de materiais externos em `docs/conhecimento/materiais/` para síntese via `/sintetizar` sem estourar contexto).
 - **Hooks Nativos de Agente:** Arquivo `.agents/hooks.json` acionando `scripts/hook-agente.mjs`.
 - **Auditoria Forense Cega (Sob Demanda via `/revisar`):** Protocolo universal consolidado em `.agents/skills/revisar-fatia/SKILL.md`.
 - **Servidores MCP Oficiais (.mcp.json):**
@@ -135,7 +136,7 @@ Ao ser iniciado em um repositório, identifique o estado atual antes de agir:
     * *Gate 1:* Mediante confirmação humana, localiza ou cria a issue correspondente dentro deste projeto (`[KEY-XXX] fatia-XXa-...`) e move para *In Progress*.
     * *Gate 2:* Mediante confirmação humana, publica a atualização oficial do projeto (*Project Update*) com resumo funcional e roteiro prático, move a issue para *Done* e pergunta se há novas tarefas ou edições a registrar.
     * *Refinamento de Ideias:* Propõe encaminhar ideias despriorizadas para o Backlog deste mesmo projeto no Linear mediante confirmação.
-- **Skills Ativas:** Diretório `.agents/skills/` (`inicializar-stack`, `mapear-brownfield`, `ciclo-especificacao`, `refinar-ideia`, `explorar-produto`, `mesa-de-descoberta`, `revisar-fatia`, `reuso-e-modularizacao`, `auditoria-ux-analytics`, `auditoria-seguranca`, `atualizar-governanca`).
+- **Skills Ativas:** Diretório `.agents/skills/` (`inicializar-stack`, `mapear-brownfield`, `ciclo-especificacao`, `refinar-ideia`, `explorar-produto`, `mesa-de-descoberta`, `sintetizar-conhecimento`, `revisar-fatia`, `reuso-e-modularizacao`, `auditoria-ux-analytics`, `auditoria-seguranca`, `atualizar-governanca`).
 - **Higiene de Contexto, Subagentes e Orçamento de MCPs:**
   - *Varredura Ampla e Prevenção de Context Rot:* Mapeamentos exploratórios de código ou buscas em dezenas de arquivos não devem poluir o contexto da sessão principal. Delegue varreduras amplas a subagentes efêmeros *read-only* (ex.: subagente `research` no Antigravity ou subagente de consulta no Claude Code), retornando ao agente principal apenas o resumo conciso e as linhas exatas.
   - *Padrão `/llms.txt` e CLIs Nativas:* Ao consultar documentações externas de bibliotecas, priorize endpoints `/llms.txt` (conteúdo limpo em Markdown) antes de baixar páginas HTML pesadas. Para automações do GitHub (issues, PRs, runs), priorize a CLI oficial `gh` em vez de acoplar servidores MCP redundantes.
@@ -160,6 +161,7 @@ Os comandos abaixo são mapeados universalmente por `AGENTS.md` para as skills e
 | `/refinar` | `refinar-ideia` | Nova ideia durante o projeto: congela código, poda e cria subfatia |
 | `/explorar` | `explorar-produto` | Reunião estratégica de produto e oportunidades sem mexer em código |
 | `/descobrir` / `/mesa` | `mesa-de-descoberta` | Mesa contínua multi-especialista para construir o livro de conhecimento (`docs/conhecimento/INDICE.md`) |
+| `/sintetizar` | `sintetizar-conhecimento` | Síntese *Map-Reduce* anti-alucinação do livro e `docs/conhecimento/materiais/` para `openspec/roadmap.md` |
 | `/aprendizado` | `docs/aprendizados.md` | Registrar armadilha empírica, bug recorrente ou lição aprendida |
 | `/atualizar-governanca` | `atualizar-governanca` | Atualizar template via `copier update` de forma segura |
 | `/linear-inbox` | `refinar-ideia` §Passo 0 | Puxar e refinar notas de ideias anotadas pelo celular (quando ativo) |

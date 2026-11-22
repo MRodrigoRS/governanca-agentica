@@ -59,6 +59,7 @@ As skills oficiais residem exclusivamente em `template/.agents/skills/` (sem dup
 | `/refinar` / `/linear-inbox` | `template/.agents/skills/refinar-ideia/SKILL.md` | Capturar notas do Linear ou ideias avulsas, podar escopo e encaixar no roadmap |
 | `/explorar` | `template/.agents/skills/explorar-produto/SKILL.md` | Reunião estratégica de evolução do protocolo (congelando código) |
 | `/descobrir` / `/mesa` | `template/.agents/skills/mesa-de-descoberta/SKILL.md` | Mesa contínua multi-especialista com cristalização autorizada em livro `.md` (modelo em `template/docs/conhecimento/INDICE.md`) |
+| `/sintetizar` | `template/.agents/skills/sintetizar-conhecimento/SKILL.md` | Síntese *Map-Reduce* anti-alucinação de livros extensos e materiais externos (`template/docs/conhecimento/materiais/`) para o roadmap |
 | `/aprendizado` | `docs/aprendizados.md` | Registrar cicatriz empírica ou bug recorrente superado na matriz |
 | **Skills distribuídas mantidas aqui** | `template/.agents/skills/inicializar-stack/SKILL.md`, `template/.agents/skills/mapear-brownfield/SKILL.md`, `template/.agents/skills/atualizar-governanca/SKILL.md`, `template/.agents/skills/reuso-e-modularizacao/SKILL.md`, `template/.agents/skills/auditoria-seguranca/SKILL.md`, `template/.agents/skills/auditoria-ux-analytics/SKILL.md` | Skills evoluídas dentro de `template/` e cobertas pelos testes em `tests/` |
 

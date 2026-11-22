@@ -36,5 +36,6 @@ flowchart LR
 ## 4. Uso para Síntese Externa (NotebookLM, Obsidian e Mega-Planos)
 
 - **NotebookLM / Ferramentas de Síntese:** Faça upload deste `INDICE.md` em conjunto com os arquivos `*.md` de `docs/conhecimento/` para gerar resumos executivos, guias de estudo, podcasts de alinhamento e mapas mentais sem ruído de código.
+- **Materiais Externos (`docs/conhecimento/materiais/`):** Salve exportações do NotebookLM, atas, diagramas textuais ou especificações brutas dentro de `docs/conhecimento/materiais/` para serem absorvidos junto com o livro.
 - **Obsidian / Visualização em Grafo:** Abra a pasta `docs/conhecimento/` (ou a raiz do projeto) como *Vault*; o frontmatter YAML (`id`, `tema`, `especialidade`, `status`, `relacionados`) e os links relativos Markdown (`[Título](./<NN>-<slug>.md)`) montam o grafo automaticamente.
-- **Promoção para Mega-Plano de Execução:** Quando o domínio estiver maduro, peça ao agente para promover os capítulos selecionados para `openspec/roadmap.md`, convertendo conhecimento em fatias incrementais auditáveis pela governança.
+- **Promoção para Mega-Plano de Execução (`/sintetizar`):** Quando o domínio estiver maduro ou o volume passar de 8 arquivos, acione `/sintetizar` para converter o livro e os materiais em `openspec/roadmap.md` via extração *Map-Reduce* sem estourar o contexto.
