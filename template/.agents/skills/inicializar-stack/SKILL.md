@@ -5,19 +5,20 @@ description: Conduz entrevista estruturada de produto via protocolo oficial gril
 
 # Skill: Inicializar Stack e Decompor Sistema em Fatias (Gate 0)
 
-Esta skill orienta o agente na configuração inicial de um repositório novo (greenfield). O papel do agente aqui é atuar como **Arquiteto de Produto e Engenheiro Principal**: interrogar ativamente a visão do usuário através do protocolo upstream **`grill-me`** (árvore de decisão em rodadas sucessivas), polir o escopo eliminando ambiguidades e pontos cegos, escolher a stack + infraestrutura e **fatiar o sistema inteiro em entregas incrementais altamente detalhadas**.
+Esta skill orienta o agente na configuração inicial de um repositório novo (greenfield) ou quando houver **ausência de produto/stack definidos**. O papel do agente aqui é atuar como **Arquiteto de Produto e Engenheiro Principal**: ao detectar ausência de produto, **ative automaticamente `.agents/skills/mesa-de-descoberta/SKILL.md`** em conjunto com esta skill para conduzir uma entrevista profunda e contínua via protocolo **`grill-me`** + lentes multi-especialistas, consolidando cada bloco de conhecimento em `docs/conhecimento/` (com permissão explícita humana) antes de escolher a stack + infraestrutura e **fatiar o sistema inteiro em entregas incrementais altamente detalhadas**.
 
 ---
 
-## Passo 1 — Entrevista Investigativa de Produto e Arquitetura via Protocolo `grill-me`
+## Passo 1 — Entrevista Investigativa Profunda e Contínua (Integrada à Mesa de Descoberta)
 
-> **PROIBIÇÃO DE ENTREVISTA PASSIVA OU SUPERFICIAL:** Nunca se limite a um questionário de 1 mensagem nem a um monólogo que presume regras sem perguntar. A entrevista opera sob o protocolo rigoroso do **`grill-me` / `grilling`**:
-> 1. Mapeie o sistema como uma **árvore de decisões** (*design tree*).
-> 2. Conduza o interrogatório em **rodadas**. A **fronteira** (*frontier*) reúne apenas as decisões cujos pré-requisitos já foram respondidos.
+> **PROIBIÇÃO DE ENTREVISTA PASSIVA OU SUPERFICIAL:** Nunca se limite a um questionário de 1 mensagem nem a um monólogo que presume regras sem perguntar. Ao detectar ausência de produto/stack, opere em **modo contínuo** (integrado a `.agents/skills/mesa-de-descoberta/SKILL.md`) usando o protocolo **`grill-me` / `grilling`**:
+> 1. Mapeie o sistema como uma **árvore de decisões** (*design tree*) sob lentes especialistas (`[Produto]`, `[Arquitetura]`, `[Dados & Escala]`, `[Segurança]`, `[UX]`, `[Negócio]`).
+> 2. Os tópicos abaixo são **eixos progressivos (sem teto artificial de 3 rodadas)**: continue abrindo novas rodadas de perguntas e aprofundamento enquanto houver pontos abertos ou o usuário quiser escalar o produto.
 > 3. Em cada rodada, numere as perguntas da fronteira e forneça **sempre** sua **resposta recomendada pré-mastigada com justificativa técnica** (`➡️`), formulada para que um "concordo" ou "sim" aceite a recomendação.
 > 4. Aguarde as respostas do humano antes de abrir o próximo ramo.
+> 5. **Regra Anti-Amnésia e Anti-Alucinação (Cristalização Incremental):** Sempre que você e o usuário chegarem a uma conclusão sólida sobre um tema durante a entrevista, proponha em 1–2 linhas extrair aquele consenso para um arquivo separado `docs/conhecimento/<NN>-<slug>.md` e atualizar `docs/conhecimento/INDICE.md` — gravando somente após **permissão explícita** do humano. Assim nenhum detalhe já esclarecido se perde no histórico do chat.
 
-### Rodada 1: Visão Central, Ator e Fronteiras de Domínio
+### Eixo 1: Visão Central, Ator e Fronteiras de Domínio
 O agente escuta a intenção inicial do usuário e abre as primeiras perguntas da fronteira:
 - **Q1 — Problema & Ator Central:** Quem opera a aplicação e qual a dor primária resolvida de ponta a ponta?
 - **Q2 — Canal & Portabilidade:** SaaS Web Fullstack, Programa Desktop, App Mobile, API pura ou CLI? (Se Web, exigir mobile-first 320px+ e PWA inato — Artigo 6).
@@ -34,13 +35,13 @@ O agente escuta a intenção inicial do usuário e abre as primeiras perguntas d
 ➡️ Recomendo já instituir a chave `organizacao_id` nas entidades centrais desde o Gate 0 para evitar migrações destrutivas no futuro.
 ```
 
-### Rodada 2: Desafio Crítico, Casos de Borda e Poda de Exageros
-Com as respostas da Rodada 1 assentadas, o agente avança a fronteira para os pontos cegos que o humano normalmente não antecipa:
+### Eixo 2: Desafio Crítico, Casos de Borda e Poda de Exageros
+Com as respostas do Eixo 1 assentadas (aprofundadas em quantas rodadas forem necessárias), o agente avança a fronteira para os pontos cegos que o humano normalmente não antecipa:
 - **Falhas de Conexão e Serviços Externos:** O que acontece se o gateway falhar, a IA alucinar ou o webhook chegar duplicado?
 - **Permissões e Colisões:** Papéis de acesso e comportamentos quando dois usuários alteram o mesmo dado simultaneamente.
-- **Poda Construtiva (MVP Cirúrgico):** O agente recomenda o corte imediato de features acessórias (relatórios avançados, conciliações raras, customizações excessivas) que adicionariam 80% de esforço para < 20% de valor inicial. Registra os cortes na seção *"Fora de Escopo / Descartado no Polimento"* de `openspec/project.md`.
+- **Poda Construtiva (MVP Cirúrgico):** O agente recomenda o corte imediato de features acessórias (relatórios avançados, conciliações raras, customizações excessivas) que adicionariam 80% de esforço para < 20% de valor inicial. Registra os cortes na seção *"Fora de Escopo / Descartado no Polimento"* de `openspec/project.md` (mantendo hipóteses futuras maduras preservadas em `docs/conhecimento/`).
 
-### Rodada 3: Tradução Invisível para Arquitetura, Stack, VPS e MCPs (com Pesquisa Viva)
+### Eixo 3: Tradução Invisível para Arquitetura, Stack, VPS e MCPs (com Pesquisa Viva)
 Com as decisões de produto fechadas, o agente conduz **Pesquisa Viva Obrigatória** (`context7`, `/llms.txt` ou busca web) usando [references/catalogo-stacks.md](references/catalogo-stacks.md) como **ponto de partida vivo** (nunca uma lista fechada ou resposta só de memória de treinamento):
 - **Validação de Versões, Segurança e Mercado:** Confirme versões estáveis atuais, recomendações recentes do ecossistema, postura de segurança e eventuais pré-requisitos de toolchain nativa (ex.: MSVC/WebView2/`webkit2gtk` no Tauri v2) antes de recomendar.
 - **Stack Recomendada e Alternativa:** Framework, banco de dados relacional (Postgres/SQLite), filas/tempo real e design system.
@@ -50,6 +51,9 @@ Com as decisões de produto fechadas, o agente conduz **Pesquisa Viva Obrigatór
 ---
 
 ## Passo 2 — Invariantes Globais do Gate 0 e Fila de Fatias Rolling Wave (`openspec/roadmap.md`)
+
+> **TRAVA ANTI-AMNÉSIA E ANTI-ALUCINAÇÃO (LEITURA FÍSICA OBRIGATÓRIA):**
+> Antes de redigir `openspec/project.md` ou `openspec/roadmap.md`, é **expressamente proibido tentar lembrar de cabeça** o que foi decidido ao longo da entrevista no chat. Você **DEVE ler fisicamente** `docs/conhecimento/INDICE.md` e **todos os capítulos consolidados** em `docs/conhecimento/<NN>-<slug>.md` (se existirem), citando-os como fonte ao decompor as fatias para impedir esquecimentos e alucinações no plano.
 
 Antes de fechar o Gate 0, o agente **DEVE** consolidar a arquitetura macro e dividir o sistema completo em fatias lógicas incrementais no arquivo único `openspec/roadmap.md`, na ordem exata de engenharia em que **uma ponta puxa a outra**:
 

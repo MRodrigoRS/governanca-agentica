@@ -26,6 +26,7 @@ _skip_if_exists:
   - "docs/runbook.md"
   - "docs/aprendizados.md"
   - "docs/catalogo-reuso.md"
+  - "docs/conhecimento/**"
 
 # ------------------------------------------------------------------------------
 # Questionário de Inicialização
