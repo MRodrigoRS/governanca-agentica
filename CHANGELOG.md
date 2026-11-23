@@ -1,7 +1,14 @@
-# Changelog — Governança Agêntica (v4.1.0)
+# Changelog — Governança Agêntica (v4.1.1)
 
 Todas as alterações notáveis neste protocolo de governança são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/) e adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
+
+---
+
+## [4.1.1] - 2026-11-23
+
+### Corrigido
+- **`template/scripts/verificar-governanca.mjs` (`--staged` vs `CI=true`):** Garantida a precedência explícita de `--staged` sobre `process.env.CI === 'true'`, e isolado o ambiente `CI=false` nos helpers dos testes de *pre-commit* em `tests/*.test.mjs` além do step Copier em `.github/workflows/ci.yml`, destravando `npm test` no GitHub Actions.
 
 ---
 

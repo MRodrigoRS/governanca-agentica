@@ -69,7 +69,8 @@ function criarRepoTemporario() {
     },
     executarVerificador(args = '') {
       try {
-        const stdout = execSync(`node scripts/verificar-governanca.mjs ${args}`, { cwd: dir, encoding: 'utf8' });
+        const env = args.includes('--ci') ? process.env : { ...process.env, CI: 'false' };
+        const stdout = execSync(`node scripts/verificar-governanca.mjs ${args}`, { cwd: dir, env, encoding: 'utf8' });
         return { exitCode: 0, stdout };
       } catch (err) {
         return { exitCode: err.status ?? 1, stderr: err.stderr?.toString() ?? '', stdout: err.stdout?.toString() ?? '' };

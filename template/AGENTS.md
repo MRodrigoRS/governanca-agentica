@@ -1,4 +1,4 @@
-<!-- governanca:inicio v4.1.0 — não edite este bloco; alterações no repositório da governança -->
+<!-- governanca:inicio v4.1.1 — não edite este bloco; alterações no repositório da governança -->
 # Instruções Gerais para Agentes de IA — Governança
 
 > **Papel:** Fonte única da verdade para todos os agentes e assistentes de IA que operam neste repositório.

@@ -29,7 +29,8 @@ function criarRepoTemporario() {
     },
     executar(args = '') {
       try {
-        const stdout = execSync(`node scripts/verificar-governanca.mjs ${args}`, { cwd: dir, encoding: 'utf8' });
+        const env = args.includes('--ci') ? process.env : { ...process.env, CI: 'false' };
+        const stdout = execSync(`node scripts/verificar-governanca.mjs ${args}`, { cwd: dir, env, encoding: 'utf8' });
         return { exitCode: 0, stdout };
       } catch (err) {
         return { exitCode: err.status ?? 1, stderr: err.stderr?.toString() ?? '', stdout: err.stdout?.toString() ?? '' };
@@ -438,6 +439,35 @@ test('verificar-governanca: sensor anti-apodrecimento do Mapa Físico (§5 arqui
     assert.equal(resLimpo.exitCode, 0);
     assert.doesNotMatch(resLimpo.stdout, /\[AVISO RUNBOOK\]/);
     assert.doesNotMatch(resLimpo.stdout, /\[AVISO HANDOFF\]/);
+  } finally {
+    repo.limpar();
+  }
+});
+
+test('verificar-governanca: flag --staged tem precedência mesmo quando CI=true está definido no ambiente', () => {
+  const repo = criarRepoTemporario();
+  try {
+    writeFileSync(join(repo.dir, 'CHANGELOG.md'), '# Changelog\n## [Não publicado]\n### Corrigido\n- Base\n', 'utf8');
+    execSync('git add CHANGELOG.md && git commit -m "chore: base"', { cwd: repo.dir, stdio: 'ignore' });
+
+    // Arquivo staged com violação (location.reload) sem commit ainda
+    writeFileSync(join(repo.dir, 'app.tsx'), 'export function App() { location.reload(); return null; }', 'utf8');
+    execSync('git add app.tsx CHANGELOG.md', { cwd: repo.dir, stdio: 'ignore' });
+
+    let erroCapturado = null;
+    try {
+      execSync('node scripts/verificar-governanca.mjs --staged', {
+        cwd: repo.dir,
+        env: { ...process.env, CI: 'true' },
+        encoding: 'utf8',
+      });
+    } catch (err) {
+      erroCapturado = err;
+    }
+
+    assert.ok(erroCapturado, 'Com --staged e CI=true, deve auditar o staging e bloquear location.reload');
+    assert.equal(erroCapturado.status, 1);
+    assert.match(erroCapturado.stderr?.toString() ?? '', /location\.reload/);
   } finally {
     repo.limpar();
   }

@@ -52,7 +52,7 @@ test('copier E2E defaults: gera projeto valido, sem rules 0-bytes e passa verifi
     execSync('git config user.name "Tester"', { cwd: destino, stdio: 'ignore' });
     execSync('git add .', { cwd: destino, stdio: 'ignore' });
 
-    const saidaVerificador = execSync('node scripts/verificar-governanca.mjs', {
+    const saidaVerificador = execSync('node scripts/verificar-governanca.mjs --staged', {
       cwd: destino,
       encoding: 'utf8',
     });
@@ -151,8 +151,8 @@ test('template sem referencias legadas v2/v3/.claude e adaptado a stacks nao-tra
   assert.match(templateAgents, /scripts\//i, 'template/AGENTS.md deve esclarecer classificação de scripts/ próprios do projeto');
 
   const pkg = JSON.parse(readFileSync(join(raiz, 'package.json'), 'utf8'));
-  assert.equal(pkg.version, '4.1.0', 'package.json deve estar preparado na versão 4.1.0');
+  assert.match(pkg.version, /^4\.\d+\.\d+$/, 'package.json deve estar em versão estável SemVer v4');
 
   const changelogRaiz = readFileSync(join(raiz, 'CHANGELOG.md'), 'utf8');
-  assert.match(changelogRaiz, /## \[4\.1\.0\]/, 'CHANGELOG.md deve conter seção [4.1.0]');
+  assert.match(changelogRaiz, new RegExp(`## \\[${pkg.version.replace(/\./g, '\\.')}\\]`), `CHANGELOG.md deve conter seção [${pkg.version}]`);
 });

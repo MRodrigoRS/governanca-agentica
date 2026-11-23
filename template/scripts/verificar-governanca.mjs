@@ -48,7 +48,7 @@ function registrarSucesso(mensagem) {
 
 // 1. Obter arquivos modificados (staged no pre-commit local ou HEAD~1..HEAD no CI)
 function obterArquivosModificados() {
-  const modoCi = process.env.CI === 'true' || process.argv.includes('--ci');
+  const modoCi = !process.argv.includes('--staged') && (process.env.CI === 'true' || process.argv.includes('--ci'));
 
   try {
     let comandoGit = 'git diff --cached --name-status';
@@ -1002,7 +1002,7 @@ function ehArquivoDeployOuEnv(arquivo) {
 }
 
 function emitirAvisosOperacionaisEHandoff(listaArquivos, ehFundacao, arquivosProducao) {
-  const modoCi = process.env.CI === 'true' || process.argv.includes('--ci');
+  const modoCi = !process.argv.includes('--staged') && (process.env.CI === 'true' || process.argv.includes('--ci'));
   const runbookIncluido = listaArquivos.some((f) => f.toLowerCase() === 'docs/runbook.md');
 
   if (!ehFundacao && !runbookIncluido) {
@@ -1120,7 +1120,7 @@ function executarAuditoria() {
       'Marco 1 — Fundação e Sedimentação Inicial (Gate 0 / D21) detectado e aprovado com sucesso.'
     );
   } else {
-    const modoCi = process.env.CI === 'true' || process.argv.includes('--ci');
+    const modoCi = !process.argv.includes('--staged') && (process.env.CI === 'true' || process.argv.includes('--ci'));
     if (modoCi) {
       try {
         const msgCommit = execSync('git log -1 --format=%s', { encoding: 'utf8' }).trim();

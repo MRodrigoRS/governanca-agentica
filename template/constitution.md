@@ -1,4 +1,4 @@
-<!-- governanca:inicio v4.1.0 — não edite este bloco; alterações no repositório da governança -->
+<!-- governanca:inicio v4.1.1 — não edite este bloco; alterações no repositório da governança -->
 # Constituição do Projeto — Governança
 
 > **Papel:** Lei Suprema do repositório. Cláusulas pétreas obrigatórias para agentes de IA e desenvolvedores humanos.

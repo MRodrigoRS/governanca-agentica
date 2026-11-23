@@ -71,4 +71,4 @@ jobs:
           git -C /tmp/teste-governanca config user.email "ci@exemplo.com"
           git -C /tmp/teste-governanca config user.name "CI"
           git -C /tmp/teste-governanca add .
-          (cd /tmp/teste-governanca && node scripts/verificar-governanca.mjs)
+          (cd /tmp/teste-governanca && node scripts/verificar-governanca.mjs --staged)
