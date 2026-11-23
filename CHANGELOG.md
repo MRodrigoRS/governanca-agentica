@@ -1,11 +1,17 @@
-# Changelog — Governança Agêntica (v4.0.0)
+# Changelog — Governança Agêntica (v4.1.0)
 
 Todas as alterações notáveis neste protocolo de governança são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/) e adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
 ---
 
-## [Não publicado]
+## [4.1.0] - 2026-11-22
+
+### Corrigido
+- **`copier.yml` (`perfis_projeto` + `_exclude`):** Ativado `multiselect: true` em `perfis_projeto` com lista padrão válida (`["web-ui", "api-backend"]`), corrigindo `ValueError` em `uvx copier copy --defaults`, e adicionado `_exclude` condicional para evitar geração de arquivos 0 bytes em `.agents/rules/`.
+- **`template/docs/catalogo-reuso.md`:** Substituídos caminhos fictícios entre crases por placeholders em itálico sem crases, impedindo falso bloqueio de `verificar-governanca.mjs` no primeiro commit após instalação.
+- **Consistência de Templates e Hooks:** Removidas referências legadas (`Governança v2`, `openspec/roadmap/`, `.claude/settings.json`), corrigida a numeração dinâmica `## 5` / `## 6` em `template/openspec/project.md.jinja`, comentadas variáveis opcionais em `template/.env.example`, tornado `template/.agents/hooks.json` resiliente ao `cwd` (raiz ou `.agents/`), adicionados globs `**/*.html` e `**/*.gs`, e incluída auditoria de `.gitignore` + exceções de stack em `mapear-brownfield/SKILL.md` e `template/AGENTS.md`.
+- **Testes E2E Copier e CI:** Adicionada suíte `tests/copier-e2e-e-consistencia.test.mjs` validando `uvx copier copy --defaults` + `git add .` + `verificar-governanca.mjs`, e atualizado `.github/workflows/ci.yml`.
 
 ### Adicionado
 - **Síntese de Conhecimento em Escala Map-Reduce (`fatia-15-sintese-de-conhecimento-map-reduce`, D43):**

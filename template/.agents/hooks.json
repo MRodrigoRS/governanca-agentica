@@ -7,7 +7,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node ../scripts/hook-agente.mjs pre-tool",
+            "command": "node -e \"import('node:fs').then(async({existsSync})=>{const {resolve}=await import('node:path');const {pathToFileURL}=await import('node:url');const p=existsSync('scripts/hook-agente.mjs')?'scripts/hook-agente.mjs':'../scripts/hook-agente.mjs';process.argv=[process.execPath,resolve(p),'pre-tool'];await import(pathToFileURL(resolve(p)).href);})\"",
             "timeout": 15
           }
         ]
@@ -16,7 +16,7 @@
     "SessionStart": [
       {
         "type": "command",
-        "command": "node ../scripts/hook-agente.mjs session-start",
+        "command": "node -e \"import('node:fs').then(async({existsSync})=>{const {resolve}=await import('node:path');const {pathToFileURL}=await import('node:url');const p=existsSync('scripts/hook-agente.mjs')?'scripts/hook-agente.mjs':'../scripts/hook-agente.mjs';process.argv=[process.execPath,resolve(p),'session-start'];await import(pathToFileURL(resolve(p)).href);})\"",
         "timeout": 15
       }
     ]

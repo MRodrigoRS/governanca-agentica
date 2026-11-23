@@ -1,7 +1,7 @@
 # 0000. Registrar Decisões de Arquitetura Usando MADR
 
 * **Status:** aceito
-* **Decisores:** Desenvolvedor Humano e Governança v2
+* **Decisores:** Desenvolvedor Humano e Governança v4
 * **Data:** 2026-10-27
 
 ## Contexto e Declaração do Problema

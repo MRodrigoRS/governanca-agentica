@@ -1,8 +1,8 @@
-<!-- governanca:inicio v4.0.0 — não edite este bloco; alterações no repositório da governança -->
+<!-- governanca:inicio v4.1.0 — não edite este bloco; alterações no repositório da governança -->
 # Constituição do Projeto — Governança
 
 > **Papel:** Lei Suprema do repositório. Cláusulas pétreas obrigatórias para agentes de IA e desenvolvedores humanos.
-> **Enforcement:** Estas cláusulas não são sugestões textuais. São auditadas determinísticamente por Lifecycle Hooks dos Agentes (`.agents/hooks.json` e `.claude/settings.json`), Git hooks locais (`Lefthook + Gitleaks + verificar-governanca.mjs`) e pelo GitHub Actions CI. Qualquer violação bloqueia commits e builds (`exit 1` / `deny`).
+> **Enforcement:** Estas cláusulas não são sugestões textuais. São auditadas determinísticamente por Lifecycle Hooks dos Agentes (`.agents/hooks.json`), Git hooks locais (`Lefthook + Gitleaks + verificar-governanca.mjs`) e pelo GitHub Actions CI. Qualquer violação bloqueia commits e builds (`exit 1` / `deny`).
 
 ---
 
@@ -125,7 +125,7 @@ Se durante a execução de uma tarefa o agente falhar 3 vezes consecutivas no me
 
 ## Artigo 11 — Rotina de Commits Cadenciada e Autorizada pelo Humano
 
-1. **Proibição de Commits Avulsos ou Prematuros:** É estritamente proibido ao agente realizar commits arbitrários, automáticos ou incompletos no meio do desenvolvimento ("work in progress" soltos, testes quebrados ou sem autorização). O motor da IDE intercepta comandos de commit via Lifecycle Hooks (`.agents/hooks.json` e `.claude/settings.json`) forçando confirmação humana (`force_ask`).
+1. **Proibição de Commits Avulsos ou Prematuros:** É estritamente proibido ao agente realizar commits arbitrários, automáticos ou incompletos no meio do desenvolvimento ("work in progress" soltos, testes quebrados ou sem autorização). O motor da IDE intercepta comandos de commit via Lifecycle Hooks (`.agents/hooks.json`) forçando confirmação humana (`force_ask`).
 2. **Os Dois Marcos Mandatórios de Commit:**
    - **Marco 1 — Fundação e Sedimentação Inicial (Gate 0):** Ocorre após a conclusão da entrevista de produto, aprovação da stack, scaffolding oficial, prova de saúde da base e gravação do Mapa de Fatias Incrementais e Invariantes Globais (`openspec/project.md` e `openspec/roadmap.md`). O agente solicita e aguarda a **aprovação humana explícita** para realizar o commit fundacional (ex.: `feat(fundacao): inicializa projeto com stack e roadmap de fatias`).
    - **Marco 2 — Fechamento de Fatia ou Correção (Gate 2):** Ocorre ao término da implementação da fatia ou `/fix`, após a comprovação de testes (Vermelho → Verde), diff limpo, `CHANGELOG.md` atualizado e validações determinísticas passando (`verificar-governanca.mjs`, `openspec validate`). O agente só realiza o commit após a **aprovação final humana explícita** no Gate 2 (ex.: `feat(escopo): implementa fatia XX - descricao`).

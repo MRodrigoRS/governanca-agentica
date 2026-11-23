@@ -1,4 +1,4 @@
-<!-- governanca:inicio v4.0.0 — não edite este bloco; alterações no repositório da governança -->
+<!-- governanca:inicio v4.1.0 — não edite este bloco; alterações no repositório da governança -->
 # Instruções Gerais para Agentes de IA — Governança
 
 > **Papel:** Fonte única da verdade para todos os agentes e assistentes de IA que operam neste repositório.
@@ -22,8 +22,8 @@ Antes de editar qualquer arquivo, o agente DEVE consultar as regras do módulo c
 
 | Intenção ou Arquivos Tocados | Módulo de Regras Obrigatório | O que verificar antes de codificar |
 |---|---|---|
-| **Rotas, UI, Telas, CSS, PWA** (`.tsx`, `.jsx`, `.vue`, `.svelte`, `.css`, `manifest.json`) | `.agents/rules/web-ui-pwa.md` | Mobile-first 320px+, 4 estados assíncronos, Toasts para mutações, Modais destrutivos com `Escape`, zero `location.reload`. |
-| **APIs, Servidor, Banco, Filas** (`api/`, `server/`, `routes/`, `.prisma`, `.py`, `.go`) | `.agents/rules/backend-seguranca-dados.md` | Zero-Trust Anti-F12, schemas declarativos na borda, transações ACID, headers CSP/HSTS, rate limiting. |
+| **Rotas, UI, Telas, CSS, PWA** (`.tsx`, `.jsx`, `.vue`, `.svelte`, `.html`, `.css`, `manifest.json`) | `.agents/rules/web-ui-pwa.md` | Mobile-first 320px+, 4 estados assíncronos, Toasts para mutações, Modais destrutivos com `Escape`, zero `location.reload`. |
+| **APIs, Servidor, Banco, Filas** (`api/`, `server/`, `routes/`, `.prisma`, `.py`, `.go`, `.gs`) | `.agents/rules/backend-seguranca-dados.md` | Zero-Trust Anti-F12, schemas declarativos na borda, transações ACID, headers CSP/HSTS, rate limiting. |
 | **Jogos, Cenas, Shaders, Física** (`.gd`, `.tscn`, `project.godot`, `.wgsl`, `.glsl`) | `.agents/rules/jogos-engines.md` | Lógica pura desacoplada da renderização gráfica, testes unitários headless em < 50ms, viewport fluido. |
 | **Integração Linear MCP** (tarefas, issues, status, diário) | `.agents/rules/linear-mcp.md` | Handshake prévio obrigatório com `whoami`, Tríade de Âncora (Workspace/Equipe/Projeto), zero fallback silencioso. |
 
@@ -124,7 +124,9 @@ Ao ser iniciado em um repositório, identifique o estado atual antes de agir:
 - **Handoff Efêmero fora do OpenSpec:** Arquivo `.agents/handoff.md` (ignorado no Git; usado sob demanda em `/fix` interrompido, Via 1.5 ou planos de auditoria quando não há delta em `openspec/changes/`, lido automaticamente no `SessionStart` e limpo no Gate 2).
 - **Diário de Aprendizados e Cicatrizes:** Arquivo `docs/aprendizados.md` (leitura mandatória no Gate 1 para prevenir reincidência de armadilhas empíricas catalogadas).
 - **Base de Conhecimento e Descoberta:** Arquivo `docs/conhecimento/INDICE.md` (índice mestre do livro vivo de conhecimento construído via `/descobrir` / `/mesa`, acompanhado de materiais externos em `docs/conhecimento/materiais/` para síntese via `/sintetizar` sem estourar contexto).
-- **Hooks Nativos de Agente:** Arquivo `.agents/hooks.json` acionando `scripts/hook-agente.mjs`.
+- **Hooks Nativos de Agente:** Arquivo `.agents/hooks.json` acionando `scripts/hook-agente.mjs` (suporta execução tanto da raiz do repositório quanto de `.agents/`).
+- **Scripts Auxiliares em `scripts/`:** Apenas os scripts nativos da governança (`scripts/verificar-governanca.mjs`, `scripts/validar-commit-msg.mjs`, `scripts/hook-agente.mjs` e `scripts/lib/`) são isentos de cerimônia; scripts utilitários ou de build próprios do projeto sob `scripts/` são auditados como código de produção (`CHANGELOG.md`, teto de 350 linhas e testes).
+- **Exceções Legítimas de Stack:** Stacks específicas ou legadas (ex.: Google Apps Script, HTML estático, projetos sem `npm test` ou sem TS strict/SQLite) devem registrar suas adaptações e exceções na seção `## Cláusulas Adicionais Deste Projeto` em `constitution.md` e em `docs/particularidades.md`.
 - **Auditoria Forense Cega (Sob Demanda via `/revisar`):** Protocolo universal consolidado em `.agents/skills/revisar-fatia/SKILL.md`.
 - **Servidores MCP Oficiais (.mcp.json):**
   - `context7`: Consulta a documentações técnicas oficiais e atualizadas.

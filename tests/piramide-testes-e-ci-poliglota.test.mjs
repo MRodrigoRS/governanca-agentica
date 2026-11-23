@@ -254,9 +254,9 @@ test('deve_formalizar_subagente_opcional_sob_demanda_e_graduar_versao_v4_estavel
   const catalogoStacks = readFileSync(join(dirTemplate, '.agents', 'skills', 'inicializar-stack', 'references', 'catalogo-stacks.md'), 'utf8');
   assert.match(catalogoStacks, /@axe-core\/playwright/i, 'catalogo-stacks.md deve documentar @axe-core/playwright nos Smoke Tests Web');
 
-  // package.json na raiz deve estar na versão estável 4.0.0
+  // package.json na raiz deve estar em versão estável SemVer v4 (sem sufixo -alpha)
   const pkgRaiz = JSON.parse(readFileSync(join(process.cwd(), 'package.json'), 'utf8'));
-  assert.equal(pkgRaiz.version, '4.0.0', 'package.json deve ser 4.0.0 estável');
+  assert.match(pkgRaiz.version, /^4\.\d+\.\d+$/, 'package.json deve estar em versão estável 4.x.y');
 
   // CHANGELOG.md deve ter a seção [4.0.0]
   const changelog = readFileSync(join(process.cwd(), 'CHANGELOG.md'), 'utf8');

@@ -38,10 +38,11 @@ Atualize todos os documentos abaixo substituindo os placeholders genéricos pelo
 1. **`AGENTS.md` (Seção `## Comandos do Projeto`):** Preencha os comandos reais de instalação, dev, testes, typecheck, lint, build e migrações.
 2. **`docs/arquitetura.md`:** Atualize os diagramas C4 Nível 1 e 2, o `erDiagram` com as tabelas/entidades reais, o Glossário de Domínio e a **Seção 5 (`Mapa Físico de Módulos`)** com as pastas/arquivos de entrada reais e suas suítes de testes.
 3. **`docs/catalogo-reuso.md`:** Inventarie tokens, primitivos de UI, prefabs e módulos de domínio já existentes para evitar duplicação futura (Artigo 14).
-4. **`docs/particularidades.md`, `docs/runbook.md` e `.env.example`:** Registre portas, restrições de infra/banco/webhooks em `particularidades.md`, documente os fluxos reais de deploy, *smoke check*, migrations/rollback e logs em `docs/runbook.md`, e garanta que todas as variáveis de ambiente usadas no código estejam em `.env.example` sem segredos reais.
-5. **`openspec/project.md`:** Preencha Visão do Produto, Fluxo, Perfis e Stack Tecnológica real (e atualize o status removendo o aviso de onboarding pendente).
-6. **`openspec/specs/`:** Crie as especificações vivas iniciais descrevendo os domínios e comportamentos já implementados.
-7. **`openspec/roadmap.md`:** Registre os **Invariantes Globais** observados e estruture a fila *Rolling Wave* (incluindo eventuais dívidas críticas identificadas no Passo 2).
+4. **`docs/particularidades.md`, `docs/runbook.md`, `.env.example` e `.gitignore`:** Registre portas, restrições de infra/banco/webhooks em `particularidades.md`, documente os fluxos reais de deploy, *smoke check*, migrations/rollback e logs em `docs/runbook.md`, e garanta que todas as variáveis de ambiente usadas no código estejam em `.env.example` sem segredos reais. **Revise também o `.gitignore` existente:** remova `.agents/` caso esteja ignorado (as rules, skills e hooks devem ser versionados) e assegure que `.env`, `.env.*` (`!.env.example`) e `.agents/handoff.md` estejam ignorados.
+5. **Exceções Legítimas de Stack (`constitution.md` + `docs/particularidades.md`):** Para plataformas ou projetos legados não-tradicionais (ex.: Google Apps Script, HTML estático, apps sem `npm test`, sem TS `strict` ou sem SQLite in-memory), registre formalmente as exceções e adaptações aplicáveis em `constitution.md` (`## Cláusulas Adicionais Deste Projeto`) e em `docs/particularidades.md` durante o onboarding, evitando falsos bloqueios com o agente.
+6. **`openspec/project.md`:** Preencha Visão do Produto, Fluxo, Perfis e Stack Tecnológica real (e atualize o status removendo o aviso de onboarding pendente).
+7. **`openspec/specs/`:** Crie as especificações vivas iniciais descrevendo os domínios e comportamentos já implementados.
+8. **`openspec/roadmap.md`:** Registre os **Invariantes Globais** observados e estruture a fila *Rolling Wave* (incluindo eventuais dívidas críticas identificadas no Passo 2).
 
 ---
 

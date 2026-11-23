@@ -7,6 +7,12 @@
 _subdirectory: template
 _templates_suffix: .jinja
 
+_exclude:
+  - "{% if 'jogo' not in perfis_projeto %}.agents/rules/jogos-engines.md{% endif %}"
+  - "{% if not integrar_linear %}.agents/rules/linear-mcp.md{% endif %}"
+  - "{% if 'web-ui' not in perfis_projeto and 'desktop' not in perfis_projeto and 'mobile' not in perfis_projeto %}.agents/rules/web-ui-pwa.md{% endif %}"
+  - "{% if 'api-backend' not in perfis_projeto and 'web-ui' not in perfis_projeto %}.agents/rules/backend-seguranca-dados.md{% endif %}"
+
 _skip_if_exists:
   - "CHANGELOG.md"
   - "README.md"
@@ -53,8 +59,11 @@ autor_email:
 
 perfis_projeto:
   type: str
-  help: "Quais perfis compõem este projeto? (separe por vírgula se mais de um)"
-  default: "web-ui, api-backend"
+  multiselect: true
+  help: "Quais perfis compõem este projeto?"
+  default:
+    - "web-ui"
+    - "api-backend"
   choices:
     - "web-ui"
     - "api-backend"

@@ -42,7 +42,7 @@ jobs:
 
       - name: Testar geração do template Copier
         run: |
-          uvx copier copy --defaults . /tmp/teste-governanca
+          uvx copier copy --defaults --vcs-ref=HEAD . /tmp/teste-governanca
           ls -la /tmp/teste-governanca
           test -f /tmp/teste-governanca/AGENTS.md
           test -f /tmp/teste-governanca/constitution.md
@@ -57,6 +57,8 @@ jobs:
           test -f /tmp/teste-governanca/docs/runbook.md
           test -f /tmp/teste-governanca/.github/pull_request_template.md
           test -d /tmp/teste-governanca/.agents/rules
+          test ! -e /tmp/teste-governanca/.agents/rules/jogos-engines.md
+          test ! -e /tmp/teste-governanca/.agents/rules/linear-mcp.md
           test -d /tmp/teste-governanca/docs/adr
           test -d /tmp/teste-governanca/.agents/skills
           test -f /tmp/teste-governanca/.agents/skills/auditoria-seguranca/SKILL.md
@@ -65,3 +67,8 @@ jobs:
           test -f /tmp/teste-governanca/.agents/skills/sintetizar-conhecimento/SKILL.md
           test -f /tmp/teste-governanca/docs/conhecimento/INDICE.md
           test -d /tmp/teste-governanca/docs/conhecimento/materiais
+          git -C /tmp/teste-governanca init
+          git -C /tmp/teste-governanca config user.email "ci@exemplo.com"
+          git -C /tmp/teste-governanca config user.name "CI"
+          git -C /tmp/teste-governanca add .
+          (cd /tmp/teste-governanca && node scripts/verificar-governanca.mjs)
