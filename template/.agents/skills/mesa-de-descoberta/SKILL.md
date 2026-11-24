@@ -109,21 +109,11 @@ Sempre que um capítulo for gravado ou atualizado com permissão do usuário, at
 
 ---
 
-## Passo 3 — Ponte Opcional para Execução (Promoção para o Roadmap)
+## Passo 3 — Ponte Opcional para Execução (Promoção para o Mapa Macro de Capacidades)
 
 Quando o usuário decidir encerrar uma etapa de descoberta ou pedir *"vamos transformar os capítulos X e Y em plano de execução"* / *"promover para o roadmap"*:
 
 1. **Gatilho Automático de Síntese em Escala:** Se o diretório `docs/conhecimento/` somar **mais de 8 arquivos** ou contiver arquivos externos em `docs/conhecimento/materiais/`, **acione automaticamente `.agents/skills/sintetizar-conhecimento/SKILL.md`** (`/sintetizar`) para executar a extração *Map-Reduce* sem estourar o contexto.
 2. Caso o corpus seja enxuto (`≤ 8` capítulos curtos sem materiais extras), confirme com o usuário **quais capítulos ou subconjuntos** devem ser promovidos para construção (mantendo ideias ainda especulativas no livro sem poluir a fila de entrega).
-3. Decomponha o escopo promovido em blocos no arquivo único `openspec/roadmap.md`, respeitando estritamente as 4 âncoras auditadas pela governança:
-   ```markdown
-   ### [ ] Pendente — `fatia-XX-<slug>`
-   - **Depende de:** `fatia-YY-<slug>`
-   - **Objetivo de Valor:** [Valor funcional extraído do capítulo correspondente]
-   - **Fontes de Conhecimento:** [Capítulo NN](../docs/conhecimento/<NN>-<slug>.md)
-   - **O que ENTRA:**
-     1. [Regra / comportamento 1]
-     2. [Regra / comportamento 2]
-   - **O que FICA DE FORA:** [Cortes acordados e hipóteses deixadas no livro]
-   ```
-4. Atualize o campo `status: promovido` no frontmatter dos capítulos promovidos (e na tabela de `docs/conhecimento/INDICE.md`), preservando todo o histórico reflexivo intacto como referência rica para quando as fatias forem especificadas no OpenSpec.
+3. **Registro no Mapa Macro e Fatiamento Cirúrgico Sob Demanda:** Adicione as capacidades promovidas à tabela `## 2. Mapa Macro de Capacidades` de `openspec/roadmap.md` (sem pré-fabricar blocos `fatia-02`..`fatia-N` antecipadamente) e delegue a criação da próxima fatia executável à skill `.agents/skills/planejar-proxima-fatia/SKILL.md` (`/fatiar`), que analisará livro + código real para propor o bloco na Seção 3 com as 4 âncoras obrigatórias (`Depende de:`, `Objetivo de Valor:`, `O que ENTRA:` e `O que FICA DE FORA:`).
+4. Atualize o campo `status: promovido` no frontmatter dos capítulos promovidos (e na tabela de `docs/conhecimento/INDICE.md`), preservando todo o histórico reflexivo intacto como referência rica para quando cada fatia cirúrgica for planejada e especificada no OpenSpec.

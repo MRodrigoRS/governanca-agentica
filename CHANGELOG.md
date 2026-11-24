@@ -1,7 +1,20 @@
-# Changelog — Governança Agêntica (v4.1.1)
+# Changelog — Governança Agêntica (v4.2.0)
 
 Todas as alterações notáveis neste protocolo de governança são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/) e adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
+
+---
+
+## [4.2.0] - 2026-11-24
+
+### Adicionado
+- **Fatiamento Cirúrgico Just-in-Time com Subagente Arquiteto-Fatiador (`fatia-16-fatiamento-cirurgico-just-in-time`, D44):**
+  - Nova skill universal [planejar-proxima-fatia/SKILL.md](template/.agents/skills/planejar-proxima-fatia/SKILL.md) (`/fatiar` e `/planejar-fatia`), acionada manualmente ou automaticamente por `/proxima-fatia` (quando não houver fatia `[ ] Pendente` em `openspec/roadmap.md`) e ao concluir o Gate 2, mantendo congelamento estrito de código e delegando a inspeção simultânea do livro/documentação e do código real (schema, migrações, rotas, testes) a um subagente *read-only* (`Fatiador Cirúrgico`, com fallback em CLIs sem subagentes) sob 4 critérios decisórios (prontidão de dependências, coesão cirúrgica, desbloqueio estrutural e anti-miopia) + alinhamento curto `grill-me` (`➡️`).
+  - Novo layout em 3 camadas em [roadmap.md.jinja](template/openspec/roadmap.md.jinja): `## 1. Invariantes Globais do Gate 0`, `## 2. Mapa Macro de Capacidades` e `## 3. Fila Executável de Fatias (Rolling Wave Cirúrgico)` gerando apenas `### [ ] fatia-01-fundacao` no Gate 0.
+  - Suíte `tests/planejar-proxima-fatia.test.mjs` validando contrato completo da skill, layout de 3 camadas, integração nas skills e Constituição, sincronia SemVer `4.2.0`, registro de `D44` e retrocompatibilidade de `template/scripts/verificar-governanca.mjs --staged` para projetos legados e novos.
+
+### Modificado
+- **Adoção do Modelo Híbrido (Mapa Macro + Fatiamento Cirúrgico Just-in-Time):** Atualizadas [inicializar-stack/SKILL.md](template/.agents/skills/inicializar-stack/SKILL.md), [catalogo-stacks.md](template/.agents/skills/inicializar-stack/references/catalogo-stacks.md), [sintetizar-conhecimento/SKILL.md](template/.agents/skills/sintetizar-conhecimento/SKILL.md), [mesa-de-descoberta/SKILL.md](template/.agents/skills/mesa-de-descoberta/SKILL.md), [ciclo-especificacao/SKILL.md](template/.agents/skills/ciclo-especificacao/SKILL.md), [template/constitution.md](template/constitution.md) (Artigos 8.2 e 8.3), [template/AGENTS.md](template/AGENTS.md), [template/README.md.jinja](template/README.md.jinja), [template/openspec/project.md.jinja](template/openspec/project.md.jinja), [AGENTS.md](AGENTS.md), [.github/workflows/ci.yml](.github/workflows/ci.yml), [00_INDICE_E_DECISOES.md](00_INDICE_E_DECISOES.md) e [README.md](README.md).
 
 ---
 

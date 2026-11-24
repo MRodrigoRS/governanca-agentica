@@ -141,3 +141,14 @@
   2. **Subpasta `template/docs/conhecimento/materiais/.gitkeep` & Atualização de `INDICE.md` / Skills:** Pasta dedicada a insumos externos já protegida por `"docs/conhecimento/**"` no `copier.yml`; integração automática em `mesa-de-descoberta/SKILL.md` (Passo 3) e `inicializar-stack/SKILL.md` (Passo 2).
   3. **Índices, CI e Memória (`AGENTS.md`, `template/AGENTS.md`, `template/README.md.jinja`, `.github/workflows/ci.yml`, `00_INDICE_E_DECISOES.md`, `CHANGELOG.md`):** Registro de `/sintetizar` e `sintetizar-conhecimento` preservando integridade referencial bidirecional; verificação dos novos artefatos no job Copier do CI; Decisão `D43` e suíte `tests/sintetizar-conhecimento.test.mjs`.
 - **O que FICA DE FORA:** Implementação de banco vetorial/embeddings local, servidores MCP de indexação ou parsers externos em `template/scripts/verificar-governanca.mjs`.
+
+---
+
+### `[x] Concluído` — `fatia-16-fatiamento-cirurgico-just-in-time`
+- **Depende de:** `fatia-15-sintese-de-conhecimento-map-reduce`
+- **Objetivo de Valor:** Substituir o fatiamento total antecipado no Gate 0 pelo modelo híbrido **Mapa Macro de Capacidades + Fatiamento Cirúrgico Just-in-Time**, instituindo a skill `planejar-proxima-fatia` (`/fatiar`) com subagente *read-only* que lê simultaneamente o livro/documentação e o código real existente para propor apenas a próxima fatia cirúrgica por vez.
+- **O que ENTRA:**
+  1. **Nova Skill `template/.agents/skills/planejar-proxima-fatia/SKILL.md` (`/fatiar` / `/planejar-fatia`):** Gatilhos manual e automáticos (`/proxima-fatia` com fila vazia e pós-Gate 2), congelamento estrito de código, delegação a subagente *read-only* (`Fatiador Cirúrgico`) com fallback em CLIs sem subagentes, leitura física do livro + código real, critérios decisórios anti-miopia, saída estruturada e alinhamento curto `grill-me` (`➡️`).
+  2. **Novo Layout em 3 Camadas em `template/openspec/roadmap.md.jinja`:** `## 1. Invariantes Globais do Gate 0`, `## 2. Mapa Macro de Capacidades` e `## 3. Fila Executável de Fatias (Rolling Wave Cirúrgico)` gerando apenas `fatia-01-fundacao` no Gate 0, preservando 100% de retrocompatibilidade em `verificar-governanca.mjs` para projetos legados.
+  3. **Integração no Ecossistema, SemVer `v4.2.0` e Testes:** Atualização de `inicializar-stack`, `sintetizar-conhecimento`, `mesa-de-descoberta`, `ciclo-especificacao`, `template/AGENTS.md`, `template/constitution.md` (Artigos 8.2 e 8.3), `template/README.md.jinja`, `template/openspec/project.md.jinja`, `AGENTS.md` (raiz), `.github/workflows/ci.yml`, `00_INDICE_E_DECISOES.md` (`D44`), `package.json`, `CHANGELOG.md`, `README.md` e suíte `tests/planejar-proxima-fatia.test.mjs`.
+- **O que FICA DE FORA:** Alterações em `template/scripts/verificar-governanca.mjs` (Catraca Anti-Monólito / Artigo 14) ou quebra de compatibilidade com roadmaps legados multi-fatias em `copier update`.

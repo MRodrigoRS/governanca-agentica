@@ -1,14 +1,14 @@
 # Roadmap Incremental — {{ nome_do_projeto }}
 
-> **Papel:** Fonte única do planejamento macro incremental do projeto (*Rolling Wave Planning*).
-> **Regra de Ouro (Zero Escrita Duplicada):** Este arquivo registra a visão macro, dependências e fronteiras (`O que ENTRA` vs. `O que FICA DE FORA`) de cada fatia. A especificação técnica profunda (contratos, schemas, cenários Given/When/Then e tarefas Test-First) nasce **Just-in-Time exclusivamente dentro de `openspec/changes/fatia-XX-<slug>/`** no momento de executar aquela fatia, consolidando-se em `openspec/specs/` após o `archive`.
+> **Papel:** Fonte única do planejamento macro incremental do projeto (*Rolling Wave Cirúrgico*).
+> **Regra de Ouro (Zero Escrita Duplicada & Zero Planejamento no Escuro):** No Gate 0, este arquivo registra os **Invariantes Globais**, o **Mapa Macro de Capacidades** e apenas a **`fatia-01-fundacao`**. Todas as fatias seguintes (`fatia-02+`) são descobertas uma por vez **Just-in-Time** sobre o código real + livro de conhecimento via `/fatiar` (`.agents/skills/planejar-proxima-fatia/SKILL.md`), e a especificação técnica profunda nasce **exclusivamente dentro de `openspec/changes/fatia-XX-<slug>/`**, consolidando-se em `openspec/specs/` após o `archive`.
 > **Proteção Copier:** Listado em `_skip_if_exists` no `copier.yml` para proteger o planejamento vivo do seu projeto.
 
 ---
 
 ## 1. Invariantes Globais do Gate 0
 
-*(Definidos após a Entrevista Exaustiva no Gate 0 antes da primeira linha de código).*
+*(Definidos após a Entrevista Exaustiva no Gate 0 antes da primeira linha de código para prevenir miopia arquitetural).*
 
 | Invariante | Decisão Arquitetural | Impacto nas Fatias |
 |---|---|---|
@@ -20,27 +20,29 @@
 
 ---
 
-## 2. Fila de Fatias Incrementais (Rolling Wave)
+## 2. Mapa Macro de Capacidades
+
+*(Horizonte completo das capacidades aprovadas do produto e suas macrodependências — sem pré-fabricar blocos `fatia-02`..`fatia-N` antes da existência do código).*
+
+| Capacidade / Domínio | Fonte (Livro / Projeto) | Depende de | Status |
+|---|---|---|---|
+| **Fundação da Stack e Infraestrutura** | `openspec/project.md` | Nenhuma | Em fila |
+| `[Capacidade / Domínio 2]` | `[docs/conhecimento/<NN>-<slug>.md]` | `Fundação da Stack` | Em fila |
+
+---
+
+## 3. Fila Executável de Fatias (Rolling Wave Cirúrgico)
+
+*(No Gate 0 existe apenas `fatia-01-fundacao`. Gere a próxima fatia somente após entregar a anterior usando `/fatiar` ou `/proxima-fatia`).*
 
 ### [ ] fatia-01-fundacao
 - **Depende de:** Nenhuma (fatia inicial de fundação)
-- **Objetivo de Valor:** Inicializar infraestrutura básica, banco de dados, autenticação e layout principal responsivo.
-- **Entidades/Contratos Tocados:** Configurações base, conexão de banco, modelo de usuários e sessões.
+- **Objetivo de Valor:** Inicializar infraestrutura básica, banco de dados, autenticação, tokens base e layout principal responsivo.
+- **Entidades/Contratos Tocados:** Configurações base, conexão de banco, modelo inicial de usuários/tenant e tokens em `docs/catalogo-reuso.md`.
 - **O que ENTRA:**
   - Scaffolding oficial da stack aprovada no Gate 0 com tipagem estrita
-  - Conexão com banco de dados e migração inicial
-  - Layout mestre responsivo (320px+) com PWA inato
+  - Conexão com banco de dados, chaves invariantes e migração inicial
+  - Layout mestre responsivo (320px+) com PWA inato e tokens base (quando aplicável)
 - **O que FICA DE FORA:**
-  - Regras específicas de módulos de negócio avançados
-  - Integrações com gateways de pagamento externos
-
-### [ ] fatia-02-[slug-da-segunda-fatia]
-- **Depende de:** fatia-01-fundacao
-- **Objetivo de Valor:** Implementar o primeiro fluxo de valor fim a fim para o usuário principal.
-- **Entidades/Contratos Tocados:** Entidades de domínio da funcionalidade central.
-- **O que ENTRA:**
-  - Rota e tela principal da funcionalidade
-  - Validação de entrada na fronteira com schema estrito
-  - Feedback com Toasts e proteção com Modais destrutivos
-- **O que FICA DE FORA:**
-  - Relatórios analíticos e exportação em lote
+  - Regras específicas de módulos de negócio (geradas uma a uma após a fundação via `/fatiar`)
+  - Integrações com provedores externos avançados

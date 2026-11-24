@@ -35,7 +35,7 @@ Antes de iniciar, determine a via adequada conforme a Matriz de Cerimônia (D14 
 
 ## 2. Via 2 — Seleção da Fatia e Criação do Delta de Mudança
 
-1. **Consulte a Fila de Fatias:** Leia `openspec/roadmap.md` e localize a próxima fatia com status `[ ] Pendente` (ou a fatia solicitada pelo humano).
+1. **Consulte a Fila Executável (ou Acione o Fatiador Cirúrgico):** Leia `openspec/roadmap.md` e localize na Fila Executável uma fatia com status `[ ] Pendente` (ou a fatia solicitada pelo humano). **Se não houver nenhuma fatia `[ ] Pendente` na Seção 3 de `openspec/roadmap.md`**, acione obrigatoriamente `.agents/skills/planejar-proxima-fatia/SKILL.md` (`/fatiar`) para inspecionar livro + código real e aprovar/gravar a próxima fatia antes de rodar `npx --yes @fission-ai/openspec new change`.
 2. **Leitura Física Obrigatória do Bloco da Fatia (Artigo 12 — Proibido Deduzir de Cabeça):**
    - É expressamente proibido resumir ou abrir delta com base apenas na memória da sessão. Execute a ferramenta de leitura física no bloco correspondente em `openspec/roadmap.md`.
    - Revise as 4 âncoras obrigatórias: `Depende de`, `Objetivo de Valor`, `O que ENTRA` e `O que FICA DE FORA`.
@@ -124,4 +124,4 @@ Antes de finalizar a tarefa ou commit:
    git push origin feat/fatia-XX-<slug>
    gh pr create --fill --template .github/pull_request_template.md
    ```
-7. Marque `[x] Concluído` no bloco de `openspec/roadmap.md`, remova ou marque `**Status:** Concluído` em `.agents/handoff.md` (se houver handoff avulso ativo) e puxe proativamente a próxima fatia da fila.
+7. Marque `[x] Concluído` no bloco de `openspec/roadmap.md`, atualize para `Entregue` a capacidade correspondente no **Mapa Macro de Capacidades**, remova ou marque `**Status:** Concluído` em `.agents/handoff.md` (se houver handoff avulso ativo), recomende renovar a sessão (`/compact` ou nova conversa limpa) e acione `.agents/skills/planejar-proxima-fatia/SKILL.md` (`/fatiar`) para inspecionar o código recém-entregue e propor a próxima fatia cirúrgica.

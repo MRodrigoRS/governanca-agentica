@@ -58,25 +58,26 @@ Antes de propor qualquer plano, consolide as fichas devolvidas pelos lotes aplic
 
 ## Passo 4 — Destilação em 2 Camadas para `openspec/roadmap.md`
 
-### Camada 1 — Invariantes Globais + Mapa de Domínios (Gate de Alinhamento)
-Apresente primeiro ao humano a síntese estrutural consolidada (sem gerar dezenas de fatias às cegas):
+### Camada 1 — Invariantes Globais + Mapa Macro de Capacidades (Mapa de Domínios)
+Apresente primeiro ao humano a síntese estrutural consolidada (sem pré-fabricar blocos `fatia-02`..`fatia-N` às cegas):
 1. **Invariantes Globais:** decisões transversais (tenancy, autenticação, moeda/precificação, compliance, eventos assíncronos) com suas respectivas fontes.
-2. **Mapa de Domínios e Ordem de Dependência:** macroblocos do sistema e o grafo de dependência entre eles ("qual ponta puxa qual").
+2. **Mapa Macro de Capacidades (Mapa de Domínios) e Ordem de Dependência:** macroblocos aprovados do sistema, suas fontes em `docs/conhecimento/`, o grafo de dependência entre eles ("qual ponta puxa qual") e os cortes explícitos.
 3. **Contradições Resolvidas e Lacunas / Decisões Pendentes.**
 4. Aguarde confirmação do humano antes de materializar a Camada 2.
 
-### Camada 2 — Emissão *Rolling Wave* em `openspec/roadmap.md`
+### Camada 2 — Emissão Híbrida em `openspec/roadmap.md` (Apenas a Próxima Fatia Cirúrgica)
 Após a aprovação da Camada 1:
-1. Registre os Invariantes Globais na Seção 1 de `openspec/roadmap.md` e os cortes explícitos na seção *"Fora de Escopo"* de `openspec/project.md`.
-2. Decomponha o plano em fatias incrementais na Seção 2 de `openspec/roadmap.md` (Onda 1 imediata detalhada e Ondas 2–3 estruturadas), garantindo em cada bloco as 4 âncoras auditadas pela governança mais a rastreabilidade de fontes:
+1. Registre os **Invariantes Globais** na Seção 1 (`## 1. Invariantes Globais do Gate 0`), preencha o **Mapa Macro de Capacidades** na Seção 2 (`## 2. Mapa Macro de Capacidades`) de `openspec/roadmap.md` e grave os cortes explícitos na seção *"Fora de Escopo"* de `openspec/project.md`.
+2. **Proibido pré-fabricar blocos `fatia-02`..`fatia-N` antecipadamente:** na Seção 3 (`## 3. Fila Executável de Fatias (Rolling Wave Cirúrgico)`), emita **apenas a próxima fatia cirúrgica imediata** (`fatia-01-fundacao` em projetos novos, ou acione `.agents/skills/planejar-proxima-fatia/SKILL.md` quando já houver código existente no repositório), garantindo as 4 âncoras auditadas pela governança mais a rastreabilidade de fontes:
    ```markdown
-   ### [ ] Pendente — `fatia-XX-<slug>`
+   ### [ ] fatia-XX-<slug>
    - **Depende de:** `fatia-YY-<slug>`
    - **Objetivo de Valor:** [Valor entregue extraído exclusivamente das fontes]
-   - **Fontes de Conhecimento:** [Capítulo NN](../docs/conhecimento/<NN>-<slug>.md)
+   - **Entidades/Contratos Tocados:** [Tabelas, schemas e ganchos anti-miopia]
+   - **Fontes de Conhecimento:** [docs/conhecimento/<NN>-<slug>.md]
    - **O que ENTRA:**
      1. [Regra / comportamento 1 — com origem rastreável]
      2. [Regra / comportamento 2 — com origem rastreável]
-   - **O que FICA DE FORA:** [Cortes e adiamentos registrados nas fontes]
+   - **O que FICA DE FORA:** [Cortes e adiamentos registrados nas fontes / Mapa Macro]
    ```
-3. Atualize o `status: promovido` nos capítulos promovidos e sincronize `docs/conhecimento/INDICE.md`.
+3. Atualize o `status: promovido` nos capítulos promovidos ao Mapa Macro de Capacidades e sincronize `docs/conhecimento/INDICE.md`. As fatias seguintes nascerão uma por vez via `/fatiar` (`planejar-proxima-fatia`) sobre o código real construído.

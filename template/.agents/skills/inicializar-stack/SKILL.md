@@ -1,11 +1,11 @@
 ---
 name: inicializar-stack
-description: Conduz entrevista estruturada de produto via protocolo oficial grill-me (árvore de decisão em rodadas com recomendação técnica), refina o que entra e sai do escopo, recomenda stacks/VPS/MCPs do catálogo oficial, instala a base no Gate 0 com skills oficiais upstream e decompõe o sistema inteiro em fatias incrementais Rolling Wave em openspec/roadmap.md.
+description: Conduz entrevista estruturada de produto via protocolo oficial grill-me (árvore de decisão em rodadas com recomendação técnica), refina o que entra e sai do escopo, recomenda stacks/VPS/MCPs do catálogo oficial, instala a base no Gate 0 com skills oficiais upstream e consolida Invariantes Globais, Mapa Macro de Capacidades e fatia-01-fundacao em openspec/roadmap.md.
 ---
 
-# Skill: Inicializar Stack e Decompor Sistema em Fatias (Gate 0)
+# Skill: Inicializar Stack, Mapa de Capacidades e Fundação (Gate 0)
 
-Esta skill orienta o agente na configuração inicial de um repositório novo (greenfield) ou quando houver **ausência de produto/stack definidos**. O papel do agente aqui é atuar como **Arquiteto de Produto e Engenheiro Principal**: ao detectar ausência de produto, **ative automaticamente `.agents/skills/mesa-de-descoberta/SKILL.md`** em conjunto com esta skill para conduzir uma entrevista profunda e contínua via protocolo **`grill-me`** + lentes multi-especialistas, consolidando cada bloco de conhecimento em `docs/conhecimento/` (com permissão explícita humana) antes de escolher a stack + infraestrutura e **fatiar o sistema inteiro em entregas incrementais altamente detalhadas**.
+Esta skill orienta o agente na configuração inicial de um repositório novo (greenfield) ou quando houver **ausência de produto/stack definidos**. O papel do agente aqui é atuar como **Arquiteto de Produto e Engenheiro Principal**: ao detectar ausência de produto, **ative automaticamente `.agents/skills/mesa-de-descoberta/SKILL.md`** em conjunto com esta skill para conduzir uma entrevista profunda e contínua via protocolo **`grill-me`** + lentes multi-especialistas, consolidando cada bloco de conhecimento em `docs/conhecimento/` (com permissão explícita humana) antes de escolher a stack + infraestrutura e consolidar os **Invariantes Globais + Mapa Macro de Capacidades + `fatia-01-fundacao`** (deixando as fatias seguintes para descoberta cirúrgica Just-in-Time via `.agents/skills/planejar-proxima-fatia/SKILL.md`).
 
 ---
 
@@ -50,37 +50,41 @@ Com as decisões de produto fechadas, o agente conduz **Pesquisa Viva Obrigatór
 
 ---
 
-## Passo 2 — Invariantes Globais do Gate 0 e Fila de Fatias Rolling Wave (`openspec/roadmap.md`)
+## Passo 2 — Invariantes Globais, Mapa Macro de Capacidades e `fatia-01-fundacao` (`openspec/roadmap.md`)
 
 > **TRAVA ANTI-AMNÉSIA E ANTI-ALUCINAÇÃO (LEITURA FÍSICA OBRIGATÓRIA):**
-> Antes de redigir `openspec/project.md` ou `openspec/roadmap.md`, é **expressamente proibido tentar lembrar de cabeça** o que foi decidido ao longo da entrevista no chat. Você **DEVE ler fisicamente** `docs/conhecimento/INDICE.md` e **todos os capítulos consolidados** em `docs/conhecimento/<NN>-<slug>.md` (se existirem), citando-os como fonte ao decompor as fatias para impedir esquecimentos e alucinações no plano. Se o livro ultrapassar **8 arquivos** ou houver insumos em `docs/conhecimento/materiais/`, **acione automaticamente `.agents/skills/sintetizar-conhecimento/SKILL.md`** (`/sintetizar`) para consolidar tudo via *Map-Reduce* sem estourar a janela de contexto.
+> Antes de redigir `openspec/project.md` ou `openspec/roadmap.md`, é **expressamente proibido tentar lembrar de cabeça** o que foi decidido ao longo da entrevista no chat. Você **DEVE ler fisicamente** `docs/conhecimento/INDICE.md` e **todos os capítulos consolidados** em `docs/conhecimento/<NN>-<slug>.md` (se existirem), citando-os como fonte para impedir esquecimentos e alucinações no plano. Se o livro ultrapassar **8 arquivos** ou houver insumos em `docs/conhecimento/materiais/`, **acione automaticamente `.agents/skills/sintetizar-conhecimento/SKILL.md`** (`/sintetizar`) para consolidar tudo via *Map-Reduce* sem estourar a janela de contexto.
 
-Antes de fechar o Gate 0, o agente **DEVE** consolidar a arquitetura macro e dividir o sistema completo em fatias lógicas incrementais no arquivo único `openspec/roadmap.md`, na ordem exata de engenharia em que **uma ponta puxa a outra**:
+> **PROIBIDO PRÉ-FABRICAR FATIAS NO ESCURO (`fatia-02`..`fatia-N`):**
+> Nunca gere dezenas de blocos `fatia-02`, `fatia-03`... antes de existir código real. Consolide o horizonte macro sem engessar cortes futuros; as fatias seguintes serão fatiadas **uma por vez** sobre o código real por `.agents/skills/planejar-proxima-fatia/SKILL.md` (`/fatiar`).
 
-1. **`## 1. Invariantes Globais do Gate 0`:** Tabela contendo decisões transversais inegociáveis:
+Antes de fechar o Gate 0, o agente **DEVE** consolidar em `openspec/roadmap.md` as 3 camadas do modelo híbrido:
+
+1. **`## 1. Invariantes Globais do Gate 0`:** Tabela contendo decisões transversais inegociáveis (impedindo miopia estrutural nas fatias futuras):
    - Chave de Isolamento / Multi-tenancy (ex.: `organizacao_id` em todas as tabelas)
    - Modelo de Autenticação e Papéis (ex.: Supabase Auth / JWT com RBAC)
    - Filas, Tempo Real e Eventos Assíncronos (ex.: Redis + BullMQ)
    - Entidades Estruturantes do Domínio (nomes em PT-BR)
    - Convenção de Identificadores (ex.: UUID v4)
-2. **`## 2. Fila de Fatias Incrementais (Rolling Wave)`:** Um bloco `### [ ] fatia-XX-<slug>` por fatia, contendo obrigatoriamente:
-   - `Depende de:`
-   - `Objetivo de Valor:`
+2. **`## 2. Mapa Macro de Capacidades`:** Tabela leve listando os domínios/capacidades aprovados do produto, ligados aos capítulos de `docs/conhecimento/` (ou `openspec/project.md`), suas macrodependências (`Depende de`) e `Status` (`Em fila`), além dos cortes explícitos mantidos em `openspec/project.md` (*Fora de Escopo*).
+3. **`## 3. Fila Executável de Fatias (Rolling Wave Cirúrgico)`:** No Gate 0, grave **apenas `### [ ] fatia-01-fundacao`** com todas as âncoras obrigatórias:
+   - `Depende de:` Nenhuma
+   - `Objetivo de Valor:` Base tipada, persistência, chaves invariantes, autenticação inicial e tokens base (em projetos visuais/jogos, incluir Tokens Base de cores, tipografia, durações e curvas de movimento em `docs/catalogo-reuso.md` conforme Artigo 14)
    - `Entidades/Contratos Tocados:`
-   - `O que ENTRA:` (mínimo de 3 itens nas próximas fatias; em projetos visuais/jogos, a Fatia 01 DEVE incluir a definição dos Tokens Base de cores, tipografia, durações e curvas de movimento em `docs/catalogo-reuso.md` conforme Artigo 14)
+   - `O que ENTRA:`
    - `O que FICA DE FORA:`
-3. **Especificação Técnica Profunda Just-in-Time:** Contratos de API, schemas Zod/Pydantic, estados assíncronos de UI e tarefas Test-First nascem exclusivamente ao abrir o delta da fatia em `openspec/changes/fatia-XX-<slug>/` (eliminando a escrita duplicada).
+4. **Especificação Técnica Profunda Just-in-Time:** Contratos de API, schemas Zod/Pydantic, estados assíncronos de UI e tarefas Test-First nascem exclusivamente ao abrir o delta da fatia em `openspec/changes/fatia-XX-<slug>/` (eliminando a escrita duplicada).
 
 ---
 
-## Passo 3 — Gate 0 (Aprovação Humana da Stack e do Roadmap)
+## Passo 3 — Gate 0 (Aprovação Humana da Stack, Invariantes e Mapa de Capacidades)
 
 > **PARADA OBRIGATÓRIA:** É expressamente proibido rodar comandos de instalação da stack sem a confirmação explícita do humano.
 > Apresente ao humano:
 > 1. O resumo do escopo polido (o que entra e o que foi descartado).
 > 2. A stack e estratégia de hospedagem/MCPs recomendadas.
-> 3. Os Invariantes Globais e a Fila de Fatias registradas em `openspec/roadmap.md`.
-> Pergunte: *"Você aprova esta stack e o nosso Roadmap de Fatias Incrementais para inicializarmos o projeto?"*
+> 3. Os Invariantes Globais, o Mapa Macro de Capacidades e a `fatia-01-fundacao` registrados em `openspec/roadmap.md`.
+> Pergunte: *"Você aprova esta stack, os Invariantes Globais, o Mapa Macro de Capacidades e a `fatia-01-fundacao` para inicializarmos o projeto?"*
 
 ---
 
@@ -120,11 +124,11 @@ Imediatamente após a instalação:
 1. Preencha as seções 1 e 2 de `openspec/project.md` (Visão Polida e Stack/MCPs; a Seção 3 permanece como ponteiro para `openspec/roadmap.md`), atualize a seção `## Comandos do Projeto` em `AGENTS.md` com os comandos reais da stack instalada, inicialize os diagramas C4, Glossário e **Seção 5 (`Mapa Físico de Módulos`)** em `docs/arquitetura.md`, os comandos base de operação/deploy em `docs/runbook.md` e os ponteiros iniciais em `docs/catalogo-reuso.md`.
 2. Atualize `CHANGELOG.md` na seção `### Adicionado` registrando a inicialização da stack e a sedimentação da documentação e fatiação inicial.
 3. **Marco 1 da Rotina de Commits (Sedimentação e Fundação com Aprovação Humana — Artigo 11):**
-   - Apresente ao humano a base instalada e o conjunto de fatias sedimentadas.
-   - Pergunte: *"A documentação inicial, stack e o Mapa de Fatias em `openspec/roadmap.md` estão totalmente sedimentados e testados verdes. Você aprova a realização do nosso commit de fundação inicial?"*
+   - Apresente ao humano a base instalada, os Invariantes Globais, o Mapa Macro de Capacidades e a `fatia-01-fundacao`.
+   - Pergunte: *"A documentação inicial, stack, o Mapa Macro de Capacidades e `fatia-01-fundacao` em `openspec/roadmap.md` estão totalmente sedimentados e testados verdes. Você aprova a realização do nosso commit de fundação inicial?"*
    - **Somente após a aprovação humana explícita**, realize o commit de fundação:
      ```bash
      git add .
-     git commit -m "feat(fundacao): inicializa projeto com stack <nome> e roadmap de fatias"
+     git commit -m "feat(fundacao): inicializa projeto com stack <nome> e mapa de capacidades"
      ```
-4. Informe o humano que a fundação está commitada e protegida, e **já apresente imediatamente a abertura da Fatia 01** (`npx --yes @fission-ai/openspec new change fatia-01-...`) lendo o bloco correspondente em `openspec/roadmap.md`.
+4. Informe o humano que a fundação está commitada e protegida, e **já apresente imediatamente a abertura da `fatia-01-fundacao`** (`npx --yes @fission-ai/openspec new change fatia-01-fundacao`) lendo o bloco correspondente em `openspec/roadmap.md`. Ao concluir a fundação (e cada entrega seguinte no Gate 2), acione `.agents/skills/planejar-proxima-fatia/SKILL.md` (`/fatiar`) para gerar `fatia-02-...` sobre o código real recém-criado.

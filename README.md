@@ -40,8 +40,8 @@ Ao abrir sua ferramenta ou IDE de preferência, envie uma mensagem simples:
 O agente lerá automaticamente [AGENTS.md](template/AGENTS.md) e [constitution.md](template/constitution.md):
 1. **Entrevista Exaustiva e Polimento de Produto (Multi-Rodadas):** O agente conversa com você para extrair toda a visão do sistema, aponta casos de borda, sugere melhorias e separa claramente **o que entra** do **que fica de fora**.
 2. **Recomendação de Stack, VPS e MCPs:** O agente consulta o catálogo oficial de stacks robustas (Web, Desktop, Mobile, API, CLI, Jogos 2D/3D e VPS assistida por MCP/CLI) e sugere a arquitetura ideal em português claro.
-3. **Decomposição Rolling Wave (`openspec/roadmap.md`):** O agente estrutura o roadmap em ondas (Onda 1 Imediata, Onda 2 Planejada, Onda 3 Futura) com os Invariantes Globais do Gate 0, sem inflar o repositório com dezenas de arquivos prematuros.
-4. **Gate 0 (Aprovação):** Após sua confirmação humana explícita, o agente roda o CLI oficial da stack, valida os testes iniciais e já puxa a primeira fatia da Onda 1.
+3. **Mapa Macro de Capacidades & Fatiamento Cirúrgico Just-in-Time (`openspec/roadmap.md`):** No Gate 0, o agente consolida os Invariantes Globais, o Mapa Macro de Capacidades e apenas a `fatia-01-fundacao`. As fatias seguintes (`fatia-02+`) são descobertas uma por vez via `/fatiar` (`planejar-proxima-fatia`) sobre o código real + livro de conhecimento, sem planejamento speculativo no escuro.
+4. **Gate 0 (Aprovação):** Após sua confirmação humana explícita, o agente roda o CLI oficial da stack, valida os testes iniciais e já puxa a `fatia-01-fundacao`.
 
 ### 2.3. Atualização Contínua Sem Conflitos
 
