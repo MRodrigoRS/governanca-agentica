@@ -451,6 +451,89 @@ test('deve_preservar_constituicao_com_tabela_de_re_mapeamento_e_cartao_de_invari
   // project.md.jinja sem tabela de fatias
   assert.doesNotMatch(projectContent, /\| Ordem \| Status \| Fatia \|/);
 
-  // hook-agente.mjs preserva force_ask
-  assert.match(hookContent, /force_ask/);
+    // hook-agente.mjs preserva force_ask
+    assert.match(hookContent, /force_ask/);
+  });
+
+test('deve_aprovar_commit_de_fundacao_marco_1_mesmo_com_historico_previo_e_package_inedito', () => {
+  const repo = criarRepoTemporario();
+  try {
+    // 1. Simula commit inicial prévio (ex.: instalação do template Copier antes do scaffolding)
+    mkdirSync(join(repo.dir, 'openspec'), { recursive: true });
+    writeFileSync(join(repo.dir, 'AGENTS.md'), '# Instrucoes\n', 'utf8');
+    writeFileSync(join(repo.dir, 'openspec', 'config.yaml'), 'schema: spec-driven\n', 'utf8');
+    writeFileSync(join(repo.dir, 'openspec', 'project.md'), '# Projeto\n', 'utf8');
+    writeFileSync(join(repo.dir, 'openspec', 'roadmap.md'), '# Roadmap\n', 'utf8');
+    execSync('git add . && git commit -m "chore(governanca): aplica template inicial"', {
+      cwd: repo.dir,
+      stdio: 'ignore',
+    });
+
+    // 2. Simula scaffolding do Marco 1 (Next.js + package.json inédito + CHANGELOG ### Adicionado + roadmap)
+    mkdirSync(join(repo.dir, 'src', 'app'), { recursive: true });
+    writeFileSync(
+      join(repo.dir, 'package.json'),
+      JSON.stringify({ name: 'meu-app', dependencies: { next: '16.0.0', react: '19.0.0' } }, null, 2),
+      'utf8'
+    );
+    writeFileSync(
+      join(repo.dir, 'src', 'app', 'page.tsx'),
+      'export default function PaginaInicial() { return <main>Inicio</main>; }\n',
+      'utf8'
+    );
+    writeFileSync(
+      join(repo.dir, 'CHANGELOG.md'),
+      '# Changelog\n## [Não publicado]\n### Adicionado\n- Inicializacao do projeto Next.js e mapa de capacidades\n',
+      'utf8'
+    );
+    writeFileSync(join(repo.dir, 'openspec', 'project.md'), '# Projeto\n## 1. Visão\nApp real.\n', 'utf8');
+    writeFileSync(
+      join(repo.dir, 'openspec', 'roadmap.md'),
+      `# Roadmap
+## 1. Invariantes Globais do Gate 0
+| Invariante | Decisão | Impacto nas Fatias |
+|---|---|---|
+| auth | jwt | seguranca |
+
+## 2. Mapa Macro de Capacidades
+| Capacidade | Fonte | Depende de | Status |
+|---|---|---|---|
+| Fundacao | project.md | Nenhuma | Em fila |
+
+## 3. Fila Executável de Fatias (Rolling Wave Cirúrgico)
+### [ ] fatia-01-fundacao
+- **Depende de:** Nenhuma
+- **Objetivo de Valor:** Base tipada
+- **O que ENTRA:**
+  - Configuracao inicial
+- **O que FICA DE FORA:**
+  - Regras de negocio futuras
+`,
+      'utf8'
+    );
+    execSync('git add .', { cwd: repo.dir, stdio: 'ignore' });
+
+    // 3. pre-commit e commit-msg devem aprovar o Marco 1
+    const resPreCommit = repo.executarVerificador('--staged');
+    assert.equal(resPreCommit.exitCode, 0, `verificar-governanca deveria aprovar Marco 1: ${resPreCommit.stderr}`);
+
+    const resCommitMsg = repo.executarValidadorCommit(
+      'feat(fundacao): inicializa projeto com stack nextjs e mapa de capacidades'
+    );
+    assert.equal(resCommitMsg.exitCode, 0, `validar-commit-msg deveria aprovar Marco 1: ${resCommitMsg.stderr}`);
+
+    // 4. Após existir archive/, não é mais Marco 1: package.json inédito com feat sem delta deve bloquear
+    mkdirSync(join(repo.dir, 'openspec', 'changes', 'archive', '2026-11-24-fatia-01-fundacao'), { recursive: true });
+    writeFileSync(
+      join(repo.dir, 'openspec', 'changes', 'archive', '2026-11-24-fatia-01-fundacao', 'proposal.md'),
+      '# Base\n',
+      'utf8'
+    );
+    const resPosArchive = repo.executarValidadorCommit(
+      'feat(fundacao): tenta adicionar dependencia sem delta apos archive'
+    );
+    assert.equal(resPosArchive.exitCode, 1, 'Após archive/, Marco 1 não se aplica e feat sem delta deve bloquear');
+  } finally {
+    repo.limpar();
+  }
 });

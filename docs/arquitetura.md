@@ -96,6 +96,7 @@ Este repositório matriz é *stateless* e não opera banco relacional ou `erDiag
 | **Auditor Determinístico** | `template/scripts/verificar-governanca.mjs` | Validação Zero-Trust no `pre-commit` e `--ci` (OpenSpec, testes, variáveis de ambiente, catraca, mapa físico) | `tests/verificar-governanca.test.mjs` |
 | **Classificador de Arquivos** | `template/scripts/lib/classificar-arquivos.mjs` | Classificação determinística de produção, testes, banco, manifestos e templates | `tests/desburocratizacao-sdd-v4.test.mjs` |
 | **Classificador de Cerimônia** | `template/scripts/lib/classificar-cerimonia.mjs` | Enforcement das Vias 1a, 1b, 1.5 e 2 no estágio `commit-msg` e CI | `tests/validar-commit-msg.test.mjs` |
+| **Executor Auxiliar Lefthook** | `template/scripts/lib/lefthook-runner.mjs` | Comandos e condições `skip` portáteis do `lefthook.yml` (Windows/POSIX) | `tests/piramide-testes-e-ci-poliglota.test.mjs` |
 | **Validador de Commits** | `template/scripts/validar-commit-msg.mjs` | Hook `commit-msg` (Conventional Commits PT-BR + vínculo OpenSpec/CHANGELOG) | `tests/validar-commit-msg.test.mjs` |
 | **Runtime de Hooks de Agente** | `template/scripts/hook-agente.mjs` | Proteção `PreToolUse` (`--no-verify`, env protegido, `force_ask`) e resumo `SessionStart` | `tests/hook-agente.test.mjs` |
 | **Docs Modelo do Template** | `template/docs/` | Modelos vivos copiados aos consumidores (arquitetura, reúso, particularidades, runbook, aprendizados) | `tests/template-docs.test.mjs` |

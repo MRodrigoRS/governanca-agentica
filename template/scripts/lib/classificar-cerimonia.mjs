@@ -194,6 +194,27 @@ export function ehManifestoNaoNpm(arquivo) {
   );
 }
 
+export function ehCommitDeFundacao(listaArquivos, cwd = process.cwd()) {
+  const incluiFundacao = listaArquivos.some((f) => {
+    const min = f.toLowerCase();
+    return (
+      min === 'openspec/project.md' ||
+      min === 'openspec/roadmap.md' ||
+      min.startsWith('openspec/roadmap/') ||
+      min === 'openspec/config.yaml'
+    );
+  });
+
+  if (!incluiFundacao) return false;
+
+  const pastaArchive = join(cwd, 'openspec', 'changes', 'archive');
+  const possuiArchive =
+    existsSync(pastaArchive) &&
+    readdirSync(pastaArchive).filter((f) => !f.startsWith('.')).length > 0;
+
+  return !possuiArchive;
+}
+
 export function validarCerimoniaNoCommit(cwd, tipo, escopo, descricao) {
   const staged = obterArquivosStaged(cwd);
   const arquivosProducao = staged.filter(ehArquivoDeProducao);
@@ -220,6 +241,18 @@ export function validarCerimoniaNoCommit(cwd, tipo, escopo, descricao) {
   // Se já há delta ativo ou estamos concluindo/arquivando um delta, estamos na Via 2 (Feature Just-in-Time)
   if (temDeltaAtivo || arquivandoDelta) {
     return { valida: true, via: '2' };
+  }
+
+  // Marco 1 — Fundação e Sedimentação Inicial (Gate 0 / D21)
+  if (ehCommitDeFundacao(staged, cwd)) {
+    const tiposPermitidosFundacao = ['feat', 'chore', 'docs', 'build', 'ci'];
+    if (!tiposPermitidosFundacao.includes(tipo)) {
+      return {
+        valida: false,
+        motivo: `Commit de Fundação (Marco 1 / Gate 0) exige tipo 'feat' (ex.: 'feat(fundacao): ...') ou 'chore'/'docs'/'build'/'ci'. O tipo '${tipo}' não é permitido no Marco 1.`,
+      };
+    }
+    return { valida: true, via: 'fundacao' };
   }
 
   // BLOQUEIOS INCONDICIONAIS SEM DELTA ATIVO

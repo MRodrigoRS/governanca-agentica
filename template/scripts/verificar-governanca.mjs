@@ -24,6 +24,7 @@ import {
   ehArquivoDeProducao,
 } from './lib/classificar-arquivos.mjs';
 import {
+  ehCommitDeFundacao,
   ehManifestoNaoNpm,
   verificarChavesNovasPackageJson,
   validarCerimoniaNoCommit,
@@ -95,27 +96,6 @@ function obterMudancasAtivasOpenSpec() {
   } catch {
     return [];
   }
-}
-
-function ehCommitDeFundacao(listaArquivos) {
-  const incluiFundacao = listaArquivos.some((f) => {
-    const min = f.toLowerCase();
-    return (
-      min === 'openspec/project.md' ||
-      min === 'openspec/roadmap.md' ||
-      min.startsWith('openspec/roadmap/') ||
-      min === 'openspec/config.yaml'
-    );
-  });
-
-  if (!incluiFundacao) return false;
-
-  const pastaArchive = join(process.cwd(), 'openspec', 'changes', 'archive');
-  const possuiArchive =
-    existsSync(pastaArchive) &&
-    readdirSync(pastaArchive).filter((f) => !f.startsWith('.')).length > 0;
-
-  return !possuiArchive;
 }
 
 // 3. Auditoria Determinística do Roadmap (v3 legado e v4 Rolling Wave)
@@ -852,6 +832,8 @@ function extrairPonteirosTabelaMarkdown(linhas, permitirDiretorios = false) {
       const caminho = m[1].trim();
       const pareceCaminho = caminho.includes('.') || caminho.includes('/');
       if (!pareceCaminho) continue;
+      if (/^@[a-z0-9_.-]+\/[a-z0-9_.-]+(?:\/[a-z0-9_.-]+)*(?:@[^\s]+)?$/i.test(caminho)) continue;
+      if (/^https?:\/\//i.test(caminho)) continue;
       if (permitirDiretorios && (/[\s*<>{}()]/.test(caminho) || caminho.startsWith('Ex.:'))) continue;
       ponteiros.push({ linha: i + 1, caminho });
     }

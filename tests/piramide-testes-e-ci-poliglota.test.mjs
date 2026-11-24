@@ -202,6 +202,85 @@ test('deve_configurar_testes_no_pre_commit_e_pre_push_do_lefthook', () => {
   assert.match(conteudoTemplate, /godot/i, 'template pre-push deve referenciar godot com fallback seguro');
 });
 
+test('deve_executar_lefthook_sem_node_e_ou_aspas_aninhadas_e_cobrir_acoes_no_runner', () => {
+  const caminhoLefthookTemplate = join(dirTemplate, 'lefthook.yml');
+  const conteudoTemplate = readFileSync(caminhoLefthookTemplate, 'utf8');
+
+  // Nenhuma linha run: pode usar node -e ou conter aspas duplas internas que quebram sh.exe -c "..." no Windows
+  const linhasRun = conteudoTemplate
+    .split(/\r?\n/)
+    .filter((linha) => /^\s*(?:-\s*)?run:\s*/.test(linha));
+  assert.ok(linhasRun.length >= 8, 'template/lefthook.yml deve declarar comandos run:');
+
+  for (const linha of linhasRun) {
+    assert.doesNotMatch(linha, /\bnode\s+-e\b/, `Linha run: não pode usar node -e (quebra no Windows): ${linha}`);
+    assert.doesNotMatch(linha, /"/, `Linha run: não pode conter aspas duplas aninhadas: ${linha}`);
+    const valorRun = linha.replace(/^\s*(?:-\s*)?run:\s*/, '');
+    assert.doesNotMatch(valorRun, /:\s/, `Linha run: plain YAML não pode conter ': ' sem bloco/aspas: ${linha}`);
+  }
+
+  // Deve delegar para scripts/lib/lefthook-runner.mjs
+  for (const acao of ['skip-gitleaks', 'skip-openspec', 'skip-typecheck', 'unit-tests', 'skip-unit-tests', 'pre-push']) {
+    assert.ok(
+      conteudoTemplate.includes(`scripts/lib/lefthook-runner.mjs ${acao}`),
+      `template/lefthook.yml deve invocar 'scripts/lib/lefthook-runner.mjs ${acao}'`
+    );
+  }
+
+  const caminhoRunner = join(dirTemplateScripts, 'lib', 'lefthook-runner.mjs');
+  assert.ok(existsSync(caminhoRunner), 'template/scripts/lib/lefthook-runner.mjs deve existir');
+
+  // Testa comportamento determinístico do runner em diretório limpo isolado
+  const dirLimpo = join(tmpdir(), `test-lefthook-runner-${Date.now()}-${Math.random().toString(36).slice(2)}`);
+  try {
+    mkdirSync(join(dirLimpo, 'scripts', 'lib'), { recursive: true });
+    copyFileSync(caminhoRunner, join(dirLimpo, 'scripts', 'lib', 'lefthook-runner.mjs'));
+
+    const executarAcao = (acao) => {
+      try {
+        const stdout = execSync(`node scripts/lib/lefthook-runner.mjs ${acao}`, {
+          cwd: dirLimpo,
+          encoding: 'utf8',
+          stdio: ['ignore', 'pipe', 'pipe'],
+        });
+        return { exitCode: 0, stdout };
+      } catch (err) {
+        return {
+          exitCode: err.status ?? 1,
+          stdout: err.stdout?.toString() ?? '',
+          stderr: err.stderr?.toString() ?? '',
+        };
+      }
+    };
+
+    // Sem stack e sem openspec -> skip-* retorna 0 (pular)
+    assert.equal(executarAcao('skip-openspec').exitCode, 0, 'skip-openspec deve pular (0) quando não há changes/specs');
+    assert.equal(executarAcao('skip-typecheck').exitCode, 0, 'skip-typecheck deve pular (0) sem package.json');
+    assert.equal(executarAcao('skip-unit-tests').exitCode, 0, 'skip-unit-tests deve pular (0) sem manifesto');
+
+    // Com openspec/changes/fatia-01 -> skip-openspec retorna 1 (não pular)
+    mkdirSync(join(dirLimpo, 'openspec', 'changes', 'fatia-01-teste'), { recursive: true });
+    assert.equal(executarAcao('skip-openspec').exitCode, 1, 'skip-openspec deve executar (1) com delta ativo');
+
+    // Com package.json e script test -> skip-typecheck e skip-unit-tests retornam 1 e unit-tests/pre-push executam
+    writeFileSync(
+      join(dirLimpo, 'package.json'),
+      JSON.stringify({ name: 'app-teste', scripts: { test: 'node -e "process.exit(0)"' } }, null, 2),
+      'utf8'
+    );
+    assert.equal(executarAcao('skip-typecheck').exitCode, 1, 'skip-typecheck deve retornar 1 com package.json');
+    assert.equal(executarAcao('skip-unit-tests').exitCode, 1, 'skip-unit-tests deve retornar 1 com package.json');
+    assert.equal(executarAcao('unit-tests').exitCode, 0, 'unit-tests deve executar npm test com sucesso');
+    assert.equal(executarAcao('pre-push').exitCode, 0, 'pre-push deve executar npm test com sucesso');
+
+    // skip-gitleaks nunca deve lançar erro não tratado (retorna 0 ou 1)
+    const resGitleaks = executarAcao('skip-gitleaks');
+    assert.ok(resGitleaks.exitCode === 0 || resGitleaks.exitCode === 1, 'skip-gitleaks deve retornar 0 ou 1');
+  } finally {
+    try { rmSync(dirLimpo, { recursive: true, force: true }); } catch {}
+  }
+});
+
 test('deve_garantir_ci_poliglota_lockfile_estrito_e_validacao_commit_msg', () => {
   const caminhoCiTemplate = join(dirTemplate, '.github', 'workflows', 'ci.yml');
   const caminhoCiRaiz = join(process.cwd(), '.github', 'workflows', 'ci.yml');

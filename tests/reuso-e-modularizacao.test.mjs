@@ -295,6 +295,38 @@ test('deve_bloquear_catalogo_apodrecido', () => {
     const resPonteiroQuebrado = repo.executarVerificador('--staged');
     assert.strictEqual(resPonteiroQuebrado.exitCode, 1, 'Ponteiro inexistente no catálogo deve ser bloqueado');
     assert.match(resPonteiroQuebrado.stderr + resPonteiroQuebrado.stdout, /Fantasma\.tsx|inexistente|não encontrado/i);
+
+    // Cenário 3: Pacotes npm escopados (@escopo/pacote) entre crases no catálogo não devem gerar falso positivo
+    mkdirSync(join(repo.dir, 'src', 'components'), { recursive: true });
+    writeFileSync(camBotao, 'export const Botao = () => null;', 'utf8');
+    const catalogoComPacoteEscopado = `# Catálogo de Reúso
+## 1. Tokens Visuais e de Movimento
+| Token | Arquivo Fonte | Valores | Regra |
+|---|---|---|---|
+
+## 2. Primitivos de UI e Layouts Compartilhados
+| Componente | Caminho | Variantes | Quando Reutilizar |
+|---|---|---|---|
+| Botao | \`src/components/Botao.tsx\` | Baseado em \`@base-ui/react\` e \`@radix-ui/react-dialog\` | Ações principais |
+
+## 3. Prefabs, Cenas Componíveis e Assets Modulares (Jogos / Interativos)
+| Asset | Caminho | Contratos | Onde Instanciar |
+|---|---|---|---|
+
+## 4. Hooks, Utilitários e Módulos Puros de Domínio
+| Módulo | Caminho | Responsabilidade | Consumidores |
+|---|---|---|---|
+| Tabela | \`src/components/Botao.tsx\` | Wrapper sobre \`@tanstack/react-table\` | Listagens |
+`;
+    writeFileSync(join(repo.dir, 'docs', 'catalogo-reuso.md'), catalogoComPacoteEscopado, 'utf8');
+    tocarChangelog(repo.dir);
+    execSync('git add src/components/Botao.tsx docs/catalogo-reuso.md CHANGELOG.md', { cwd: repo.dir });
+    const resPacoteEscopado = repo.executarVerificador('--staged');
+    assert.strictEqual(
+      resPacoteEscopado.exitCode,
+      0,
+      `Pacotes npm escopados (@base-ui/react) não devem falhar no sensor anti-apodrecimento: ${resPacoteEscopado.stderr}`
+    );
   } finally {
     repo.limpar();
   }

@@ -13,14 +13,14 @@ pre-commit:
       fail_text: "Gitleaks detectou possíveis segredos ou credenciais no código staged!"
       # Pula se o binário gitleaks não estiver instalado localmente (o CI no GitHub Actions garantirá)
       skip:
-        - run: node -e "try { require('node:child_process').execSync('gitleaks version', { stdio: 'ignore' }); process.exit(1); } catch { process.exit(0); }"
+        - run: node scripts/lib/lefthook-runner.mjs skip-gitleaks
 
     openspec-validate:
       tags: specs sdd
       run: npx --yes @fission-ai/openspec validate --all --no-interactive
       fail_text: "Falha na validação estrutural do OpenSpec em openspec/!"
       skip:
-        - run: node -e "const fs=require('node:fs'); const temItens = (fs.existsSync('openspec/changes') && fs.readdirSync('openspec/changes').some(f => f !== 'archive' && !f.startsWith('.'))) || (fs.existsSync('openspec/specs') && fs.readdirSync('openspec/specs').some(f => !f.startsWith('.'))); process.exit(temItens ? 1 : 0);"
+        - run: node scripts/lib/lefthook-runner.mjs skip-openspec
 
     verificar-governanca:
       tags: governanca audit
@@ -32,14 +32,15 @@ pre-commit:
       run: npm run --if-present typecheck
       fail_text: "Falha na checagem estrita de tipos do TypeScript!"
       skip:
-        - run: node -e "process.exit(require('node:fs').existsSync('package.json') ? 1 : 0);"
+        - run: node scripts/lib/lefthook-runner.mjs skip-typecheck
 
     unit-tests:
       tags: tests unit
-      run: node -e "const { execSync } = require('node:child_process'); const fs = require('node:fs'); if (fs.existsSync('package.json')) { execSync('npm run --if-present test:unit || npm test --if-present', { stdio: 'inherit' }); } if (fs.existsSync('pyproject.toml')) { execSync('uv run pytest -m \"not slow\" || pytest -m \"not slow\"', { stdio: 'inherit' }); } if (fs.existsSync('Cargo.toml')) { execSync('cargo test --lib', { stdio: 'inherit' }); }"
+      # Executa testes unitários rápidos poliglotas (Node, Python pytest e Rust cargo test)
+      run: node scripts/lib/lefthook-runner.mjs unit-tests
       fail_text: "Falha na execução dos testes unitários rápidos no pre-commit!"
       skip:
-        - run: node -e "const fs = require('node:fs'); const temStack = fs.existsSync('package.json') || fs.existsSync('pyproject.toml') || fs.existsSync('Cargo.toml'); process.exit(temStack ? 1 : 0);"
+        - run: node scripts/lib/lefthook-runner.mjs skip-unit-tests
 
 commit-msg:
   commands:
@@ -53,5 +54,6 @@ pre-push:
   commands:
     suite-testes-poliglota:
       tags: tests ci
-      run: node -e "const { execSync } = require('node:child_process'); const fs = require('node:fs'); if (fs.existsSync('package.json')) { console.log('[LEFTHOOK] Executando testes Node.js...'); execSync('npm test --if-present', { stdio: 'inherit' }); } if (fs.existsSync('pyproject.toml')) { console.log('[LEFTHOOK] Executando testes Python (pytest)...'); execSync('uv run pytest || pytest', { stdio: 'inherit' }); } if (fs.existsSync('Cargo.toml')) { console.log('[LEFTHOOK] Executando testes Rust (cargo test)...'); execSync('cargo test', { stdio: 'inherit' }); } const temCsproj = fs.readdirSync('.').some(f => f.endsWith('.sln') || f.endsWith('.csproj')); if (temCsproj) { console.log('[LEFTHOOK] Executando testes .NET (dotnet test)...'); execSync('dotnet test', { stdio: 'inherit' }); } if (fs.existsSync('project.godot') && fs.existsSync('addons/gut/gut_cmdln.gd')) { try { execSync('godot --version', { stdio: 'ignore' }); console.log('[LEFTHOOK] Executando testes Godot 4 (GUT headless)...'); execSync('godot --headless --path . -s addons/gut/gut_cmdln.gd -gexit', { stdio: 'inherit' }); } catch { console.log('[LEFTHOOK] Aviso: binário \"godot\" não encontrado no PATH local. Testes GUT serão executados no CI do GitHub Actions.'); } }"
+      # Executa suíte poliglota completa (Node, Python, Rust, .NET e Godot 4 GUT com fallback seguro)
+      run: node scripts/lib/lefthook-runner.mjs pre-push
       fail_text: "Falha na suíte poliglota de testes antes do push!"

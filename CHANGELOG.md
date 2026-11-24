@@ -5,6 +5,15 @@ O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.
 
 ---
 
+## [Não publicado]
+
+### Corrigido
+- **Commit de Fundação (Marco 1 / Gate 0) em `validar-commit-msg.mjs`:** Extraída a função `ehCommitDeFundacao(listaArquivos, cwd)` para [classificar-cerimonia.mjs](template/scripts/lib/classificar-cerimonia.mjs) (reutilizada por [verificar-governanca.mjs](template/scripts/verificar-governanca.mjs) e `validarCerimoniaNoCommit`), liberando commits de Marco 1 (`feat(fundacao): ...`) mesmo com histórico Git prévio, `package.json` inédito e `### Adicionado` no `CHANGELOG.md` enquanto `openspec/changes/archive/` estiver vazio.
+- **Compatibilidade Windows + Lefthook v2.2.2 em `template/lefthook.yml`:** Substituídos os one-liners `node -e "..."` com aspas aninhadas e `: ` em YAML plano pelo executor portátil [lefthook-runner.mjs](template/scripts/lib/lefthook-runner.mjs) (`skip-gitleaks`, `skip-openspec`, `skip-typecheck`, `unit-tests`, `skip-unit-tests` e `pre-push`), eliminando erros de parse YAML no `lefthook install` e quebras no `sh.exe -c`.
+- **Sensor Anti-Apodrecimento com pacotes npm escopados (`@escopo/nome`):** Atualizada `extrairPonteirosTabelaMarkdown` em [verificar-governanca.mjs](template/scripts/verificar-governanca.mjs) para ignorar identificadores de pacotes npm escopados (ex.: `` `@base-ui/react` ``) e URLs HTTP(S) entre crases em tabelas de `docs/catalogo-reuso.md` e `docs/arquitetura.md §5`.
+
+---
+
 ## [4.2.0] - 2026-11-24
 
 ### Adicionado
