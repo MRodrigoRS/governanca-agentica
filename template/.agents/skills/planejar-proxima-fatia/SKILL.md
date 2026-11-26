@@ -27,7 +27,7 @@ Quando o harness suportar subagentes, delegue **obrigatoriamente** a investigaç
 O subagente (ou leitura equivalente) **DEVE ler fisicamente**:
 1. **Livro e Visão de Produto:** `docs/conhecimento/INDICE.md` e os capítulos `docs/conhecimento/<NN>-<slug>.md` ligados às capacidades ainda não entregues no Mapa Macro.
 2. **Escopo e Cortes:** `openspec/project.md` (visão aprovada, stack e seção *Fora de Escopo*).
-3. **Roadmap Atual:** `openspec/roadmap.md` (§1 *Invariantes Globais do Gate 0*, §2 *Mapa Macro de Capacidades* e §3 fatias `[x]` já concluídas na Fila Executável).
+3. **Roadmap Atual e Matriz de Requisitos:** `openspec/roadmap.md` (§1 *Invariantes Globais do Gate 0*, §2 *Mapa Macro de Capacidades* e §3 fatias `[x]` já concluídas na Fila Executável) e `openspec/matriz-requisitos.md` (requisitos ainda `[ ] Pendente`, quando existir).
 4. **Contratos e Mapa Físico:** `openspec/specs/` (contratos vivos já consolidados) e `docs/arquitetura.md` (diagramas C4, `erDiagram`, Glossário e **§5 Mapa Físico de Módulos**).
 5. **Restrições e Cicatrizes:** `docs/particularidades.md` e `docs/aprendizados.md`.
 6. **Inspeção Real do Repositório:** estrutura real de pastas, schema atual do banco/ORM, migrações existentes, rotas/endpoints, componentes e testes reais já implementados.
@@ -57,6 +57,7 @@ O subagente devolve um parecer factual estruturado contendo:
    - **Depende de:** `fatia-YY-<slug>`
    - **Objetivo de Valor:** [Valor funcional mensurável entregue ponta-a-ponta]
    - **Entidades/Contratos Tocados:** [Tabelas, schemas, rotas, componentes ou ganchos anti-miopia]
+   - **Requisitos Cobertos:** [REQ-XX, REQ-YY de `openspec/matriz-requisitos.md`, quando aplicável]
    - **Fontes de Conhecimento e Código:** [docs/conhecimento/<NN>-<slug>.md] + [<arquivos reais inspecionados>]
    - **O que ENTRA:**
      - [Comportamento / fluxo 1 rastreável]
@@ -73,5 +74,5 @@ O subagente devolve um parecer factual estruturado contendo:
 
 1. **Apresentação ao Humano:** Apresente o diagnóstico, a justificativa da escolha, o que entra e o que fica de fora. Se houver bifurcação de decisão ou ambiguidade entre livro e código, conduza rodadas curtas no formato `grill-me` acompanhadas de recomendação técnica fundamentada (`➡️`) antes de gravar.
 2. **Gravação na Seção 3 de `openspec/roadmap.md`:** Após a confirmação humana (ou ausência de pendências após a apresentação), grave **apenas este novo bloco** `### [ ] fatia-XX-<slug>` na Seção 3 (`## 3. Fila Executável de Fatias (Rolling Wave Cirúrgico)`) de `openspec/roadmap.md` — sem pré-fabricar blocos futuros `fatia-XX+1`.
-3. **Sincronia do Mapa Macro de Capacidades:** Atualize a coluna `Status` da(s) capacidade(s) correspondente(s) na Seção 2 (`## 2. Mapa Macro de Capacidades`) de `openspec/roadmap.md` (`Em fila` → `Em andamento` ao puxar a fatia; `Entregue` quando concluída no Gate 2).
+3. **Sincronia do Mapa Macro e Matriz de Requisitos:** Atualize a coluna `Status` da(s) capacidade(s) correspondente(s) na Seção 2 (`## 2. Mapa Macro de Capacidades`) de `openspec/roadmap.md` (`Em fila` → `Em andamento` ao puxar a fatia; `Entregue` quando concluída no Gate 2) e marque os `REQ-XX` cobertos como `[~] Em andamento` em `openspec/matriz-requisitos.md` (quando existir).
 4. **Transição para Especificação (Via 2):** Somente depois de o bloco estar gravado e aprovado em `openspec/roadmap.md`, siga para `.agents/skills/ciclo-especificacao/SKILL.md` (`npx --yes @fission-ai/openspec new change fatia-XX-<slug>` → Gate 1).

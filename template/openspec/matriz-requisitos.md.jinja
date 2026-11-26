@@ -1,0 +1,16 @@
+# Matriz de Rastreabilidade End-to-End — {{ nome_do_projeto }}
+
+> **Papel:** Ponte auditável entre o Livro de Conhecimento (`docs/conhecimento/`), o Roadmap (`openspec/roadmap.md`), as Specs (`openspec/specs/`) e as provas automatizadas em disco.
+> **Regra:** Zero duplicação de texto longo (1 linha por `REQ`). IDs são imutáveis (`REQ-01`..`REQ-NN`). Status `[x]` exige caminho real em crases na coluna `Prova Real`.
+
+## 1. Requisitos Rastreados
+
+| ID | Requisito (1 frase objetiva) | Fonte (Livro / Decisão) | Capacidade / Fatia | Status | Prova Real (Spec / Teste) |
+|---|---|---|---|---|---|
+| *(Preencher via /sintetizar ou Gate 0)* | *(1 frase objetiva por requisito)* | *(Caminho em crases no livro ou decisão)* | *(Fatia correspondente)* | *(Status canônico)* | *(Prova real em crases ou —)* |
+
+## 2. Legenda de Status
+- `[ ] Pendente`: consolidado no livro/decisão, aguardando fatia.
+- `[~] Em andamento`: em execução na fatia indicada (bloqueia `openspec archive` dessa fatia até fechar ou desatribuir).
+- `[x] Entregue`: concluído e comprovado por arquivo real existente em disco na coluna `Prova Real`.
+- `[-] Descartado`: encerrado por decisão humana explícita (registrar justificativa na última coluna).

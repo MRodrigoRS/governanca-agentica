@@ -29,6 +29,7 @@ import {
   verificarChavesNovasPackageJson,
   validarCerimoniaNoCommit,
 } from './lib/classificar-cerimonia.mjs';
+import { auditarMatrizRequisitos } from './lib/auditar-matriz-requisitos.mjs';
 
 const VERMELHO = '\x1b[31m';
 const VERDE = '\x1b[32m';
@@ -1066,24 +1067,25 @@ function executarAuditoria() {
     f.startsWith('openspec/changes/archive/')
   );
   const possuiMudancaArquivadaStaged = arquivosArchiveStaged.length > 0;
+  const subpastasArchiveStaged = new Set(
+    arquivosArchiveStaged
+      .map((arq) => arq.split('/')[3])
+      .filter(Boolean)
+  );
   const ehFundacao = ehCommitDeFundacao(listaArquivos);
 
   // REGRA 4.0: Trava Anti-Arquivamento com Tarefas Abertas (Fatia 09a / D34)
   if (possuiMudancaArquivadaStaged) {
     const pastaBaseArchive = join(process.cwd(), 'openspec', 'changes', 'archive');
     if (existsSync(pastaBaseArchive)) {
-      const subpastasArchiveStaged = new Set();
-      for (const arq of arquivosArchiveStaged) {
-        const partes = arq.split('/');
-        if (partes.length >= 4) {
-          subpastasArchiveStaged.add(partes[3]);
-        }
-      }
       for (const sub of subpastasArchiveStaged) {
         verificarTarefasAbertasEmDeltaArquivado(join(pastaBaseArchive, sub), sub);
       }
     }
   }
+
+  // REGRA 4.0.1: Matriz de Rastreabilidade End-to-End (opt-in — Artigo 12.6)
+  auditarMatrizRequisitos({ cwd: process.cwd(), modificados, arquivosProducao, mudancasAtivas, subpastasArchiveStaged: [...subpastasArchiveStaged], ehFundacao, registrarErro, registrarInfo });
 
   // REGRA 4.1: Atualização de docs/arquitetura.md em alterações de banco fora de fundação
   if (arquivosBanco.length > 0 && !ehFundacao) {
@@ -1170,15 +1172,8 @@ function executarAuditoria() {
       } else if (possuiMudancaArquivadaStaged) {
         const pastaBase = join(process.cwd(), 'openspec', 'changes', 'archive');
         if (existsSync(pastaBase)) {
-          const subpastasStaged = new Set();
-          for (const arq of arquivosArchiveStaged) {
-            const partes = arq.split('/');
-            if (partes.length >= 4) {
-              subpastasStaged.add(partes[3]);
-            }
-          }
-          if (subpastasStaged.size > 0) {
-            for (const sub of subpastasStaged) {
+          if (subpastasArchiveStaged.size > 0) {
+            for (const sub of subpastasArchiveStaged) {
               auditarPastaMudancaOpenSpec(join(pastaBase, sub), sub);
             }
           } else {

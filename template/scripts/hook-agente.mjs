@@ -17,6 +17,7 @@ import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { ehArquivoDeTeste, normalizarCaminho } from './lib/classificar-arquivos.mjs';
+import { formatarTelemetriaMatriz } from './lib/auditar-matriz-requisitos.mjs';
 
 function lerStdin() {
   try {
@@ -333,7 +334,10 @@ function resumirHandoffAvulso(raiz) {
 }
 
 function obterMensagemSessao(raiz) {
-  let mensagemStatus = 'Governança Agêntica Ativa.';
+  const telemetriaMatriz = formatarTelemetriaMatriz(raiz);
+  let mensagemStatus = telemetriaMatriz
+    ? `Governança Agêntica Ativa. ${telemetriaMatriz}`
+    : 'Governança Agêntica Ativa.';
   let possuiMudancaAtiva = false;
 
   const pastaMudancas = join(raiz, 'openspec', 'changes');
@@ -407,35 +411,14 @@ function obterMensagemSessao(raiz) {
 }
 
 function processarSessionStart() {
-  const raiz = obterRaizProjeto(payload);
-  const mensagemStatus = obterMensagemSessao(raiz);
-
-  const resposta = {
-    injectSteps: [
-      {
-        systemMessage: {
-          systemMessage: mensagemStatus,
-        },
-      },
-    ],
-  };
-
-  console.log(JSON.stringify(resposta));
+  const mensagemStatus = obterMensagemSessao(obterRaizProjeto(payload));
+  console.log(JSON.stringify({ injectSteps: [{ systemMessage: { systemMessage: mensagemStatus } }] }));
   process.exit(0);
 }
 
 function processarSessionStartClaude() {
-  const raiz = obterRaizProjeto(payload);
-  const mensagemStatus = obterMensagemSessao(raiz);
-
-  const resposta = {
-    hookSpecificOutput: {
-      hookEventName: 'SessionStart',
-      additionalContext: mensagemStatus,
-    },
-  };
-
-  console.log(JSON.stringify(resposta));
+  const mensagemStatus = obterMensagemSessao(obterRaizProjeto(payload));
+  console.log(JSON.stringify({ hookSpecificOutput: { hookEventName: 'SessionStart', additionalContext: mensagemStatus } }));
   process.exit(0);
 }
 

@@ -44,11 +44,11 @@ Antes de iniciar, determine a via adequada conforme a Matriz de Cerimônia (D14 
    npx --yes @fission-ai/openspec new change fatia-XX-<slug>
    ```
 4. Preencha os arquivos da pasta criada em `openspec/changes/fatia-XX-<slug>/` atendendo aos cabeçalhos canônicos e linhas úteis mínimas auditados pela governança:
-   - `proposal.md` (mín. 10 linhas): `## Por que` (ou `## Why`), `## O que muda` (ou `## What Changes`) e `## Fica de Fora` (ou `## Out of Scope`).
+   - `proposal.md` (mín. 10 linhas): `## Por que` (ou `## Why`), `## O que muda` (ou `## What Changes`, citando explicitamente os `REQ-XX` atendidos quando `openspec/matriz-requisitos.md` existir) e `## Fica de Fora` (ou `## Out of Scope`).
    - `specs/<dominio>/spec.md`: Deltas com cabeçalhos oficiais (`## ADDED Requirements`), `### Requirement:` e cenários `#### Scenario:` contendo `WHEN` e `THEN` (`GIVEN` recomendado).
    - `design.md` (mín. 18 linhas): `## Contratos, Dados e Schemas`, `## Interface e Estados Assíncronos` (loading, empty, error, success, Toasts e Modais, mais matriz `Reutilizar vs. Extrair Novo` consultando `docs/catalogo-reuso.md` conforme Artigo 14, ou `Não se aplica: <motivo>`) e `## Regras de Negócio e Segurança` (incluindo registro explícito das **fontes consultadas** em docs vivas/segurança ou declaração de ambiente offline quando tocar bibliotecas, APIs externas ou autenticação).
    - `tasks.md` (mín. 12 linhas): Checklist `- [ ]` com marcação Test-First (`Vermelho` / `Red`), seção obrigatória `## Roteiro de Validação Prática` e seção `## Notas de Sessão` (decisões fora do plano, bloqueios e próximo passo acionável).
-5. Marque o status da fatia como `[~] Em Andamento` em `openspec/roadmap.md`.
+5. Marque o status da fatia como `[~] Em Andamento` em `openspec/roadmap.md` e os `REQ-XX` vinculados como `[~] Em andamento` em `openspec/matriz-requisitos.md` (se existir).
 
 ---
 
@@ -113,7 +113,7 @@ Antes de finalizar a tarefa ou commit:
 5. **Apresentação do Gate 2 e Higiene de Contexto (Artigo 8 e Artigo 12.5):**
    - **Em harnesses com suporte a artefatos (ex.: Antigravity):** Crie um artefato dedicado `entrega-fatia-XX.md` contendo o relatório completo de entrega, comprovação dos testes executados e o Roteiro de Teste Prático Passo a Passo. No chat, publique apenas uma mensagem concisa (teto de ≤ 20 linhas) com o link do artefato, resumo executivo e a pergunta formal de autorização para commit.
    - **Em harnesses CLI:** Mantenha a resposta no chat em no máximo 20 linhas com o roteiro sintético e solicitação de autorização.
-6. **Autorização Humana e Commit (Artigo 11):** Somente após a aprovação explícita humana, execute o commit e arquive a mudança:
+6. **Autorização Humana e Commit (Artigo 11):** Somente após a aprovação explícita humana, atualize os `REQ-XX` da fatia em `openspec/matriz-requisitos.md` (quando existir) para `[x] Entregue` com ao menos 1 caminho real em disco na coluna `Prova Real` (ou `[-] Descartado`), arquive a mudança e execute o commit:
    ```bash
    git add .
    git commit -m "feat(<escopo>): implementa fatia XX - <descrição em PT-BR>"

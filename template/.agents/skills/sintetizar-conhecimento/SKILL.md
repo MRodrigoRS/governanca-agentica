@@ -80,4 +80,5 @@ Após a aprovação da Camada 1:
      2. [Regra / comportamento 2 — com origem rastreável]
    - **O que FICA DE FORA:** [Cortes e adiamentos registrados nas fontes / Mapa Macro]
    ```
-3. Atualize o `status: promovido` nos capítulos promovidos ao Mapa Macro de Capacidades e sincronize `docs/conhecimento/INDICE.md`. As fatias seguintes nascerão uma por vez via `/fatiar` (`planejar-proxima-fatia`) sobre o código real construído.
+3. Atualize o `status: promovido` nos capítulos promovidos ao Mapa Macro de Capacidades e sincronize `docs/conhecimento/INDICE.md`.
+4. **Emissão/Atualização de `openspec/matriz-requisitos.md`:** Registre ou atualize na tabela `## 1. Requisitos Rastreados` de `openspec/matriz-requisitos.md` 1 linha enxuta (`REQ-01..REQ-NN`) por regra concreta extraída dos capítulos `01..NN`, com sua fonte (`docs/conhecimento/...`), fatia/capacidade e status inicial `[ ] Pendente` (ou `[~] Em andamento` para a `fatia-01-fundacao`). As fatias seguintes nascerão uma por vez via `/fatiar` (`planejar-proxima-fatia`) sobre o código real construído.

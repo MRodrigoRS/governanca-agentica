@@ -1,11 +1,21 @@
-# Changelog — Governança Agêntica (v4.2.0)
+# Changelog — Governança Agêntica (v4.3.0)
 
 Todas as alterações notáveis neste protocolo de governança são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/) e adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
 ---
 
-## [Não publicado]
+## [4.3.0] - 2026-11-26
+
+### Adicionado
+- **Matriz de Rastreabilidade End-to-End (`fatia-17-matriz-rastreabilidade-end-to-end`, D45):**
+  - Novo template [matriz-requisitos.md.jinja](template/openspec/matriz-requisitos.md.jinja) protegido em `_skip_if_exists` no [copier.yml](copier.yml), conectando requisitos (`REQ-01..NN`) de `docs/conhecimento/` ao Mapa Macro (`openspec/roadmap.md`), fatias (`openspec/changes/`), specs (`openspec/specs/`) e provas reais de teste em disco.
+  - Novo auditor determinístico zero-dependências [auditar-matriz-requisitos.mjs](template/scripts/lib/auditar-matriz-requisitos.mjs) (100% *opt-in*, ≤ 350 linhas úteis) integrado a [verificar-governanca.mjs](template/scripts/verificar-governanca.mjs) respeitando a catraca anti-monólito, cobrindo 6 regras: anti-preguiça, IDs únicos `REQ-XX`, 4 status canônicos (`[ ] Pendente`, `[~] Em andamento`, `[x] Entregue`, `[-] Descartado`), anti-apodrecimento em `Fonte`, anti-teatro `[x]` → prova real + sensor reverso de remoção/renomeação e trava de `openspec/changes/archive/` (além de aviso `[AVISO MATRIZ]`).
+  - Telemetria enxuta de 1 linha (`[MATRIZ REQUISITOS] Total: ... | Entregues: ... | Em andamento: ... | Pendentes: ... | Descartados: ...`) no `SessionStart` via [hook-agente.mjs](template/scripts/hook-agente.mjs).
+  - Nova cláusula constitucional **Artigo 12.6** em [template/constitution.md](template/constitution.md), suíte automatizada [auditar-matriz-requisitos.test.mjs](tests/auditar-matriz-requisitos.test.mjs) (10 cenários) e Decisão `D45` em [00_INDICE_E_DECISOES.md](00_INDICE_E_DECISOES.md).
+
+### Modificado
+- **Sincronia de Rastreabilidade nas Skills e Documentação Viva (`v4.3.0`):** Atualizados [template/AGENTS.md](template/AGENTS.md), [template/README.md.jinja](template/README.md.jinja), [template/openspec/project.md.jinja](template/openspec/project.md.jinja), [catalogo-stacks.md](template/.agents/skills/inicializar-stack/references/catalogo-stacks.md), [sintetizar-conhecimento/SKILL.md](template/.agents/skills/sintetizar-conhecimento/SKILL.md), [planejar-proxima-fatia/SKILL.md](template/.agents/skills/planejar-proxima-fatia/SKILL.md), [ciclo-especificacao/SKILL.md](template/.agents/skills/ciclo-especificacao/SKILL.md), [refinar-ideia/SKILL.md](template/.agents/skills/refinar-ideia/SKILL.md), [mesa-de-descoberta/SKILL.md](template/.agents/skills/mesa-de-descoberta/SKILL.md), [revisar-fatia/SKILL.md](template/.agents/skills/revisar-fatia/SKILL.md), [docs/arquitetura.md](docs/arquitetura.md), [package.json](package.json), [lefthook.yml](lefthook.yml) e [.github/workflows/ci.yml](.github/workflows/ci.yml).
 
 ### Corrigido
 - **Commit de Fundação (Marco 1 / Gate 0) em `validar-commit-msg.mjs`:** Extraída a função `ehCommitDeFundacao(listaArquivos, cwd)` para [classificar-cerimonia.mjs](template/scripts/lib/classificar-cerimonia.mjs) (reutilizada por [verificar-governanca.mjs](template/scripts/verificar-governanca.mjs) e `validarCerimoniaNoCommit`), liberando commits de Marco 1 (`feat(fundacao): ...`) mesmo com histórico Git prévio, `package.json` inédito e `### Adicionado` no `CHANGELOG.md` enquanto `openspec/changes/archive/` estiver vazio.

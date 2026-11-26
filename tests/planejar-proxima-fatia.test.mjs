@@ -39,6 +39,10 @@ function criarRepoTemporarioParaRoadmap() {
     join(dirTemplateScripts, 'lib', 'classificar-cerimonia.mjs'),
     join(dir, 'scripts', 'lib', 'classificar-cerimonia.mjs')
   );
+  copyFileSync(
+    join(dirTemplateScripts, 'lib', 'auditar-matriz-requisitos.mjs'),
+    join(dir, 'scripts', 'lib', 'auditar-matriz-requisitos.mjs')
+  );
 
   return {
     dir,
@@ -326,26 +330,26 @@ describe('Fatia 16: Fatiamento Cirúrgico Just-in-Time (Subagente Arquiteto-Fati
 
   test('5_sincronia_semver_4_2_0_e_decisao_d44', () => {
     const pkg = JSON.parse(readFileSync(join(raiz, 'package.json'), 'utf8'));
-    assert.equal(pkg.version, '4.2.0', 'package.json deve estar em 4.2.0');
+    assert.match(pkg.version, /^4\.[2-9]\.\d+$/, 'package.json deve estar em 4.2.0+');
 
     const changelog = readFileSync(join(raiz, 'CHANGELOG.md'), 'utf8');
-    assert.match(changelog, /v4\.2\.0/);
+    assert.match(changelog, /4\.2\.0/);
     assert.match(changelog, /## \[4\.2\.0\]/);
 
     const templateAgents = readFileSync(join(raiz, 'template', 'AGENTS.md'), 'utf8');
-    assert.ok(templateAgents.includes('governanca:inicio v4.2.0'));
+    assert.ok(templateAgents.includes(`governanca:inicio v${pkg.version}`));
 
     const constituicao = readFileSync(join(raiz, 'template', 'constitution.md'), 'utf8');
-    assert.ok(constituicao.includes('governanca:inicio v4.2.0'));
+    assert.ok(constituicao.includes(`governanca:inicio v${pkg.version}`));
 
     const projectJinja = readFileSync(
       join(raiz, 'template', 'openspec', 'project.md.jinja'),
       'utf8'
     );
-    assert.ok(projectJinja.includes('Governança v4.2.0'));
+    assert.ok(projectJinja.includes(`Governança v${pkg.version}`));
 
     const decisoes = readFileSync(join(raiz, '00_INDICE_E_DECISOES.md'), 'utf8');
     assert.match(decisoes, /\|\s*D44\s*\|/);
-    assert.match(decisoes, /D1.*D44/);
+    assert.match(decisoes, /D1.*D4[4-9]/);
   });
 });

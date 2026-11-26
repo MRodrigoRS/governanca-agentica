@@ -105,6 +105,7 @@ Se a novidade complementar o trabalho de uma fatia existente (ex.: a ideia envol
   - **O que FICA DE FORA:** [Itens podados na etapa anterior]
   ```
 * **Vantagem:** A subfatia `02a` será executada imediatamente após a `02`, aproveitando o contexto fresco de código sem exigir renomear as fatias posteriores (03, 04, etc.) e mantendo 100% de compatibilidade com o OpenSpec CLI e Conventional Commits.
+* **Matriz de Requisitos (`openspec/matriz-requisitos.md`):** Se o projeto mantiver `openspec/matriz-requisitos.md`, adicione os novos `REQ-XX` aprovados na subfatia ou nova fatia (ou marque como `[-] Descartado` com motivo curto caso um requisito existente seja cortado/substituído pelo humano).
 
 #### Caso B: Domínio Independente (Nova Fatia Inteira ao Fim da Fila)
 Se a novidade for um módulo novo e autônomo (ex.: um novo painel financeiro desconectado das fatias atuais):

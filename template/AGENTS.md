@@ -1,4 +1,4 @@
-<!-- governanca:inicio v4.2.0 — não edite este bloco; alterações no repositório da governança -->
+<!-- governanca:inicio v4.3.0 — não edite este bloco; alterações no repositório da governança -->
 # Instruções Gerais para Agentes de IA — Governança
 
 > **Papel:** Fonte única da verdade para todos os agentes e assistentes de IA que operam neste repositório.
@@ -12,7 +12,7 @@
 5. **Português do Brasil no Domínio (Artigo 10):** Nomes de negócio, tabelas, métodos e commits em PT-BR; termos de framework em EN.
 6. **Reatividade Limpa (Artigo 6):** Proibido `location.reload` ou refresh forçado; feedback por Toasts e ações críticas com Modal.
 7. **Handshake e Isolamento Linear (Artigo 13):** Obrigatório `whoami` antes de operar no Linear; bloqueio determinístico se divergir da âncora.
-8. **Proibido Deduzir de Cabeça (Artigo 12):** Leitura física obrigatória do roadmap e delta nos 4 marcos.
+8. **Proibido Deduzir de Cabeça (Artigo 12):** Leitura física obrigatória do roadmap, `openspec/matriz-requisitos.md` (quando existir) e delta nos 4 marcos.
 9. **Interrogatório grill-me Mandatório (Artigo 8):** Proibido aceitar ideias cruas ou alterar regras sem interrogatório em rodadas com recomendação técnica (➡️) e congelamento de código.
 10. **Pesquisa Viva & Arquiteto Crítico (Artigo 8):** Proibido decidir stack, API ou segurança só de memória de treinamento (`context7`/`/llms.txt`/web); discuta trade-offs e alerte caminhos viciosos antes do Gate 1 ou código (isento para ajustes triviais/cosméticos).
 
@@ -99,7 +99,7 @@ Ao ser iniciado em um repositório, identifique o estado atual antes de agir:
      * *🧪 Roteiro de Teste Prático (onde acessar, passo a passo com dados de teste e comportamento visual esperado).*
      * *Evidências de testes automatizados (saída vermelha e verde).*
      * *Diff limpo e CHANGELOG atualizado.*
-  3. **Autorização Humana e Commit:** **Somente após a aprovação final humana**, o agente realiza o commit de entrega:
+  3. **Autorização Humana e Commit:** **Somente após a aprovação final humana**, atualize `openspec/matriz-requisitos.md` (se existir, marcando os `REQ-XX` da fatia como `[x] Entregue` com caminho real em `Prova Real` ou `[-] Descartado`) e realize o commit de entrega:
      ```bash
      git commit -m "feat(<escopo>): implementa fatia XX - <descrição em PT-BR>"
      # ou no caso de /fix:
@@ -115,6 +115,7 @@ Ao ser iniciado em um repositório, identifique o estado atual antes de agir:
 - **Configuração OpenSpec:** Arquivo `openspec/config.yaml` com regras e contexto global.
 - **Radar Estratégico e Mercado:** Arquivo `openspec/radar-oportunidades.md` (concorrência, sinergias e ideias estacionadas).
 - **Mapa de Fatias Incrementais (Rolling Wave):** Arquivo `openspec/roadmap.md` e `openspec/project.md`.
+- **Matriz de Rastreabilidade End-to-End:** Arquivo `openspec/matriz-requisitos.md` (liga requisitos `REQ-01..NN` do livro ao roadmap, deltas OpenSpec e provas reais em disco, com telemetria no `SessionStart`).
 - **Especificações Vivas e Deltas:** Diretório `openspec/` gerenciado pelo OpenSpec CLI (`npx @fission-ai/openspec`).
 - **Registros de Arquitetura (ADRs):** Diretório `docs/adr/` no formato MADR.
 - **Catálogo de Reúso e Tokens:** Arquivo `docs/catalogo-reuso.md` (inventário vivo de primitivos, tokens de movimento e prefabs; consulta obrigatória antes de codificar conforme Artigo 14).

@@ -21,6 +21,7 @@ function criarRepoTemporario() {
   copyFileSync(scriptOriginal, join(dirDestinoScripts, 'verificar-governanca.mjs'));
   copyFileSync(join(dirTemplateScripts, 'lib', 'classificar-arquivos.mjs'), join(dirDestinoScripts, 'lib', 'classificar-arquivos.mjs'));
   copyFileSync(join(dirTemplateScripts, 'lib', 'classificar-cerimonia.mjs'), join(dirDestinoScripts, 'lib', 'classificar-cerimonia.mjs'));
+  copyFileSync(join(dirTemplateScripts, 'lib', 'auditar-matriz-requisitos.mjs'), join(dirDestinoScripts, 'lib', 'auditar-matriz-requisitos.mjs'));
 
   return {
     dir,

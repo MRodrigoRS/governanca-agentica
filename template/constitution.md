@@ -1,4 +1,4 @@
-<!-- governanca:inicio v4.2.0 — não edite este bloco; alterações no repositório da governança -->
+<!-- governanca:inicio v4.3.0 — não edite este bloco; alterações no repositório da governança -->
 # Constituição do Projeto — Governança
 
 > **Papel:** Lei Suprema do repositório. Cláusulas pétreas obrigatórias para agentes de IA e desenvolvedores humanos.
@@ -144,6 +144,7 @@ Se durante a execução de uma tarefa o agente falhar 3 vezes consecutivas no me
 3. **Evidência Explícita de Alinhamento:** Ao abrir o Gate 1 ou convidar o humano para a próxima fatia, o agente deve citar textualmente os objetivos e contratos definidos no bloco de roadmap físico e nos artefatos da fatia, provando que não inventou o escopo. Qualquer divergência entre a proposta do agente e o roadmap físico anula o Gate 1.
 4. **Auditoria Cega por Subagente Opcional Sob Demanda (`/revisar`):** Para garantir eficiência de tempo e consumo de tokens, o fluxo regular do Gate 2 apoia-se diretamente na prova determinística dos testes reais automatizados (`npm test`, `node --test`), na auditoria estrita dos hooks locais (`verificar-governanca.mjs`) e na validação pelo Roteiro de Teste Prático do Usuário. A convocação do **Subagente Inspetor Forense** (`inspetor-forense`) é um recurso sob demanda, podendo ser acionada a qualquer momento através do comando `/revisar` para inspecionar cegamente o `git diff` e confrontá-lo com as especificações em fatias críticas de alto risco.
 5. **Higiene de Contexto Preventiva e Isolamento de Artefatos:** Para prevenir a degradação de contexto (*Context Rot*), relatórios técnicos extensos, planos detalhados e pareceres forenses devem ser isolados em artefatos dedicados sempre que o harness suportar, mantendo as mensagens de chat enxutas e focadas em decisões (≤ 20 linhas). Além disso, ao concluir o Gate 2 de uma entrega, o agente deve orientar formalmente o humano a renovar a sessão (`/compact` ou abertura de nova conversa limpa) antes de puxar a próxima fatia da fila.
+6. **Rastreabilidade Ponta-a-Ponta do Produto (`openspec/matriz-requisitos.md`):** Quando o projeto mantiver `openspec/matriz-requisitos.md`, cada requisito de negócio ou técnico consolidado ocupa 1 linha tabular com ID imutável (`REQ-01`..`REQ-NN`), fonte em `docs/conhecimento/` ou decisão, fatia vinculada e prova real em disco. É obrigatório referenciar os `REQ-XX` atendidos no plano da fatia (Gate 1) e atualizar cada `REQ-XX` para `[x] Entregue` com ao menos 1 caminho real de teste ou spec existente em disco na coluna `Prova Real` (ou `[-] Descartado`) no Gate 2 antes de arquivar o delta.
 
 ---
 
