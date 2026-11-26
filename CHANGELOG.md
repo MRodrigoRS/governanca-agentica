@@ -1,7 +1,20 @@
-# Changelog — Governança Agêntica (v4.3.0)
+# Changelog — Governança Agêntica (v4.4.0)
 
 Todas as alterações notáveis neste protocolo de governança são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/) e adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
+
+---
+
+## [4.4.0] - 2026-11-26
+
+### Adicionado
+- **Conselho Evolutivo de Produto (`fatia-18-conselho-evolutivo-de-produto`, D46):**
+  - Evolução da skill [explorar-produto/SKILL.md](template/.agents/skills/explorar-produto/SKILL.md) (`/explorar` + alias `/evoluir`) para um painel paralelo de **3 Subagentes Especialistas (*read-only*)** (`Produto & Mercado`, `Arquiteto Evolutivo`, `UX & Jornada`, com fallback sequencial em CLIs), contrato conciso (≤ 25 linhas / ≤ 3 achados com `[fonte]`), Síntese Crítica em 4 Quadrantes (teto de 8–10 propostas, artefato `exploracao-produto-YYYY-MM-DD.md`) e 4 Saídas Oficiais (`docs/conhecimento/`, `Mapa Macro` + `openspec/matriz-requisitos.md` ou `refinar-ideia`/`Via 1.5`, `openspec/radar-oportunidades.md` e `Fora de Escopo`).
+  - Nova seção `## 4. Evoluções e Refatorações Estruturais Estacionadas` em [radar-oportunidades.md.jinja](template/openspec/radar-oportunidades.md.jinja).
+  - Suíte automatizada [explorar-produto-skill.test.mjs](tests/explorar-produto-skill.test.mjs) e registro da Decisão `D46` em [00_INDICE_E_DECISOES.md](00_INDICE_E_DECISOES.md).
+
+### Modificado
+- **Fronteira Divergente vs. Convergente & SemVer `v4.4.0`:** Atualizados [template/constitution.md](template/constitution.md) (Artigo 8.3 diferenciando `/explorar`/`/evoluir` sob demanda de `/fatiar` convergente), [template/AGENTS.md](template/AGENTS.md), [AGENTS.md](AGENTS.md), [project.md.jinja](template/openspec/project.md.jinja), [catalogo-stacks.md](template/.agents/skills/inicializar-stack/references/catalogo-stacks.md) e [package.json](package.json).
 
 ---
 

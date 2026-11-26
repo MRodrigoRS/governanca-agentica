@@ -220,13 +220,15 @@ test('deve_manter_todas_as_7_skills_alinhadas_a_v4_e_padrao_universal', () => {
   assert.match(initSkill, /docs\/catalogo-reuso\.md/, 'inicializar-stack deve instruir Tokens Base / catalogo-reuso.md na Fatia 01');
   assert.doesNotMatch(initSkill, /openspec\/roadmap\/fatia-01/, 'inicializar-stack deve referenciar openspec/roadmap.md e não arquivo legado fatia-01-*.md');
 
-  // 2. refinar-ideia e explorar-produto: modelos de bloco devem usar as 4 âncoras da v4 (Depende de, Objetivo de Valor, O que ENTRA, O que FICA DE FORA)
-  for (const [nome, conteudo] of [['refinar-ideia', refinarSkill], ['explorar-produto', explorarSkill]]) {
-    assert.match(conteudo, /Depende de:/, `${nome} deve ter âncora Depende de: no template de bloco`);
-    assert.match(conteudo, /Objetivo de Valor:/, `${nome} deve ter âncora Objetivo de Valor: no template de bloco`);
-    assert.match(conteudo, /O que ENTRA:/, `${nome} deve ter âncora O que ENTRA: no template de bloco`);
-    assert.match(conteudo, /O que FICA DE FORA:/, `${nome} deve ter âncora O que FICA DE FORA: no template de bloco`);
-  }
+  // 2. refinar-ideia usa as 4 âncoras da v4; explorar-produto encaminha para Mapa Macro / matriz-requisitos / refinar-ideia sem pré-fabricar blocos
+  assert.match(refinarSkill, /Depende de:/, 'refinar-ideia deve ter âncora Depende de: no template de bloco');
+  assert.match(refinarSkill, /Objetivo de Valor:/, 'refinar-ideia deve ter âncora Objetivo de Valor: no template de bloco');
+  assert.match(refinarSkill, /O que ENTRA:/, 'refinar-ideia deve ter âncora O que ENTRA: no template de bloco');
+  assert.match(refinarSkill, /O que FICA DE FORA:/, 'refinar-ideia deve ter âncora O que FICA DE FORA: no template de bloco');
+
+  assert.match(explorarSkill, /Mapa Macro/i, 'explorar-produto deve encaminhar capacidades para o Mapa Macro');
+  assert.match(explorarSkill, /openspec\/matriz-requisitos\.md/, 'explorar-produto deve integrar openspec/matriz-requisitos.md');
+  assert.match(explorarSkill, /refinar-ideia|planejar-proxima-fatia/, 'explorar-produto deve delegar fatiamento/subfatias sem pré-fabricar');
 
   // 3. ciclo-especificacao: consulta obrigatória a docs/catalogo-reuso.md no /fix e no Gate 1
   assert.match(cicloSkill, /docs\/catalogo-reuso\.md/, 'ciclo-especificacao deve exigir consulta a docs/catalogo-reuso.md');

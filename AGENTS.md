@@ -58,7 +58,7 @@ As skills oficiais residem exclusivamente em `template/.agents/skills/` (sem dup
 | `/retomar` | `tasks.md` ou `.agents/handoff.md` | Retomar trabalho exatamente de onde parou após `/compact` ou nova sessão |
 | `/revisar` | `template/.agents/skills/revisar-fatia/SKILL.md` | Auditoria factual cega sob demanda comparando `git diff` ao roadmap/delta |
 | `/refinar` / `/linear-inbox` | `template/.agents/skills/refinar-ideia/SKILL.md` | Capturar notas do Linear ou ideias avulsas, podar escopo e encaixar no roadmap |
-| `/explorar` | `template/.agents/skills/explorar-produto/SKILL.md` | Reunião estratégica de evolução do protocolo (congelando código) |
+| `/explorar` / `/evoluir` | `template/.agents/skills/explorar-produto/SKILL.md` | Conselho Evolutivo de 3 subagentes (*read-only*) para evolução do protocolo (congelando código) |
 | `/descobrir` / `/mesa` | `template/.agents/skills/mesa-de-descoberta/SKILL.md` | Mesa contínua multi-especialista com cristalização autorizada em livro `.md` (modelo em `template/docs/conhecimento/INDICE.md`) |
 | `/sintetizar` | `template/.agents/skills/sintetizar-conhecimento/SKILL.md` | Síntese *Map-Reduce* anti-alucinação de livros extensos e materiais externos (`template/docs/conhecimento/materiais/`) para o roadmap |
 | `/aprendizado` | `docs/aprendizados.md` | Registrar cicatriz empírica ou bug recorrente superado na matriz |

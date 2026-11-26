@@ -404,9 +404,12 @@ describe('Fatia 17: Matriz de Rastreabilidade End-to-End (v4.3.0)', () => {
       const resTemplateLimpo = repo.executarVerificador('--staged');
       assert.equal(resTemplateLimpo.exitCode, 0, `Template matriz-requisitos.md recém-gerado deve passar sem erros: ${resTemplateLimpo.stderr}`);
 
-      // Alinhamento normativo v4.3.0 (Constituição Artigo 12.6, AGENTS.md, 6 skills, D45, SemVer)
+      // Alinhamento normativo v4.3.0+ (Constituição Artigo 12.6, AGENTS.md, 6 skills, D45, SemVer)
+      const pkg = JSON.parse(readFileSync(join(raiz, 'package.json'), 'utf8'));
+      assert.match(pkg.version, /^4\.[3-9]\.\d+$/, 'package.json deve estar em 4.3.0+');
+
       const constituicao = readFileSync(join(raiz, 'template', 'constitution.md'), 'utf8');
-      assert.match(constituicao, /governanca:inicio v4\.3\.0/);
+      assert.ok(constituicao.includes(`governanca:inicio v${pkg.version}`));
       assert.match(constituicao, /Rastreabilidade Ponta-a-Ponta.*matriz-requisitos\.md/i);
 
       for (const skill of [
@@ -421,8 +424,6 @@ describe('Fatia 17: Matriz de Rastreabilidade End-to-End (v4.3.0)', () => {
         assert.match(conteudoSkill, /matriz-requisitos\.md/, `Skill '${skill}' deve referenciar openspec/matriz-requisitos.md`);
       }
 
-      const pkg = JSON.parse(readFileSync(join(raiz, 'package.json'), 'utf8'));
-      assert.equal(pkg.version, '4.3.0', 'package.json deve estar em 4.3.0');
       const decisoes = readFileSync(join(raiz, '00_INDICE_E_DECISOES.md'), 'utf8');
       assert.match(decisoes, /\|\s*D45\s*\|/);
     } finally {
