@@ -1,4 +1,4 @@
-<!-- governanca:inicio v4.5.0 — não edite este bloco; alterações no repositório da governança -->
+<!-- governanca:inicio v4.6.0 — não edite este bloco; alterações no repositório da governança -->
 # Constituição do Projeto — Governança
 
 > **Papel:** Lei Suprema do repositório. Cláusulas pétreas obrigatórias para agentes de IA e desenvolvedores humanos.
@@ -33,6 +33,12 @@
    - **Comportamento visual esperado:** O que o humano deve observar visualmente na tela ou na resposta do terminal.
 5. **Proibição de Testes Mentirosos:** É terminantemente proibido comentar testes que falham, alterar asserções para mascarar defeitos de código de produção ou simular sucesso artificial.
 6. **Testing Trophy e Anti-Mock de Banco Próprio:** A pirâmide moderna de testes equilibra três camadas essenciais: (a) *Unitários Puros* (< 50ms, regras matemáticas, lógica de domínio pura, desacoplados de IO), (b) *Integração Real* (rotas, repositórios, schemas e transações executados contra persistência real: SQLite in-memory, PGlite ou banco de dados local de teste), e (c) *Smoke E2E Crítico + Acessibilidade* (fluxos vitais no navegador com `@axe-core/playwright`, ausência de overflow horizontal em 320px e zero exceções não tratadas). É expressamente proibido mockar ou criar spies sobre o cliente de banco de dados ou ORM do próprio projeto (`prisma`, `drizzle`, `db`, `session`, `repository`), impedindo a fabricação de falsos positivos que não testam integridade referencial ou queries. Mocks são restritos exclusivamente a APIs externas de terceiros (gateways de pagamento, e-mail, LLMs). Para testes de resiliência com simulação de queda de driver físico, exige-se a válvula formal `governanca:mock-banco-justificado: <motivo >= 15 chars>`.
+7. **Prova de Runtime Pré-Gate 2 (Auto-Verificação por Perfil):** Testes automatizados verdes não dispensam comprovar que o sistema realmente executa antes de acionar o humano no Gate 2. O agente deve validar o runtime conforme o perfil do projeto:
+   - `web-ui`: subir aplicação/preview real, exercitar a rota alterada e confirmar zero `pageerror`/erro crítico de console, zero falha HTTP inesperada e estados assíncronos funcionais;
+   - `api-backend`: exercitar os endpoints/workers alterados contra persistência real validando status HTTP, payload de resposta e logs sem exceções;
+   - `cli-biblioteca`: executar os comandos/scripts/CLIs alterados em terminal real confirmando código de saída e saída observada;
+   - `desktop` / `mobile` / `jogo`: executar build, harness headless (ex.: Godot GUT) ou preview aplicável à stack.
+   - **Honestidade Radical:** Se o ambiente impedir a execução completa (ex.: sandbox offline, ausência de emulador ou display), é **obrigatória** a declaração explícita da limitação técnica e do que foi validado; é proibido simular ou fingir execução não realizada.
 
 ---
 
@@ -102,16 +108,17 @@
 6. São marcos obrigatórios com intervenção humana:
    - **Gate 0:** Aprovação do escopo polido, da stack tecnológica/VPS/MCPs (validada por pesquisa viva) e do Mapa de Fatias Incrementais com Invariantes Globais (`openspec/roadmap.md`).
    - **Gate 1:** Aprovação do plano, desenho técnico (registrando fontes consultadas quando aplicável) e tarefas antes da implementação de Nível 2. Em ambientes com suporte a artefatos nativos (Antigravity), é expressamente proibido despejar planos extensos em texto corrido no chat; o agente deve emitir o plano como artefato dedicado (`plano-fatia-XX.md`) com `RequestFeedback: true` (habilitando o botão nativo `Proceed`), limitando a mensagem do chat ao link direto e à pergunta objetiva de decisão (≤ 20 linhas). Em terminais CLI sem artefatos, fornecer resumo conciso (≤ 20 linhas) apontando para os arquivos do disco.
-   - **Gate 2:** Aprovação da entrega mediante relatório de entrega estruturado emitido como artefato dedicado (`entrega-fatia-XX.md`) em ambientes compatíveis ou resumo conciso no chat (≤ 20 linhas), contendo o valor entregue, Roteiro de Teste Prático Passo a Passo (onde está, como testar com dados de exemplo e comportamento visual esperado), evidências reais de testes automatizados (vermelho/verde), destaque explícito de todas as válvulas de escape ativas no diff (`governanca:mock-banco-justificado`, `governanca:arquivo-extenso-justificado` reportadas pelo auditor), diff limpo e `CHANGELOG.md` atualizado, seguida pelo fechamento atômico (`openspec archive` → atualização de roadmap/matriz → `git commit`) e acionamento proativo da próxima fatia da fila. A auditoria cega por subagente (`inspetor-forense`) é opcional e sob demanda através do comando `/revisar`.
+   - **Gate 2:** Aprovação da entrega mediante relatório de entrega estruturado emitido como artefato dedicado (`entrega-fatia-XX.md`) em ambientes compatíveis ou resumo conciso no chat (≤ 20 linhas), contendo o valor entregue, Roteiro de Teste Prático Passo a Passo (onde está, como testar com dados de exemplo e comportamento visual esperado), evidências reais de testes automatizados (vermelho/verde), **Prova de Runtime Pré-Gate 2** (ou declaração explícita de limitação ambiental), destaque explícito de todas as válvulas de escape ativas no diff (`governanca:mock-banco-justificado`, `governanca:arquivo-extenso-justificado` reportadas pelo auditor), diff limpo e `CHANGELOG.md` atualizado, seguida pelo fechamento atômico (`openspec archive` → atualização de roadmap/matriz → `git commit`) e acionamento proativo da próxima fatia da fila. A auditoria cega por subagente (`inspetor-forense`) é opcional e sob demanda através do comando `/revisar`.
 
 ---
 
-## Artigo 9 — Circuit Breaker de 3 Tentativas
+## Artigo 9 — Circuit Breaker de 3 Tentativas e Depuração Sistemática (`/debug`)
 
-Se durante a execução de uma tarefa o agente falhar 3 vezes consecutivas no mesmo teste, comando ou problema arquitetural:
-1. O agente deve parar imediatamente a execução automatizada.
-2. É proibido tentar uma 4ª vez às cegas ou alterar o teste para fazê-lo passar artificialmente.
-3. O agente deve reportar ao humano a hipótese testada, o log da falha e solicitar orientação antes de prosseguir.
+Se durante a execução de uma tarefa o agente falhar consecutivamente no mesmo teste, comando ou problema arquitetural:
+1. **Acoplamento Obrigatório na 2ª Falha:** Ao atingir a **2ª falha consecutiva**, é proibido editar código especulativamente na 3ª tentativa; o agente deve congelar alterações de produção e acionar `.agents/skills/depuracao-sistematica/SKILL.md` (`/debug`) para provar a causa raiz com evidência real antes da 3ª tentativa.
+2. **Parada na 3ª Falha:** Se a 3ª tentativa consecutiva falhar, o agente deve parar imediatamente a execução automatizada.
+3. É proibido tentar uma 4ª vez às cegas ou alterar o teste para fazê-lo passar artificialmente.
+4. O agente deve reportar ao humano a hipótese testada, o log da falha e solicitar orientação antes de prosseguir.
 
 ---
 

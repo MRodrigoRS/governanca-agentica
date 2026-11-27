@@ -55,6 +55,7 @@ As skills oficiais residem exclusivamente em `template/.agents/skills/` (sem dup
 | `/proxima-fatia` | `template/.agents/skills/ciclo-especificacao/SKILL.md` | Ler `openspec/roadmap.md` (acionando `planejar-proxima-fatia` se a fila estiver vazia), abrir delta em `openspec/changes/`, aprovar Gate 1, executar Test-First e entregar no Gate 2 |
 | `/fatiar` / `/planejar-fatia` | `template/.agents/skills/planejar-proxima-fatia/SKILL.md` | Subagente *read-only* lê livro + código real e propõe Just-in-Time a próxima fatia cirúrgica em `openspec/roadmap.md` |
 | `/fix` | `template/.agents/skills/ciclo-especificacao/SKILL.md` | Correção pontual em até 3 arquivos (inclui `template/scripts/*.mjs`) com teste staged antes da correção |
+| `/debug` | `template/.agents/skills/depuracao-sistematica/SKILL.md` | Investigação científica de causa raiz (manual ou na 2ª falha seguida antes da 3ª tentativa do Circuit Breaker) |
 | `/retomar` | `tasks.md` ou `.agents/handoff.md` | Retomar trabalho exatamente de onde parou após `/compact` ou nova sessão |
 | `/revisar` | `template/.agents/skills/revisar-fatia/SKILL.md` | Auditoria factual cega sob demanda comparando `git diff` ao roadmap/delta |
 | `/refinar` / `/linear-inbox` | `template/.agents/skills/refinar-ideia/SKILL.md` | Capturar notas do Linear ou ideias avulsas, podar escopo e encaixar no roadmap |

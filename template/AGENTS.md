@@ -1,4 +1,4 @@
-<!-- governanca:inicio v4.5.0 — não edite este bloco; alterações no repositório da governança -->
+<!-- governanca:inicio v4.6.0 — não edite este bloco; alterações no repositório da governança -->
 # Instruções Gerais para Agentes de IA — Governança
 
 > **Papel:** Fonte única da verdade para todos os agentes e assistentes de IA que operam neste repositório.
@@ -78,7 +78,8 @@ Ao ser iniciado em um repositório, identifique o estado atual antes de agir:
 2. **Evidência Obrigatória no Gate 2:** Toda entrega deve exibir a saída do terminal com o teste falhando pelo motivo correto e, em seguida, a saída com o teste passando verde.
 3. **Roteiro Mandatório de Validação Prática (Proibido Despejar Apenas Logs):** É proibido encerrar uma tarefa apenas mostrando saídas de testes automatizados. O agente deve fornecer obrigatoriamente um roteiro claro: **o que foi entregue**, **onde está** (rota/tela/comando), **passo a passo com dados prontos de exemplo** e **o que o humano deve observar visualmente** na tela ou na resposta do sistema.
 4. **Releitura Pré-Código Mandatória (Artigo 12):** Imediatamente antes de escrever o primeiro teste ou código de produção de uma fatia, o executor deve reler o arquivo físico da fatia para assegurar que nenhum detalhe de contrato ou regra se perdeu por saturação de contexto.
-5. **Circuit Breaker (3 Falhas):** Se uma tarefa falhar 3 vezes consecutivas no mesmo teste ou problema técnico, pare imediatamente. Não tente uma 4ª vez às cegas; descreva a hipótese, a causa raiz provável e solicite orientação do humano.
+5. **Circuit Breaker (3 Falhas) e `/debug` na 2ª Falha (Artigo 9):** Ao atingir **2 falhas consecutivas** no mesmo teste ou erro, congele edições especulativas e acione `.agents/skills/depuracao-sistematica/SKILL.md` (`/debug`) para provar a causa raiz com evidência real antes da 3ª tentativa. Se falhar pela 3ª vez consecutiva, pare imediatamente, descreva a hipótese, o log da falha e solicite orientação do humano.
+6. **Prova de Runtime Pré-Gate 2 (Artigo 2.7):** Antes de chamar o humano no Gate 2, comprove a execução real conforme o perfil (`web-ui`, `api-backend`, `cli-biblioteca`, `desktop`/`mobile`/`jogo`), ou declare explicitamente eventual restrição ambiental (proibido fingir).
 
 ---
 
@@ -97,7 +98,7 @@ Ao ser iniciado em um repositório, identifique o estado atual antes de agir:
      * *O que foi entregue e valor funcional gerado.*
      * *📋 Parecer Factual de Conformidade (Código validado contra o roadmap físico).*
      * *🧪 Roteiro de Teste Prático (onde acessar, passo a passo com dados de teste e comportamento visual esperado).*
-     * *Evidências de testes automatizados (saída vermelha e verde) e destaque explícito de qualquer válvula de escape ativa no diff.*
+     * *Evidências de testes automatizados (saída vermelha e verde), **Prova de Runtime Pré-Gate 2** (ou limitação ambiental declarada) e destaque explícito de qualquer válvula de escape ativa no diff.*
      * *Diff limpo e CHANGELOG atualizado.*
   3. **Autorização Humana, Fechamento Atômico e Commit:** **Somente após a aprovação final humana**, atualize `openspec/matriz-requisitos.md` (se existir, marcando os `REQ-XX` da fatia como `[x] Entregue` com caminho real em `Prova Real` ou `[-] Descartado`), execute `npx --yes @fission-ai/openspec archive <nome> -y`, marque `[x] Concluído` em `openspec/roadmap.md` e **então** realize o commit atômico de entrega:
      ```bash
@@ -141,7 +142,7 @@ Ao ser iniciado em um repositório, identifique o estado atual antes de agir:
     * *Gate 1:* Mediante confirmação humana, localiza ou cria a issue correspondente dentro deste projeto (`[KEY-XXX] fatia-XXa-...`) e move para *In Progress*.
     * *Gate 2:* Mediante confirmação humana, publica a atualização oficial do projeto (*Project Update*) com resumo funcional e roteiro prático, move a issue para *Done* e pergunta se há novas tarefas ou edições a registrar.
     * *Refinamento de Ideias:* Propõe encaminhar ideias despriorizadas para o Backlog deste mesmo projeto no Linear mediante confirmação.
-- **Skills Ativas:** Diretório `.agents/skills/` (`inicializar-stack`, `mapear-brownfield`, `planejar-proxima-fatia`, `ciclo-especificacao`, `refinar-ideia`, `explorar-produto`, `mesa-de-descoberta`, `sintetizar-conhecimento`, `revisar-fatia`, `reuso-e-modularizacao`, `auditoria-ux-analytics`, `auditoria-seguranca`, `atualizar-governanca`).
+- **Skills Ativas:** Diretório `.agents/skills/` (`inicializar-stack`, `mapear-brownfield`, `planejar-proxima-fatia`, `ciclo-especificacao`, `depuracao-sistematica`, `refinar-ideia`, `explorar-produto`, `mesa-de-descoberta`, `sintetizar-conhecimento`, `revisar-fatia`, `reuso-e-modularizacao`, `auditoria-ux-analytics`, `auditoria-seguranca`, `atualizar-governanca`).
 - **Higiene de Contexto, Subagentes e Orçamento de MCPs:**
   - *Varredura Ampla e Prevenção de Context Rot:* Mapeamentos exploratórios de código ou buscas em dezenas de arquivos não devem poluir o contexto da sessão principal. Delegue varreduras amplas a subagentes efêmeros *read-only* (ex.: subagente `research` no Antigravity ou subagente de consulta no Claude Code), retornando ao agente principal apenas o resumo conciso e as linhas exatas.
   - *Padrão `/llms.txt` e CLIs Nativas:* Ao consultar documentações externas de bibliotecas, priorize endpoints `/llms.txt` (conteúdo limpo em Markdown) antes de baixar páginas HTML pesadas. Para automações do GitHub (issues, PRs, runs), priorize a CLI oficial `gh` em vez de acoplar servidores MCP redundantes.
@@ -155,6 +156,7 @@ Os comandos abaixo são mapeados universalmente por `AGENTS.md` para as skills e
 | Comando | Finalidade / Skill Acionada | Quando utilizar |
 |---|---|---|
 | `/fix` | `ciclo-especificacao` §1 (Via 1a) | Bug pontual com teste que reproduz a falha (máx. 3 arquivos) |
+| `/debug` | `depuracao-sistematica` | Investigação científica de causa raiz (manual ou automática na 2ª falha antes da 3ª tentativa do Circuit Breaker) |
 | `/mapear-projeto` | `mapear-brownfield` | Onboarding obrigatório de repositório existente antes de alterar código |
 | `/fatiar` / `/planejar-fatia` | `planejar-proxima-fatia` | Subagente *read-only* inspeciona livro + código real e propõe Just-in-Time a próxima fatia cirúrgica |
 | `/proxima-fatia` | `ciclo-especificacao` §2 (Via 2) | Ler `roadmap.md` (acionando `planejar-proxima-fatia` se a fila estiver vazia), abrir delta no OpenSpec e preparar Gate 1 |

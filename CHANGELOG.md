@@ -1,7 +1,20 @@
-# Changelog — Governança Agêntica (v4.5.0)
+# Changelog — Governança Agêntica (v4.6.0)
 
 Todas as alterações notáveis neste protocolo de governança são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/) e adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
+
+---
+
+## [4.6.0] - 2026-11-27
+
+### Adicionado
+- **Depuração Sistemática (`/debug`) e Prova de Runtime Pré-Gate 2 (`fatia-20-depuracao-sistematica-e-prova-de-runtime`, D48):**
+  - Nova skill universal [depuracao-sistematica/SKILL.md](template/.agents/skills/depuracao-sistematica/SKILL.md) (`/debug`) com congelamento estrito de código durante a investigação, protocolo científico em 4 fases (Reprodução Determinística → Coleta de Evidência Real → Hipótese Única & Prova de Causa Raiz → Roteamento Proporcional) e gatilho duplo (manual + automático na 2ª falha seguida antes da 3ª tentativa do Circuit Breaker).
+  - Novo Artigo 2.7 na [template/constitution.md](template/constitution.md) instituindo **Prova de Runtime Pré-Gate 2** adaptada por perfil (`web-ui`, `api-backend`, `cli-biblioteca`, `desktop`, `mobile`, `jogo`) com cláusula de Honestidade Radical para ambientes restritos.
+  - Suíte automatizada [depuracao-e-prova-runtime.test.mjs](tests/depuracao-e-prova-runtime.test.mjs) e registro da Decisão `D48` em [00_INDICE_E_DECISOES.md](00_INDICE_E_DECISOES.md).
+
+### Modificado
+- **Acoplamento `/debug`, Prova de Runtime e SemVer `v4.6.0`:** Atualizados [template/constitution.md](template/constitution.md) (Artigo 8.6 e Artigo 9), [ciclo-especificacao/SKILL.md](template/.agents/skills/ciclo-especificacao/SKILL.md), [revisar-fatia/SKILL.md](template/.agents/skills/revisar-fatia/SKILL.md), [pull_request_template.md](template/.github/pull_request_template.md), [template/AGENTS.md](template/AGENTS.md), [AGENTS.md](AGENTS.md), [template/README.md.jinja](template/README.md.jinja), [project.md.jinja](template/openspec/project.md.jinja), [catalogo-stacks.md](template/.agents/skills/inicializar-stack/references/catalogo-stacks.md), [.github/workflows/ci.yml](.github/workflows/ci.yml), [package.json](package.json) e [README.md](README.md).
 
 ---
 

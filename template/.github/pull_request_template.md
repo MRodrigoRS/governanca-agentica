@@ -12,12 +12,14 @@
 2. **Passo a passo com dados:** 
 3. **Comportamento visual/funcional esperado:** 
 
-## 4. Evidências de Testes
-<!-- Cole os logs reais comprovando o ciclo Test-First: teste falhando legitimamente e depois passando verde -->
+## 4. Evidências de Testes e Prova de Runtime
+<!-- Cole os logs reais comprovando o ciclo Test-First (Vermelho -> Verde) e a Prova de Runtime Pré-Gate 2 (ou limitação ambiental declarada) -->
 ```text
 # Saída do teste falhando (Vermelho):
 
 # Saída do teste passando (Verde):
+
+# Prova de Runtime (comando/rota exercitada + saída observada ou restrição declarada):
 ```
 
 ## 5. Checklist de Integridade

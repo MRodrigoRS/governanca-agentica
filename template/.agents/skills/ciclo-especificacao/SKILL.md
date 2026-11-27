@@ -93,7 +93,7 @@ Para cada item listado em `tasks.md`:
    - Elimine trechos de código duplicados estruturalmente (DRY);
    - Garanta nomes de domínio em PT-BR (Artigo 10);
    - Teste mentalmente se a inversão de operadores quebraria o teste (prova de mutação).
-4. **Circuit Breaker:** Se falhar 3 vezes seguidas no mesmo teste ou problema técnico, pare imediatamente, registre o bloqueio em `tasks.md` (`## Notas de Sessão`) ou em `.agents/handoff.md` (se fora do OpenSpec) e consulte o humano com os detalhes.
+4. **Circuit Breaker + `/debug` na 2ª Falha:** Ao atingir a **2ª falha consecutiva** no mesmo teste ou erro, congele edições especulativas e acione `.agents/skills/depuracao-sistematica/SKILL.md` (`/debug`) para provar a causa raiz antes da 3ª tentativa. Se a 3ª tentativa falhar, pare imediatamente, registre o bloqueio em `tasks.md` (`## Notas de Sessão`) ou em `.agents/handoff.md` e consulte o humano.
 
 ---
 
@@ -109,9 +109,9 @@ Antes de finalizar a tarefa ou commit:
    node scripts/verificar-governanca.mjs
    ```
 3. Atualize o arquivo `CHANGELOG.md` na seção correspondente (`### Adicionado` ou `### Modificado`).
-4. **Validação Determinística e Auditoria Sob Demanda (Artigos 8 e 12):** Execute a suíte completa de testes (`npm test`) comprovando aprovação verde. Para fatias críticas de alto risco, o usuário ou o agente podem acionar sob demanda a auditoria cega do Subagente Inspetor Forense através do comando `/revisar`.
+4. **Validação Determinística, Prova de Runtime e Auditoria Sob Demanda (Artigos 2, 8 e 12):** Execute a suíte completa de testes (`npm test`) comprovando aprovação verde **e** execute a **Prova de Runtime Pré-Gate 2** conforme o perfil do projeto (`web-ui`, `api-backend`, `cli-biblioteca`, `desktop`/`mobile`/`jogo`), registrando a saída real observada (ou declarando honestamente eventual limitação ambiental — proibido fingir). Para fatias críticas de alto risco, o usuário ou o agente podem acionar sob demanda a auditoria cega do Subagente Inspetor Forense através do comando `/revisar`.
 5. **Apresentação do Gate 2 e Higiene de Contexto (Artigo 8 e Artigo 12.5):**
-   - **Em harnesses com suporte a artefatos (ex.: Antigravity):** Crie um artefato dedicado `entrega-fatia-XX.md` contendo o relatório completo de entrega, comprovação dos testes executados, **destaque obrigatório de todas as válvulas de escape ativas no diff** (`[GOVERNANÇA] VÁLVULAS DE ESCAPE ATIVAS NO DIFF` ou `Nenhuma`) e o Roteiro de Teste Prático Passo a Passo. No chat, publique apenas uma mensagem concisa (teto de ≤ 20 linhas) com o link do artefato, resumo executivo e a pergunta formal de autorização para commit.
+   - **Em harnesses com suporte a artefatos (ex.: Antigravity):** Crie um artefato dedicado `entrega-fatia-XX.md` contendo o relatório completo de entrega, comprovação dos testes executados, **Prova de Runtime Pré-Gate 2**, **destaque obrigatório de todas as válvulas de escape ativas no diff** (`[GOVERNANÇA] VÁLVULAS DE ESCAPE ATIVAS NO DIFF` ou `Nenhuma`) e o Roteiro de Teste Prático Passo a Passo. No chat, publique apenas uma mensagem concisa (teto de ≤ 20 linhas) com o link do artefato, resumo executivo e a pergunta formal de autorização para commit.
    - **Em harnesses CLI:** Mantenha a resposta no chat em no máximo 20 linhas com o roteiro sintético, válvulas ativas (se houver) e solicitação de autorização.
 6. **Autorização Humana, Fechamento Atômico e Commit (Artigo 11):** Somente após a aprovação explícita humana, execute o fechamento atômico na ordem abaixo (**arquivar e atualizar status antes de comitar**, garantindo working tree limpo e disparo real das travas determinísticas de archive):
    1. Atualize os `REQ-XX` da fatia em `openspec/matriz-requisitos.md` (quando existir) para `[x] Entregue` com ao menos 1 caminho real em disco na coluna `Prova Real` (ou `[-] Descartado`);

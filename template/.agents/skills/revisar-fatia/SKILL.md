@@ -71,6 +71,8 @@ Inspecionar o código modificado (`git diff` dos arquivos staged) e traduzir em 
    - Foram recriados botões, modais, transições ou prefabs inline quando já existiam no catálogo (`docs/catalogo-reuso.md`)?
    - Há arquivos novos ou modificados que excedem 350 linhas úteis de código, ou violação da catraca em arquivos legados?
    - Há ocorrência de válvula `governanca:arquivo-extenso-justificado`? Se houver, a justificativa técnica é genuína e consistente?
+9. **Prova de Runtime Pré-Gate 2 e Honestidade Radical (Artigo 2.7 e Artigo 8.1):**
+   - Há evidência verificável de execução real em runtime para os fluxos/comandos alterados (ou declaração explícita e honesta de limitação ambiental)?
 ```
 
 ---
@@ -86,6 +88,7 @@ O Agente Principal recebe o **Relatório Factual do Inspetor**, abre os artefato
 | **Spec / Requisitos de UI** | *4 estados (`loading`, `empty`, `error`, `success`)* | *Componente possui skeletons, mensagem de lista vazia e toast de erro* | ✅ Atendido |
 | **Spec / Regras de Negócio** | *Impedir e-mail duplicado por tenant* | *Validação no banco e na rota rejeitando duplicata com status 409* | ✅ Atendido |
 | **Tasks / Test-First & Mutação** | *Testes automatizados cobrindo caso de borda* | *Testes cobrem mutação mental de cálculo e erro sem asserções ocas* | ✅ Atendido |
+| **Prova de Runtime Pré-Gate 2** | *Execução real do perfil (ou limitação declarada)* | *Saída de runtime observada sem erros críticos de console/HTTP/CLI* | ✅ Atendido |
 | **Matriz de Requisitos (`REQ-XX`)** | *Todo `REQ-XX` da fatia marcado `[x] Entregue` com prova real* | *`openspec/matriz-requisitos.md` atualizada apontando para teste/spec real no disco* | ✅ Atendido |
 
 ---
