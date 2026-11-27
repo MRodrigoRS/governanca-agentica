@@ -1,77 +1,45 @@
 /**
  * ==============================================================================
- * Classificador de Cerimônia e Vias de Manutenção — classificar-cerimonia.mjs
+ * Classificação Determinística de Cerimônia — classificar-cerimonia.mjs
  * ==============================================================================
- * Define a matriz de cerimônia da governança v4:
- * - Via 1a: /fix funcional (até 3 arquivos de produção, exige teste staged)
+ * Define a matriz de cerimônia da governança v4.5:
+ * - Via 1a: /fix funcional (até 3 arquivos de produção, exige teste)
  * - Via 1b: style visual (até 3 arquivos, sem lógica/handlers/hooks)
  * - Via 1.5: Manutenção Estrutural (> 3 arquivos ou bump de versão existente em
- *   package.json; tipos permitidos: refactor/perf/style/chore/build; bloqueia
- *   pacote inédito, banco, manifestos não-npm e linhas em ### Adicionado)
+ *   package.json; tipos permitidos: refactor/perf/style/chore/build)
  * - Via 2: Feature / Mudança de Domínio com delta ativo no OpenSpec
+ * Suporta modo local (--staged) e modo CI (--ci / HEAD~1..HEAD).
  * ==============================================================================
  */
 
-import { execSync } from 'node:child_process';
-import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import {
   ehArquivoDeProducao,
   ehArquivoDeTeste,
   ehSchemaOuMigracaoDeBanco,
 } from './classificar-arquivos.mjs';
+import {
+  lerConteudoAlvo,
+  lerConteudoAnterior,
+  obterDiffUnificadoArquivo,
+  obterListaArquivosModificados,
+} from './git-diff-helper.mjs';
 
-export function obterArquivosStaged(cwd = process.cwd()) {
-  try {
-    const saida = execSync('git diff --cached --name-status', {
-      cwd,
-      encoding: 'utf8',
-      stdio: ['ignore', 'pipe', 'ignore'],
-    }).trim();
-    if (!saida) return [];
-
-    return saida
-      .split('\n')
-      .map((l) => l.trim())
-      .filter((l) => l.length > 0)
-      .map((linha) => {
-        const colunas = linha.split('\t');
-        const caminhoBruto = colunas[colunas.length - 1].trim();
-        return caminhoBruto.replace(/\\/g, '/');
-      });
-  } catch {
-    return [];
-  }
+export function obterArquivosStaged(cwd = process.cwd(), modoCi = false) {
+  return obterListaArquivosModificados(cwd, modoCi);
 }
 
-export function verificarChavesNovasPackageJson(cwd = process.cwd()) {
+export function verificarChavesNovasPackageJson(cwd = process.cwd(), modoCi = false) {
   try {
-    let headPkg = {};
-    try {
-      const conteudoHead = execSync('git show HEAD:package.json', {
-        cwd,
-        encoding: 'utf8',
-        stdio: ['ignore', 'pipe', 'ignore'],
-      });
-      headPkg = JSON.parse(conteudoHead);
-    } catch {
+    const conteudoAnterior = lerConteudoAnterior(cwd, 'package.json', modoCi);
+    if (conteudoAnterior === null) {
       return { temChaveNova: true, detalhes: 'package.json inédito no repositório' };
     }
-
-    let stagedPkg = {};
-    try {
-      const conteudoStaged = execSync('git show :package.json', {
-        cwd,
-        encoding: 'utf8',
-        stdio: ['ignore', 'pipe', 'ignore'],
-      });
-      stagedPkg = JSON.parse(conteudoStaged);
-    } catch {
-      const arq = join(cwd, 'package.json');
-      if (existsSync(arq)) {
-        stagedPkg = JSON.parse(readFileSync(arq, 'utf8'));
-      }
-    }
+    const headPkg = JSON.parse(conteudoAnterior);
+    const conteudoAlvo = lerConteudoAlvo(cwd, 'package.json', modoCi);
+    if (!conteudoAlvo) return { temChaveNova: false };
+    const stagedPkg = JSON.parse(conteudoAlvo);
 
     const secoes = ['dependencies', 'devDependencies', 'optionalDependencies', 'peerDependencies'];
     for (const secao of secoes) {
@@ -85,34 +53,18 @@ export function verificarChavesNovasPackageJson(cwd = process.cwd()) {
         };
       }
     }
-
     return { temChaveNova: false };
-  } catch (err) {
+  } catch {
     return { temChaveNova: false };
   }
 }
 
-export function verificarLinhasSobAdicionadoChangelog(cwd = process.cwd()) {
+export function verificarLinhasSobAdicionadoChangelog(cwd = process.cwd(), modoCi = false) {
   try {
-    const diff = execSync('git diff --cached -U0 CHANGELOG.md', {
-      cwd,
-      encoding: 'utf8',
-      stdio: ['ignore', 'pipe', 'ignore'],
-    });
+    const diff = obterDiffUnificadoArquivo(cwd, 'CHANGELOG.md', modoCi);
     if (!diff) return { temLinhaSobAdicionado: false };
 
-    let conteudo = '';
-    try {
-      conteudo = execSync('git show :CHANGELOG.md', {
-        cwd,
-        encoding: 'utf8',
-        stdio: ['ignore', 'pipe', 'ignore'],
-      });
-    } catch {
-      const arq = join(cwd, 'CHANGELOG.md');
-      if (existsSync(arq)) conteudo = readFileSync(arq, 'utf8');
-    }
-
+    const conteudo = lerConteudoAlvo(cwd, 'CHANGELOG.md', modoCi);
     const matchAdicionado = conteudo.match(/###\s+Adicionado\s*\n([\s\S]*?)(?=\n###|\n##|$)/i);
     if (matchAdicionado && matchAdicionado[1]) {
       const linhasAdicionado = matchAdicionado[1]
@@ -131,57 +83,38 @@ export function verificarLinhasSobAdicionadoChangelog(cwd = process.cwd()) {
         }
       }
     }
-
     return { temLinhaSobAdicionado: false };
   } catch {
     return { temLinhaSobAdicionado: false };
   }
 }
 
-export function verificarContrabandoStyle(cwd = process.cwd(), arquivosStaged = []) {
+export function verificarContrabandoStyle(cwd = process.cwd(), arquivosAlvo = [], modoCi = false) {
   const extensoesCodigo = ['.ts', '.tsx', '.js', '.jsx', '.vue', '.svelte'];
-  const arquivosCodigo = arquivosStaged.filter((a) =>
+  const arquivosCodigo = arquivosAlvo.filter((a) =>
     extensoesCodigo.some((ext) => a.toLowerCase().endsWith(ext))
   );
-
   const regexContrabando = /\b(if\s*\(|switch\s*\(|use[A-Z]\w*\s*\(|on[A-Z]\w*\s*=|fetch\s*\(|await\s+)/;
 
   for (const arq of arquivosCodigo) {
-    try {
-      const diff = execSync(`git diff --cached -U0 -- "${arq}"`, {
-        cwd,
-        encoding: 'utf8',
-        stdio: ['ignore', 'pipe', 'ignore'],
-      });
-      const linhas = diff.split('\n');
-      for (const linha of linhas) {
-        if (linha.startsWith('+') && !linha.startsWith('+++')) {
-          const conteudoLinha = linha.slice(1).trim();
-          if (
-            conteudoLinha.startsWith('//') ||
-            conteudoLinha.startsWith('/*') ||
-            conteudoLinha.startsWith('*')
-          ) {
-            continue;
-          }
-          if (regexContrabando.test(conteudoLinha)) {
-            return {
-              temContrabando: true,
-              arquivo: arq,
-              trecho: conteudoLinha,
-            };
-          }
-        }
+    const diff = obterDiffUnificadoArquivo(cwd, arq, modoCi);
+    if (!diff) continue;
+    for (const linha of diff.split('\n')) {
+      if (!linha.startsWith('+') || linha.startsWith('+++')) continue;
+      const conteudoLinha = linha.slice(1).trim();
+      if (conteudoLinha.startsWith('//') || conteudoLinha.startsWith('/*') || conteudoLinha.startsWith('*')) {
+        continue;
       }
-    } catch {}
+      if (regexContrabando.test(conteudoLinha)) {
+        return { temContrabando: true, arquivo: arq, trecho: conteudoLinha };
+      }
+    }
   }
-
   return { temContrabando: false };
 }
 
 export function ehManifestoNaoNpm(arquivo) {
-  const min = arquivo.toLowerCase();
-  const nomeBase = min.split('/').pop() || '';
+  const nomeBase = arquivo.toLowerCase().split('/').pop() || '';
   return (
     nomeBase === 'pyproject.toml' ||
     nomeBase === 'cargo.toml' ||
@@ -204,47 +137,40 @@ export function ehCommitDeFundacao(listaArquivos, cwd = process.cwd()) {
       min === 'openspec/config.yaml'
     );
   });
-
   if (!incluiFundacao) return false;
 
   const pastaArchive = join(cwd, 'openspec', 'changes', 'archive');
   const possuiArchive =
     existsSync(pastaArchive) &&
     readdirSync(pastaArchive).filter((f) => !f.startsWith('.')).length > 0;
-
   return !possuiArchive;
 }
 
-export function validarCerimoniaNoCommit(cwd, tipo, escopo, descricao) {
-  const staged = obterArquivosStaged(cwd);
-  const arquivosProducao = staged.filter(ehArquivoDeProducao);
-  const arquivosTeste = staged.filter(ehArquivoDeTeste);
-  const arquivosBanco = staged.filter(ehSchemaOuMigracaoDeBanco);
-  const manifestosNaoNpm = staged.filter(ehManifestoNaoNpm);
-  const temPackageJson = staged.some((f) => f.toLowerCase() === 'package.json');
+export function validarCerimoniaNoCommit(cwd, tipo, escopo, descricao, { modoCi = false } = {}) {
+  const arquivosAlvo = obterArquivosStaged(cwd, modoCi);
+  const arquivosProducao = arquivosAlvo.filter(ehArquivoDeProducao);
+  const arquivosTeste = arquivosAlvo.filter(ehArquivoDeTeste);
+  const arquivosBanco = arquivosAlvo.filter(ehSchemaOuMigracaoDeBanco);
+  const manifestosNaoNpm = arquivosAlvo.filter(ehManifestoNaoNpm);
+  const temPackageJson = arquivosAlvo.some((f) => f.toLowerCase() === 'package.json');
 
-  // Checa se há delta ativo ou arquivamento de delta neste commit (Via 2 — Feature Just-in-Time)
   const pastaChanges = join(cwd, 'openspec', 'changes');
   let temDeltaAtivo = false;
   if (existsSync(pastaChanges)) {
     try {
-      const entradas = readdirSync(pastaChanges);
-      temDeltaAtivo = entradas.some((e) => {
+      temDeltaAtivo = readdirSync(pastaChanges).some((e) => {
         if (e === 'archive' || e.startsWith('.')) return false;
         return statSync(join(pastaChanges, e)).isDirectory();
       });
     } catch {}
   }
 
-  const arquivandoDelta = staged.some((f) => f.startsWith('openspec/changes/archive/'));
-
-  // Se já há delta ativo ou estamos concluindo/arquivando um delta, estamos na Via 2 (Feature Just-in-Time)
+  const arquivandoDelta = arquivosAlvo.some((f) => f.startsWith('openspec/changes/archive/'));
   if (temDeltaAtivo || arquivandoDelta) {
     return { valida: true, via: '2' };
   }
 
-  // Marco 1 — Fundação e Sedimentação Inicial (Gate 0 / D21)
-  if (ehCommitDeFundacao(staged, cwd)) {
+  if (ehCommitDeFundacao(arquivosAlvo, cwd)) {
     const tiposPermitidosFundacao = ['feat', 'chore', 'docs', 'build', 'ci'];
     if (!tiposPermitidosFundacao.includes(tipo)) {
       return {
@@ -255,7 +181,6 @@ export function validarCerimoniaNoCommit(cwd, tipo, escopo, descricao) {
     return { valida: true, via: 'fundacao' };
   }
 
-  // BLOQUEIOS INCONDICIONAIS SEM DELTA ATIVO
   if (arquivosBanco.length > 0) {
     return {
       valida: false,
@@ -271,7 +196,7 @@ export function validarCerimoniaNoCommit(cwd, tipo, escopo, descricao) {
   }
 
   if (temPackageJson) {
-    const checagemPkg = verificarChavesNovasPackageJson(cwd);
+    const checagemPkg = verificarChavesNovasPackageJson(cwd, modoCi);
     if (checagemPkg.temChaveNova) {
       return {
         valida: false,
@@ -280,7 +205,7 @@ export function validarCerimoniaNoCommit(cwd, tipo, escopo, descricao) {
     }
   }
 
-  const checagemChangelog = verificarLinhasSobAdicionadoChangelog(cwd);
+  const checagemChangelog = verificarLinhasSobAdicionadoChangelog(cwd, modoCi);
   if (checagemChangelog.temLinhaSobAdicionado) {
     return {
       valida: false,
@@ -288,7 +213,6 @@ export function validarCerimoniaNoCommit(cwd, tipo, escopo, descricao) {
     };
   }
 
-  // 1. Validação de /fix (Via 1a)
   if (tipo === 'fix') {
     if (arquivosProducao.length > 3) {
       return {
@@ -305,9 +229,8 @@ export function validarCerimoniaNoCommit(cwd, tipo, escopo, descricao) {
     return { valida: true, via: '1a' };
   }
 
-  // 2. Validação de style (Via 1b)
   if (tipo === 'style') {
-    const analiseStyle = verificarContrabandoStyle(cwd, staged);
+    const analiseStyle = verificarContrabandoStyle(cwd, arquivosAlvo, modoCi);
     if (analiseStyle.temContrabando) {
       return {
         valida: false,
@@ -319,22 +242,17 @@ export function validarCerimoniaNoCommit(cwd, tipo, escopo, descricao) {
     }
   }
 
-  // 3. Validação de Manutenção Estrutural (Via 1.5)
   const tiposPermitidosVia1_5 = ['refactor', 'perf', 'style', 'chore', 'build'];
-  const elegivelVia1_5 = arquivosProducao.length > 3 || temPackageJson;
-
-  if (elegivelVia1_5) {
+  if (arquivosProducao.length > 3 || temPackageJson) {
     if (!tiposPermitidosVia1_5.includes(tipo)) {
       return {
         valida: false,
         motivo: `Via 1.5 (Manutenção Estrutural) permite apenas os tipos: ${tiposPermitidosVia1_5.join(', ')}. O tipo '${tipo}' não é permitido sem um delta ativo de Nível 2 no OpenSpec.`,
       };
     }
-
     return { valida: true, via: '1.5' };
   }
 
-  // Se tiver tipo feat tocando código de produção sem delta -> bloqueia
   if (tipo === 'feat' && arquivosProducao.length > 0) {
     return {
       valida: false,

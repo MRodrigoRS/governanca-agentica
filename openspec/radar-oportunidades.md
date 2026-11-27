@@ -19,3 +19,5 @@
 |---|---|---|---|---|---|
 | 2026-10-30 | Linear Mobile (`P-RR-2`) | Inbox Móvel de Ideias (Mobile-to-Agent) | Alto | Baixo | `[x] Implementado` |
 | 2026-10-30 | Arquitetura | Auto-Governança da Governança (Dogfooding) | Alto | Baixo | `[x] Implementado` |
+| 2026-11-27 | Evolução v4.5+ (Avaliação Arquitetural) | Paralelismo Multi-Agente (git worktrees + estratégia anti-conflito de CHANGELOG.md e roadmap.md; respeita restrição atual em openspec/project.md) | Médio | Médio | `[ ] Estacionado (V2)` |
+| 2026-11-27 | Evolução v4.5+ (Avaliação Arquitetural) | Evals Comportamentais de Skills (LLM real) + Telemetria Empírica de Atrito dos Hooks | Alto | Médio | `[ ] Estacionado (V2)` |

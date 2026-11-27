@@ -5,6 +5,7 @@ import {
   copyFileSync,
   existsSync,
   mkdirSync,
+  readdirSync,
   readFileSync,
   rmSync,
   writeFileSync,
@@ -31,18 +32,14 @@ function criarRepoTemporarioParaRoadmap() {
     join(dirTemplateScripts, 'verificar-governanca.mjs'),
     join(dir, 'scripts', 'verificar-governanca.mjs')
   );
-  copyFileSync(
-    join(dirTemplateScripts, 'lib', 'classificar-arquivos.mjs'),
-    join(dir, 'scripts', 'lib', 'classificar-arquivos.mjs')
-  );
-  copyFileSync(
-    join(dirTemplateScripts, 'lib', 'classificar-cerimonia.mjs'),
-    join(dir, 'scripts', 'lib', 'classificar-cerimonia.mjs')
-  );
-  copyFileSync(
-    join(dirTemplateScripts, 'lib', 'auditar-matriz-requisitos.mjs'),
-    join(dir, 'scripts', 'lib', 'auditar-matriz-requisitos.mjs')
-  );
+  for (const arquivo of readdirSync(join(dirTemplateScripts, 'lib'))) {
+    if (arquivo.endsWith('.mjs')) {
+      copyFileSync(
+        join(dirTemplateScripts, 'lib', arquivo),
+        join(dir, 'scripts', 'lib', arquivo)
+      );
+    }
+  }
 
   return {
     dir,

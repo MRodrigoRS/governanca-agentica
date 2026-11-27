@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { execSync } from 'node:child_process';
-import { mkdirSync, writeFileSync, rmSync, existsSync, copyFileSync } from 'node:fs';
+import { mkdirSync, writeFileSync, rmSync, existsSync, copyFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 
@@ -19,9 +19,11 @@ function criarRepoTemporario() {
   const dirDestinoScripts = join(dir, 'scripts');
   mkdirSync(join(dirDestinoScripts, 'lib'), { recursive: true });
   copyFileSync(scriptOriginal, join(dirDestinoScripts, 'verificar-governanca.mjs'));
-  copyFileSync(join(dirTemplateScripts, 'lib', 'classificar-arquivos.mjs'), join(dirDestinoScripts, 'lib', 'classificar-arquivos.mjs'));
-  copyFileSync(join(dirTemplateScripts, 'lib', 'classificar-cerimonia.mjs'), join(dirDestinoScripts, 'lib', 'classificar-cerimonia.mjs'));
-  copyFileSync(join(dirTemplateScripts, 'lib', 'auditar-matriz-requisitos.mjs'), join(dirDestinoScripts, 'lib', 'auditar-matriz-requisitos.mjs'));
+  for (const arquivo of readdirSync(join(dirTemplateScripts, 'lib'))) {
+    if (arquivo.endsWith('.mjs')) {
+      copyFileSync(join(dirTemplateScripts, 'lib', arquivo), join(dirDestinoScripts, 'lib', arquivo));
+    }
+  }
 
   return {
     dir,

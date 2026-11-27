@@ -89,10 +89,10 @@ describe('Fatia 18: Conselho Evolutivo de Produto (v4.4.0)', () => {
 
   test('4_sincronia_agents_md_constituicao_artigo_8_e_semver_4_4_0', () => {
     const pkg = JSON.parse(readFileSync(join(raiz, 'package.json'), 'utf8'));
-    assert.equal(pkg.version, '4.4.0', 'package.json deve estar em 4.4.0');
+    assert.match(pkg.version, /^4\.[4-9]\.\d+$/, 'package.json deve estar em 4.4.0+');
 
     const templateAgents = readFileSync(join(dirTemplate, 'AGENTS.md'), 'utf8');
-    assert.ok(templateAgents.includes('governanca:inicio v4.4.0'), 'template/AGENTS.md deve ter cabeçalho v4.4.0');
+    assert.match(templateAgents, /governanca:inicio v4\.[4-9]\.\d+/, 'template/AGENTS.md deve ter cabeçalho v4.4.0+');
     assert.ok(templateAgents.includes('/explorar'), 'template/AGENTS.md deve listar /explorar');
     assert.ok(templateAgents.includes('/evoluir'), 'template/AGENTS.md deve listar /evoluir');
     assert.match(templateAgents, /Conselho.*3\s+Subagentes|3\s+Subagentes/i);
@@ -102,7 +102,7 @@ describe('Fatia 18: Conselho Evolutivo de Produto (v4.4.0)', () => {
     assert.ok(raizAgents.includes('/evoluir'), 'AGENTS.md da raiz deve listar /evoluir');
 
     const constituicao = readFileSync(join(dirTemplate, 'constitution.md'), 'utf8');
-    assert.ok(constituicao.includes('governanca:inicio v4.4.0'), 'constitution.md deve ter cabeçalho v4.4.0');
+    assert.match(constituicao, /governanca:inicio v4\.[4-9]\.\d+/, 'constitution.md deve ter cabeçalho v4.4.0+');
     assert.match(
       constituicao,
       /\/explorar.*\/evoluir[\s\S]*\/fatiar|divergente[\s\S]*convergente/i,
@@ -110,7 +110,7 @@ describe('Fatia 18: Conselho Evolutivo de Produto (v4.4.0)', () => {
     );
 
     const projectJinja = readFileSync(join(dirTemplate, 'openspec', 'project.md.jinja'), 'utf8');
-    assert.ok(projectJinja.includes('Governança v4.4.0'), 'project.md.jinja deve estar em v4.4.0');
+    assert.match(projectJinja, /Governança v4\.[4-9]\.\d+/, 'project.md.jinja deve estar em v4.4.0+');
 
     const decisoes = readFileSync(join(raiz, '00_INDICE_E_DECISOES.md'), 'utf8');
     assert.match(decisoes, /\|\s*D46\s*\|/);

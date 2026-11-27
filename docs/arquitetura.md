@@ -93,7 +93,11 @@ Este repositório matriz é *stateless* e não opera banco relacional ou `erDiag
 | **Instruções e Guias Distribuídos** | `template/AGENTS.md` | Ponto de entrada e índice universal injetado nos projetos consumidores | `tests/template-docs.test.mjs` |
 | **Skills e Rules Distribuídas** | `template/.agents/skills/` | Fluxos operacionais agênticos (ciclo de fatias, revisão forense, onboarding, segurança, UX) | `tests/template-docs.test.mjs` |
 | **Regras Condicionais do Template** | `template/.agents/rules/` | Módulos carregados por perfil/glob (`web-ui`, backend, jogos e Linear) | `tests/regras-modulares-e-docs-mercado.test.mjs` |
-| **Auditor Determinístico** | `template/scripts/verificar-governanca.mjs` | Validação Zero-Trust no `pre-commit` e `--ci` (OpenSpec, testes, variáveis de ambiente, catraca, mapa físico) | `tests/verificar-governanca.test.mjs` |
+| **Auditor Determinístico** | `template/scripts/verificar-governanca.mjs` | Orquestração modular ≤ 350 linhas e agregador de violações/válvulas (`--staged` e `--ci`) | `tests/blindagem-motor-e-agregador.test.mjs` |
+| **Helper Git Diff/CI** | `template/scripts/lib/git-diff-helper.mjs` | Abstração de diff/conteúdo local (`--staged`) e CI (`--ci` sobre HEAD~1 e HEAD) | `tests/blindagem-motor-e-agregador.test.mjs` |
+| **Auditoria OpenSpec/Roadmap** | `template/scripts/lib/auditar-openspec.mjs` | Validação pura de roadmap v3/v4, deltas OpenSpec e trava de archive | `tests/verificar-governanca.test.mjs` |
+| **Sensores de Código e Testes** | `template/scripts/lib/sensores-codigo.mjs` | Reatividade limpa, integridade de testes, variáveis de ambiente, anti-monólito e válvulas | `tests/blindagem-motor-e-agregador.test.mjs` |
+| **Sensores de Índices e Avisos** | `template/scripts/lib/sensores-indices.mjs` | Anti-apodrecimento de catálogo e mapa físico, além de avisos operacionais | `tests/verificar-governanca.test.mjs` |
 | **Classificador de Arquivos** | `template/scripts/lib/classificar-arquivos.mjs` | Classificação determinística de produção, testes, banco, manifestos e templates | `tests/desburocratizacao-sdd-v4.test.mjs` |
 | **Classificador de Cerimônia** | `template/scripts/lib/classificar-cerimonia.mjs` | Enforcement das Vias 1a, 1b, 1.5 e 2 no estágio `commit-msg` e CI | `tests/validar-commit-msg.test.mjs` |
 | **Executor Auxiliar Lefthook** | `template/scripts/lib/lefthook-runner.mjs` | Comandos e condições `skip` portáteis do `lefthook.yml` (Windows/POSIX) | `tests/piramide-testes-e-ci-poliglota.test.mjs` |

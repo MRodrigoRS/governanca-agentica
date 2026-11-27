@@ -174,7 +174,9 @@ describe('Auto-Governança da Matriz (Dogfooding em Fonte Única — Fatia 13)',
     assert.match(ci, /docs\/runbook\.md/, '.github/workflows/ci.yml deve validar docs/runbook.md no job Copier');
     assert.match(ci, /auditoria-seguranca\/SKILL\.md/, '.github/workflows/ci.yml deve validar auditoria-seguranca/SKILL.md no job Copier');
 
-    const verificador = readFileSync(join(raiz, 'template', 'scripts', 'verificar-governanca.mjs'), 'utf8');
-    assert.match(verificador, /CLAUDE_PROJECT_DIR/, "verificar-governanca.mjs deve ignorar 'CLAUDE_PROJECT_DIR' em variaveisIgnoradas");
+    const sensoresCodigo = readFileSync(join(raiz, 'template', 'scripts', 'lib', 'sensores-codigo.mjs'), 'utf8');
+    assert.match(sensoresCodigo, /CLAUDE_PROJECT_DIR/, "sensores-codigo.mjs deve ignorar 'CLAUDE_PROJECT_DIR' em variaveisIgnoradas");
+    assert.match(blocoPreCommit, /git-diff-helper\.mjs/, 'lefthook.yml pre-commit deve checar sintaxe de git-diff-helper.mjs');
+    assert.match(ci, /sensores-codigo\.mjs/, '.github/workflows/ci.yml deve checar sintaxe de sensores-codigo.mjs');
   });
 });

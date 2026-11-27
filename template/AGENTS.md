@@ -1,4 +1,4 @@
-<!-- governanca:inicio v4.4.0 — não edite este bloco; alterações no repositório da governança -->
+<!-- governanca:inicio v4.5.0 — não edite este bloco; alterações no repositório da governança -->
 # Instruções Gerais para Agentes de IA — Governança
 
 > **Papel:** Fonte única da verdade para todos os agentes e assistentes de IA que operam neste repositório.
@@ -97,10 +97,12 @@ Ao ser iniciado em um repositório, identifique o estado atual antes de agir:
      * *O que foi entregue e valor funcional gerado.*
      * *📋 Parecer Factual de Conformidade (Código validado contra o roadmap físico).*
      * *🧪 Roteiro de Teste Prático (onde acessar, passo a passo com dados de teste e comportamento visual esperado).*
-     * *Evidências de testes automatizados (saída vermelha e verde).*
+     * *Evidências de testes automatizados (saída vermelha e verde) e destaque explícito de qualquer válvula de escape ativa no diff.*
      * *Diff limpo e CHANGELOG atualizado.*
-  3. **Autorização Humana e Commit:** **Somente após a aprovação final humana**, atualize `openspec/matriz-requisitos.md` (se existir, marcando os `REQ-XX` da fatia como `[x] Entregue` com caminho real em `Prova Real` ou `[-] Descartado`) e realize o commit de entrega:
+  3. **Autorização Humana, Fechamento Atômico e Commit:** **Somente após a aprovação final humana**, atualize `openspec/matriz-requisitos.md` (se existir, marcando os `REQ-XX` da fatia como `[x] Entregue` com caminho real em `Prova Real` ou `[-] Descartado`), execute `npx --yes @fission-ai/openspec archive <nome> -y`, marque `[x] Concluído` em `openspec/roadmap.md` e **então** realize o commit atômico de entrega:
      ```bash
+     npx --yes @fission-ai/openspec archive fatia-XX-<slug> -y
+     git add .
      git commit -m "feat(<escopo>): implementa fatia XX - <descrição em PT-BR>"
      # ou no caso de /fix:
      git commit -m "fix(<escopo>): corrige <descrição em PT-BR>"

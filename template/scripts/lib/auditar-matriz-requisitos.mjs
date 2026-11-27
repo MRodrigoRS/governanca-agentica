@@ -8,9 +8,9 @@
  * ==============================================================================
  */
 
-import { execSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { obterCaminhosRemovidosOuRenomeadosGit } from './git-diff-helper.mjs';
 
 const MARCADORES_PREGUICA_MATRIZ = [
   '<REQ>',
@@ -66,9 +66,7 @@ export function parsearTabelaMatriz(conteudo) {
       dentroSecao1 = true;
       continue;
     }
-    if (dentroSecao1 && /^##\s+/.test(linha)) {
-      break;
-    }
+    if (dentroSecao1 && /^##\s+/.test(linha)) break;
     if (!dentroSecao1 || !linha.startsWith('|')) continue;
     if (/^\|[\s:-]+(?:\|[\s:-]+)*\|?$/.test(linha)) continue;
 
@@ -109,14 +107,7 @@ export function resumirMatrizRequisitos(raiz = process.cwd()) {
   try {
     const conteudo = readFileSync(caminhoMatriz, 'utf8');
     const { registros } = parsearTabelaMatriz(conteudo);
-    const resumo = {
-      total: registros.length,
-      entregues: 0,
-      emAndamento: 0,
-      pendentes: 0,
-      descartados: 0,
-    };
-
+    const resumo = { total: registros.length, entregues: 0, emAndamento: 0, pendentes: 0, descartados: 0 };
     for (const reg of registros) {
       if (reg.statusLimpo === '[x] Entregue') resumo.entregues++;
       else if (reg.statusLimpo === '[~] Em andamento') resumo.emAndamento++;
@@ -135,39 +126,17 @@ export function formatarTelemetriaMatriz(raiz = process.cwd()) {
   return `[MATRIZ REQUISITOS] Total: ${r.total} | Entregues: ${r.entregues} | Em andamento: ${r.emAndamento} | Pendentes: ${r.pendentes} | Descartados: ${r.descartados}.`;
 }
 
-function obterCaminhosRemovidosOuRenomeados(cwd, modificados) {
+function obterCaminhosRemovidosOuRenomeados(cwd, modificados, modoCi) {
   const removidos = new Set();
-
   for (const item of modificados || []) {
-    const status = item.status || '';
-    if (status === 'D') {
+    if ((item.status || '') === 'D') {
       removidos.add((item.arquivo || '').replace(/\\/g, '/'));
     }
   }
-
-  try {
-    const saida = execSync('git diff --cached --name-status', {
-      cwd,
-      encoding: 'utf8',
-      stdio: ['ignore', 'pipe', 'ignore'],
-    }).trim();
-    if (saida) {
-      for (const linha of saida.split('\n')) {
-        const colunas = linha.trim().split('\t');
-        const status = (colunas[0] || '').trim();
-        if (status === 'D' || status.startsWith('R')) {
-          if (colunas[1]) removidos.add(colunas[1].trim().replace(/\\/g, '/'));
-        }
-      }
-    }
-  } catch {}
-
+  for (const item of obterCaminhosRemovidosOuRenomeadosGit(cwd, modoCi)) {
+    removidos.add(item);
+  }
   return removidos;
-}
-
-function falharMatriz(registrarErro, mensagem) {
-  registrarErro(`Auditoria da Matriz de Rastreabilidade (Artigo 12.6):\n${mensagem}`);
-  process.exit(1);
 }
 
 export function auditarMatrizRequisitos({
@@ -177,27 +146,38 @@ export function auditarMatrizRequisitos({
   mudancasAtivas = [],
   subpastasArchiveStaged = [],
   ehFundacao = false,
+  modoCi = false,
+  coletarErro,
   registrarErro,
   registrarInfo,
 }) {
   const caminhoMatriz = join(cwd, 'openspec', 'matriz-requisitos.md');
   if (!existsSync(caminhoMatriz)) return;
 
-  const conteudo = readFileSync(caminhoMatriz, 'utf8');
+  const reportar = (mensagem) => {
+    const texto = `Auditoria da Matriz de Rastreabilidade (Artigo 12.6):\n${mensagem}`;
+    if (typeof coletarErro === 'function') {
+      coletarErro(texto);
+      return;
+    }
+    if (typeof registrarErro === 'function') registrarErro(texto);
+    process.exit(1);
+  };
 
-  // Regra 1: Anti-Preguiça
+  const conteudo = readFileSync(caminhoMatriz, 'utf8');
   const marcador = MARCADORES_PREGUICA_MATRIZ.find((m) => conteudo.includes(m));
   if (marcador) {
-    falharMatriz(
-      registrarErro,
+    reportar(
       `O arquivo 'openspec/matriz-requisitos.md' contém marcador não preenchido ('${marcador}').\n\n` +
       `-> Solução: Substitua todos os placeholders por requisitos reais rastreados.`
     );
+    return;
   }
 
   const { registros, errosEstrutura } = parsearTabelaMatriz(conteudo);
   if (errosEstrutura.length > 0) {
-    falharMatriz(registrarErro, errosEstrutura[0]);
+    reportar(errosEstrutura[0]);
+    return;
   }
 
   const idsVistos = new Set();
@@ -205,76 +185,56 @@ export function auditarMatrizRequisitos({
   const caminhosFonteRastreados = new Set();
 
   for (const reg of registros) {
-    // Regra 2: Formato e Unicidade de IDs
     if (!/^REQ-\d{2,4}$/.test(reg.idLimpo)) {
-      falharMatriz(
-        registrarErro,
-        `Linha ${reg.linha}: ID inválido '${reg.idLimpo}'. Todo ID deve seguir o padrão 'REQ-01'..'REQ-9999'.`
-      );
+      reportar(`Linha ${reg.linha}: ID inválido '${reg.idLimpo}'. Todo ID deve seguir o padrão 'REQ-01'..'REQ-9999'.`);
     }
     if (idsVistos.has(reg.idLimpo)) {
-      falharMatriz(
-        registrarErro,
-        `Linha ${reg.linha}: ID duplicado '${reg.idLimpo}' em 'openspec/matriz-requisitos.md'. IDs são imutáveis e únicos.`
-      );
+      reportar(`Linha ${reg.linha}: ID duplicado '${reg.idLimpo}' em 'openspec/matriz-requisitos.md'. IDs são imutáveis e únicos.`);
     }
     idsVistos.add(reg.idLimpo);
 
-    // Regra 3: Status Canônico
     if (!STATUS_CANONICOS_MATRIZ.includes(reg.statusLimpo)) {
-      falharMatriz(
-        registrarErro,
+      reportar(
         `Linha ${reg.linha} (${reg.idLimpo}): Status inválido '${reg.statusLimpo}'.\n` +
         `Valores permitidos: ${STATUS_CANONICOS_MATRIZ.join(' | ')}.`
       );
     }
 
-    // Regra 4: Sensor Anti-Apodrecimento em Fonte (docs/, openspec/, src/)
     for (const caminhoFonte of extrairCaminhosEmCrases(reg.fonte)) {
       if (/^(docs|openspec|src)\//i.test(caminhoFonte)) {
         const norm = caminhoFonte.replace(/\\/g, '/');
         caminhosFonteRastreados.add(norm);
         if (!existsSync(join(cwd, norm))) {
-          falharMatriz(
-            registrarErro,
-            `Linha ${reg.linha} (${reg.idLimpo}): A coluna Fonte referencia '${norm}', mas o arquivo não foi encontrado no disco.`
-          );
+          reportar(`Linha ${reg.linha} (${reg.idLimpo}): A coluna Fonte referencia '${norm}', mas o arquivo não foi encontrado no disco.`);
         }
       }
     }
 
-    // Regra 5: Anti-Teatro de Entrega ([x] Entregue exige >= 1 prova real no disco)
     if (reg.statusLimpo === '[x] Entregue') {
       const provas = extrairCaminhosEmCrases(reg.provaReal).filter(ehCaminhoArquivoLocal);
       if (provas.length === 0) {
-        falharMatriz(
-          registrarErro,
+        reportar(
           `Linha ${reg.linha} (${reg.idLimpo}): Status '[x] Entregue' exige pelo menos 1 caminho real entre crases na coluna 'Prova Real' (ex.: \`tests/...\`).`
         );
       }
       for (const prova of provas) {
         const norm = prova.replace(/\\/g, '/');
         if (!existsSync(join(cwd, norm))) {
-          falharMatriz(
-            registrarErro,
-            `Linha ${reg.linha} (${reg.idLimpo}): Prova Real '${norm}' não encontrada no disco (ponteiro inexistente).`
-          );
+          reportar(`Linha ${reg.linha} (${reg.idLimpo}): Prova Real '${norm}' não encontrada no disco (ponteiro inexistente).`);
         }
         caminhosProvaEntregues.add(norm);
       }
     }
   }
 
-  // Regra 5b: Sensor Anti-Apodrecimento Reverso (remoção/renomeação de Prova Real ou Fonte sem atualizar matriz)
   const matrizEstaStaged = modificados.some(
     (item) => (item.arquivo || '').toLowerCase() === 'openspec/matriz-requisitos.md'
   );
-  const removidos = obterCaminhosRemovidosOuRenomeados(cwd, modificados);
+  const removidos = obterCaminhosRemovidosOuRenomeados(cwd, modificados, modoCi);
   if (!matrizEstaStaged) {
     for (const arqRemovido of removidos) {
       if (caminhosProvaEntregues.has(arqRemovido) || caminhosFonteRastreados.has(arqRemovido)) {
-        falharMatriz(
-          registrarErro,
+        reportar(
           `Sensor Anti-Apodrecimento Reverso: O arquivo '${arqRemovido}' referenciado em 'openspec/matriz-requisitos.md' foi removido ou renomeado sem atualização da matriz.\n\n` +
           `-> Solução: Atualize 'openspec/matriz-requisitos.md' e inclua o arquivo no commit.`
         );
@@ -282,7 +242,6 @@ export function auditarMatrizRequisitos({
     }
   }
 
-  // Regra 6a: Trava de Archive no Gate 2
   for (const sub of subpastasArchiveStaged) {
     const fatiaCanon = sub.replace(/^\d{4}-\d{2}-\d{2}-/, '');
     for (const reg of registros) {
@@ -290,8 +249,7 @@ export function auditarMatrizRequisitos({
         reg.statusLimpo === '[~] Em andamento' &&
         (reg.fatiaLimpa === sub || reg.fatiaLimpa === fatiaCanon)
       ) {
-        falharMatriz(
-          registrarErro,
+        reportar(
           `Trava de Archive no Gate 2: A fatia '${sub}' está sendo arquivada, mas '${reg.idLimpo}' ainda consta como '[~] Em andamento' na matriz.\n\n` +
           `-> Solução: Atualize '${reg.idLimpo}' para '[x] Entregue' (com Prova Real) ou '[-] Descartado'.`
         );
@@ -299,7 +257,6 @@ export function auditarMatrizRequisitos({
     }
   }
 
-  // Regra 6b: Avisos não-bloqueantes [AVISO MATRIZ] em commits de Nível 2
   if (!ehFundacao && arquivosProducao.length > 0 && mudancasAtivas.length > 0 && registrarInfo) {
     if (!matrizEstaStaged) {
       registrarInfo(

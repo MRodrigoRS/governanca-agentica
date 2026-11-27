@@ -175,3 +175,30 @@
   2. **Atualização de `template/openspec/radar-oportunidades.md.jinja`:** Inclusão de seção para *Evoluções e Refatorações Estruturais Estacionadas*.
   3. **Sincronia Normativa & SemVer `v4.4.0`:** Atualização de `template/AGENTS.md` (alias `/evoluir` e §2), `AGENTS.md` (raiz), `template/constitution.md` (Artigo 8 separando evolução divergente sob demanda de fatiamento convergente), `template/openspec/project.md.jinja`, `catalogo-stacks.md`, `package.json`, `00_INDICE_E_DECISOES.md` (`D46`), `CHANGELOG.md` e suíte Test-First `tests/explorar-produto-skill.test.mjs` (+ atualização das asserções de versão/âncoras legadas em `tests/comandos-e-handoff.test.mjs` e `tests/auditar-matriz-requisitos.test.mjs`).
 - **O que FICA DE FORA:** Disparo automático de `/explorar` dentro do `/fatiar` ou `Gate 2`, criação de 14ª skill paralela ou alteração de código em `template/scripts/verificar-governanca.mjs`.
+
+---
+
+## Mapa Macro de Capacidades — Ciclo v4.5+ (Evolução Estrutural)
+
+| Capacidade | Escopo Macro | Status |
+|---|---|---|
+| **C1 — Blindagem do Motor, Agregador de Erros e Fechamento Atômico** | Corrigir `read_file` em `.agents/hooks.json` (raiz e template), modo `--ci` em `classificar-cerimonia.mjs` e sensor Anti-Monólito (`HEAD~1..HEAD`), ordem atômica `archive` → `commit` em `ciclo-especificacao/SKILL.md`, desmonolitizar `verificar-governanca.mjs` (≤ 350 linhas úteis com módulos puros em `template/scripts/lib/` e agregação de todas as violações numa única passada) e destaque obrigatório de válvulas de escape no Gate 2. | `Entregue (fatia-19)` |
+| **C2 — Depuração Sistemática (`/debug`) e Prova de Runtime Pré-Gate 2** | Nova skill `depuracao-sistematica` (`/debug`) acoplada ao Circuit Breaker de 3 tentativas + etapa de auto-verificação em runtime (app/API rodando, console/network limpos) antes do roteiro humano no Gate 2. | `Em fila (Just-in-Time via /fatiar)` |
+| **C3 — Hierarquia Constitucional Anti-Diluição e Sensores de Maturidade** | Reorganizar `template/constitution.md` única (sem fragmentar, preservando merge 3-way Copier) em 3 faixas de severidade mantendo 100% do rigor desde o 1º commit + avisos determinísticos `[AVISO MATURIDADE]` conforme o projeto cresce. | `Em fila (Just-in-Time via /fatiar)` |
+| **C4 — Hardening de Produção (Banco, Observabilidade, CI CVEs e Contratos)** | Migrações seguras (*expand-and-contract*) + seeds idempotentes, observabilidade mínima no Artigo 7 (logs estruturados sem PII, `requestId`, `/health`), CI bloqueando CVEs `critical` (aviso em `high`, removendo `|| true` cego) e diretriz de contratos tipados ponta-a-ponta. | `Em fila (Just-in-Time via /fatiar)` |
+
+---
+
+## Fila Executável Ativa (Rolling Wave Cirúrgico — v4.5+)
+
+### [x] fatia-19-blindagem-motor-agregador-e-gate2-atomico
+- **Depende de:** `fatia-18-conselho-evolutivo-de-produto`
+- **Objetivo de Valor:** Fechar 3 furos reais de integridade determinística (`read_file` no `.agents/hooks.json`, modo `--ci` em cerimônia/anti-monólito e ordem atômica `archive` → `commit` no Gate 2), desmonolitizar `template/scripts/verificar-governanca.mjs` (de 1.205 para ≤ 350 linhas úteis via módulos puros em `template/scripts/lib/`) com agregador de todas as violações numa única passada, tornar visíveis as válvulas de escape no Gate 2 e publicar a release `v4.5.0`.
+- **O que ENTRA:**
+  1. **Bloqueio Real de Leitura de `.env*` nos Hooks:** Incluir `read_file|view_file|Read` no `matcher` de `PreToolUse` em `template/.agents/hooks.json` e `.agents/hooks.json` (raiz), garantindo disparo real do bloqueio já existente em `hook-agente.mjs`.
+  2. **Paridade Real do Modo `--ci` (`HEAD~1..HEAD`):** Extrair helper portátil `template/scripts/lib/git-diff-helper.mjs` e corrigir `classificar-cerimonia.mjs` e o sensor Anti-Monólito para comparar `HEAD~1..HEAD` quando `modoCi === true` (eliminando falsos verdes no GitHub Actions).
+  3. **Ordem Atômica no Fechamento do Gate 2:** Corrigir Passo 6/7 de `template/.agents/skills/ciclo-especificacao/SKILL.md` (e sincronizar `template/AGENTS.md`) para executar `openspec archive` + atualização de `[x] Concluído` em `openspec/roadmap.md` e `openspec/matriz-requisitos.md` **antes** do `git add` / `git commit`, garantindo working tree limpo e acionamento real das travas determinísticas de archive.
+  4. **Desmonolitização de `verificar-governanca.mjs` + Agregador de Erros:** Extrair sensores puros em `template/scripts/lib/` (`git-diff-helper.mjs`, `auditar-openspec.mjs`, `sensores-codigo.mjs`, `sensores-indices.mjs`) e ajustar `auditar-matriz-requisitos.mjs` para coletar erros/avisos sem `process.exit(1)` precoce, trazendo `verificar-governanca.mjs` para ≤ 350 linhas úteis com relatório consolidado de todas as violações numa única execução e mantendo re-exports (`contarLinhasUteisCodigo`, `ehArquivoIsentoDeTetoMonolito`).
+  5. **Transparência Obrigatória de Válvulas de Escape no Gate 2:** Reportar em bloco dedicado no auditor qualquer uso de `governanca:mock-banco-justificado` ou `governanca:arquivo-extenso-justificado` no diff e exigir destaque explícito no relatório do Gate 2 (`template/constitution.md`, `template/AGENTS.md`, `ciclo-especificacao/SKILL.md`).
+  6. **Sincronia SemVer `v4.5.0`, Docs da Matriz e Suíte Test-First:** Atualizar `package.json`, cabeçalhos `v4.5.0`, `README.md`, `00_INDICE_E_DECISOES.md` (`D47`), `docs/arquitetura.md` (§5), `lefthook.yml`, `.github/workflows/ci.yml`, `CHANGELOG.md`, helpers dinâmicos de cópia de `lib/` nos testes e nova suíte `tests/blindagem-motor-e-agregador.test.mjs`.
+- **O que FICA DE FORA:** Skill `/debug` e Prova de Runtime (C2), reestruturação da `constitution.md` em 3 faixas e sensores `[AVISO MATURIDADE]` (C3), hardening de migrações/observabilidade/CI CVEs/contratos (C4) e itens estacionados no Radar (worktrees e evals comportamentais).

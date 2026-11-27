@@ -33,6 +33,10 @@ jobs:
           node --check template/scripts/lib/classificar-cerimonia.mjs
           node --check template/scripts/lib/lefthook-runner.mjs
           node --check template/scripts/lib/auditar-matriz-requisitos.mjs
+          node --check template/scripts/lib/git-diff-helper.mjs
+          node --check template/scripts/lib/auditar-openspec.mjs
+          node --check template/scripts/lib/sensores-codigo.mjs
+          node --check template/scripts/lib/sensores-indices.mjs
 
       - name: Executar bateria de testes unitários da Governança
         run: |

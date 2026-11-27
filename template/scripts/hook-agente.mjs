@@ -168,18 +168,17 @@ function validarMutacaoConteudoArquivo(caminhoArquivo, conteudo) {
   return null;
 }
 
+const FERRAMENTAS_LEITURA = new Set(['read_file', 'view_file', 'view', 'Read']);
+const MSG_BLOQUEIO_ENV = 'A governança proíbe a leitura direta de arquivos de segredos (.env). Consulte o arquivo .env.example para obter a lista de variáveis esperadas.';
+
 function processarPreToolAntigravity() {
   const nomeFerramenta = payload?.toolCall?.name || payload?.tool_name || payload?.tool;
   const args = payload?.toolCall?.args || payload?.tool_input || payload?.args || {};
 
-  // Bloqueio de leitura de .env* por ferramentas de leitura
-  if (nomeFerramenta === 'read_file' || nomeFerramenta === 'view' || nomeFerramenta === 'Read') {
-    const caminho = args.Path || args.path || args.file_path || '';
+  if (FERRAMENTAS_LEITURA.has(nomeFerramenta)) {
+    const caminho = args.Path || args.AbsolutePath || args.path || args.file_path || '';
     if (ehLeituraDeEnv(caminho)) {
-      console.log(JSON.stringify({
-        decision: 'deny',
-        reason: 'A governança proíbe a leitura direta de arquivos de segredos (.env). Consulte o arquivo .env.example para obter a lista de variáveis esperadas.'
-      }));
+      console.log(JSON.stringify({ decision: 'deny', reason: MSG_BLOQUEIO_ENV }));
       process.exit(0);
     }
   }
@@ -229,12 +228,10 @@ function processarPreToolClaude() {
   const nomeFerramenta = payload?.tool_name || payload?.tool;
   const args = payload?.tool_input || {};
 
-  if (nomeFerramenta === 'Read' || nomeFerramenta === 'read_file' || nomeFerramenta === 'view') {
-    const caminho = args.file_path || args.path || args.Path || '';
+  if (FERRAMENTAS_LEITURA.has(nomeFerramenta)) {
+    const caminho = args.file_path || args.AbsolutePath || args.path || args.Path || '';
     if (ehLeituraDeEnv(caminho)) {
-      console.error(
-        'A governança proíbe a leitura direta de arquivos de segredos (.env). Consulte o arquivo .env.example para obter a lista de variáveis esperadas.'
-      );
+      console.error(MSG_BLOQUEIO_ENV);
       process.exit(2);
     }
   }

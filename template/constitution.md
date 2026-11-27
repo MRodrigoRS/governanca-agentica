@@ -1,4 +1,4 @@
-<!-- governanca:inicio v4.4.0 — não edite este bloco; alterações no repositório da governança -->
+<!-- governanca:inicio v4.5.0 — não edite este bloco; alterações no repositório da governança -->
 # Constituição do Projeto — Governança
 
 > **Papel:** Lei Suprema do repositório. Cláusulas pétreas obrigatórias para agentes de IA e desenvolvedores humanos.
@@ -102,7 +102,7 @@
 6. São marcos obrigatórios com intervenção humana:
    - **Gate 0:** Aprovação do escopo polido, da stack tecnológica/VPS/MCPs (validada por pesquisa viva) e do Mapa de Fatias Incrementais com Invariantes Globais (`openspec/roadmap.md`).
    - **Gate 1:** Aprovação do plano, desenho técnico (registrando fontes consultadas quando aplicável) e tarefas antes da implementação de Nível 2. Em ambientes com suporte a artefatos nativos (Antigravity), é expressamente proibido despejar planos extensos em texto corrido no chat; o agente deve emitir o plano como artefato dedicado (`plano-fatia-XX.md`) com `RequestFeedback: true` (habilitando o botão nativo `Proceed`), limitando a mensagem do chat ao link direto e à pergunta objetiva de decisão (≤ 20 linhas). Em terminais CLI sem artefatos, fornecer resumo conciso (≤ 20 linhas) apontando para os arquivos do disco.
-   - **Gate 2:** Aprovação da entrega mediante relatório de entrega estruturado emitido como artefato dedicado (`entrega-fatia-XX.md`) em ambientes compatíveis ou resumo conciso no chat (≤ 20 linhas), contendo o valor entregue, Roteiro de Teste Prático Passo a Passo (onde está, como testar com dados de exemplo e comportamento visual esperado), evidências reais de testes automatizados (vermelho/verde), diff limpo e `CHANGELOG.md` atualizado, seguida pelo acionamento proativo da próxima fatia da fila. A auditoria cega por subagente (`inspetor-forense`) é opcional e sob demanda através do comando `/revisar`.
+   - **Gate 2:** Aprovação da entrega mediante relatório de entrega estruturado emitido como artefato dedicado (`entrega-fatia-XX.md`) em ambientes compatíveis ou resumo conciso no chat (≤ 20 linhas), contendo o valor entregue, Roteiro de Teste Prático Passo a Passo (onde está, como testar com dados de exemplo e comportamento visual esperado), evidências reais de testes automatizados (vermelho/verde), destaque explícito de todas as válvulas de escape ativas no diff (`governanca:mock-banco-justificado`, `governanca:arquivo-extenso-justificado` reportadas pelo auditor), diff limpo e `CHANGELOG.md` atualizado, seguida pelo fechamento atômico (`openspec archive` → atualização de roadmap/matriz → `git commit`) e acionamento proativo da próxima fatia da fila. A auditoria cega por subagente (`inspetor-forense`) é opcional e sob demanda através do comando `/revisar`.
 
 ---
 
@@ -171,7 +171,7 @@ Se durante a execução de uma tarefa o agente falhar 3 vezes consecutivas no me
 5. **Sensor Anti-Monólito (> 350 Linhas Úteis) com Catraca Inteligente:**
    - Nenhum arquivo de código de produção novo pode ultrapassar o teto estrito de **350 linhas úteis** (medidas com descarte de linhas em branco e comentários por sintaxe de linguagem, reconhecendo `.gd` e contando anotações de atributos em Rust e diretivas em C#).
    - **Catraca para Código Legado:** Arquivos preexistentes em `HEAD` que já excediam o teto só podem ser alterados se o commit mantiver ou reduzir suas linhas úteis; qualquer acréscimo de linhas é sumariamente bloqueado (`exit 1`).
-   - **Válvula de Exceção Justificada:** Em casos raros de algoritmos ou tabelas indivisíveis, permite-se o marcador `governanca:arquivo-extenso-justificado: <motivo técnico de pelo menos 15 caracteres>`, fiscalizado de forma cética pela Auditoria Forense.
+   - **Válvula de Exceção Justificada:** Em casos raros de algoritmos ou tabelas indivisíveis, permite-se o marcador `governanca:arquivo-extenso-justificado: <motivo técnico de pelo menos 15 caracteres>`, exposto obrigatoriamente pelo verificador e destacado no Gate 2 para validação humana (e fiscalizado pela Auditoria Forense quando acionada).
 <!-- governanca:fim -->
 
 ## Cláusulas Adicionais Deste Projeto

@@ -1,7 +1,25 @@
-# Changelog — Governança Agêntica (v4.4.0)
+# Changelog — Governança Agêntica (v4.5.0)
 
 Todas as alterações notáveis neste protocolo de governança são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/) e adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
+
+---
+
+## [4.5.0] - 2026-11-27
+
+### Adicionado
+- **Blindagem do Motor, Agregador de Erros e Fechamento Atômico (`fatia-19-blindagem-motor-agregador-e-gate2-atomico`, D47):**
+  - Novos módulos puros ESM zero-dependências sob `template/scripts/lib/` (todos ≤ 350 linhas úteis): [git-diff-helper.mjs](template/scripts/lib/git-diff-helper.mjs), [auditar-openspec.mjs](template/scripts/lib/auditar-openspec.mjs), [sensores-codigo.mjs](template/scripts/lib/sensores-codigo.mjs) e [sensores-indices.mjs](template/scripts/lib/sensores-indices.mjs).
+  - Agregação completa de violações em [verificar-governanca.mjs](template/scripts/verificar-governanca.mjs) (reduzido de 1.205 para ≤ 350 linhas úteis), listando todas as infrações numa única execução sem `process.exit(1)` precoce.
+  - Bloco `[GOVERNANÇA] VÁLVULAS DE ESCAPE ATIVAS NO DIFF` no auditor determinístico e exigência de destaque explícito de válvulas (`mock-banco-justificado`, `arquivo-extenso-justificado`) no Gate 2.
+  - Suíte automatizada [blindagem-motor-e-agregador.test.mjs](tests/blindagem-motor-e-agregador.test.mjs) e registro da Decisão `D47` em [00_INDICE_E_DECISOES.md](00_INDICE_E_DECISOES.md).
+
+### Modificado
+- **Ordem Atômica no Fechamento do Gate 2 & SemVer `v4.5.0`:** Atualizados [ciclo-especificacao/SKILL.md](template/.agents/skills/ciclo-especificacao/SKILL.md), [template/AGENTS.md](template/AGENTS.md) e [template/constitution.md](template/constitution.md) para executar `openspec/matriz-requisitos.md` + `openspec archive` + `[x]` em `openspec/roadmap.md` **antes** de `git add`/`git commit`; atualizados [package.json](package.json), [project.md.jinja](template/openspec/project.md.jinja), [catalogo-stacks.md](template/.agents/skills/inicializar-stack/references/catalogo-stacks.md), [README.md](README.md), [docs/arquitetura.md](docs/arquitetura.md) (§5), [lefthook.yml](lefthook.yml) e [.github/workflows/ci.yml](.github/workflows/ci.yml).
+
+### Corrigido
+- **Bloqueio Efetivo de `.env*` em `PreToolUse`:** Adicionadas ferramentas de leitura (`read_file`, `view_file`, `Read`) ao `matcher` de [template/.agents/hooks.json](template/.agents/hooks.json) e [.agents/hooks.json](.agents/hooks.json), garantindo acionamento real do bloqueio em [hook-agente.mjs](template/scripts/hook-agente.mjs).
+- **Paridade Real do Modo `--ci` (`HEAD~1..HEAD`):** Corrigidos [classificar-cerimonia.mjs](template/scripts/lib/classificar-cerimonia.mjs), o sensor Anti-Monólito em [sensores-codigo.mjs](template/scripts/lib/sensores-codigo.mjs) e o sensor reverso de [auditar-matriz-requisitos.mjs](template/scripts/lib/auditar-matriz-requisitos.mjs) para inspecionar `HEAD~1..HEAD` no CI mesmo com staging vazio.
 
 ---
 
