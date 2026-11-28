@@ -1,7 +1,8 @@
-# Catálogo de Stacks Oficiais Robustas — Governança v4.7.0
+# Catálogo de Stacks Oficiais Robustas — Governança v4.8.0
 
 > **Papel:** Catálogo técnico consultado pelo agente como **ponto de partida vivo** para sugerir a stack tecnológica durante o Gate 0. É obrigatório validar versões atuais, CLI e recomendações vigentes via **Pesquisa Viva** (`context7`, `/llms.txt` ou busca web) antes de recomendar.
 > **Regra Anti-Brinquedo (Artigo 1):** Nenhuma aplicação interativa nasce com arquivos HTML/CSS/JS soltos. Toda base deve ter tipagem estrita, validação de schema e testes.
+> **Contratos Tipados Ponta-a-Ponta (Artigo 1.2):** Adote sempre uma fonte única de contratos entre servidor e cliente — tRPC/Zod compartilhado (`packages/schemas`) em fullstack TS ou OpenAPI + geração automática de tipos (`openapi-typescript` / clientes tipados) em APIs separadas (NestJS, FastAPI, Go, Rust), proibindo DTOs duplicados à mão e *casts* cegos (`as`).
 > **Responsividade e Portabilidade PWA Inatas (Artigo 6, item 6):** Qualquer desenvolvimento que envolva web deve nascer responsivo por padrão (mobile-first 320px+) e preparado para portabilidade como PWA instalável (`manifest.json`, viewport, theme-color e service workers) e Smoke Test E2E com Playwright + @axe-core/playwright (validando viewports 320x640 e 1280x800 sem overflow horizontal scrollWidth <= innerWidth e zero pageerror).
 
 ---

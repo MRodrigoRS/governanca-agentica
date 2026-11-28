@@ -1,4 +1,4 @@
-<!-- governanca:inicio v4.7.0 — não edite este bloco; alterações no repositório da governança -->
+<!-- governanca:inicio v4.8.0 — não edite este bloco; alterações no repositório da governança -->
 # Constituição do Projeto — Governança
 
 > **Papel:** Lei Suprema do repositório. Cláusulas pétreas obrigatórias para agentes de IA e desenvolvedores humanos.
@@ -24,6 +24,7 @@
 2. Toda aplicação interativa parte obrigatoriamente de uma stack do catálogo oficial (ou aprovada no Gate 0) e deve garantir desde o primeiro commit:
    - **Tipagem Estrita:** TypeScript com `"strict": true` em `tsconfig.json`, Rust, C#/.NET ou Python com type hints completos validados por `mypy` ou `pyright`.
    - **Validação de Entradas na Fronteira:** Esquemas declarativos (ex.: Zod no ecossistema JS/TS, Pydantic em Python, Serde em Rust) validando dados externos em rotas de API, pontes IPC (Desktop), formulários, parâmetros de URL, cookies e webhooks.
+   - **Contratos Tipados Ponta-a-Ponta (Fonte Única):** APIs e clientes devem compartilhar schemas declarativos ou gerar tipos automaticamente a partir de contrato canônico (ex.: tRPC, pacote compartilhado Zod ou OpenAPI gerado), proibindo duplicação manual de DTOs e *casts* cegos (`res.json() as Tipo`).
    - **Design System Modular:** Interface construída com base em componentes consistentes e reutilizáveis (ex.: Tailwind CSS + shadcn/ui ou equivalente nativo), em estrita observância ao princípio *Reuse-Before-Create* e às regras de componentização do Artigo 14.
    - **Testes Automatizados Ativos:** Executor de testes configurado e ao menos um teste de sanidade passando desde a inicialização.
 3. **Exceção Única:** Protótipos descartáveis ou documentos HTML puramente estáticos, desde que formalmente aprovados como exceção no Gate 0.
@@ -101,10 +102,11 @@
 ## Artigo 7 — [Faixa 1 — Crítico] Padrões Práticos de Engenharia Backend e Zero-Trust
 
 1. **Zero-Trust no Cliente (Anti-F12), Anti-IDOR e Anti-Mass Assignment:** Nunca confie em validações, identidades, preços ou regras de negócio enviadas pelo cliente. Toda consulta ou mutação deve filtrar pelo `usuarioId`/`tenantId` autenticado no servidor (prevenção contra IDOR/BOLA), exigir RBAC explícito no servidor em rotas administrativas, aplicar *allowlist* via schema contra *Mass Assignment* (proibido passar `req.body` cru ao ORM) e recalcular preços/descontos no servidor validando webhooks por assinatura criptográfica (HMAC) com idempotência.
-2. **Integridade Transacional (ACID):** Operações que envolvem alterações em múltiplos registros ou tabelas devem ser encapsuladas em transações atômicas de banco de dados.
+2. **Integridade Transacional (ACID), Migrações Seguras e Seeds Idempotentes:** Operações que envolvem alterações em múltiplos registros ou tabelas devem ser encapsuladas em transações atômicas de banco de dados. Evoluções de schema em produção devem seguir o padrão zero-downtime (*expand-and-contract*), evitando `DROP`/`RENAME` ou `NOT NULL` sem `DEFAULT` em passo único, e scripts de seed devem ser idempotentes (`upsert`/`ON CONFLICT`).
 3. **Segurança de Tráfego e Cabeçalhos:** Ambientes de produção devem aplicar cabeçalhos de segurança essenciais: Content Security Policy (CSP), HTTP Strict Transport Security (HSTS) e CORS estritamente configurado.
 4. **Prevenção de Abuso:** Endpoints públicos e operações sensíveis (login, recuperação de senha, pagamentos, geração de IA) devem implementar Rate Limiting determinístico.
 5. **OWASP Top 10 e OWASP Agentic Top 10:** Proteção ativa contra injeção SQL/NoSQL, XSS, CSRF, SSRF, vazamento de segredos em variáveis públicas de frontend (`NEXT_PUBLIC_`, `VITE_`, `EXPO_PUBLIC_`), injeção de prompt indireta e execução inadvertida de ferramentas por agentes autônomos; uso obrigatório de cookies `HttpOnly`/`Secure`/`SameSite`, hash de senhas com `Argon2id`/`bcrypt`, upload validado por *magic bytes* fora da raiz executável e ocultação total de stack traces/erros internos de banco nas respostas ao cliente.
+6. **Observabilidade Mínima de Produção:** Serviços backend devem emitir logs estruturados (JSON em produção) com nível, timestamp e `requestId` (*correlation ID*) propagado por requisição/job, com proibição estrita de logar PII ou segredos (senhas, tokens, cookies, CPF/cartão), e expor endpoint `/health` (além de `/ready` quando houver dependências críticas como banco/fila) sem vazar stack traces ou credenciais.
 
 ---
 

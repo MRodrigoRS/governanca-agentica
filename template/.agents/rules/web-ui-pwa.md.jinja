@@ -74,4 +74,10 @@ Toda rota ou componente que carrega dados de forma assíncrona DEVE implementar 
   - Enums crus em `SNAKE_CASE` (ex.: exibir `"Aguardando pagamento"` em vez de `"AGUARDANDO_PAGAMENTO"`);
   - Códigos HTTP ou exceções brutas (`Erro 500`, `422`, `PrismaClientKnownRequestError`, `error.message`).
 - **Defesa contra XSS e Segredos no Bundle:** Proibido usar `dangerouslySetInnerHTML`, `v-html` ou `innerHTML` sem sanitização rigorosa; proibido referenciar segredos privados em variáveis com prefixos públicos (`NEXT_PUBLIC_`, `VITE_`, `EXPO_PUBLIC_`).
+
+---
+
+## 10. Consumo de Contratos Tipados da API (Fonte Única)
+- **Proibição de Duplicação Manual de DTOs:** Consuma contratos compartilhados (Zod/tRPC) ou tipos/clientes gerados automaticamente do OpenAPI do servidor (ex.: `openapi-typescript`); nunca mantenha interfaces duplicadas manualmente em paralelo à API.
+- **Zero *Cast* Cego sobre Respostas HTTP:** É proibido usar *type assertions* cegas como `await res.json() as MeuTipo` sem validação em runtime por schema ou cliente gerado tipado a partir da fonte única.
 {% endif %}

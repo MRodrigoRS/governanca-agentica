@@ -1,6 +1,6 @@
 {% if 'api-backend' in perfis_projeto or 'web-ui' in perfis_projeto %}---
 trigger: glob
-globs: "**/api/**, **/server/**, **/routes/**, **/controllers/**, **/*.prisma, **/schema*.ts, **/migrations/**, **/*.py, **/*.go, **/*.gs"
+globs: "**/api/**, **/server/**, **/routes/**, **/controllers/**, **/*.prisma, **/schema*.ts, **/migrations/**, **/*.sql, **/seed*, **/seeds/**, **/schemas/**, **/*.py, **/*.go, **/*.gs"
 ---
 
 # Regras de Backend, Segurança e Persistência de Dados
@@ -60,4 +60,26 @@ globs: "**/api/**, **/server/**, **/routes/**, **/controllers/**, **/*.prisma, *
 - É terminantemente PROIBIDO mockar ou criar spies sobre o próprio cliente ORM/banco (`prisma`, `drizzle`, `db`, `session`, `repository`).
 - Mocks são reservados exclusivamente para chamadas externas de terceiros (gateways de pagamento, e-mail, LLMs).
 - Testes de adaptadores de erro de rede no driver admitem a válvula formal `governanca:mock-banco-justificado: <motivo >= 15 chars>`.
+
+---
+
+## 7. Migrações Seguras (*Expand-and-Contract*) e Seeds Idempotentes
+- **Padrão Zero-Downtime (*Expand-and-Contract*):** Em bases com tráfego ativo, nunca execute `DROP TABLE`, `DROP COLUMN`, `RENAME` ou `NOT NULL` sem `DEFAULT` em passo único que quebre a versão anterior ainda no ar:
+  1. **Expand:** adicione colunas/tabelas de forma aditiva e retrocompatível (nullable ou com `DEFAULT`) e passe a gravar nos dois formatos (*dual-write*) se necessário.
+  2. **Backfill:** migre os dados históricos em lotes idempotentes antes da leitura exclusiva do novo formato.
+  3. **Contract:** remova colunas/tabelas antigas apenas em deploy posterior, depois que 100% do código em execução não depender mais delas.
+- **Seeds Idempotentes:** Todo script de seed DEVE poder ser executado múltiplas vezes sem duplicar registros nem falhar por chave única — utilize `upsert` / `ON CONFLICT DO NOTHING` / `ON CONFLICT DO UPDATE` e mantenha dados de teste separados de dados obrigatórios de domínio.
+
+---
+
+## 8. Observabilidade Mínima (Logs Estruturados, `requestId` e `/health`)
+- **Logs Estruturados e Correlação:** Em produção, emita logs em JSON contendo `level`, `timestamp`, `requestId` (ou `correlationId` propagado de cabeçalhos/jobs) e contexto objetivo da operação.
+- **Redação Estrita de PII e Segredos:** Nunca logar senhas, tokens, cabeçalhos `Authorization`, cookies, chaves de API, CPF, cartão ou dados pessoais sensíveis em claro.
+- **Endpoints de Saúde (`/health` e `/ready`):** Serviços backend DEVEM expor `GET /health` leve (liveness, retorno `200 OK`) e, quando dependerem de banco ou fila crítica, `/ready` validando conectividade essencial — sem vazar credenciais, stack traces ou versões internas sensíveis.
+
+---
+
+## 9. Contratos Tipados Ponta-a-Ponta (Fonte Única)
+- **Monorepo ou Fullstack TypeScript:** Compartilhe schemas declarativos (Zod, Valibot) em pacote único ou use tRPC/Server Actions tipados diretamente entre servidor e cliente.
+- **API Dedicada ou Poliglota (FastAPI, NestJS, Go, Rust):** Gere a especificação OpenAPI / JSON Schema a partir da fonte única no servidor e gere automaticamente tipos/clientes no consumidor (ex.: `openapi-typescript`), evitando manutenção manual paralela de interfaces.
 {% endif %}

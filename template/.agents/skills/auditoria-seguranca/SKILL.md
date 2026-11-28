@@ -34,9 +34,9 @@ Quando o alvo for o projeto inteiro ou mais de 5 arquivos, o Agente Principal at
    - **Zero Jargão Técnico na UI (Artigo 6.8):** verificar se textos visíveis ao usuário final (toasts, erros, estados vazios, modais, badges) expõem `payload`, `null`, `undefined`, `timeout`, `endpoint`, termos de banco (`registro`, `tabela`, `constraint`, `foreign key`), enums crus em `SNAKE_CASE` (`AGUARDANDO_PAGAMENTO`) ou `{error.message}` técnico cru.
 
 3. **Subagente 3 — Frente Infraestrutura, Segredos, Git e Dependências:**
-   - Logs e monitoramento de eventos suspeitos sem vazar tokens/senhas/PII (#08).
+   - Logs estruturados (JSON) com `requestId` e monitoramento de eventos suspeitos sem vazar tokens/senhas/PII (#08).
    - Revisão de `.env*` vs `.gitignore` e consistência com `.env.example` (#11).
-   - Auditoria de CVEs em dependências (`npm audit` / `pip-audit` / `cargo audit`) (#21) e identificação de pacotes órfãos/não utilizados (#22).
+   - Auditoria rigorosa de CVEs em dependências sem `|| true` cego no CI (bloqueando `critical` e alertando `high`: `npm`/`pnpm`/`yarn`, `pip-audit`, `cargo audit`) (#21) e identificação de pacotes órfãos/não utilizados (#22).
    - Verificação de exposição pública (`.git`, `.bak`, `.sql`, logs) (#23), varredura de credenciais no histórico Git (#24) e indicação imediata de rotação/revogação para qualquer segredo comprometido (#25).
 
 ### Modo B — Auditoria Sob Medida / Escopo Focado (≤ 5 arquivos ou 1 módulo/rota)

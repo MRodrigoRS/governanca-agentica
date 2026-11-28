@@ -1,7 +1,20 @@
-# Changelog — Governança Agêntica (v4.7.0)
+# Changelog — Governança Agêntica (v4.8.0)
 
 Todas as alterações notáveis neste protocolo de governança são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/) e adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
+
+---
+
+## [4.8.0] - 2026-11-28
+
+### Adicionado
+- **Hardening de Produção: Banco, Observabilidade, CI CVEs e Contratos (`fatia-22-hardening-producao-banco-observabilidade-ci-contratos`, D50):**
+  - Novo Artigo 7.6 na [template/constitution.md](template/constitution.md) instituindo **Observabilidade Mínima de Produção** (logs JSON estruturados sem PII/segredos, `requestId` e endpoint `/health` + `/ready`), além do reforço de migrações zero-downtime (*expand-and-contract*) e seeds idempotentes no Artigo 7.2 e contratos tipados ponta-a-ponta como fonte única no Artigo 1.2.
+  - Novas seções operacionais em [backend-seguranca-dados.md.jinja](template/.agents/rules/backend-seguranca-dados.md.jinja) (§7 *Expand-and-Contract* & Seeds Idempotentes, §8 Observabilidade Mínima, §9 Contratos Tipados Fonte Única, com `globs` ampliados para `**/*.sql`, `**/seed*`, `**/seeds/**` e `**/schemas/**`) e em [web-ui-pwa.md.jinja](template/.agents/rules/web-ui-pwa.md.jinja) (§10 Consumo de Contratos Tipados sem DTO duplicado à mão nem `res.json() as ...`).
+  - Suíte automatizada [hardening-producao.test.mjs](tests/hardening-producao.test.mjs) e registro da Decisão `D50` em [00_INDICE_E_DECISOES.md](00_INDICE_E_DECISOES.md).
+
+### Modificado
+- **CI Poliglota sem `|| true` Cego, Runbook, Skills e SemVer `v4.8.0`:** Atualizado [template/.github/workflows/ci.yml](template/.github/workflows/ci.yml) para auditoria Node *lockfile-aware* (`npm`/`pnpm`/`yarn`) bloqueando `critical` com `::warning::` em `high`, `uv run alembic check` condicionado a `$DATABASE_URL` sem `|| true`, e `uv run pip-audit` + `cargo audit` sem `|| true`; atualizados [runbook.md](template/docs/runbook.md), [revisar-fatia/SKILL.md](template/.agents/skills/revisar-fatia/SKILL.md), [auditoria-seguranca/SKILL.md](template/.agents/skills/auditoria-seguranca/SKILL.md), [catalogo-stacks.md](template/.agents/skills/inicializar-stack/references/catalogo-stacks.md), [template/AGENTS.md](template/AGENTS.md), [project.md.jinja](template/openspec/project.md.jinja), [package.json](package.json), [README.md](README.md) e [hierarquia-e-maturidade.test.mjs](tests/hierarquia-e-maturidade.test.mjs).
 
 ---
 

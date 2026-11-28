@@ -1,4 +1,4 @@
-<!-- governanca:inicio v4.7.0 — não edite este bloco; alterações no repositório da governança -->
+<!-- governanca:inicio v4.8.0 — não edite este bloco; alterações no repositório da governança -->
 # Instruções Gerais para Agentes de IA — Governança
 
 > **Papel:** Fonte única da verdade para todos os agentes e assistentes de IA que operam neste repositório.
@@ -22,8 +22,8 @@ Antes de editar qualquer arquivo, o agente DEVE consultar as regras do módulo c
 
 | Intenção ou Arquivos Tocados | Módulo de Regras Obrigatório | O que verificar antes de codificar |
 |---|---|---|
-| **Rotas, UI, Telas, CSS, PWA** (`.tsx`, `.jsx`, `.vue`, `.svelte`, `.html`, `.css`, `manifest.json`) | `.agents/rules/web-ui-pwa.md` | Mobile-first 320px+, 4 estados assíncronos, Toasts para mutações, Modais destrutivos com `Escape`, zero `location.reload`. |
-| **APIs, Servidor, Banco, Filas** (`api/`, `server/`, `routes/`, `.prisma`, `.py`, `.go`, `.gs`) | `.agents/rules/backend-seguranca-dados.md` | Zero-Trust Anti-F12, schemas declarativos na borda, transações ACID, headers CSP/HSTS, rate limiting. |
+| **Rotas, UI, Telas, CSS, PWA** (`.tsx`, `.jsx`, `.vue`, `.svelte`, `.html`, `.css`, `manifest.json`) | `.agents/rules/web-ui-pwa.md` | Mobile-first 320px+, 4 estados assíncronos, Toasts para mutações, Modais destrutivos com `Escape`, zero `location.reload`, contratos tipados sem *cast* cego. |
+| **APIs, Servidor, Banco, Filas** (`api/`, `server/`, `routes/`, `.prisma`, `.sql`, `seed*`, `schemas`, `.py`, `.go`, `.gs`) | `.agents/rules/backend-seguranca-dados.md` | Zero-Trust Anti-F12, schemas/contratos tipados na borda, transações ACID, migrações *expand-and-contract*, seeds idempotentes, logs JSON com `requestId` sem PII, `/health`, CSP/HSTS, rate limiting. |
 | **Jogos, Cenas, Shaders, Física** (`.gd`, `.tscn`, `project.godot`, `.wgsl`, `.glsl`) | `.agents/rules/jogos-engines.md` | Lógica pura desacoplada da renderização gráfica, testes unitários headless em < 50ms, viewport fluido. |
 | **Integração Linear MCP** (tarefas, issues, status, diário) | `.agents/rules/linear-mcp.md` | Handshake prévio obrigatório com `whoami`, Tríade de Âncora (Workspace/Equipe/Projeto), zero fallback silencioso. |
 

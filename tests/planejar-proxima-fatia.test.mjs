@@ -347,6 +347,6 @@ describe('Fatia 16: Fatiamento Cirúrgico Just-in-Time (Subagente Arquiteto-Fati
 
     const decisoes = readFileSync(join(raiz, '00_INDICE_E_DECISOES.md'), 'utf8');
     assert.match(decisoes, /\|\s*D44\s*\|/);
-    assert.match(decisoes, /D1.*D4[4-9]/);
+    assert.match(decisoes, /D1.*D(4[4-9]|[5-9]\d)/);
   });
 });

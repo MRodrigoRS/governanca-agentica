@@ -75,7 +75,7 @@ function criarRepoTemporario(prefixo = 'test-maturidade') {
 describe('Fatia 21: Hierarquia Constitucional Anti-Diluição e Sensores de Maturidade (v4.7.0)', () => {
   test('1_constituicao_define_hierarquia_3_faixas_preservando_artigos_1_a_14', () => {
     const constituicao = readFileSync(join(dirTemplate, 'constitution.md'), 'utf8');
-    assert.ok(constituicao.includes('governanca:inicio v4.7.0'), 'constitution.md deve ter cabeçalho v4.7.0');
+    assert.match(constituicao, /governanca:inicio v4\.[7-9]\.\d+/, 'constitution.md deve ter cabeçalho v4.7.0+');
 
     const idxHierarquia = constituicao.indexOf('## Hierarquia Constitucional (3 Faixas de Severidade — Anti-Diluição)');
     const idxArtigo1 = constituicao.indexOf('## Artigo 1');
@@ -111,7 +111,7 @@ describe('Fatia 21: Hierarquia Constitucional Anti-Diluição e Sensores de Matu
 
   test('2_agents_md_espelha_faixas_no_cartao_e_documenta_aviso_maturidade', () => {
     const templateAgents = readFileSync(join(dirTemplate, 'AGENTS.md'), 'utf8');
-    assert.ok(templateAgents.includes('governanca:inicio v4.7.0'), 'template/AGENTS.md deve ter cabeçalho v4.7.0');
+    assert.match(templateAgents, /governanca:inicio v4\.[7-9]\.\d+/, 'template/AGENTS.md deve ter cabeçalho v4.7.0+');
 
     const cartao = templateAgents.split('### Matriz Universal')[0] || '';
     assert.ok(cartao.includes('[Faixa 1 — Crítico]'), 'Cartão de Invariantes deve rotular itens de [Faixa 1 — Crítico]');
@@ -233,16 +233,16 @@ describe('Fatia 21: Hierarquia Constitucional Anti-Diluição e Sensores de Matu
 
   test('5_sincronia_pipeline_mapa_fisico_d49_e_semver_4_7_0', () => {
     const pkg = JSON.parse(readFileSync(join(raiz, 'package.json'), 'utf8'));
-    assert.equal(pkg.version, '4.7.0', 'package.json deve estar em 4.7.0');
+    assert.match(pkg.version, /^4\.[7-9]\.\d+$/, 'package.json deve estar em 4.7.0+');
 
     const projectJinja = readFileSync(join(dirTemplate, 'openspec', 'project.md.jinja'), 'utf8');
-    assert.ok(projectJinja.includes('Governança v4.7.0'), 'project.md.jinja deve estar em v4.7.0');
+    assert.match(projectJinja, /Governança v4\.[7-9]\.\d+/, 'project.md.jinja deve estar em v4.7.0+');
 
     const catalogoStacks = readFileSync(
       join(dirTemplate, '.agents', 'skills', 'inicializar-stack', 'references', 'catalogo-stacks.md'),
       'utf8'
     );
-    assert.ok(catalogoStacks.includes('Governança v4.7.0'), 'catalogo-stacks.md deve estar em v4.7.0');
+    assert.match(catalogoStacks, /Governança v4\.[7-9]\.\d+/, 'catalogo-stacks.md deve estar em v4.7.0+');
 
     const lefthook = readFileSync(join(raiz, 'lefthook.yml'), 'utf8');
     assert.ok(lefthook.includes('sensores-maturidade.mjs'), 'lefthook.yml deve checar sensores-maturidade.mjs');
@@ -258,8 +258,8 @@ describe('Fatia 21: Hierarquia Constitucional Anti-Diluição e Sensores de Matu
     assert.ok(decisoes.includes('v4.7.0'), '00_INDICE_E_DECISOES.md deve citar v4.7.0');
 
     const readme = readFileSync(join(raiz, 'README.md'), 'utf8');
-    assert.ok(readme.includes('4.7.0'), 'README.md deve refletir versão 4.7.0');
-    assert.ok(readme.includes('D49'), 'README.md deve referenciar D49');
+    assert.match(readme, /4\.[7-9]\.\d+/, 'README.md deve refletir versão 4.7.0+');
+    assert.match(readme, /D(49|[5-9]\d)/, 'README.md deve referenciar D49+');
 
     const changelog = readFileSync(join(raiz, 'CHANGELOG.md'), 'utf8');
     assert.match(changelog, /## \[4\.7\.0\]/, 'CHANGELOG.md deve conter seção [4.7.0]');

@@ -4,7 +4,7 @@
 > Baseado em padrões abertos e oficiais da indústria: Padrão Universal (`AGENTS.md` + `.agents/`), OpenSpec, Copier, Lefthook, Gitleaks, MADR e Agent Skills. Zero servidores locais, zero wrappers proprietários redundantes.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Status: Produção](https://img.shields.io/badge/Status-Governança%20v4.7.0-success.svg)](00_INDICE_E_DECISOES.md)
+[![Status: Produção](https://img.shields.io/badge/Status-Governança%20v4.8.0-success.svg)](00_INDICE_E_DECISOES.md)
 
 ---
 
@@ -151,7 +151,7 @@ seu-projeto/
 
 Todas as decisões arquiteturais e metodológicas da Governança foram debatidas e formalizadas:
 
-* [00_INDICE_E_DECISOES.md](00_INDICE_E_DECISOES.md) — Índice geral e as 49 Decisões Fechadas (`D1` a `D49`).
+* [00_INDICE_E_DECISOES.md](00_INDICE_E_DECISOES.md) — Índice geral e as 50 Decisões Fechadas (`D1` a `D50`).
 * [docs/historico/](docs/historico/) — Documentação histórica da transição e pivots arquiteturais (v1 → v2 → v3 → v4).
 * [CHANGELOG.md](CHANGELOG.md) — Histórico detalhado de lançamentos e evolução por versão.
 

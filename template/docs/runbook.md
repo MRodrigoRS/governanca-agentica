@@ -21,9 +21,9 @@
 ## 2. Verificação Pós-Deploy (*Smoke Check*)
 
 Execute imediatamente após toda publicação em staging ou produção:
-1. **Healthcheck da API / Aplicação:**
+1. **Healthcheck e Prontidão da API / Aplicação (`/health` e `/ready`):**
    ```bash
-   # Ex.: curl -fsS https://api.seudominio.com/health
+   # Ex.: curl -fsS https://api.seudominio.com/health && curl -fsS https://api.seudominio.com/ready
    ```
 2. **Fluxo Crítico Ponta a Ponta:** *(Ex.: login, consulta principal e geração de toast/resposta HTTP `200 OK`)*
 3. **Sinais Vitais Iniciais:** *(Sem erros `5xx` nos primeiros 2 minutos de log; filas/workers conectados)*
@@ -33,6 +33,7 @@ Execute imediatamente após toda publicação em staging ou produção:
 ## 3. Migrations e Rollback Seguro
 
 - **Pré-Requisito Antes de Migração Estrutural:** *(Ex.: snapshot/backup obrigatório no provedor ou `pg_dump` antes de alterações destrutivas)*
+- **Padrão *Expand-and-Contract* & Seeds Idempotentes:** Separe alterações destrutivas (`DROP`/`RENAME`/`NOT NULL` sem `DEFAULT`) em duas releases para zero-downtime e garanta seeds reexecutáveis (`upsert` / `ON CONFLICT`).
 - **Comando Oficial de Migration em Produção:**
   ```bash
   # Ex.: npx prisma migrate deploy / uv run alembic upgrade head
@@ -44,10 +45,11 @@ Execute imediatamente após toda publicação em staging ou produção:
 
 ## 4. Logs, Filas e Observabilidade
 
-- **Consulta de Logs da Aplicação:**
+- **Consulta de Logs Estruturados e Correlação (`requestId`):**
   ```bash
-  # Ex.: docker logs -f --tail 200 app-api / fly logs / vercel logs
+  # Ex.: docker logs -f --tail 200 app-api | grep "<requestId>" / fly logs / vercel logs
   ```
+- **Higiene de Logs:** Confirme formato JSON estruturado em produção com `requestId`, sem PII (CPF, e-mail sensível, tokens ou cookies) em claro.
 - **Filas, Jobs e Webhooks:** *(Onde inspecionar jobs presos, dead-letter queues e falhas de entrega de webhook)*
 - **Monitoramento de Erros / Métricas:** *(Painel de telemetria, Sentry/PostHog, alertas configurados)*
 
@@ -56,6 +58,7 @@ Execute imediatamente após toda publicação em staging ou produção:
 ## 5. Checklist de Pré-Release (Go-Live)
 
 - [ ] Novas variáveis de ambiente cadastradas no painel do provedor (sem segredos em `NEXT_PUBLIC_` / `VITE_` / `EXPO_PUBLIC_` — Artigos 3 e 7)
-- [ ] Backup/snapshot validado caso haja migração de banco de dados
+- [ ] Backup/snapshot validado e migrações revisadas segundo *expand-and-contract* (e seeds idempotentes)
+- [ ] Auditoria de CVEs críticas aprovada no CI (zero vulnerabilidades `critical` pendentes)
 - [ ] `CHANGELOG.md` atualizado, suíte de testes completa e `node scripts/verificar-governanca.mjs` aprovados
 - [ ] *Smoke check* pós-deploy planejado para validar a versão publicada

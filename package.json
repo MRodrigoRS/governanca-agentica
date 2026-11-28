@@ -1,6 +1,6 @@
 {
   "name": "governanca-agentica",
-  "version": "4.7.0",
+  "version": "4.8.0",
   "description": "Protocolo agêntico aberto para desenvolvimento de software com agentes de inteligência artificial.",
   "type": "module",
   "scripts": {

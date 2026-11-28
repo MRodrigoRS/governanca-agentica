@@ -36,9 +36,11 @@ Inspecionar o código modificado (`git diff` dos arquivos staged) e traduzir em 
 
 1. **Arquivos Tocados:**
    - Lista exata dos arquivos criados e modificados.
-2. **Entidades, Banco e Schemas:**
+2. **Entidades, Banco, Migrações e Contratos Tipados:**
    - Quais tabelas, colunas e enums foram criados? (Nomes literais exatos).
    - Quais schemas de validação de entrada/saída existem e quais campos exigem?
+   - **Migrações e Seeds Idempotentes:** Há operações destrutivas em passo único (`DROP`, `RENAME`, `NOT NULL` sem `DEFAULT`) violando *expand-and-contract*? Novos scripts adotam seeds idempotentes (`upsert` / `ON CONFLICT`)?
+   - **Contratos Tipados (Fonte Única):** Há DTOs/interfaces duplicados manualmente entre servidor e cliente ou *type assertions* cegas (`res.json() as ...`) sem schema compartilhado/OpenAPI gerado?
 3. **Regras de Negócio, Segurança (AppSec) e Validações Implementadas:**
    - O que o código realmente valida na prática? (Ex.: checa se e-mail tem `@`, se valor é maior que zero, etc.).
    - **IDOR / BOLA e RBAC:** As consultas e mutações filtram pelo `usuarioId`/`tenantId` autenticado no servidor ou aceitam `id` cru do cliente? Rotas administrativas exigem RBAC explícito no servidor?
@@ -48,9 +50,10 @@ Inspecionar o código modificado (`git diff` dos arquivos staged) e traduzir em 
    - **Auditoria de `style` vs. `refactor`:**
      - Se o commit for categorizado como `style`: houve alteração em handlers, branches condicionais ou lógica funcional? (Proibido: `style` deve ser puramente cosmético/formatação).
      - Se o commit for categorizado como `refactor`: houve alteração em contratos públicos, schemas externos ou comportamento observável de negócio? (Refatoração deve preservar contratos existentes).
-4. **Tratamento de Erros e Exceções:**
+4. **Tratamento de Erros, Exceções e Observabilidade:**
    - Quais exceções são tratadas e quais códigos HTTP/mensagens são retornados?
    - Existem blocos `catch` vazios, stack traces expostos ou mensagens brutas do ORM/banco (`Unique constraint`, nomes de tabelas/colunas) vazando para o cliente?
+   - **Logs Estruturados, `requestId` e `/health`:** Operações backend propagam `requestId` (*correlation ID*) em logs estruturados sem vazar PII ou segredos? Serviços expõem `/health` (e `/ready` se aplicável) sem expor dados internos?
 5. **Interface, Estados Visuais e Linguagem Humana (se aplicável):**
    - Quais rotas e componentes visuais foram adicionados?
    - **Zero Jargão Técnico na UI:** Textos visíveis ao usuário final (toasts, erros, estados vazios, modais, badges) expõem jargões (`payload`, `null`, `undefined`, `timeout`, `endpoint`), termos de banco (`registro`, `tabela`, `constraint`), enums em `SNAKE_CASE` (`AGUARDANDO_PAGAMENTO`) ou `{error.message}` técnico cru?
