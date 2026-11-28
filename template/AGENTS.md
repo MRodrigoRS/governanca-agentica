@@ -1,20 +1,20 @@
-<!-- governanca:inicio v4.6.0 — não edite este bloco; alterações no repositório da governança -->
+<!-- governanca:inicio v4.7.0 — não edite este bloco; alterações no repositório da governança -->
 # Instruções Gerais para Agentes de IA — Governança
 
 > **Papel:** Fonte única da verdade para todos os agentes e assistentes de IA que operam neste repositório.
 > **Regra Suprema:** Obedeça integralmente a @[constitution.md](constitution.md). Texto sozinho é intenção; quem audita e trava ações é o ecossistema determinístico da governança (Lifecycle Hooks de Agente, Git hooks com Lefthook e CI).
 
-### Cartão de Invariantes Centrais (Regras Inegociáveis)
-1. **Test-First & Testing Trophy (Artigo 2):** Proibido código de produção sem teste que falhou antes (Vermelho → Verde → Refatorar). Proibido mockar banco próprio (exige SQLite in-memory, PGlite ou banco real).
-2. **Via 1a /fix com Teste (Artigo 14):** Até 3 arquivos de produção; exige ≥ 1 teste staged e menção em `CHANGELOG.md`.
-3. **Via 1.5 Manutenção Estrutural:** Commits > 3 arquivos exigem `refactor`/`perf`/`style`/`chore`/`build`; zero dependências inéditas ou banco.
-4. **Commits com Aprovação Humana (Artigo 11):** Proibido commit avulso; autorizado exclusivamente no Marco 1 (Gate 0) e Marco 2 (Gate 2).
-5. **Português do Brasil no Domínio (Artigo 10):** Nomes de negócio, tabelas, métodos e commits em PT-BR; termos de framework em EN.
-6. **Reatividade Limpa (Artigo 6):** Proibido `location.reload` ou refresh forçado; feedback por Toasts e ações críticas com Modal.
-7. **Handshake e Isolamento Linear (Artigo 13):** Obrigatório `whoami` antes de operar no Linear; bloqueio determinístico se divergir da âncora.
-8. **Proibido Deduzir de Cabeça (Artigo 12):** Leitura física obrigatória do roadmap, `openspec/matriz-requisitos.md` (quando existir) e delta nos 4 marcos.
-9. **Interrogatório grill-me Mandatório (Artigo 8):** Proibido aceitar ideias cruas ou alterar regras sem interrogatório em rodadas com recomendação técnica (➡️) e congelamento de código.
-10. **Pesquisa Viva & Arquiteto Crítico (Artigo 8):** Proibido decidir stack, API ou segurança só de memória de treinamento (`context7`/`/llms.txt`/web); discuta trade-offs e alerte caminhos viciosos antes do Gate 1 ou código (isento para ajustes triviais/cosméticos).
+### Cartão de Invariantes Centrais (Precedência por Faixas — 100% Ativas Desde o Commit 1)
+1. **[Faixa 1 — Crítico] Test-First & Testing Trophy (Artigo 2):** Proibido código de produção sem teste que falhou antes (Vermelho → Verde → Refatorar). Proibido mockar banco próprio (exige SQLite in-memory, PGlite ou banco real) e obrigatório validar runtime antes do Gate 2.
+2. **[Faixa 1 — Crítico] Commits com Aprovação Humana (Artigo 11):** Proibido commit avulso; autorizado exclusivamente no Marco 1 (Gate 0) e Marco 2 (Gate 2).
+3. **[Faixa 1 — Crítico] Handshake e Isolamento Linear (Artigo 13):** Obrigatório `whoami` antes de operar no Linear; bloqueio determinístico se divergir da âncora.
+4. **[Faixa 2 — Engenharia] Via 1a /fix com Teste (Artigo 14):** Até 3 arquivos de produção; exige ≥ 1 teste staged e menção em `CHANGELOG.md`.
+5. **[Faixa 2 — Engenharia] Via 1.5 Manutenção Estrutural:** Commits > 3 arquivos exigem `refactor`/`perf`/`style`/`chore`/`build`; zero dependências inéditas ou banco.
+6. **[Faixa 2 — Engenharia] Português do Brasil no Domínio (Artigo 10):** Nomes de negócio, tabelas, métodos e commits em PT-BR; termos de framework em EN.
+7. **[Faixa 2 — Engenharia] Reatividade Limpa (Artigo 6):** Proibido `location.reload` ou refresh forçado; feedback por Toasts e ações críticas com Modal.
+8. **[Faixa 3 — Processo] Proibido Deduzir de Cabeça (Artigo 12):** Leitura física obrigatória do roadmap, `openspec/matriz-requisitos.md` (quando existir) e delta nos 4 marcos.
+9. **[Faixa 3 — Processo] Interrogatório grill-me Mandatório (Artigo 8):** Proibido aceitar ideias cruas ou alterar regras sem interrogatório em rodadas com recomendação técnica (➡️) e congelamento de código.
+10. **[Faixa 3 — Processo] Pesquisa Viva & Arquiteto Crítico (Artigo 8):** Proibido decidir stack, API ou segurança só de memória de treinamento (`context7`/`/llms.txt`/web); discuta trade-offs e alerte caminhos viciosos antes do Gate 1 ou código (isento para ajustes triviais/cosméticos).
 
 ### Matriz Universal de Leitura Pré-Edição
 
@@ -129,7 +129,7 @@ Ao ser iniciado em um repositório, identifique o estado atual antes de agir:
 - **Diário de Aprendizados e Cicatrizes:** Arquivo `docs/aprendizados.md` (leitura mandatória no Gate 1 para prevenir reincidência de armadilhas empíricas catalogadas).
 - **Base de Conhecimento e Descoberta:** Arquivo `docs/conhecimento/INDICE.md` (índice mestre do livro vivo de conhecimento construído via `/descobrir` / `/mesa`, acompanhado de materiais externos em `docs/conhecimento/materiais/` para síntese via `/sintetizar` sem estourar contexto).
 - **Hooks Nativos de Agente:** Arquivo `.agents/hooks.json` acionando `scripts/hook-agente.mjs` (suporta execução tanto da raiz do repositório quanto de `.agents/`).
-- **Scripts Auxiliares em `scripts/`:** Apenas os scripts nativos da governança (`scripts/verificar-governanca.mjs`, `scripts/validar-commit-msg.mjs`, `scripts/hook-agente.mjs` e `scripts/lib/`) são isentos de cerimônia; scripts utilitários ou de build próprios do projeto sob `scripts/` são auditados como código de produção (`CHANGELOG.md`, teto de 350 linhas e testes).
+- **Scripts Auxiliares em `scripts/`:** Apenas os scripts nativos da governança (`scripts/verificar-governanca.mjs`, `scripts/validar-commit-msg.mjs`, `scripts/hook-agente.mjs` e `scripts/lib/`) são isentos de cerimônia; scripts utilitários ou de build próprios do projeto sob `scripts/` são auditados como código de produção (`CHANGELOG.md`, teto de 350 linhas e testes). Quando o crescimento do repositório atingir limiares de escala, o auditor emite avisos não-bloqueantes `[AVISO MATURIDADE]` indicando o momento de popular `docs/catalogo-reuso.md`, `openspec/matriz-requisitos.md` ou `docs/runbook.md`.
 - **Exceções Legítimas de Stack:** Stacks específicas ou legadas (ex.: Google Apps Script, HTML estático, projetos sem `npm test` ou sem TS strict/SQLite) devem registrar suas adaptações e exceções na seção `## Cláusulas Adicionais Deste Projeto` em `constitution.md` e em `docs/particularidades.md`.
 - **Auditoria Forense Cega (Sob Demanda via `/revisar`):** Protocolo universal consolidado em `.agents/skills/revisar-fatia/SKILL.md`.
 - **Servidores MCP Oficiais (.mcp.json):**

@@ -46,6 +46,7 @@ import {
   verificarSensorAntiApodrecimentoMapaArquitetura,
   coletarAvisosOperacionaisEHandoff,
 } from './lib/sensores-indices.mjs';
+import { coletarAvisosMaturidade } from './lib/sensores-maturidade.mjs';
 
 export { contarLinhasUteisCodigo, ehArquivoIsentoDeTetoMonolito };
 
@@ -296,6 +297,7 @@ export function executarAuditoria(cwd = process.cwd()) {
   }
 
   infos.push(...coletarAvisosOperacionaisEHandoff(cwd, listaArquivos, ehFundacao, arquivosProducao, modoCi));
+  infos.push(...coletarAvisosMaturidade(cwd, ehFundacao));
   for (const info of infos) registrarInfo(info);
   registrarValvulas(valvulas);
 

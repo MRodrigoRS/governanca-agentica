@@ -1,7 +1,20 @@
-# Changelog — Governança Agêntica (v4.6.0)
+# Changelog — Governança Agêntica (v4.7.0)
 
 Todas as alterações notáveis neste protocolo de governança são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/) e adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
+
+---
+
+## [4.7.0] - 2026-11-27
+
+### Adicionado
+- **Hierarquia Constitucional Anti-Diluição e Sensores de Maturidade (`fatia-21-hierarquia-constitucional-e-sensores-maturidade`, D49):**
+  - Nova tabela `## Hierarquia Constitucional (3 Faixas de Severidade — Anti-Diluição)` e selos explícitos `[Faixa 1 — Crítico]`, `[Faixa 2 — Engenharia]` e `[Faixa 3 — Processo]` nos 14 Artigos de [template/constitution.md](template/constitution.md) (preservando ordem 1–14 e 100% do rigor desde o 1º commit).
+  - Novo módulo puro ESM zero-dependências [sensores-maturidade.mjs](template/scripts/lib/sensores-maturidade.mjs) integrado a [verificar-governanca.mjs](template/scripts/verificar-governanca.mjs), emitindo avisos determinísticos não-bloqueantes `[AVISO MATURIDADE]` para catálogo de reúso (`>= 5` arquivos UI/jogo), matriz de requisitos (`>= 4` fatias arquivadas ou `>= 5` capítulos em `docs/conhecimento/`) e runbook operacional (infra/deploy com placeholders), suprimidos na fundação.
+  - Suíte automatizada [hierarquia-e-maturidade.test.mjs](tests/hierarquia-e-maturidade.test.mjs) e registro da Decisão `D49` em [00_INDICE_E_DECISOES.md](00_INDICE_E_DECISOES.md).
+
+### Modificado
+- **Espelhamento das Faixas, Pipeline e SemVer `v4.7.0`:** Atualizados [template/AGENTS.md](template/AGENTS.md), [lefthook.yml](lefthook.yml), [.github/workflows/ci.yml](.github/workflows/ci.yml), [docs/arquitetura.md](docs/arquitetura.md) (§5), [project.md.jinja](template/openspec/project.md.jinja), [catalogo-stacks.md](template/.agents/skills/inicializar-stack/references/catalogo-stacks.md), [package.json](package.json), [README.md](README.md) e [depuracao-e-prova-runtime.test.mjs](tests/depuracao-e-prova-runtime.test.mjs).
 
 ---
 

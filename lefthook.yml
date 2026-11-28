@@ -2,7 +2,7 @@
 pre-commit:
   commands:
     syntax-check:
-      run: node --check template/scripts/verificar-governanca.mjs && node --check template/scripts/validar-commit-msg.mjs && node --check template/scripts/hook-agente.mjs && node --check template/scripts/lib/classificar-arquivos.mjs && node --check template/scripts/lib/classificar-cerimonia.mjs && node --check template/scripts/lib/lefthook-runner.mjs && node --check template/scripts/lib/auditar-matriz-requisitos.mjs && node --check template/scripts/lib/git-diff-helper.mjs && node --check template/scripts/lib/auditar-openspec.mjs && node --check template/scripts/lib/sensores-codigo.mjs && node --check template/scripts/lib/sensores-indices.mjs
+      run: node --check template/scripts/verificar-governanca.mjs && node --check template/scripts/validar-commit-msg.mjs && node --check template/scripts/hook-agente.mjs && node --check template/scripts/lib/classificar-arquivos.mjs && node --check template/scripts/lib/classificar-cerimonia.mjs && node --check template/scripts/lib/lefthook-runner.mjs && node --check template/scripts/lib/auditar-matriz-requisitos.mjs && node --check template/scripts/lib/git-diff-helper.mjs && node --check template/scripts/lib/auditar-openspec.mjs && node --check template/scripts/lib/sensores-codigo.mjs && node --check template/scripts/lib/sensores-indices.mjs && node --check template/scripts/lib/sensores-maturidade.mjs
     verificar-governanca:
       run: node template/scripts/verificar-governanca.mjs
     unit-tests:

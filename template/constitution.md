@@ -1,4 +1,4 @@
-<!-- governanca:inicio v4.6.0 — não edite este bloco; alterações no repositório da governança -->
+<!-- governanca:inicio v4.7.0 — não edite este bloco; alterações no repositório da governança -->
 # Constituição do Projeto — Governança
 
 > **Papel:** Lei Suprema do repositório. Cláusulas pétreas obrigatórias para agentes de IA e desenvolvedores humanos.
@@ -6,7 +6,19 @@
 
 ---
 
-## Artigo 1 — Cláusula Anti-Brinquedo (Bases Robustas)
+## Hierarquia Constitucional (3 Faixas de Severidade — Anti-Diluição)
+
+> Todas as 14 cláusulas permanecem **100% ativas desde o 1º commit** (zero afrouxamento em projetos pequenos). As 3 faixas abaixo definem a precedência de atenção para evitar *Instruction Dilution* em janelas longas de contexto:
+
+| Faixa | Prioridade | Foco | Artigos |
+|---|---|---|---|
+| **Faixa 1 — Crítico** | `P0` | Segurança, integridade de dados, anti-teatro de testes e autorização humana | Artigos 2, 3, 4, 7, 11 e 13 |
+| **Faixa 2 — Engenharia** | `P1` | Qualidade estrutural, frontend/UX limpo, domínio PT-BR e reúso | Artigos 1, 5, 6, 10 e 14 |
+| **Faixa 3 — Processo** | `P2` | Arquiteto crítico, depuração sistemática (`/debug`), leitura física e higiene de contexto | Artigos 8, 9 e 12 |
+
+---
+
+## Artigo 1 — [Faixa 2 — Engenharia] Cláusula Anti-Brinquedo (Bases Robustas)
 
 1. É expressamente proibido iniciar qualquer aplicação interativa (Web, Programa de Computador Desktop ou Mobile) com arquivos avulsos (como HTML/CSS/JS soltos na web ou scripts amadores num único arquivo no desktop), sem tipagem estrita, sem empacotamento profissional e sem componentes reutilizáveis.
 2. Toda aplicação interativa parte obrigatoriamente de uma stack do catálogo oficial (ou aprovada no Gate 0) e deve garantir desde o primeiro commit:
@@ -18,7 +30,7 @@
 
 ---
 
-## Artigo 2 — Test-First Mandatório (Vermelho → Verde → Refatorar)
+## Artigo 2 — [Faixa 1 — Crítico] Test-First Mandatório (Vermelho → Verde → Refatorar)
 
 1. Nenhum código de produção deve ser implementado sem que antes exista um teste automatizado falhando que especifique o comportamento desejado.
 2. O ciclo obrigatório de desenvolvimento é:
@@ -42,14 +54,14 @@
 
 ---
 
-## Artigo 3 — Zero Testes Quebrados e Zero Avisos Críticos
+## Artigo 3 — [Faixa 1 — Crítico] Zero Testes Quebrados e Zero Avisos Críticos
 
 1. A suíte de testes deve estar 100% verde antes de qualquer solicitação de commit ou encerramento de tarefa.
 2. Commits com testes falhando ou avisos críticos de linter/tipagem serão rejeitados imediatamente pelos hooks determinísticos.
 
 ---
 
-## Artigo 4 — Zero Segredos em Código
+## Artigo 4 — [Faixa 1 — Crítico] Zero Segredos em Código
 
 1. Nenhuma chave de API, senha, token de autenticação, certificado ou credencial sensível deve ser comitada no repositório.
 2. Todo segredo deve residir em variáveis de ambiente (`.env`), devidamente declaradas e documentadas em `.env.example` e ignoradas em `.gitignore`.
@@ -58,14 +70,14 @@
 
 ---
 
-## Artigo 5 — Dependências Justificadas e Mínimas
+## Artigo 5 — [Faixa 2 — Engenharia] Dependências Justificadas e Mínimas
 
 1. É proibido instalar bibliotecas externas para resolver problemas triviais solucionáveis com a biblioteca padrão da linguagem ou recursos nativos da plataforma.
 2. Toda nova dependência adicionada aos arquivos de manifesto (`package.json`, `pyproject.toml`, `Cargo.toml`, etc.) deve ser explicitamente listada e justificada tecnicamente no plano de implementação (Gate 1).
 
 ---
 
-## Artigo 6 — Padrões Práticos de Engenharia Frontend
+## Artigo 6 — [Faixa 2 — Engenharia] Padrões Práticos de Engenharia Frontend
 
 1. **Reatividade Limpa:** É expressamente proibido forçar atualização de estado com recarregamento completo da página (`location.reload`, `window.location.reload`, `window.location.href`). O estado deve ser puramente reativo e gerenciado pela biblioteca de UI. A violação desta regra bloqueia commits determinísticamente.
 2. **Semântica e Acessibilidade:** Uso obrigatório de elementos HTML semânticos (`<main>`, `<nav>`, `<button>`, `<header>`, `<article>`), atributos `aria-*` onde necessário e labels associados a todos os campos de formulário.
@@ -86,7 +98,7 @@
 
 ---
 
-## Artigo 7 — Padrões Práticos de Engenharia Backend e Zero-Trust
+## Artigo 7 — [Faixa 1 — Crítico] Padrões Práticos de Engenharia Backend e Zero-Trust
 
 1. **Zero-Trust no Cliente (Anti-F12), Anti-IDOR e Anti-Mass Assignment:** Nunca confie em validações, identidades, preços ou regras de negócio enviadas pelo cliente. Toda consulta ou mutação deve filtrar pelo `usuarioId`/`tenantId` autenticado no servidor (prevenção contra IDOR/BOLA), exigir RBAC explícito no servidor em rotas administrativas, aplicar *allowlist* via schema contra *Mass Assignment* (proibido passar `req.body` cru ao ORM) e recalcular preços/descontos no servidor validando webhooks por assinatura criptográfica (HMAC) com idempotência.
 2. **Integridade Transacional (ACID):** Operações que envolvem alterações em múltiplos registros ou tabelas devem ser encapsuladas em transações atômicas de banco de dados.
@@ -96,7 +108,7 @@
 
 ---
 
-## Artigo 8 — Honestidade Radical, Arquiteto Crítico, Pesquisa Viva e Gates Humanos
+## Artigo 8 — [Faixa 3 — Processo] Honestidade Radical, Arquiteto Crítico, Pesquisa Viva e Gates Humanos
 
 1. **Honestidade Radical e Pesquisa Viva (Anti-Memória de Treinamento):** O agente nunca deve fingir que testou, esconder bugs conhecidos ou adular decisões equivocadas. É expressamente proibido recomendar ou decidir stacks, versões de bibliotecas, APIs externas ou configurações de segurança baseando-se apenas em dados de treinamento quando houver ferramentas de consulta viva disponíveis (`context7`, endpoints `/llms.txt`, busca web ou documentação oficial); caso o ambiente esteja offline/sem acesso externo, essa limitação deve ser declarada explicitamente.
 2. **Entrevista Exaustiva, Protocolo grill-me e Mapa Macro de Capacidades:** O humano não tem obrigação de saber dividir um sistema complexo na ordem técnica de implementação. É expressamente proibido ao agente aceitar ideias cruas, assumir requisitos tácitos ou deduzir unilateralmente o que deve ser feito. É dever exclusivo do agente conduzir uma entrevista exaustiva de produto e arquitetura através do protocolo investigativo **`grill-me`** (árvore de decisões percorrida em rodadas sucessivas pela fronteira lógica, com cada pergunta acompanhada da resposta recomendada pelo agente `➡️` com justificativa técnica para deliberação humana), polindo o que entra e o que fica de fora e consolidando no Gate 0 os **Invariantes Globais**, o **Mapa Macro de Capacidades** (para evitar miopia estrutural) e apenas a **`fatia-01-fundacao`** — sem pré-fabricar blocos `fatia-02`..`fatia-N` no escuro antes de existir código real.
@@ -112,7 +124,7 @@
 
 ---
 
-## Artigo 9 — Circuit Breaker de 3 Tentativas e Depuração Sistemática (`/debug`)
+## Artigo 9 — [Faixa 3 — Processo] Circuit Breaker de 3 Tentativas e Depuração Sistemática (`/debug`)
 
 Se durante a execução de uma tarefa o agente falhar consecutivamente no mesmo teste, comando ou problema arquitetural:
 1. **Acoplamento Obrigatório na 2ª Falha:** Ao atingir a **2ª falha consecutiva**, é proibido editar código especulativamente na 3ª tentativa; o agente deve congelar alterações de produção e acionar `.agents/skills/depuracao-sistematica/SKILL.md` (`/debug`) para provar a causa raiz com evidência real antes da 3ª tentativa.
@@ -122,7 +134,7 @@ Se durante a execução de uma tarefa o agente falhar consecutivamente no mesmo 
 
 ---
 
-## Artigo 10 — Idioma (Português no Domínio), Rastreabilidade e CHANGELOG
+## Artigo 10 — [Faixa 2 — Engenharia] Idioma (Português no Domínio), Rastreabilidade e CHANGELOG
 
 1. **Português Brasileiro no Domínio e no Código:** Nomes de entidades, regras de negócio, tabelas de banco, variáveis, funções, classes, especificações e mensagens de commit devem ser escritos em **Português do Brasil (PT-BR)** (ex.: `obterUsuario`, `salvarPedido`, `calcularDesconto`, `cliente`).
 2. **Termos Técnicos Universais em Inglês:** Termos técnicos universais e convenções de bibliotecas/frameworks (`id`, `payload`, `props`, `handler`, `middleware`, `token`, `status`, `req`, `res`) permanecem em **Inglês (EN)** sem tradução forçada.
@@ -130,7 +142,7 @@ Se durante a execução de uma tarefa o agente falhar consecutivamente no mesmo 
 
 ---
 
-## Artigo 11 — Rotina de Commits Cadenciada e Autorizada pelo Humano
+## Artigo 11 — [Faixa 1 — Crítico] Rotina de Commits Cadenciada e Autorizada pelo Humano
 
 1. **Proibição de Commits Avulsos ou Prematuros:** É estritamente proibido ao agente realizar commits arbitrários, automáticos ou incompletos no meio do desenvolvimento ("work in progress" soltos, testes quebrados ou sem autorização). O motor da IDE intercepta comandos de commit via Lifecycle Hooks (`.agents/hooks.json`) forçando confirmação humana (`force_ask`).
 2. **Os Dois Marcos Mandatórios de Commit:**
@@ -140,7 +152,7 @@ Se durante a execução de uma tarefa o agente falhar consecutivamente no mesmo 
 
 ---
 
-## Artigo 12 — Cláusula Pétrea "Proibido Deduzir de Cabeça" (Leitura Física Mandatória e Prevenção de Context Rot)
+## Artigo 12 — [Faixa 3 — Processo] Cláusula Pétrea "Proibido Deduzir de Cabeça" (Leitura Física Mandatória e Prevenção de Context Rot)
 
 1. **Proibição Estrita de Dedução Mental:** É expressamente proibido ao agente deduzir de cabeça, presumir de memória ou alucinar requisitos, contratos de dados, regras de negócio ou estados de tela de qualquer fatia com base em lembranças de mensagens anteriores da sessão de chat.
 2. **Os 4 Marcos de Leitura Física Obrigatória:** O agente deve obrigatoriamente executar a ferramenta de leitura direta no disco do bloco da fatia em `openspec/roadmap.md` e dos 4 artefatos de delta do OpenSpec (`proposal.md`, `specs/`, `design.md`, `tasks.md`) antes de:
@@ -155,7 +167,7 @@ Se durante a execução de uma tarefa o agente falhar consecutivamente no mesmo 
 
 ---
 
-## Artigo 13 — Isolamento Multi-Squad, Tríade de Âncora e Handshake de Integrações
+## Artigo 13 — [Faixa 1 — Crítico] Isolamento Multi-Squad, Tríade de Âncora e Handshake de Integrações
 
 1. **Tríade de Âncora Obrigatória:** Todo projeto integrado a ferramentas compartilhadas de gestão de tarefas (ex.: Linear via MCP) deve possuir sua âncora imutável registrada em `openspec/project.md`, composta obrigatoriamente por:
    - **Workspace:** slug e URL da organização/conta.
@@ -167,7 +179,7 @@ Se durante a execução de uma tarefa o agente falhar consecutivamente no mesmo 
 
 ---
 
-## Artigo 14 — Governança de Reúso, Tokens de Movimento, Component-as-Asset e Teto Anti-Monólito
+## Artigo 14 — [Faixa 2 — Engenharia] Governança de Reúso, Tokens de Movimento, Component-as-Asset e Teto Anti-Monólito
 
 1. **Princípio *Reuse-Before-Create* (Extensão do Artigo 1.2):** É expressamente proibido ao agente recriar componentes primitivos de interface (botões, inputs, cards, modais, skeletons, toasts), transições visuais ou entidades de jogos *inline* quando já existir implementação ou token equivalente no projeto. Antes de propor código ou desenhar uma tela/cena, o agente deve consultar `docs/catalogo-reuso.md` e declarar o que será reutilizado.
 2. **Tokens de Movimento e Fundação Obrigatória (Fatia 01):** Em todo projeto que envolva interface visual ou jogos (`web-ui`, `desktop`, `mobile`, `jogo`), a Fatia 01 (Fundação) deve obrigatoriamente definir os **Tokens Base** (cores semânticas, tipografia, espaçamentos, **durações e curvas canônicas de animação/easing**) e a árvore base de componentes ou prefabs antes de qualquer tela ou fase de negócio. É proibido o uso de valores arbitrários e durações de animação divergentes por rota.

@@ -32,7 +32,7 @@ describe('Fatia 20: Depuração Sistemática (/debug) e Prova de Runtime Pré-Ga
 
   test('2_constituicao_acopla_debug_no_circuit_breaker_e_exige_prova_runtime_por_perfil', () => {
     const constituicao = readFileSync(join(dirTemplate, 'constitution.md'), 'utf8');
-    assert.ok(constituicao.includes('governanca:inicio v4.6.0'), 'constitution.md deve ter cabeçalho v4.6.0');
+    assert.match(constituicao, /governanca:inicio v4\.[6-9]\.\d+/, 'constitution.md deve ter cabeçalho v4.6.0+');
 
     const secaoArtigo2 = constituicao.split('## Artigo 3')[0] || '';
     assert.match(secaoArtigo2, /Prova de Runtime/i, 'Artigo 2 deve instituir Prova de Runtime Pré-Gate 2');
@@ -51,7 +51,7 @@ describe('Fatia 20: Depuração Sistemática (/debug) e Prova de Runtime Pré-Ga
 
   test('3_sincronia_skills_agents_readme_e_pr_template', () => {
     const templateAgents = readFileSync(join(dirTemplate, 'AGENTS.md'), 'utf8');
-    assert.ok(templateAgents.includes('governanca:inicio v4.6.0'), 'template/AGENTS.md deve ter cabeçalho v4.6.0');
+    assert.match(templateAgents, /governanca:inicio v4\.[6-9]\.\d+/, 'template/AGENTS.md deve ter cabeçalho v4.6.0+');
     assert.ok(templateAgents.includes('depuracao-sistematica'), 'template/AGENTS.md deve listar depuracao-sistematica');
     assert.ok(templateAgents.includes('/debug'), 'template/AGENTS.md deve listar comando /debug');
     assert.match(templateAgents, /Prova de Runtime/i, 'template/AGENTS.md deve citar Prova de Runtime');
@@ -79,16 +79,16 @@ describe('Fatia 20: Depuração Sistemática (/debug) e Prova de Runtime Pré-Ga
 
   test('4_sincronia_semver_4_6_0_ci_copier_e_decisao_d48', () => {
     const pkg = JSON.parse(readFileSync(join(raiz, 'package.json'), 'utf8'));
-    assert.equal(pkg.version, '4.6.0', 'package.json deve estar em 4.6.0');
+    assert.match(pkg.version, /^4\.[6-9]\.\d+$/, 'package.json deve estar em 4.6.0+');
 
     const projectJinja = readFileSync(join(dirTemplate, 'openspec', 'project.md.jinja'), 'utf8');
-    assert.ok(projectJinja.includes('Governança v4.6.0'), 'project.md.jinja deve estar em v4.6.0');
+    assert.match(projectJinja, /Governança v4\.[6-9]\.\d+/, 'project.md.jinja deve estar em v4.6.0+');
 
     const catalogoStacks = readFileSync(
       join(dirTemplate, '.agents', 'skills', 'inicializar-stack', 'references', 'catalogo-stacks.md'),
       'utf8'
     );
-    assert.ok(catalogoStacks.includes('Governança v4.6.0'), 'catalogo-stacks.md deve estar em v4.6.0');
+    assert.match(catalogoStacks, /Governança v4\.[6-9]\.\d+/, 'catalogo-stacks.md deve estar em v4.6.0+');
 
     const ci = readFileSync(join(raiz, '.github', 'workflows', 'ci.yml'), 'utf8');
     assert.ok(
@@ -98,11 +98,11 @@ describe('Fatia 20: Depuração Sistemática (/debug) e Prova de Runtime Pré-Ga
 
     const decisoes = readFileSync(join(raiz, '00_INDICE_E_DECISOES.md'), 'utf8');
     assert.match(decisoes, /\|\s*D48\s*\|/, '00_INDICE_E_DECISOES.md deve registrar D48');
-    assert.ok(decisoes.includes('v4.6.0'), '00_INDICE_E_DECISOES.md deve citar v4.6.0');
+    assert.match(decisoes, /v4\.[6-9]\.\d+/, '00_INDICE_E_DECISOES.md deve citar v4.6.0+');
 
     const readme = readFileSync(join(raiz, 'README.md'), 'utf8');
-    assert.ok(readme.includes('4.6.0'), 'README.md deve refletir versão 4.6.0');
-    assert.ok(readme.includes('D48'), 'README.md deve referenciar D48');
+    assert.match(readme, /4\.[6-9]\.\d+/, 'README.md deve refletir versão 4.6.0+');
+    assert.match(readme, /D4[89]|D5\d/, 'README.md deve referenciar D48+');
 
     const changelog = readFileSync(join(raiz, 'CHANGELOG.md'), 'utf8');
     assert.match(changelog, /## \[4\.6\.0\]/, 'CHANGELOG.md deve conter seção [4.6.0]');

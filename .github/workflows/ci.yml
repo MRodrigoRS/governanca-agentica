@@ -37,6 +37,7 @@ jobs:
           node --check template/scripts/lib/auditar-openspec.mjs
           node --check template/scripts/lib/sensores-codigo.mjs
           node --check template/scripts/lib/sensores-indices.mjs
+          node --check template/scripts/lib/sensores-maturidade.mjs
 
       - name: Executar bateria de testes unitários da Governança
         run: |

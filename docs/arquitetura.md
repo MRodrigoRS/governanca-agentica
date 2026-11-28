@@ -98,6 +98,7 @@ Este repositório matriz é *stateless* e não opera banco relacional ou `erDiag
 | **Auditoria OpenSpec/Roadmap** | `template/scripts/lib/auditar-openspec.mjs` | Validação pura de roadmap v3/v4, deltas OpenSpec e trava de archive | `tests/verificar-governanca.test.mjs` |
 | **Sensores de Código e Testes** | `template/scripts/lib/sensores-codigo.mjs` | Reatividade limpa, integridade de testes, variáveis de ambiente, anti-monólito e válvulas | `tests/blindagem-motor-e-agregador.test.mjs` |
 | **Sensores de Índices e Avisos** | `template/scripts/lib/sensores-indices.mjs` | Anti-apodrecimento de catálogo e mapa físico, além de avisos operacionais | `tests/verificar-governanca.test.mjs` |
+| **Sensores de Maturidade** | `template/scripts/lib/sensores-maturidade.mjs` | Avisos determinísticos não-bloqueantes por escala (reúso, matriz e runbook) | `tests/hierarquia-e-maturidade.test.mjs` |
 | **Classificador de Arquivos** | `template/scripts/lib/classificar-arquivos.mjs` | Classificação determinística de produção, testes, banco, manifestos e templates | `tests/desburocratizacao-sdd-v4.test.mjs` |
 | **Classificador de Cerimônia** | `template/scripts/lib/classificar-cerimonia.mjs` | Enforcement das Vias 1a, 1b, 1.5 e 2 no estágio `commit-msg` e CI | `tests/validar-commit-msg.test.mjs` |
 | **Executor Auxiliar Lefthook** | `template/scripts/lib/lefthook-runner.mjs` | Comandos e condições `skip` portáteis do `lefthook.yml` (Windows/POSIX) | `tests/piramide-testes-e-ci-poliglota.test.mjs` |

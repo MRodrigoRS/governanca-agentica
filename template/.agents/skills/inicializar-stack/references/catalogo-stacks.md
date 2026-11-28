@@ -1,4 +1,4 @@
-# Catálogo de Stacks Oficiais Robustas — Governança v4.6.0
+# Catálogo de Stacks Oficiais Robustas — Governança v4.7.0
 
 > **Papel:** Catálogo técnico consultado pelo agente como **ponto de partida vivo** para sugerir a stack tecnológica durante o Gate 0. É obrigatório validar versões atuais, CLI e recomendações vigentes via **Pesquisa Viva** (`context7`, `/llms.txt` ou busca web) antes de recomendar.
 > **Regra Anti-Brinquedo (Artigo 1):** Nenhuma aplicação interativa nasce com arquivos HTML/CSS/JS soltos. Toda base deve ter tipagem estrita, validação de schema e testes.
