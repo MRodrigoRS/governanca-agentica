@@ -78,6 +78,6 @@ Toda rota ou componente que carrega dados de forma assíncrona DEVE implementar 
 ---
 
 ## 10. Consumo de Contratos Tipados da API (Fonte Única)
-- **Proibição de Duplicação Manual de DTOs:** Consuma contratos compartilhados (Zod/tRPC) ou tipos/clientes gerados automaticamente do OpenAPI do servidor (ex.: `openapi-typescript`); nunca mantenha interfaces duplicadas manualmente em paralelo à API.
-- **Zero *Cast* Cego sobre Respostas HTTP:** É proibido usar *type assertions* cegas como `await res.json() as MeuTipo` sem validação em runtime por schema ou cliente gerado tipado a partir da fonte única.
+- **Proibição de Duplicação Manual de DTOs:** Consuma contratos compartilhados (Zod/tRPC/types da fonte única) ou tipos/clientes gerados automaticamente do OpenAPI do servidor (ex.: `openapi-typescript`); nunca mantenha DTOs duplicados à mão em paralelo à API.
+- **Validação Runtime Proporcional vs. *Cast* Cego:** É obrigatório validar em runtime (`safeParse`/equivalente) e proibido usar *cast* cego (`await res.json() as MeuTipo`) em **APIs externas de terceiros, payloads públicos não confiáveis e mutações críticas**. Em **monólitos fullstack tipados** (ex.: Next.js/Remix compartilhando tipos com o servidor no mesmo repositório), permite-se consumir rotas internas com tipos importados da fonte única e fallbacks defensivos sem exigir `safeParse` em todo `GET` simples de UI.
 {% endif %}

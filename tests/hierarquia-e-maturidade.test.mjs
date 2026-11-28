@@ -115,8 +115,7 @@ describe('Fatia 21: Hierarquia Constitucional Anti-Diluição e Sensores de Matu
 
     const cartao = templateAgents.split('### Matriz Universal')[0] || '';
     assert.ok(cartao.includes('[Faixa 1 — Crítico]'), 'Cartão de Invariantes deve rotular itens de [Faixa 1 — Crítico]');
-    assert.ok(cartao.includes('[Faixa 2 — Engenharia]'), 'Cartão de Invariantes deve rotular itens de [Faixa 2 — Engenharia]');
-    assert.ok(cartao.includes('[Faixa 3 — Processo]'), 'Cartão de Invariantes deve rotular itens de [Faixa 3 — Processo]');
+    assert.match(cartao, /constitution\.md[\s\S]*Faixa 2[\s\S]*Faixa 3/i, 'Cartão de Invariantes deve apontar Faixa 2 e Faixa 3 para constitution.md');
     assert.ok(templateAgents.includes('[AVISO MATURIDADE]'), 'template/AGENTS.md deve documentar [AVISO MATURIDADE]');
   });
 

@@ -72,10 +72,10 @@ globs: "**/api/**, **/server/**, **/routes/**, **/controllers/**, **/*.prisma, *
 
 ---
 
-## 8. Observabilidade Mínima (Logs Estruturados, `requestId` e `/health`)
-- **Logs Estruturados e Correlação:** Em produção, emita logs em JSON contendo `level`, `timestamp`, `requestId` (ou `correlationId` propagado de cabeçalhos/jobs) e contexto objetivo da operação.
-- **Redação Estrita de PII e Segredos:** Nunca logar senhas, tokens, cabeçalhos `Authorization`, cookies, chaves de API, CPF, cartão ou dados pessoais sensíveis em claro.
-- **Endpoints de Saúde (`/health` e `/ready`):** Serviços backend DEVEM expor `GET /health` leve (liveness, retorno `200 OK`) e, quando dependerem de banco ou fila crítica, `/ready` validando conectividade essencial — sem vazar credenciais, stack traces ou versões internas sensíveis.
+## 8. Observabilidade Mínima (Saúde, Zero PII e `requestId`)
+- **Redação Estrita de PII e Segredos (Obrigatória Desde o Início):** Nunca logar senhas, tokens, cabeçalhos `Authorization`, cookies, chaves de API, CPF, cartão ou dados pessoais sensíveis em claro.
+- **Endpoint de Saúde (Obrigatório Desde o Início):** Exponha `GET /health` ou `/api/saude` leve (retorno `200 OK`) sem vazar credenciais, stack traces ou versões internas sensíveis.
+- **Correlação Distribuída e Readiness (Proporcional à Escala):** Logs estruturados em JSON com `level`, `timestamp` e `requestId` (*correlation ID*) propagado por requisição/job, bem como endpoint `/ready` validando conectividade de banco/fila, são recomendados para serviços de produção/alta escala (ou obrigatórios a partir da fatia de deploy/observabilidade).
 
 ---
 

@@ -1,7 +1,27 @@
-# Changelog — Governança Agêntica (v4.8.0)
+# Changelog — Governança Agêntica (v4.9.0)
 
 Todas as alterações notáveis neste protocolo de governança são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/) e adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
+
+---
+
+## [4.9.0] - 2026-11-28
+
+### Adicionado
+- **Calibração Empírica Pós-Uso Real e `.gitattributes` LF/CRLF (`fatia-23-calibracao-empirica-e-anti-diluicao`, D51):**
+  - Novo arquivo `.gitattributes` na raiz da matriz e em [template/.gitattributes](template/.gitattributes) (fora de `_skip_if_exists` no [copier.yml](copier.yml) e verificado em [.github/workflows/ci.yml](.github/workflows/ci.yml)), padronizando `eol=lf` para scripts/Markdown/YAML/JSON/código e `eol=crlf` para `.ps1`/`.bat`/`.cmd` para eliminar avisos de fim de linha no Windows.
+  - Novo helper `extrairPonteirosMarkdown` + `ehPonteiroDeDisco` em [sensores-indices.mjs](template/scripts/lib/sensores-indices.mjs) e nova suíte [calibracao-empirica.test.mjs](tests/calibracao-empirica.test.mjs), além do registro da Decisão `D51` em [00_INDICE_E_DECISOES.md](00_INDICE_E_DECISOES.md).
+
+### Corrigido
+- **Falsos Positivos em Sensores Markdown (`sensores-indices.mjs` e `sensores-maturidade.mjs`):**
+  - Suporte a itens de lista (`-` / `*`) em `docs/catalogo-reuso.md` tanto em `verificarSensorCatalogoReuso` ([sensores-maturidade.mjs](template/scripts/lib/sensores-maturidade.mjs)) quanto em `verificarSensorAntiApodrecimentoCatalogo`, ignorando blocos de código cercados.
+  - Filtro `ehPonteiroDeDisco` na auditoria de `docs/arquitetura.md §5`, exigindo `/` ou arquivo raiz conhecido/existente no disco e eliminando bloqueios falsos em SemVer (`v4.8.0`), expressões (`req.body`) e basenames soltos descritivos.
+
+### Modificado
+- **Calibração Fullstack/MVP, Flexibilização OpenSpec e Anti-Diluição Real em `template/AGENTS.md`:**
+  - Enxugamento legível do bloco gerenciado de [template/AGENTS.md](template/AGENTS.md) (`<= 130` linhas, foco em Faixa 1 `P0` + ponteiro para [template/constitution.md](template/constitution.md)).
+  - Calibração do Artigo 2.7 / [ciclo-especificacao/SKILL.md](template/.agents/skills/ciclo-especificacao/SKILL.md) (suíte E2E real como Prova de Runtime `web-ui`), Artigo 1.2 / [web-ui-pwa.md.jinja](template/.agents/rules/web-ui-pwa.md.jinja) §10 (consumo tipado em monólitos fullstack sem `safeParse` redundante em todo `GET`) e Artigo 7.6 / [backend-seguranca-dados.md.jinja](template/.agents/rules/backend-seguranca-dados.md.jinja) §8 (`/health`/`/api/saude` + zero PII obrigatórios desde o início; `requestId` distribuído e `/ready` proporcionais à escala/deploy).
+  - Ampliação de sinônimos PT-BR/EN em [auditar-openspec.mjs](template/scripts/lib/auditar-openspec.mjs) mantendo o bloqueio estrutural D18/D32, e atualização de [docs/arquitetura.md](docs/arquitetura.md), [README.md](README.md), [package.json](package.json), [project.md.jinja](template/openspec/project.md.jinja), [catalogo-stacks.md](template/.agents/skills/inicializar-stack/references/catalogo-stacks.md), [hierarquia-e-maturidade.test.mjs](tests/hierarquia-e-maturidade.test.mjs) e [hardening-producao.test.mjs](tests/hardening-producao.test.mjs).
 
 ---
 

@@ -9,7 +9,7 @@ const dirTemplate = join(raiz, 'template');
 describe('Fatia 22: Hardening de Produção — Banco, Observabilidade, CI CVEs e Contratos (v4.8.0)', () => {
   test('1_constituicao_artigo_7_observabilidade_migracoes_e_contratos_preservando_3_faixas', () => {
     const constituicao = readFileSync(join(dirTemplate, 'constitution.md'), 'utf8');
-    assert.match(constituicao, /governanca:inicio v4\.8\.0/, 'constitution.md deve ter cabeçalho v4.8.0');
+    assert.match(constituicao, /governanca:inicio v4\.[89]\.\d+/, 'constitution.md deve ter cabeçalho v4.8.0+');
 
     const blocoArtigo1 = constituicao.split('## Artigo 2')[0] || '';
     assert.match(blocoArtigo1, /Contratos Tipados Ponta-a-Ponta/i, 'Artigo 1.2 deve exigir contratos tipados ponta-a-ponta');
@@ -128,32 +128,32 @@ describe('Fatia 22: Hardening de Produção — Banco, Observabilidade, CI CVEs 
       join(dirTemplate, '.agents', 'skills', 'inicializar-stack', 'references', 'catalogo-stacks.md'),
       'utf8'
     );
-    assert.ok(catalogo.includes('Governança v4.8.0'), 'catalogo-stacks.md deve estar em v4.8.0');
+    assert.match(catalogo, /Governança v4\.[89]\.\d+/, 'catalogo-stacks.md deve estar em v4.8.0+');
     assert.match(catalogo, /openapi-typescript/i, 'catalogo-stacks.md deve citar geração tipada ponta-a-ponta');
 
     const agents = readFileSync(join(dirTemplate, 'AGENTS.md'), 'utf8');
-    assert.ok(agents.includes('governanca:inicio v4.8.0'), 'template/AGENTS.md deve ter cabeçalho v4.8.0');
+    assert.match(agents, /governanca:inicio v4\.[89]\.\d+/, 'template/AGENTS.md deve ter cabeçalho v4.8.0+');
     assert.ok(agents.includes('.sql'), 'Matriz Universal deve citar arquivos .sql');
     assert.match(agents, /expand-and-contract/i, 'Matriz Universal deve citar expand-and-contract');
   });
 
   test('5_sincronia_semver_4_8_0_d50_readme_e_changelog', () => {
     const pkg = JSON.parse(readFileSync(join(raiz, 'package.json'), 'utf8'));
-    assert.equal(pkg.version, '4.8.0', 'package.json deve estar em 4.8.0');
+    assert.match(pkg.version, /^4\.[89]\.\d+$/, 'package.json deve estar em 4.8.0+');
 
     const projectJinja = readFileSync(join(dirTemplate, 'openspec', 'project.md.jinja'), 'utf8');
-    assert.ok(projectJinja.includes('Governança v4.8.0'), 'project.md.jinja deve estar em v4.8.0');
+    assert.match(projectJinja, /Governança v4\.[89]\.\d+/, 'project.md.jinja deve estar em v4.8.0+');
 
     const decisoes = readFileSync(join(raiz, '00_INDICE_E_DECISOES.md'), 'utf8');
     assert.match(decisoes, /\|\s*D50\s*\|/, '00_INDICE_E_DECISOES.md deve registrar D50');
     assert.ok(decisoes.includes('v4.8.0'), '00_INDICE_E_DECISOES.md deve citar v4.8.0');
 
     const readme = readFileSync(join(raiz, 'README.md'), 'utf8');
-    assert.ok(readme.includes('4.8.0'), 'README.md deve refletir versão 4.8.0');
-    assert.ok(readme.includes('D50'), 'README.md deve referenciar D50');
+    assert.match(readme, /4\.[89]\.\d+/, 'README.md deve refletir versão 4.8.0+');
+    assert.match(readme, /D5\d/, 'README.md deve referenciar D50+');
 
     const changelog = readFileSync(join(raiz, 'CHANGELOG.md'), 'utf8');
-    assert.ok(changelog.includes('(v4.8.0)'), 'CHANGELOG.md deve ter cabeçalho v4.8.0');
+    assert.match(changelog, /\(v4\.[89]\.\d+\)/, 'CHANGELOG.md deve ter cabeçalho v4.8.0+');
     assert.match(changelog, /## \[4\.8\.0\]/, 'CHANGELOG.md deve conter seção [4.8.0]');
   });
 });

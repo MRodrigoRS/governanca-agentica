@@ -13,7 +13,7 @@
 
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { extrairPonteirosTabelaMarkdown } from './sensores-indices.mjs';
+import { extrairPonteirosMarkdown } from './sensores-indices.mjs';
 import { parsearTabelaMatriz } from './auditar-matriz-requisitos.mjs';
 
 const PASTAS_IGNORADAS = new Set([
@@ -59,7 +59,11 @@ function verificarSensorCatalogoReuso(cwd) {
 
   try {
     const conteudo = readFileSync(camCatalogo, 'utf8');
-    const ponteiros = extrairPonteirosTabelaMarkdown(conteudo.split('\n'), false);
+    const ponteiros = extrairPonteirosMarkdown(conteudo.split('\n'), {
+      permitirDiretorios: false,
+      aceitarListas: true,
+      cwd,
+    });
     if (ponteiros.length === 0) {
       return `[AVISO MATURIDADE] Detectados >= 5 arquivos de UI/jogo sem itens catalogados em 'docs/catalogo-reuso.md'. Registre seus tokens e primitivos compartilhados para prevenir duplicação (Artigo 14).`;
     }

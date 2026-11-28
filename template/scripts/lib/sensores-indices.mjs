@@ -2,32 +2,106 @@
  * ==============================================================================
  * Sensores Anti-Apodrecimento de Índices e Avisos Operacionais — sensores-indices.mjs
  * ==============================================================================
- * Audita ponteiros em `docs/catalogo-reuso.md` e `docs/arquitetura.md §5`,
- * além de emitir avisos não-bloqueantes de Runbook e `.agents/handoff.md`.
+ * Audita ponteiros em `docs/catalogo-reuso.md` (tabelas e listas) e
+ * `docs/arquitetura.md §5`, além de emitir avisos de Runbook e `.agents/handoff.md`.
+ * Zero dependências externas: Node.js ESM puro.
  * ==============================================================================
  */
 
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-export function extrairPonteirosTabelaMarkdown(linhas, permitirDiretorios = false) {
+const ARQUIVOS_RAIZ_CONHECIDOS = new Set([
+  'package.json',
+  'package-lock.json',
+  'pnpm-lock.yaml',
+  'yarn.lock',
+  'bun.lock',
+  'bun.lockb',
+  'tsconfig.json',
+  'dockerfile',
+  'docker-compose.yml',
+  'docker-compose.yaml',
+  'biome.json',
+  'lefthook.yml',
+  'copier.yml',
+  'agents.md',
+  'constitution.md',
+  'readme.md',
+  'changelog.md',
+  'license',
+  '.env.example',
+  '.gitignore',
+  '.gitattributes',
+  '.mcp.json',
+  'pyproject.toml',
+  'cargo.toml',
+  'go.mod',
+  'project.godot',
+  'alembic.ini',
+  'vercel.json',
+  'fly.toml',
+  'procfile',
+  'render.yaml',
+  'render.yml',
+  'railway.json',
+  'railway.toml',
+  '00_indice_e_decisoes.md',
+  'contributing.md',
+]);
+
+function ehArquivoRaizConhecido(caminho) {
+  const min = caminho.toLowerCase();
+  if (ARQUIVOS_RAIZ_CONHECIDOS.has(min)) return true;
+  if (/^(?:next|vite|vitest|playwright|drizzle|tailwind|postcss|eslint|prisma|jest|babel)\.config\.[a-z0-9]+$/i.test(min)) {
+    return true;
+  }
+  return /^dockerfile\.[a-z0-9._-]+$/i.test(min) || /^docker-compose\.[a-z0-9._-]+\.ya?ml$/i.test(min);
+}
+
+export function ehPonteiroDeDisco(caminho, { cwd = null } = {}) {
+  if (!caminho || /[\s*<>{}()]/.test(caminho) || caminho.startsWith('Ex.:')) return false;
+  if (/^https?:\/\//i.test(caminho)) return false;
+  if (/^@[a-z0-9_.-]+\/[a-z0-9_.-]+(?:\/[a-z0-9_.-]+)*(?:@[^\s]+)?$/i.test(caminho)) return false;
+  if (/^v?\d+\.\d+(?:\.\d+)?(?:-[a-z0-9.-]+)?$/i.test(caminho)) return false;
+
+  if (caminho.includes('/')) return true;
+  if (ehArquivoRaizConhecido(caminho)) return true;
+  if (cwd && existsSync(join(cwd, caminho))) return true;
+  return false;
+}
+
+export function extrairPonteirosMarkdown(
+  linhas,
+  { permitirDiretorios = false, aceitarListas = false, cwd = null } = {}
+) {
   const ponteiros = [];
+  let dentroBlocoCodigo = false;
+
   for (let i = 0; i < linhas.length; i++) {
     const linha = linhas[i].trim();
-    if (!linha.startsWith('|') || !linha.includes('`')) continue;
-    if (/^\|[\s:-]+\|$/.test(linha)) continue;
+    if (/^(```|~~~)/.test(linha)) {
+      dentroBlocoCodigo = !dentroBlocoCodigo;
+      continue;
+    }
+    if (dentroBlocoCodigo || !linha.includes('`')) continue;
+
+    const ehTabela = linha.startsWith('|') && !/^\|[\s:-]+\|$/.test(linha);
+    const ehLista = aceitarListas && /^[-*]\s+/.test(linha);
+    if (!ehTabela && !ehLista) continue;
 
     for (const m of linha.matchAll(/`([^`]+)`/g)) {
       const caminho = m[1].trim();
-      const pareceCaminho = caminho.includes('.') || caminho.includes('/');
-      if (!pareceCaminho) continue;
-      if (/^@[a-z0-9_.-]+\/[a-z0-9_.-]+(?:\/[a-z0-9_.-]+)*(?:@[^\s]+)?$/i.test(caminho)) continue;
-      if (/^https?:\/\//i.test(caminho)) continue;
-      if (permitirDiretorios && (/[\s*<>{}()]/.test(caminho) || caminho.startsWith('Ex.:'))) continue;
+      if (!ehPonteiroDeDisco(caminho, { cwd })) continue;
+      if (!permitirDiretorios && caminho.endsWith('/')) continue;
       ponteiros.push({ linha: i + 1, caminho });
     }
   }
   return ponteiros;
+}
+
+export function extrairPonteirosTabelaMarkdown(linhas, permitirDiretorios = false) {
+  return extrairPonteirosMarkdown(linhas, { permitirDiretorios, aceitarListas: false });
 }
 
 function auditarPonteirosTabela({
@@ -39,9 +113,10 @@ function auditarPonteirosTabela({
   solucaoRemocao,
   solucaoInexistente,
   permitirDiretorios = false,
+  aceitarListas = false,
 }) {
   const erros = [];
-  const ponteiros = extrairPonteirosTabelaMarkdown(linhas, permitirDiretorios);
+  const ponteiros = extrairPonteirosMarkdown(linhas, { permitirDiretorios, aceitarListas, cwd });
   if (ponteiros.length === 0) return erros;
 
   const docEstaStaged = arquivosModificados.some(
@@ -109,6 +184,7 @@ export function verificarSensorAntiApodrecimentoCatalogo(cwd, arquivosModificado
     solucaoInexistente:
       'Certifique-se de que o arquivo existe antes de catalogá-lo ou corrija o caminho apontado no catálogo.',
     permitirDiretorios: false,
+    aceitarListas: true,
   });
 }
 
@@ -152,6 +228,7 @@ export function verificarSensorAntiApodrecimentoMapaArquitetura(cwd, arquivosMod
     solucaoInexistente:
       'Certifique-se de que a pasta ou arquivo mapeado existe no disco ou corrija a tabela na Seção 5 de docs/arquitetura.md.',
     permitirDiretorios: true,
+    aceitarListas: false,
   });
 }
 

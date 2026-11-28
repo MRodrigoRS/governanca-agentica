@@ -171,11 +171,11 @@ function auditarDeltaModoV4(cwd, caminhoPasta, nomeMudanca) {
     if (linhas.length < 10) {
       erros.push(`Pilar Proposal Superficial (D32):\nO arquivo '${nomeMudanca}/proposal.md' tem apenas ${linhas.length} linhas úteis (mínimo exigido: 10).`);
     }
-    const okPorQue = /##\s+(Por que|Por Quê|Why)/i.test(conteudoProposal);
-    const okMuda = /##\s+(O que muda|Escopo|What Changes)/i.test(conteudoProposal);
-    const okFora = /(Fica de Fora|Fora de Escopo|Out of Scope)/i.test(conteudoProposal);
+    const okPorQue = /^##+\s+.*(Por que|Por Qu[êe]|Motiva[çc][ãa]o|Contexto|Problema|Justificativa|Objetivo|Why|Motivation|Goal|Background)/im.test(conteudoProposal);
+    const okMuda = /^##+\s+.*(O que muda|Escopo|Mudan[çc]as|Altera[çc][õo]es|Entregas?|Solu[çc][ãa]o|Proposta|What Changes|Scope|Changes)/im.test(conteudoProposal);
+    const okFora = /(Fica de Fora|Fora de Escopo|N[ãa]o Entra|Exclus[õo]es|Out of Scope|Non-Goals)/i.test(conteudoProposal);
     if (!okPorQue || !okMuda || !okFora) {
-      erros.push(`Cabeçalhos Obrigatórios em Proposal (D32):\nO arquivo '${nomeMudanca}/proposal.md' deve conter seções 'Por que'/'Why', 'O que muda'/'What Changes' e menção a 'Fica de Fora'/'Out of Scope'.`);
+      erros.push(`Cabeçalhos Obrigatórios em Proposal (D32):\nO arquivo '${nomeMudanca}/proposal.md' deve conter seções 'Por que'/'Motivação'/'Why', 'O que muda'/'Entrega'/'What Changes' e menção a 'Fica de Fora'/'Não Entra'/'Out of Scope'.`);
     }
   }
 
@@ -205,11 +205,11 @@ function auditarDeltaModoV4(cwd, caminhoPasta, nomeMudanca) {
     if (linhas.length < 18) {
       erros.push(`Pilar Design Técnico Superficial (D32):\nO arquivo '${nomeMudanca}/design.md' tem apenas ${linhas.length} linhas úteis (mínimo exigido: 18).`);
     }
-    const okContratos = /##\s+.*(Contratos|Dados|Schemas)/i.test(cDesign);
-    const okInterface = /##\s+.*(Interface|Estados)/i.test(cDesign) || /Não se aplica:\s*.{10,}/i.test(cDesign);
-    const okRegras = /##\s+.*(Regras|Segurança|Seguranca)/i.test(cDesign);
+    const okContratos = /^##+\s+.*(Contratos?|Dados|Schemas?|Modelos?|Arquitetura|Entidades|APIs?|Endpoints|Persist[êe]ncia|Architecture|Data Model)/im.test(cDesign);
+    const okInterface = /^##+\s+.*(Interface|Estados?|UI|UX|Telas?|Fluxos?|Componentes?|Frontend|Views?|Screens?)/im.test(cDesign) || /N[ãa]o se aplica:\s*.{10,}/i.test(cDesign);
+    const okRegras = /^##+\s+.*(Regras|Seguran[çc]a|Valida[çc][õo]es|Autoriza[çc][ãa]o|Permiss[õo]es|Riscos?|Decis[õo]es|Invariantes|Business Rules|Security|Decisions)/im.test(cDesign);
     if (!okContratos || !okInterface || !okRegras) {
-      erros.push(`Cabeçalhos Obrigatórios em Design (D32):\nO arquivo '${nomeMudanca}/design.md' deve conter seções de 'Contratos/Dados/Schemas', 'Interface/Estados' (ou 'Não se aplica: ...') e 'Regras de Negócio/Segurança'.`);
+      erros.push(`Cabeçalhos Obrigatórios em Design (D32):\nO arquivo '${nomeMudanca}/design.md' deve conter seções de 'Contratos/Dados/Arquitetura', 'Interface/Telas/Estados' (ou 'Não se aplica: ...') e 'Regras/Validações/Segurança'.`);
     }
   }
 
@@ -219,10 +219,10 @@ function auditarDeltaModoV4(cwd, caminhoPasta, nomeMudanca) {
     if (linhas.length < 12) {
       erros.push(`Pilar Tarefas Superficial (D32):\nO arquivo '${nomeMudanca}/tasks.md' tem apenas ${linhas.length} linhas úteis (mínimo exigido: 12).`);
     }
-    const okTestFirst = /(Vermelho|Red|teste falhando)/i.test(cTasks);
-    const okRoteiro = /##\s+.*(Roteiro de Validação Prática|Roteiro Prático|Roteiro de Validacao)/i.test(cTasks);
+    const okTestFirst = /(Vermelho|Red|teste falhando|Test-First|TDD)/i.test(cTasks);
+    const okRoteiro = /^##+\s+.*(Roteiro de Valida[çc][ãa]o Pr[áa]tica|Roteiro Pr[áa]tico|Roteiro de Valida[çc][ãa]o|Checklist de Valida[çc][ãa]o|Valida[çc][ãa]o Pr[áa]tica|Valida[çc][ãa]o Manual|Teste Pr[áa]tico|Como Testar|Smoke Check|Manual Verification)/im.test(cTasks);
     if (!okTestFirst || !okRoteiro) {
-      erros.push(`Marcações Obrigatórias em Tasks (D32):\nO arquivo '${nomeMudanca}/tasks.md' deve conter tarefas marcadas com Test-First ('Vermelho'/'Red'/'teste falhando') e seção '## Roteiro de Validação Prática'.`);
+      erros.push(`Marcações Obrigatórias em Tasks (D32):\nO arquivo '${nomeMudanca}/tasks.md' deve conter tarefas marcadas com Test-First ('Vermelho'/'Red'/'Test-First') e seção de validação prática (ex.: '## Roteiro de Validação Prática' ou '## Checklist de Validação').`);
     }
   }
 

@@ -1,178 +1,68 @@
-<!-- governanca:inicio v4.8.0 — não edite este bloco; alterações no repositório da governança -->
+<!-- governanca:inicio v4.9.0 — não edite este bloco; alterações no repositório da governança -->
 # Instruções Gerais para Agentes de IA — Governança
 
-> **Papel:** Fonte única da verdade para todos os agentes e assistentes de IA que operam neste repositório.
-> **Regra Suprema:** Obedeça integralmente a @[constitution.md](constitution.md). Texto sozinho é intenção; quem audita e trava ações é o ecossistema determinístico da governança (Lifecycle Hooks de Agente, Git hooks com Lefthook e CI).
+> **Papel:** Ponto de entrada universal para agentes e assistentes de IA neste repositório.
+> **Regra Suprema:** Obedeça integralmente a @[constitution.md](constitution.md), fonte canônica completa das Faixas 1, 2 e 3 (100% ativas desde o 1º commit). Texto sozinho é intenção; hooks determinísticos (`.agents/hooks.json`, `Lefthook + Gitleaks + verificar-governanca.mjs` e CI) validam e travam execuções.
 
-### Cartão de Invariantes Centrais (Precedência por Faixas — 100% Ativas Desde o Commit 1)
-1. **[Faixa 1 — Crítico] Test-First & Testing Trophy (Artigo 2):** Proibido código de produção sem teste que falhou antes (Vermelho → Verde → Refatorar). Proibido mockar banco próprio (exige SQLite in-memory, PGlite ou banco real) e obrigatório validar runtime antes do Gate 2.
-2. **[Faixa 1 — Crítico] Commits com Aprovação Humana (Artigo 11):** Proibido commit avulso; autorizado exclusivamente no Marco 1 (Gate 0) e Marco 2 (Gate 2).
-3. **[Faixa 1 — Crítico] Handshake e Isolamento Linear (Artigo 13):** Obrigatório `whoami` antes de operar no Linear; bloqueio determinístico se divergir da âncora.
-4. **[Faixa 2 — Engenharia] Via 1a /fix com Teste (Artigo 14):** Até 3 arquivos de produção; exige ≥ 1 teste staged e menção em `CHANGELOG.md`.
-5. **[Faixa 2 — Engenharia] Via 1.5 Manutenção Estrutural:** Commits > 3 arquivos exigem `refactor`/`perf`/`style`/`chore`/`build`; zero dependências inéditas ou banco.
-6. **[Faixa 2 — Engenharia] Português do Brasil no Domínio (Artigo 10):** Nomes de negócio, tabelas, métodos e commits em PT-BR; termos de framework em EN.
-7. **[Faixa 2 — Engenharia] Reatividade Limpa (Artigo 6):** Proibido `location.reload` ou refresh forçado; feedback por Toasts e ações críticas com Modal.
-8. **[Faixa 3 — Processo] Proibido Deduzir de Cabeça (Artigo 12):** Leitura física obrigatória do roadmap, `openspec/matriz-requisitos.md` (quando existir) e delta nos 4 marcos.
-9. **[Faixa 3 — Processo] Interrogatório grill-me Mandatório (Artigo 8):** Proibido aceitar ideias cruas ou alterar regras sem interrogatório em rodadas com recomendação técnica (➡️) e congelamento de código.
-10. **[Faixa 3 — Processo] Pesquisa Viva & Arquiteto Crítico (Artigo 8):** Proibido decidir stack, API ou segurança só de memória de treinamento (`context7`/`/llms.txt`/web); discuta trade-offs e alerte caminhos viciosos antes do Gate 1 ou código (isento para ajustes triviais/cosméticos).
+### Cartão de Invariantes Críticos (`P0` — Precedência Máxima)
+> Foco abaixo nos invariantes críticos de **[Faixa 1 — Crítico]**; consulte `constitution.md` para todas as cláusulas detalhadas de **[Faixa 1 — Crítico]**, **[Faixa 2 — Engenharia]** e **[Faixa 3 — Processo]**.
+1. **[Faixa 1 — Crítico] Test-First & Testing Trophy (Artigo 2):** Proibido código de produção sem teste que falhou antes (Vermelho → Verde → Refatorar). Proibido mockar/espiar banco próprio (`prisma`, `drizzle`, `db`, `session`) — use SQLite in-memory, PGlite ou banco real; obrigatória **Prova de Runtime Pré-Gate 2** por perfil (suíte E2E real já satisfaz `web-ui` nas rotas cobertas).
+2. **[Faixa 1 — Crítico] Zero Segredos & Hardening Backend (Artigos 4 e 7):** Nunca exponha segredos, chaves em `NEXT_PUBLIC_`/`VITE_` ou PII em logs; valide entradas na borda, aplique `usuarioId`/`tenantId` no servidor, transações ACID, `/health` (ou `/api/saude`) e migrações *expand-and-contract*.
+3. **[Faixa 1 — Crítico] Commits Cadenciados (Artigo 11):** Proibido commit avulso; autorizado exclusivamente no Marco 1 (Gate 0) e Marco 2 (Gate 2) após validação verde e aprovação humana.
+4. **[Faixa 1 — Crítico] Isolamento Linear (Artigo 13):** Obrigatório `whoami` antes de consultar/editar o Linear, restrito à Tríade de Âncora (`openspec/project.md`).
 
 ### Matriz Universal de Leitura Pré-Edição
+Antes de editar código ou integrações, consulte a regra correspondente em `.agents/rules/`:
 
-Antes de editar qualquer arquivo, o agente DEVE consultar as regras do módulo correspondente em `.agents/rules/`:
-
-| Intenção ou Arquivos Tocados | Módulo de Regras Obrigatório | O que verificar antes de codificar |
+| Intenção ou Arquivos Tocados | Módulo de Regras | O que verificar antes de codificar |
 |---|---|---|
-| **Rotas, UI, Telas, CSS, PWA** (`.tsx`, `.jsx`, `.vue`, `.svelte`, `.html`, `.css`, `manifest.json`) | `.agents/rules/web-ui-pwa.md` | Mobile-first 320px+, 4 estados assíncronos, Toasts para mutações, Modais destrutivos com `Escape`, zero `location.reload`, contratos tipados sem *cast* cego. |
-| **APIs, Servidor, Banco, Filas** (`api/`, `server/`, `routes/`, `.prisma`, `.sql`, `seed*`, `schemas`, `.py`, `.go`, `.gs`) | `.agents/rules/backend-seguranca-dados.md` | Zero-Trust Anti-F12, schemas/contratos tipados na borda, transações ACID, migrações *expand-and-contract*, seeds idempotentes, logs JSON com `requestId` sem PII, `/health`, CSP/HSTS, rate limiting. |
-| **Jogos, Cenas, Shaders, Física** (`.gd`, `.tscn`, `project.godot`, `.wgsl`, `.glsl`) | `.agents/rules/jogos-engines.md` | Lógica pura desacoplada da renderização gráfica, testes unitários headless em < 50ms, viewport fluido. |
-| **Integração Linear MCP** (tarefas, issues, status, diário) | `.agents/rules/linear-mcp.md` | Handshake prévio obrigatório com `whoami`, Tríade de Âncora (Workspace/Equipe/Projeto), zero fallback silencioso. |
+| **Rotas, UI, Telas, CSS, PWA** (`.tsx`, `.jsx`, `.vue`, `.svelte`, `.html`, `.css`, `manifest.json`) | `.agents/rules/web-ui-pwa.md` | Mobile-first 320px+, 4 estados assíncronos, Toasts, Modais com `Escape`, zero `location.reload`, linguagem humana, fonte única de contratos (runtime em APIs externas/mutações críticas). |
+| **APIs, Servidor, Banco, Filas** (`api/`, `server/`, `routes/`, `.prisma`, `.sql`, `seed*`, `schemas`, `.py`, `.go`, `.gs`) | `.agents/rules/backend-seguranca-dados.md` | Zero-Trust Anti-F12/IDOR, schemas na borda, ACID, *expand-and-contract*, seeds idempotentes, `/health` ou `/api/saude` sem PII, `requestId`/`/ready` em escala, CSP/HSTS, rate limit. |
+| **Jogos, Cenas, Shaders, Física** (`.gd`, `.tscn`, `project.godot`, `.wgsl`, `.glsl`) | `.agents/rules/jogos-engines.md` | Lógica pura desacoplada da renderização, testes headless < 50ms, viewport fluido. |
+| **Integração Linear MCP** (issues, status, diário) | `.agents/rules/linear-mcp.md` | Handshake `whoami`, Tríade de Âncora, zero fallback silencioso, consentimento humano. |
 
 ---
 
-## 1. Postura Profissional e Idioma
+## 1. Diagnóstico Inicial, Postura Crítica e Condução
+- **Postura Obrigatória (Artigo 8):** Atue como **Arquiteto Crítico** (aponte falhas, dívida e caminhos viciosos antes de codificar), aplique **Pesquisa Viva** (`context7`/`/llms.txt`/web; nunca decida stack/API só de memória de treinamento) e conduza rodadas `grill-me` antes de decisões não triviais (**ajustes triviais/cosméticos** de texto, cor ou `Via 1b` `style` ficam isentos). Nunca finja testes não executados.
+- **Repositório Greenfield (sem stack ou ausência de produto):** Congele edições de código e acione automaticamente `.agents/skills/mesa-de-descoberta/SKILL.md` + `.agents/skills/inicializar-stack/SKILL.md` (entrevista contínua via `grill-me` sem teto de rodadas, cristalizando capítulos em `docs/conhecimento/` só com permissão humana). Antes de gerar `openspec/roadmap.md` no Gate 0, faça **leitura física obrigatória** de `docs/conhecimento/INDICE.md` e dos capítulos consolidados.
+- **Repositório Brownfield (código existente sem specs ou marcado como `Aguardando Onboarding Brownfield`):** Congele qualquer edição de código e acione obrigatoriamente `.agents/skills/mapear-brownfield/SKILL.md` (`/mapear-projeto`) antes da primeira tarefa para mapear arquitetura, saúde e docs vivos até o Gate de Onboarding.
+- **Projeto em Andamento (Proibido Deduzir de Cabeça — Artigo 12):** Leia fisicamente `openspec/project.md`, `openspec/roadmap.md`, `openspec/matriz-requisitos.md` (se existir) e `openspec/changes/` antes de planejar ou codar. Com fila executável vazia, acione `.agents/skills/planejar-proxima-fatia/SKILL.md` (`/fatiar`) sobre código real + livro; para novas ideias no meio do caminho, congele código e acione `.agents/skills/refinar-ideia/SKILL.md`; para revisão divergente sob demanda (nunca automática), use `/explorar` / `/evoluir` (`explorar-produto`, Conselho de 3 Subagentes *read-only*); para corpus extenso (`> 8` capítulos ou `docs/conhecimento/materiais/`), acione `/sintetizar` (`sintetizar-conhecimento`).
 
-1. **Dever de Crítica, Arquiteto Ativo e Pesquisa Viva:** Nunca adultere elogios, finja conformidade ou execute no piloto automático. Aponte falhas de arquitetura, caminhos viciosos/atrasados, inconsistências de requisitos e complexidade desnecessária antes de desenhar ou codificar. Proibido recomendar stacks, versões, APIs ou segurança apenas por memória de treinamento quando houver `context7`, `/llms.txt` ou busca web disponíveis (declare explicitamente se estiver offline). Declare abertamente o que foi testado e o que não foi.
-2. **Zero-Trust no Agente:** Todo commit e ação crítica é inspecionado por hooks determinísticos (`.agents/hooks.json`, `Lefthook + Gitleaks + verificar-governanca.mjs`). Se violar qualquer cláusula, a operação será bloqueada (`exit 1` / `deny`).
-3. **As 3 Posturas Sequenciais:**
-   - **Produto:** Compreender o problema, regras de negócio e critérios de aceite sem discutir código.
-   - **Arquitetura:** Definir contratos de dados, interfaces, schemas, riscos e registrar ADRs em `docs/adr/` quando a decisão for estrutural (Gate 1).
-   - **Engenharia:** Escrever testes antes do código (Test-First), implementar a solução mínima, refatorar e apresentar evidências completas (Gate 2).
-4. **Padrões de Engenharia Frontend e Web (Artigo 6):** Em todo desenvolvimento que envolva web, responsividade móvel (mobile-first a partir de 320px) e portabilidade como PWA instalável são inatos ao código. Além disso:
-   - Reatividade limpa: é expressamente proibido `location.reload` ou atualizações forçadas de tela.
-   - Mutações físicas no banco de dados devem obrigatoriamente disparar notificações Toast reativas de feedback (sucesso/erro).
-   - Ações destrutivas/críticas devem ser protegidas por Modais de Confirmação prévia com suporte a `Escape`.
-5. **Convenção de Idioma (Artigo 10):** Nomes de entidades, regras de negócio, tabelas, variáveis, funções, documentação e mensagens de commit em **Português do Brasil (PT-BR)** (ex.: `obterUsuario`, `salvarPedido`). Termos técnicos universais de frameworks (`id`, `payload`, `props`, `token`, `status`, `req`, `res`) permanecem em **Inglês (EN)**.
+## 2. Cerimônia, Test-First, Circuit Breaker e Gates
+- **4 Vias (D14/D32):** **Via 1a (`/fix`):** bug em até 3 arquivos de produção, exige ≥ 1 teste staged e `CHANGELOG.md`; **Via 1b (`style`):** ajuste visual/copy puro (até 3 arquivos, sem condicionais/hooks/I/O); **Via 1.5:** manutenção estrutural (`refactor`/`perf`/`style`/`chore`/`build`) em > 3 arquivos ou bump de pacote existente sem banco/dependência inédita; **Via 2:** feature/schema/dependência nova com delta em `openspec/changes/` e ciclo completo em `.agents/skills/ciclo-especificacao/SKILL.md`.
+- **Circuit Breaker + `/debug` (Artigo 9):** Na **2ª falha consecutiva**, congele edições e acione `.agents/skills/depuracao-sistematica/SKILL.md` (`/debug`) antes da 3ª tentativa. Na **3ª falha**, pare e consulte o humano.
+- **Gate 1 (Aprovação de Plano):** Sem commit. Após releitura física e `grill-me`, emita o artefato `plano-fatia-XX.md` com `RequestFeedback: true` (em harnesses compatíveis) mantendo o chat com no máximo 20 linhas com link e pergunta objetiva (ou resumo ≤ 20 linhas no terminal CLI).
+- **Marco 1 — Gate 0:** Commit fundacional após aprovar escopo, stack, testes base e `openspec/roadmap.md`.
+- **Marco 2 — Fechamento (Gate 2):** Execute testes (Vermelho/Verde), `node scripts/verificar-governanca.mjs` e **Prova de Runtime**; se necessário `/revisar` (`revisar-fatia`, opcional), emita `entrega-fatia-XX.md` (≤ 20 linhas no chat) com valor entregue, Roteiro Prático Passo a Passo, evidências e **destaque explícito de válvulas de escape ativas no diff**. **Somente após aprovação humana**, execute fechamento atômico: atualize `openspec/matriz-requisitos.md` (`REQ-XX`), rode `npx --yes @fission-ai/openspec archive <fatia> -y`, marque `[x]` em `openspec/roadmap.md` e **então** execute `git commit` (`CHANGELOG.md` em dia) + recomende `/compact`.
+- **Linear MCP (Artigo 13):** Sempre `whoami` antes; bloqueie se divergir da Tríade de Âncora e proíba fallback silencioso. **Mediante confirmação humana**, mova a issue no Gate 1 (*In Progress*) e Gate 2 (*Done* + Project Update, perguntando se há novas tarefas ou edições).
 
----
-
-## 2. Diagnóstico Inicial e Condução Incremental
-
-Ao ser iniciado em um repositório, identifique o estado atual antes de agir:
-- **Repositório Greenfield (sem stack ou ausência de produto):** Acione automaticamente a skill `.agents/skills/mesa-de-descoberta/SKILL.md` integrada à `.agents/skills/inicializar-stack/SKILL.md`. Conduza uma **entrevista profunda contínua multi-especialista via protocolo grill-me (sem teto artificial de rodadas, com recomendação técnica ➡️)**, cristalizando cada tema consolidado em arquivos separados sob `docs/conhecimento/` (somente com permissão explícita humana) e atualizando `docs/conhecimento/INDICE.md`; antes de estruturar `openspec/roadmap.md` no **Gate 0**, faça **leitura física obrigatória** de `docs/conhecimento/INDICE.md` e de todos os capítulos consolidados (proibido lembrar de cabeça, eliminando esquecimento e alucinação).
-- **Repositório Brownfield (código existente sem specs ou marcado como `Aguardando Onboarding Brownfield`):** **Congele qualquer edição de código** e acione obrigatoriamente a skill `.agents/skills/mapear-brownfield/SKILL.md` (`/mapear-projeto`) antes de aceitar a primeira tarefa. Faça o raio-X do código, check-up de saúde arquitetural e preencha `AGENTS.md` (`## Comandos do Projeto`), `docs/arquitetura.md`, `docs/catalogo-reuso.md`, `docs/particularidades.md`, `.env.example`, `openspec/project.md`, `openspec/specs/` e `openspec/roadmap.md`, submetendo ao **Gate de Onboarding** humano.
-- **Projeto em Andamento (Modo Execução):** Verifique `openspec/project.md`, `npx @fission-ai/openspec list`, as tarefas abertas em `openspec/changes/` e `CHANGELOG.md` para retomar exatamente de onde parou e puxar a próxima fatia `[ ] Pendente` automaticamente — ou, quando a fila executável de `openspec/roadmap.md` estiver vazia, acionar obrigatoriamente `.agents/skills/planejar-proxima-fatia/SKILL.md` (`/fatiar`) para fatiar Just-in-Time sobre o código real + livro — conduzindo primeiro o **Check-up de Saúde Arquitetural** e a **Discussão Pré-Plano (`grill-me`)** antes de fechar o Gate 1 (exceto ajustes puramente triviais/cosméticos).
-  * *Cláusula Pétrea — Proibido Deduzir de Cabeça (Artigo 12):* Nunca confie na memória do chat. Ao planejar, resumir, abrir delta ou iniciar a codificação, leia fisicamente o arquivo da fatia e cite trechos literais antes de propor mudanças ou codificar.
-- **Novas Ideias ou Mudanças no Meio do Caminho (Refinamento e Poda):** Se o usuário trouxer uma ideia ou solicitação de mudança durante o desenvolvimento, congele o código imediatamente e acione `.agents/skills/refinar-ideia/SKILL.md`. Conduza o interrogatório exaustivo via protocolo `grill-me` (esgotando todas as ambiguidades antes de qualquer código), raio-X de complexidade oculta, separe o que entra do que sai e, se houver afinidade com uma fatia pendente, encaixe-a como **subfatia alfanumérica hierárquica (ex.: `fatia-02a-<slug>`)** em `openspec/roadmap.md`, preservando o grafo de dependências sem quebrar a ordenação nem o OpenSpec.
-- **Conselho Evolutivo e Estratégia de Produto (`/explorar` / `/evoluir`):** Quando o humano quiser convocar uma revisão estratégica sob demanda para descobrir inovações de mercado, "ouro barato", refatorações do código entregue ou novos capítulos agregantes no Livro, acione `.agents/skills/explorar-produto/SKILL.md` (Conselho de 3 Subagentes *read-only* em paralelo). Congele qualquer edição de código e encaminhe as decisões para as 4 Saídas Oficiais (`docs/conhecimento/`, `Mapa Macro` + `openspec/matriz-requisitos.md` / `refinar-ideia` / `Via 1.5`, `openspec/radar-oportunidades.md` ou `Fora de Escopo`). Nunca dispare automaticamente dentro do `/fatiar` ou `Gate 2`.
-- **Mesa de Descoberta Contínua e Livro de Conhecimento (`/descobrir` / `/mesa`):** Quando o humano quiser conduzir sessões contínuas ou multi-sessão de perguntas e reflexão multi-especialista para construir um livro vivo de regras de negócio e arquitetura, congele o código, acione `.agents/skills/mesa-de-descoberta/SKILL.md` e cristalize conclusões em `docs/conhecimento/` (somente com permissão explícita humana), mantendo `docs/conhecimento/INDICE.md` sincronizado sem concorrer com `openspec/specs/`.
-- **Síntese de Conhecimento em Escala (`/sintetizar`):** Quando o livro em `docs/conhecimento/` e eventuais materiais externos em `docs/conhecimento/materiais/` precisarem virar plano/fatias em `openspec/roadmap.md` (ou ultrapassarem 8 arquivos), acione `.agents/skills/sintetizar-conhecimento/SKILL.md` usando extração *Map-Reduce* com subagentes *read-only*, detector de contradições e rastreabilidade estrita das fontes.
-
----
-
-## 3. Níveis de Cerimônia e Fluxo de Execução
-
-| Critério | Nível 1 — Via Rápida (`/fix`) | Nível 2 — Ciclo Completo (Feature / Fatia Incremental) |
-|---|---|---|
-| **Escopo** | Bug pontual, correção estética, refatoração interna | Fatia do roadmap, nova funcionalidade, regra de negócio, schema/banco, nova rota/API |
-| **Impacto em Specs** | Não altera `openspec/specs/` | Consome a fatia do roadmap e expande `openspec/specs/` |
-| **Limite de Arquivos** | Até **3 arquivos** de produção (fora testes) | Sem limite (escopo fechado da fatia) |
-| **Fluxo** | Diagnóstico → Alinhamento prévio (se não trivial) → Teste que reproduz a falha → Código mínimo → Gate 2 | Ler fatia → Check-up & Discussão Pré-Plano → `openspec new change <nome>` → **Gate 1** → Test-First → **Gate 2** → `openspec archive <nome> -y` → Próxima fatia |
-
-> **Trava de Escalonamento Automático:** Se durante um `/fix` o commit tocar em mais de 3 arquivos de produção, incluir novas dependências ou alterar o schema de banco sem um delta ativo em `openspec/changes/`, o algoritmo da governança travará o commit exigindo o Nível 2.
-
----
-
-## 4. Test-First Obrigatório, Circuit Breaker e Roteiro de Validação Prática
-
-1. **Ciclo Vermelho → Verde → Refatorar:** É estritamente proibido escrever código de produção sem antes escrever o teste automatizado correspondente.
-2. **Evidência Obrigatória no Gate 2:** Toda entrega deve exibir a saída do terminal com o teste falhando pelo motivo correto e, em seguida, a saída com o teste passando verde.
-3. **Roteiro Mandatório de Validação Prática (Proibido Despejar Apenas Logs):** É proibido encerrar uma tarefa apenas mostrando saídas de testes automatizados. O agente deve fornecer obrigatoriamente um roteiro claro: **o que foi entregue**, **onde está** (rota/tela/comando), **passo a passo com dados prontos de exemplo** e **o que o humano deve observar visualmente** na tela ou na resposta do sistema.
-4. **Releitura Pré-Código Mandatória (Artigo 12):** Imediatamente antes de escrever o primeiro teste ou código de produção de uma fatia, o executor deve reler o arquivo físico da fatia para assegurar que nenhum detalhe de contrato ou regra se perdeu por saturação de contexto.
-5. **Circuit Breaker (3 Falhas) e `/debug` na 2ª Falha (Artigo 9):** Ao atingir **2 falhas consecutivas** no mesmo teste ou erro, congele edições especulativas e acione `.agents/skills/depuracao-sistematica/SKILL.md` (`/debug`) para provar a causa raiz com evidência real antes da 3ª tentativa. Se falhar pela 3ª vez consecutiva, pare imediatamente, descreva a hipótese, o log da falha e solicite orientação do humano.
-6. **Prova de Runtime Pré-Gate 2 (Artigo 2.7):** Antes de chamar o humano no Gate 2, comprove a execução real conforme o perfil (`web-ui`, `api-backend`, `cli-biblioteca`, `desktop`/`mobile`/`jogo`), ou declare explicitamente eventual restrição ambiental (proibido fingir).
-
----
-
-## 5. Rotina de Commits e Gates Humanos (Autorização Obrigatória — Artigos 11 e 12)
-
-É expressamente proibido ao agente realizar commits avulsos, intermediários ou automáticos sem o consentimento humano. A rotina de commits é estruturada em dois marcos exclusivos e protegida no motor da IDE via Lifecycle Hooks:
-
-- **Marco 1 — Fundação e Sedimentação Inicial (Gate 0):** Após a conclusão da entrevista exaustiva, validação da stack, scaffolding oficial, prova de saúde da base e gravação do Mapa de Fatias, o agente apresenta a base sedimentada ao humano e solicita aprovação para o commit de fundação:
-  ```bash
-  git commit -m "feat(fundacao): inicializa projeto com stack <nome> e roadmap de fatias"
-  ```
-- **Gate 1 (Aprovação de Plano e Desenho Técnico):** Sem commit de código. Leitura física comprovada do roadmap, alinhamento de escopo, delta no OpenSpec e tarefas antes de codificar. Em ambientes com suporte a artefatos nativos (Antigravity), o agente **deve** emitir o plano como artefato dedicado (`plano-fatia-XX.md`) configurado com `RequestFeedback: true` (habilitando o botão interativo `Proceed`), limitando a mensagem de chat a no máximo 20 linhas com o link e a pergunta objetiva. Em terminais CLI puros, fornece resumo conciso (≤ 20 linhas) apontando para o disco.
-- **Marco 2 — Fechamento de Fatia ou Correção (Gate 2):** Ao término da implementação, o fluxo segue 2 níveis:
-  1. **Validação Determinística e Auditoria Factual:** O fluxo regular apoia-se diretamente na prova dos testes reais (`npm test`), na inspeção estrita dos hooks locais (`verificar-governanca.mjs`) e no roteiro prático. A auditoria cega por subagente (`inspetor-forense`) é opcional e sob demanda através do comando `/revisar`. Quando acionado, o subagente inspeciona o `git diff` de forma cega gerando o laudo em artefato (`parecer-forense.md`).
-  2. **Apresentação ao Humano (Artefato e Chat):** Em ambientes com suporte a artefatos (Antigravity), o agente emite o relatório completo como artefato dedicado (`entrega-fatia-XX.md`), limitando o chat a um link direto, resumo executivo e roteiro prático em no máximo 20 linhas. Em terminais CLI puros, apresenta a entrega estruturada de forma concisa (≤ 20 linhas):
-     * *O que foi entregue e valor funcional gerado.*
-     * *📋 Parecer Factual de Conformidade (Código validado contra o roadmap físico).*
-     * *🧪 Roteiro de Teste Prático (onde acessar, passo a passo com dados de teste e comportamento visual esperado).*
-     * *Evidências de testes automatizados (saída vermelha e verde), **Prova de Runtime Pré-Gate 2** (ou limitação ambiental declarada) e destaque explícito de qualquer válvula de escape ativa no diff.*
-     * *Diff limpo e CHANGELOG atualizado.*
-  3. **Autorização Humana, Fechamento Atômico e Commit:** **Somente após a aprovação final humana**, atualize `openspec/matriz-requisitos.md` (se existir, marcando os `REQ-XX` da fatia como `[x] Entregue` com caminho real em `Prova Real` ou `[-] Descartado`), execute `npx --yes @fission-ai/openspec archive <nome> -y`, marque `[x] Concluído` em `openspec/roadmap.md` e **então** realize o commit atômico de entrega:
-     ```bash
-     npx --yes @fission-ai/openspec archive fatia-XX-<slug> -y
-     git add .
-     git commit -m "feat(<escopo>): implementa fatia XX - <descrição em PT-BR>"
-     # ou no caso de /fix:
-     git commit -m "fix(<escopo>): corrige <descrição em PT-BR>"
-     ```
-  4. **Prevenção de Context Rot:** Imediatamente após o commit, o agente convida para a próxima fatia e recomenda a renovação da sessão (`/compact` ou nova conversa limpa).
-
----
-
-## 6. Recursos, Ferramentas e MCPs
-
-- **Cláusulas Pétreas:** Leia integralmente @[constitution.md](constitution.md).
-- **Configuração OpenSpec:** Arquivo `openspec/config.yaml` com regras e contexto global.
-- **Radar Estratégico e Mercado:** Arquivo `openspec/radar-oportunidades.md` (concorrência, sinergias e ideias estacionadas).
-- **Mapa de Fatias Incrementais (Rolling Wave):** Arquivo `openspec/roadmap.md` e `openspec/project.md`.
-- **Matriz de Rastreabilidade End-to-End:** Arquivo `openspec/matriz-requisitos.md` (liga requisitos `REQ-01..NN` do livro ao roadmap, deltas OpenSpec e provas reais em disco, com telemetria no `SessionStart`).
-- **Especificações Vivas e Deltas:** Diretório `openspec/` gerenciado pelo OpenSpec CLI (`npx @fission-ai/openspec`).
-- **Registros de Arquitetura (ADRs):** Diretório `docs/adr/` no formato MADR.
-- **Catálogo de Reúso e Tokens:** Arquivo `docs/catalogo-reuso.md` (inventário vivo de primitivos, tokens de movimento e prefabs; consulta obrigatória antes de codificar conforme Artigo 14).
-- **Mapa Físico e Arquitetura:** Arquivo `docs/arquitetura.md` (diagramas C4, `erDiagram`, Glossário e **Seção 5: Mapa Físico de Módulos** para localizar domínios e testes sem buscas repetidas; sensor anti-apodrecimento ativo).
-- **Particularidades Operacionais e de Ambiente:** Arquivo `docs/particularidades.md` (leitura sob demanda antes de alterar infraestrutura, portas, variáveis de ambiente ou integrações externas).
-- **Runbook Operacional:** Arquivo `docs/runbook.md` (procedimentos de deploy, *smoke check* pós-deploy, migrations seguras, rollback, logs e checklist Go-Live; consultado antes de mexer em infraestrutura/release).
-- **Handoff Efêmero fora do OpenSpec:** Arquivo `.agents/handoff.md` (ignorado no Git; usado sob demanda em `/fix` interrompido, Via 1.5 ou planos de auditoria quando não há delta em `openspec/changes/`, lido automaticamente no `SessionStart` e limpo no Gate 2).
-- **Diário de Aprendizados e Cicatrizes:** Arquivo `docs/aprendizados.md` (leitura mandatória no Gate 1 para prevenir reincidência de armadilhas empíricas catalogadas).
-- **Base de Conhecimento e Descoberta:** Arquivo `docs/conhecimento/INDICE.md` (índice mestre do livro vivo de conhecimento construído via `/descobrir` / `/mesa`, acompanhado de materiais externos em `docs/conhecimento/materiais/` para síntese via `/sintetizar` sem estourar contexto).
-- **Hooks Nativos de Agente:** Arquivo `.agents/hooks.json` acionando `scripts/hook-agente.mjs` (suporta execução tanto da raiz do repositório quanto de `.agents/`).
-- **Scripts Auxiliares em `scripts/`:** Apenas os scripts nativos da governança (`scripts/verificar-governanca.mjs`, `scripts/validar-commit-msg.mjs`, `scripts/hook-agente.mjs` e `scripts/lib/`) são isentos de cerimônia; scripts utilitários ou de build próprios do projeto sob `scripts/` são auditados como código de produção (`CHANGELOG.md`, teto de 350 linhas e testes). Quando o crescimento do repositório atingir limiares de escala, o auditor emite avisos não-bloqueantes `[AVISO MATURIDADE]` indicando o momento de popular `docs/catalogo-reuso.md`, `openspec/matriz-requisitos.md` ou `docs/runbook.md`.
-- **Exceções Legítimas de Stack:** Stacks específicas ou legadas (ex.: Google Apps Script, HTML estático, projetos sem `npm test` ou sem TS strict/SQLite) devem registrar suas adaptações e exceções na seção `## Cláusulas Adicionais Deste Projeto` em `constitution.md` e em `docs/particularidades.md`.
-- **Auditoria Forense Cega (Sob Demanda via `/revisar`):** Protocolo universal consolidado em `.agents/skills/revisar-fatia/SKILL.md`.
-- **Servidores MCP Oficiais (.mcp.json):**
-  - `context7`: Consulta a documentações técnicas oficiais e atualizadas.
-  - `linear` (opcional/configurado): Coordenação de backlog, issues e **Diário de Bordo** da equipe.
-    * *Tríade de Âncora Obrigatória (Artigo 13):* Toda operação do agente é restrita à Tríade de Âncora registrada em `openspec/project.md` (Workspace, Equipe e Projeto). É terminantemente proibido tocar em issues de outras equipes ou outros projetos da organização.
-    * *Handshake Pré-Operação (`whoami`):* Antes de qualquer consulta ou mutação no Linear, o agente executa `whoami`. Em caso de divergência com o workspace âncora, a execução é interrompida imediatamente com alerta de contenção ao humano.
-    * *Proibição de Fallback Silencioso:* Se o projeto ou equipe âncora não for localizado, é expressamente proibido operar em fallback silencioso (criar tarefas órfãs ou atuar em issues de outros times).
-    * *Inbox Móvel (Celular):* Quando solicitado (*"veja o que tem no Linear"*, *"puxe as ideias do celular"* ou `/linear-inbox`), o agente consulta as notas recentes no Linear e aciona a skill `refinar-ideia` para podar e transformar em fatias.
-    * *Gate 1:* Mediante confirmação humana, localiza ou cria a issue correspondente dentro deste projeto (`[KEY-XXX] fatia-XXa-...`) e move para *In Progress*.
-    * *Gate 2:* Mediante confirmação humana, publica a atualização oficial do projeto (*Project Update*) com resumo funcional e roteiro prático, move a issue para *Done* e pergunta se há novas tarefas ou edições a registrar.
-    * *Refinamento de Ideias:* Propõe encaminhar ideias despriorizadas para o Backlog deste mesmo projeto no Linear mediante confirmação.
-- **Skills Ativas:** Diretório `.agents/skills/` (`inicializar-stack`, `mapear-brownfield`, `planejar-proxima-fatia`, `ciclo-especificacao`, `depuracao-sistematica`, `refinar-ideia`, `explorar-produto`, `mesa-de-descoberta`, `sintetizar-conhecimento`, `revisar-fatia`, `reuso-e-modularizacao`, `auditoria-ux-analytics`, `auditoria-seguranca`, `atualizar-governanca`).
-- **Higiene de Contexto, Subagentes e Orçamento de MCPs:**
-  - *Varredura Ampla e Prevenção de Context Rot:* Mapeamentos exploratórios de código ou buscas em dezenas de arquivos não devem poluir o contexto da sessão principal. Delegue varreduras amplas a subagentes efêmeros *read-only* (ex.: subagente `research` no Antigravity ou subagente de consulta no Claude Code), retornando ao agente principal apenas o resumo conciso e as linhas exatas.
-  - *Padrão `/llms.txt` e CLIs Nativas:* Ao consultar documentações externas de bibliotecas, priorize endpoints `/llms.txt` (conteúdo limpo em Markdown) antes de baixar páginas HTML pesadas. Para automações do GitHub (issues, PRs, runs), priorize a CLI oficial `gh` em vez de acoplar servidores MCP redundantes.
-  - *Teto Estrito de MCPs (3 a 5 Servidores Ativos):* Evite manter dezenas de servidores MCP ativos simultaneamente. Cada ferramenta anunciada consome tokens na janela de contexto a cada turno e degrada a capacidade de raciocínio do modelo. Mantenha de 3 a 5 servidores essenciais por projeto (ex.: `context7`, `linear`, `playwright`).
-  - *Credenciais Read-Only em Bancos de Dados:* Servidores MCP conectados a bancos relacionais (Postgres, SQLite, Supabase) devem utilizar credenciais estritamente de leitura (*read-only*), garantindo que mutações e migrações passem obrigatoriamente pelos testes e código versionado da aplicação.
+## 3. Documentos Vivos, Contexto, `scripts/` e Skills
+- **Artefatos do Projeto:** `openspec/config.yaml`, `openspec/radar-oportunidades.md`, `openspec/matriz-requisitos.md`, `docs/arquitetura.md` (C4 + `erDiagram` + §5 Mapa Físico), `docs/catalogo-reuso.md` (Artigo 14), `docs/particularidades.md`, `docs/runbook.md`, `docs/aprendizados.md`, `docs/adr/`, `docs/conhecimento/INDICE.md` e `.agents/handoff.md` (efêmero, limpo no Gate 2). Crescimento de UI/escala/deploy pode disparar avisos não-bloqueantes `[AVISO MATURIDADE]`. Exceções legítimas de stack vão em `constitution.md` e `docs/particularidades.md`.
+- **Hooks, MCPs e `scripts/`:** `.agents/hooks.json` aciona `scripts/hook-agente.mjs`. Apenas scripts nativos da governança (`verificar-governanca.mjs`, `validar-commit-msg.mjs`, `hook-agente.mjs`, `lib/`) são isentos; scripts próprios em `scripts/` são código de produção auditado. Delegue buscas amplas a subagentes *read-only*, use `/llms.txt` / CLI `gh`, mantenha 3–5 MCPs ativos e banco via MCP estritamente *read-only*.
+- **Skills (`.agents/skills/`):** `inicializar-stack`, `mapear-brownfield`, `planejar-proxima-fatia`, `ciclo-especificacao`, `depuracao-sistematica`, `refinar-ideia`, `explorar-produto`, `mesa-de-descoberta`, `sintetizar-conhecimento`, `revisar-fatia`, `reuso-e-modularizacao`, `auditoria-ux-analytics`, `auditoria-seguranca`, `atualizar-governanca`.
 
 ### Comandos de Atalho Rápidos (Padrão Universal `AGENTS.md` + `.agents/skills/`)
-
-Os comandos abaixo são mapeados universalmente por `AGENTS.md` para as skills em `.agents/skills/`:
-
-| Comando | Finalidade / Skill Acionada | Quando utilizar |
+| Comando | Skill / Artefato | Quando utilizar |
 |---|---|---|
-| `/fix` | `ciclo-especificacao` §1 (Via 1a) | Bug pontual com teste que reproduz a falha (máx. 3 arquivos) |
-| `/debug` | `depuracao-sistematica` | Investigação científica de causa raiz (manual ou automática na 2ª falha antes da 3ª tentativa do Circuit Breaker) |
+| `/fix` | `ciclo-especificacao` §1 (Via 1a) | Bug pontual com teste staged (máx. 3 arquivos de produção) |
+| `/debug` | `depuracao-sistematica` | Investigação científica de causa raiz (manual ou 2ª falha do Circuit Breaker) |
 | `/mapear-projeto` | `mapear-brownfield` | Onboarding obrigatório de repositório existente antes de alterar código |
-| `/fatiar` / `/planejar-fatia` | `planejar-proxima-fatia` | Subagente *read-only* inspeciona livro + código real e propõe Just-in-Time a próxima fatia cirúrgica |
-| `/proxima-fatia` | `ciclo-especificacao` §2 (Via 2) | Ler `roadmap.md` (acionando `planejar-proxima-fatia` se a fila estiver vazia), abrir delta no OpenSpec e preparar Gate 1 |
-| `/retomar` | Handoff de Sessão (`tasks.md` ou `.agents/handoff.md`) | Retomar fatia OpenSpec ou trabalho avulso (`/fix`, Via 1.5, auditoria) após `/compact` ou nova sessão |
+| `/fatiar` / `/planejar-fatia` | `planejar-proxima-fatia` | Inspeciona livro + código real e propõe Just-in-Time a próxima fatia |
+| `/proxima-fatia` | `ciclo-especificacao` §2 (Via 2) | Lê `roadmap.md` (ou aciona `/fatiar`), abre delta OpenSpec e prepara Gate 1 |
+| `/retomar` | Handoff (`tasks.md` ou `.agents/handoff.md`) | Retoma fatia OpenSpec ou trabalho avulso após `/compact` ou nova sessão |
 | `/revisar` | `revisar-fatia` | Auditoria sob demanda com Inspetor Forense cego e Duelo de Conformidade |
-| `/auditar-reuso` | `reuso-e-modularizacao` | Varredura de reúso, tokens de movimento e teto anti-monólito |
-| `/auditar-ux` | `auditoria-ux-analytics` | Integrar PostHog/Clarity sob demanda (LGPD/CSP) e auditar UX com dados reais |
-| `/auditar-seguranca` | `auditoria-seguranca` | Auditoria AppSec (3 subagentes em legado/projeto ou focado) e linguagem humana na UI |
-| `/grill-me` | Protocolo `grill-me` / `grilling` | Interrogatório exaustivo de plano/design/ideia em rodadas |
-| `/refinar` | `refinar-ideia` | Nova ideia durante o projeto: congela código, poda e cria subfatia |
-| `/explorar` / `/evoluir` | `explorar-produto` | Conselho Evolutivo de 3 subagentes (*read-only*): inovações, ouro barato, refatorações e novos capítulos no Livro |
-| `/descobrir` / `/mesa` | `mesa-de-descoberta` | Mesa contínua multi-especialista para construir o livro de conhecimento (`docs/conhecimento/INDICE.md`) |
-| `/sintetizar` | `sintetizar-conhecimento` | Síntese *Map-Reduce* anti-alucinação do livro e `docs/conhecimento/materiais/` para `openspec/roadmap.md` |
-| `/aprendizado` | `docs/aprendizados.md` | Registrar armadilha empírica, bug recorrente ou lição aprendida |
+| `/auditar-reuso` | `reuso-e-modularizacao` | Auditoria de reúso, tokens de movimento e teto anti-monólito |
+| `/auditar-ux` | `auditoria-ux-analytics` | Analytics (PostHog/Clarity sob LGPD/CSP) e auditoria UX com dados reais |
+| `/auditar-seguranca` | `auditoria-seguranca` | Auditoria AppSec (27+ controles) e linguagem humana na UI |
+| `/grill-me` | Protocolo `grill-me` / `grilling` | Interrogatório estruturado de plano/design/ideia em rodadas |
+| `/refinar` | `refinar-ideia` | Nova ideia no meio do caminho: congela código, poda e cria subfatia |
+| `/explorar` / `/evoluir` | `explorar-produto` | Conselho Evolutivo de 3 Subagentes (*read-only*): inovação, ouro barato e refatoração |
+| `/descobrir` / `/mesa` | `mesa-de-descoberta` | Mesa contínua multi-especialista para o livro (`docs/conhecimento/INDICE.md`) |
+| `/sintetizar` | `sintetizar-conhecimento` | Síntese *Map-Reduce* do livro e `materiais/` para `openspec/roadmap.md` |
+| `/aprendizado` | `docs/aprendizados.md` | Registrar armadilha empírica, cicatriz ou lição aprendida |
 | `/atualizar-governanca` | `atualizar-governanca` | Atualizar template via `copier update` de forma segura |
-| `/linear-inbox` | `refinar-ideia` §Passo 0 | Puxar e refinar notas de ideias anotadas pelo celular (quando ativo) |
+| `/linear-inbox` | `refinar-ideia` §Passo 0 | Puxar e refinar notas de ideias do celular via Linear (quando ativo) |
 <!-- governanca:fim -->
 
 ## Regras Específicas Deste Projeto
